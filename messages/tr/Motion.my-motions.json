@@ -1,0 +1,10 @@
+{
+  "library": {
+    "myMotions": "Motion'larım",
+    "noMotions": "Henüz bir Motion kaydetmedin. Bir taslağı aç ve “Motion olarak kaydet”i seç; sonra burada ve Spark'ta görünür.",
+    "motionsFailed": "Kaydettiğin Motion'lar yüklenemedi.",
+    "motionVersion": "Sürüm {number}",
+    "savedOn": "{date} tarihinde kaydedildi",
+    "openDraft": "Taslağı aç"
+  }
+}

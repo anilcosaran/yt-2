@@ -1,0 +1,42 @@
+{
+  "productionG1": {
+    "title": "Üretim planı",
+    "planRevision": "Plan v{revision}",
+    "estimateRange": "Tahmini ~{min}–{max} kredi",
+    "estimatePoint": "Tahmini ~{value} kredi",
+    "ceiling": "En fazla {value} kredi",
+    "produce": "Bu planla üret",
+    "reject": "Vazgeç",
+    "decisionFailed": "Karar kaydedilmedi. Plan değişmiş olabilir; güncel planı kontrol et.",
+    "status": {
+      "awaiting": "Onay bekliyor",
+      "plan_changed": "Plan veya tahmin değişti; güncel plan gösterilince onaylayabilirsin.",
+      "expired": "Bu onayın süresi doldu.",
+      "approved": "Onaylandı",
+      "handed_off": "Onaylandı · üretim başlatılıyor",
+      "queued": "Onaylandı · sırada",
+      "producing": "Üretiliyor",
+      "funding_required": "Devam etmek için kredi gerekiyor",
+      "refused": "Başlatılmadı: iş bu plandan ilerledi.",
+      "rejected": "Başlatılmadı",
+      "changes_requested": "Düzeltme istendi"
+    },
+    "stages": {
+      "brief": "İstek hazırlanıyor",
+      "research": "Kaynaklar araştırılıyor",
+      "script": "Senaryo yazılıyor",
+      "plan": "Sahneler ve maliyet hazırlanıyor",
+      "approval": "Onay",
+      "audio_media": "Ses ve medya hazırlanıyor",
+      "apply_qc": "Kurgu ve kontrol",
+      "preview": "Önizleme",
+      "render": "Final dosyası"
+    },
+    "counters": {
+      "chapters": "{completed}/{total} bölüm",
+      "shots": "{completed}/{total} sahne",
+      "outputs": "{completed}/{total} çıktı",
+      "items": "{completed}/{total} adım"
+    }
+  }
+}

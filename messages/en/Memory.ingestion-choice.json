@@ -1,0 +1,18 @@
+{
+  "ingestionChoice": {
+    "label": "Also add to Memory",
+    "hint": "The channel's Memory rules decide how these files are added; files that need approval wait for it.",
+    "unavailable": {
+      "channel_memory_disabled": "Memory is off for this channel. Files are uploaded without being added to Memory.",
+      "plan": "Your plan does not include Memory. Files are uploaded without being added to Memory.",
+      "retention": "This channel's Memory is being retired. Files are uploaded without being added to Memory."
+    },
+    "summary": {
+      "prefix": "Memory:",
+      "queued": "{count, plural, one {# will be added} other {# will be added}}",
+      "approval": "{count, plural, one {# needs approval} other {# need approval}}",
+      "notAdded": "{count, plural, one {# not added by the channel rules} other {# not added by the channel rules}}",
+      "skipped": "{count, plural, one {# not added (your choice)} other {# not added (your choice)}}"
+    }
+  }
+}

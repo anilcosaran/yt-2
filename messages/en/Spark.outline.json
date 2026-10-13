@@ -1,0 +1,36 @@
+{
+  "editor": {
+    "outline": {
+      "title": "Outline",
+      "listLabel": "Outline of the video",
+      "unsorted": "Unsorted",
+      "clipName": "Clip {n}",
+      "sectionLabel": "{title}, from {start}, {duration}, {count, plural, one {# clip} other {# clips}}",
+      "clipLabel": "{label}, clip {n} of {total}, {duration}",
+      "clipStatusLabel": "{label}, {status}",
+      "collapse": "Collapse {title}",
+      "expand": "Expand {title}",
+      "moreActions": "Actions for {title}",
+      "menuLabel": "Section actions",
+      "rename": "Rename",
+      "renameLabel": "Section name",
+      "addBefore": "Add section before",
+      "addAfter": "Add section after",
+      "mergeNext": "Merge with next",
+      "delete": "Delete section",
+      "addSection": "Add section",
+      "addSections": "Add sections",
+      "addSectionsHint": "Puts the first clip in Intro, the last in Outro and the rest in Body",
+      "newSection": "New section",
+      "defaults": {
+        "intro": "Intro",
+        "body": "Body",
+        "outro": "Outro"
+      },
+      "dropHere": "Drag clips here",
+      "dragClip": "Drag to move, also into another section (Alt+↑/↓ with the keyboard)",
+      "dragSection": "Drag to move the section with its clips (Alt+↑/↓ with the keyboard); double-click the name to rename it (F2)",
+      "tooMany": "Too many clips for one change (at most {max} steps at once)"
+    }
+  }
+}

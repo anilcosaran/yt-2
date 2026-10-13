@@ -1,0 +1,45 @@
+{
+  "connectionRequirement": {
+    "title": {
+      "connect": "Connection needed",
+      "enable": "Connection is turned off",
+      "reconnect": "Reconnect needed",
+      "add_permission": "Permission needed",
+      "select_account": "Choose an account",
+      "retry_later": "Service unavailable",
+      "none": "Connection request"
+    },
+    "status": {
+      "loading": "Checking the connection…",
+      "popup": "Finish in the window that opened.",
+      "checking": "Checking the connection for this job…",
+      "waiting_owner": "Waiting for the person who started this job to connect.",
+      "closed": "This connection request is closed.",
+      "satisfied": "Connected. The same job continues.",
+      "unavailable": "This service can't be connected here right now.",
+      "popup_blocked": "The browser blocked the window. Allow pop-ups and try again.",
+      "not_connected": "The connection was not completed. The job is still waiting.",
+      "failed": "Something went wrong. Try again.",
+      "last_attempt_failed": "The last attempt did not finish. The job is still waiting."
+    },
+    "reason": {
+      "needs_connection": "This job needs an account to continue.",
+      "connection_disabled": "The account is connected but turned off.",
+      "reauth_required": "The account has to be signed in again.",
+      "scope_required": "The account needs one more permission for this job.",
+      "resource_selection_required": "Pick which account or channel this job should use.",
+      "upstream_unavailable": "The service is not responding. Your connection is fine.",
+      "rate_limited": "The service is busy. Your connection is fine.",
+      "other": "The connection can't be used for this job yet."
+    },
+    "action": {
+      "connectTo": "Connect {name}",
+      "enable": "Turn on",
+      "reconnect": "Reconnect",
+      "add_permission": "Add permission",
+      "select_account": "Choose",
+      "retry_later": "Try again"
+    },
+    "pickResource": "Choose the account to use"
+  }
+}

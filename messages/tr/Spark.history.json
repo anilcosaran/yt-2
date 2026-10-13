@@ -1,0 +1,11 @@
+{
+  "editor": {
+    "nothingToRedoTitle": "Yinelenecek değişiklik yok",
+    "notices": {
+      "redone": "Yinelendi",
+      "nothingToRedo": "Yinelenecek değişiklik yok",
+      "redoConflict": "Bu değişiklik geri alındıktan sonra başka bir düzenlemeyle değişti, yinelenemiyor. Projenin güncel hali yüklendi.",
+      "historyChanged": "Proje başka bir yerde (başka bir sekme ya da asistan) değişti, bu adım uygulanmadı. Projenin güncel hali yüklendi."
+    }
+  }
+}

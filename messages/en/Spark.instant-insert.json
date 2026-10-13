@@ -1,0 +1,49 @@
+{
+  "editor": {
+    "notices": {
+      "motionRefused": {
+        "energy_not_available": "This Motion does not offer that energy, so it was not added. The latest version was loaded.",
+        "ratio_not_available": "This Motion has no version for the project's aspect ratio, so it was not added. The latest version was loaded.",
+        "video_style_unavailable": "The Motion look is not available, so the Motion was not added. The latest version was loaded.",
+        "parameter_required": "This Motion needs a value it did not get (an image, say), so it was not added. The latest version was loaded.",
+        "unknown_parameter": "This Motion does not have that field any more. The latest version was loaded.",
+        "duration_out_of_range": "That length is outside what this Motion allows. The latest version was loaded.",
+        "duration_is_scene_range": "The Motion's length follows its place on the timeline. The latest version was loaded.",
+        "text_too_long": "That text is too long for this Motion. The latest version was loaded.",
+        "media_not_ready": "The image or video for this Motion is not ready yet. Try again in a moment.",
+        "project_private_revision_unavailable": "This Motion belongs to one project only and cannot be added here.",
+        "motion_revision_unavailable": "This version of the Motion is no longer available. Reopen the Motion list and try again.",
+        "motion_instances_disabled": "Motions cannot be added to projects right now.",
+        "motion_fonts_unavailable": "The Motion's fonts are not loaded yet. Try again in a moment.",
+        "compile_refused": "This Motion could not be prepared for this place. The latest version was loaded.",
+        "other": "The Motion change was refused. The latest version was loaded."
+      }
+    },
+    "motionDrawer": {
+      "refused": {
+        "project_private": "{title} belongs to one project only and cannot be added here.",
+        "energy_not_available": "{title} offers no energy setting that can be used here."
+      }
+    },
+    "stage": {
+      "pending": {
+        "adding": "Adding {title}…",
+        "uploading": "Uploading {percent}%",
+        "processing": "Processing…"
+      }
+    },
+    "media": {
+      "upload": {
+        "autoPlaceHint": "Goes to the playhead as soon as it is ready",
+        "phases": {
+          "processingFor": "Processing… {elapsed}",
+          "stillProcessing": "Still processing. It is added as soon as it is ready.",
+          "stillProcessingFor": "Still processing ({elapsed}). It is added as soon as it is ready."
+        }
+      },
+      "notices": {
+        "stillProcessingWaiting": "This file takes longer to process. It is added as soon as it is ready."
+      }
+    }
+  }
+}

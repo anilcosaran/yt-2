@@ -1,0 +1,138 @@
+{
+  "editor": {
+    "loading": "Motion açılıyor…",
+    "backToLibrary": "Motion kütüphanesi",
+    "backToProject": "Projeye dön",
+    "retry": "Tekrar dene",
+    "status": {
+      "not_found": "Bu Motion taslağı yok ya da sana ait değil.",
+      "forbidden": "Bunu yapmaya yetkin yok.",
+      "unavailable": "Motion düzenleme henüz kullanılamıyor.",
+      "invalid": "Bu bağlantı geçerli bir Motion taslağı değil.",
+      "error": "Motion taslağı yüklenemedi."
+    },
+    "regions": {
+      "preview": "Önizleme",
+      "chat": "Sohbet",
+      "parameters": "Parametreler",
+      "source": "Kaynak"
+    },
+    "draftBadge": "Özel taslak",
+    "sourceOf": "{blueprint} kopyası",
+    "returnToProject": "Projeye dön",
+    "actions": {
+      "showSource": "Kaynağı göster",
+      "hideSource": "Kaynağı gizle",
+      "saveSource": "Kaynağı kaydet",
+      "validate": "Doğrula",
+      "applyValues": "Değerleri uygula",
+      "archive": "Taslağı arşivle",
+      "publish": "Motion olarak kaydet"
+    },
+    "notices": {
+      "conflict": "Bu taslak başka yerde değişti. Son sürüm gösteriliyor; değişikliğini tekrarla.",
+      "sourceNotJson": "Kaynak geçerli bir JSON değil. Hiçbir şey kaydedilmedi.",
+      "sourceRejected": "Değişiklik reddedildi: {reason}.",
+      "saveFailed": "Değişiklik kaydedilemedi.",
+      "validated": "Doğrulama bitti.",
+      "archived": "Taslak arşivlendi.",
+      "published": "Yeni bir Motion revizyonu olarak kaydedildi. Bu Motion’ı zaten kullanan projeler sabitledikleri revizyonu korur.",
+      "publishBlocked": "Motion olarak kaydetme reddedildi: {reason}.",
+      "publishUnchanged": "Son kaydedilen revizyondan beri bir şey değişmedi."
+    },
+    "preview": {
+      "loading": "Önizleme derleniyor…",
+      "compiled": "{ratio}, {energy} için derlendi: {frames} kare.",
+      "ratio": "Biçim",
+      "energy": "Enerji",
+      "energies": {
+        "sakin": "Sakin",
+        "dengeli": "Dengeli",
+        "canli": "Canlı"
+      },
+      "failed": {
+        "fonts_unavailable": "Sabitlenmiş yazı tipi seti hâlâ yükleniyor. Biraz sonra tekrar dene.",
+        "video_style_unavailable": "Bu taslak için seçilen görünüm artık kullanılamıyor.",
+        "invalid": "Taslak mevcut kaynağı veya değerleriyle derlenemiyor.",
+        "forbidden": "Bu önizlemeye erişimin yok.",
+        "not_found": "Taslak bulunamadı.",
+        "unavailable": "Motion düzenleme kullanılamıyor.",
+        "conflict": "Taslak derlenirken değişti.",
+        "error": "Önizleme derlenemedi."
+      }
+    },
+    "parameters": {
+      "empty": "Bu Motion parametre açmıyor.",
+      "kind": {
+        "text": "Metin",
+        "color": "Renk",
+        "media": "Medya",
+        "duration": "Süre (kare)",
+        "number": "Sayı",
+        "enum": "Seçim",
+        "boolean": "Anahtar"
+      },
+      "sparkField": "Spark'ta düzenlenir",
+      "authoringOnly": "Yalnız düzenleme ekranında",
+      "mediaBound": "Projede bağlanır",
+      "lookLabel": "Görünüm"
+    },
+    "validation": {
+      "none": "Henüz doğrulanmadı.",
+      "ok": "Geçerli: kaynak kuralları ve tüm örnek derlemeler geçti.",
+      "stale": "Son doğrulama daha eski bir sürüm için.",
+      "issues": "Düzeltilecek {count} sorun var.",
+      "skipped": {
+        "source_invalid": "Kaynakta sorun olduğu için örnek derlemeler atlandı.",
+        "video_style_unavailable": "Örnek derlemeler atlandı: görünüm kullanılamıyor.",
+        "fonts_unavailable": "Örnek derlemeler atlandı: yazı tipi seti hâlâ yükleniyor."
+      }
+    },
+    "source": {
+      "hint": "Bu Motion'ın tipli kaynağı (motion-library@1). Kimliği değiştirilemez.",
+      "label": "Motion kaynağı"
+    },
+    "chat": {
+      "loading": "Sohbet yükleniyor…",
+      "empty": "Bu Motion için bir değişiklik iste.",
+      "placeholder": "Neyin değişmesini istediğini yaz",
+      "send": "Gönder",
+      "loadFailed": "Sohbet yüklenemedi.",
+      "sendFailed": "Mesaj gönderilemedi."
+    },
+    "latestRevision": "Motion olarak kaydedildi · revizyon {number}",
+    "publish": {
+      "reason": {
+        "validation_missing": "Motion olarak kaydetmek için bu sürümü doğrula.",
+        "validation_stale": "Son doğrulama eski bir sürüme ait. Motion olarak kaydetmek için yeniden doğrula.",
+        "validation_failed": "Motion olarak kaydetmek için doğrulama sorunlarını gider.",
+        "unchanged": "Son kaydedilen revizyondan beri bir şey değişmedi."
+      }
+    }
+  },
+  "library": {
+    "title": "Motion kütüphanesi",
+    "loading": "Motion kütüphanesi yükleniyor…",
+    "loadFailed": "Motion kütüphanesi yüklenemedi.",
+    "unavailable": "Motion düzenleme henüz kullanılamıyor.",
+    "retry": "Tekrar dene",
+    "myDrafts": "Taslaklarım",
+    "noDrafts": "Henüz taslağın yok. Başlamak için bir Motion'ı özelleştir.",
+    "platform": "Platform Motion'ları",
+    "catalogueClosed": "Platform Motion kataloğu henüz kullanılamıyor.",
+    "customize": "Özelleştir",
+    "lookLabel": "Görünüm",
+    "draftMeta": "{blueprint} kopyası · sürüm {version}",
+    "validated": "Doğrulandı",
+    "archivedHidden": "Arşivli taslaklar gizlidir.",
+    "createFailed": {
+      "forbidden": "Bu Motion'ı kopyalayamazsın.",
+      "not_found": "Bu Motion ya da görünüm kullanılamıyor.",
+      "video_style_unavailable": "Seçilen görünüm kullanılamıyor.",
+      "invalid": "Kopya oluşturulamadı: {reason}.",
+      "conflict": "Bu kopyalama isteği önceki bir istekle çakışıyor.",
+      "unavailable": "Motion düzenleme henüz kullanılamıyor.",
+      "error": "Kopya oluşturulamadı."
+    }
+  }
+}

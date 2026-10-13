@@ -1,0 +1,17 @@
+{
+  "editor": {
+    "askAi": {
+      "layer": {
+        "text": "Text: {text}",
+        "textPlain": "Text",
+        "shape": "Shape",
+        "image": "Image",
+        "video": "Video",
+        "motion": "Motion",
+        "slot": "Empty slot"
+      },
+      "layers": "{n} layers",
+      "removeRange": "Send without the marked range"
+    }
+  }
+}

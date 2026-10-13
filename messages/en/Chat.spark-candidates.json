@@ -1,0 +1,21 @@
+{
+  "sparkCandidates": {
+    "title": "Send to Spark",
+    "selected": "{count} of {total} selected · added in this order",
+    "partial": "Some results could not be added. The project is ready.",
+    "failed": "The results could not be added.",
+    "cancel": "Cancel",
+    "listLabel": "Results to open in Spark",
+    "untitled": "Result {n}",
+    "itemSelected": "{name}, number {n}",
+    "failedLabel": "Results that could not be added",
+    "reasons": {
+      "gone": "No longer available",
+      "notShared": "Not shared for import",
+      "otherChannel": "In another channel",
+      "notReady": "Not ready yet",
+      "changed": "The file changed",
+      "generic": "Could not be added"
+    }
+  }
+}

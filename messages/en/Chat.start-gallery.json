@@ -1,0 +1,97 @@
+{
+  "startGallery": {
+    "title": "Get inspired",
+    "subtitle": "Pick an example or a tool and we’ll set up the prompt, format and length in the composer. You can change them before sending.",
+    "filter": {
+      "all": "All",
+      "example": "Example videos",
+      "tool": "Tools"
+    },
+    "kind": {
+      "example": "Example",
+      "tool": "Tool"
+    },
+    "use": "Use",
+    "useLabel": "{title} — add to composer",
+    "image": "Image",
+    "scriptMode": "Script",
+    "seconds": "{count} s",
+    "minutes": "{count} min",
+    "minutesSeconds": "{minutes} min {seconds} s",
+    "mode": {
+      "label": "How it works",
+      "agentHint": "Decides from your intent: writes a plan first when needed, or produces right away.",
+      "scriptHint": "Writes the script and plan first; the video starts when you approve."
+    },
+    "items": {
+      "news": {
+        "title": "News brief",
+        "prompt": "Turn this week’s industry news into a 60-second news brief with a presenter, lower thirds and b-roll."
+      },
+      "tips": {
+        "title": "Tips Short",
+        "prompt": "Make a 30-second vertical Short with 3 quick tips about my channel’s topic."
+      },
+      "clips": {
+        "title": "Viral clips",
+        "prompt": "Find the most engaging moments in my uploaded long video and cut three 30-second vertical clips with captions."
+      },
+      "angles": {
+        "title": "Multi-angle shot",
+        "prompt": "Make a 15-second vertical promo that shows the product or person from the front, the side and up close."
+      },
+      "storyboard": {
+        "title": "Script and storyboard",
+        "prompt": "First write the script and scene plan for a 90-second promo; start production when I approve it."
+      },
+      "expert": {
+        "title": "Expert interview",
+        "prompt": "Make a 45-second vertical interview of an expert, highlighting the key sentences on screen."
+      },
+      "background": {
+        "title": "Remove background",
+        "prompt": "Remove the background from my uploaded image and give it back as a transparent PNG."
+      },
+      "avatar": {
+        "title": "Talking avatar",
+        "prompt": "Make a 60-second talking video of my avatar presenting a short script you write."
+      },
+      "educational": {
+        "title": "Explainer video",
+        "prompt": "For a 2-minute step-by-step explainer, first outline the script and chapters; produce it after I approve."
+      },
+      "lookbook": {
+        "title": "Fashion lookbook",
+        "prompt": "Make a 20-second vertical lookbook with music that shows the outfits from different angles."
+      },
+      "sales": {
+        "title": "Sales video",
+        "prompt": "Make a 30-second vertical sales video with my product’s 3 strongest benefits and a call to action at the end."
+      },
+      "captions": {
+        "title": "Add captions",
+        "prompt": "Transcribe the speech in my uploaded video and add readable, highlighted captions."
+      },
+      "campaign": {
+        "title": "Campaign launch",
+        "prompt": "First write the message and scene plan for our new campaign; produce the 30-second vertical announcement when I approve."
+      },
+      "character": {
+        "title": "Virtual character",
+        "prompt": "Design a virtual character for our brand and make a 30-second vertical intro video with it."
+      },
+      "course": {
+        "title": "Course promo",
+        "prompt": "Write the script for a 90-second promo of my online course; start production when I approve."
+      },
+      "topdown": {
+        "title": "Top-down product shot",
+        "prompt": "Make a 15-second vertical promo that shows the product from above with quick transitions."
+      },
+      "demo": {
+        "title": "Product demo",
+        "prompt": "Make a 60-second demo that walks through our app’s main features with screenshots."
+      }
+    }
+  }
+}

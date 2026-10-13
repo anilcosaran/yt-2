@@ -1,0 +1,37 @@
+{
+  "editor": {
+    "sceneBackground": {
+      "pickColor": "Arka plan rengini seç",
+      "colorInput": "Arka plan rengi (hex)",
+      "colorPlaceholder": "RRGGBB",
+      "invalidColor": "0A0C0B gibi bir renk gir.",
+      "presets": "Hazır renkler",
+      "presetTitle": "{color} kullan",
+      "colorLockedByMedia": "Renk seçmek için önce arka plandaki resmi veya videoyu kaldır.",
+      "needsLength": "Bu sahnenin henüz bir süresi yok, bu yüzden arka plan eklenemez.",
+      "addPicture": "Resim…",
+      "addVideo": "Video…",
+      "replacePicture": "Resimle değiştir…",
+      "replaceVideo": "Videoyla değiştir…",
+      "currentImage": "Resim arka plan",
+      "currentVideo": "Video arka plan",
+      "remove": "Arka planı kaldır",
+      "attaching": "Arka plan ekleniyor…",
+      "processing": "Dosya hâlâ işleniyor. Birazdan tekrar dene.",
+      "uploading": "{name} yükleniyor · %{progress}",
+      "uploadFailed": "Dosya yüklenemedi. Tekrar dene.",
+      "videoTrimmed": "Video bu sahneden uzun olduğu için {seconds} sn'ye kısaltıldı. Geri almak için Ctrl+Z.",
+      "videoShorter": "Video yalnızca {seconds} sn uzunluğunda, bu yüzden sahnenin sadece ilk kısmını kaplıyor.",
+      "failed": "Arka plan ayarlanamadı. Tekrar dene.",
+      "unavailable": "Sunucuya şu an ulaşılamıyor. Birazdan tekrar dene.",
+      "refused": {
+        "gif": "GIF görseller henüz arka plan olarak kullanılamıyor. PNG, JPEG veya WebP bir görsel kullan.",
+        "svg": "SVG görseller henüz arka plan olarak kullanılamıyor. PNG, JPEG veya WebP bir görsel kullan.",
+        "audio": "Ses dosyası arka plan olamaz. Bir resim veya video seç.",
+        "image_format": "Bu görsel biçimi desteklenmiyor. PNG, JPEG veya WebP kullan.",
+        "video_format": "Bu video biçimi desteklenmiyor. MP4, WebM veya MOV kullan.",
+        "unsupported": "Bu dosya türü desteklenmiyor. PNG, JPEG veya WebP bir görsel ya da MP4, WebM veya MOV bir video kullan."
+      }
+    }
+  }
+}

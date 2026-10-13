@@ -1,0 +1,18 @@
+{
+  "memoryActions": {
+    "approve": "Approve for Memory",
+    "addAnyway": "Add to Memory anyway",
+    "retry": "Retry adding to Memory",
+    "addAnywayTitle": "Add to Memory despite the channel rule?",
+    "addAnywayDescription": "{name} was not added because {reason}. Adding it anyway overrides this channel's Memory rule for this file only.",
+    "addAnywayConfirm": "Add anyway",
+    "cancel": "Cancel",
+    "refusal": {
+      "rule_off": "Memory is off for this file type in this channel",
+      "max_size_exceeded": "the file is larger than the channel's Memory limit",
+      "max_duration_exceeded": "the file is longer than the channel's Memory limit",
+      "custom_rule_skip": "a channel rule skips files like this",
+      "other": "a channel rule did not allow it"
+    }
+  }
+}

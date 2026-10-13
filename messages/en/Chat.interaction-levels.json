@@ -1,0 +1,20 @@
+{
+  "interactionLevels": {
+    "planUpdating": "Updating the plan",
+    "changes": "What changed: {items}",
+    "change": "{field}: {from} → {to}",
+    "estimateDelta": "estimate {delta} credits",
+    "fields": {
+      "model": "Model",
+      "video_model": "Video model",
+      "image_model": "Image model",
+      "aspect_ratio": "Aspect ratio",
+      "duration_seconds": "Duration",
+      "profile": "Profile",
+      "template": "Template",
+      "brand_kit": "Brand kit",
+      "voice": "Voice",
+      "presentation": "Presentation"
+    }
+  }
+}

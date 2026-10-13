@@ -1,0 +1,103 @@
+{
+  "editor": {
+    "timeline": {
+      "expand": "Zaman çizelgesini genişlet",
+      "collapse": "Zaman çizelgesini daralt",
+      "tracksLabel": "Zaman çizelgesi katmanları",
+      "blockLabel": "{kind}, {start}–{end}",
+      "tracks": {
+        "visual": "Görsel",
+        "overlay": "Üst katman",
+        "caption": "Altyazı",
+        "narration": "Anlatım",
+        "music": "Müzik",
+        "sfx": "Efekt"
+      },
+      "blocks": {
+        "clip": "Klip",
+        "text": "Metin",
+        "shape": "Şekil",
+        "motion_instance": "Hareket",
+        "pending_slot": "Hazırlanıyor",
+        "logo": "Logo",
+        "watermark": "Filigran",
+        "lower_third": "Alt bant",
+        "overlay": "Üst katman",
+        "caption": "Altyazı",
+        "narration": "Anlatım",
+        "music": "Müzik",
+        "sfx": "Ses efekti"
+      }
+    },
+    "timelineV2": {
+      "label": "Zaman çizelgesi",
+      "toolbar": "Zaman çizelgesi araçları",
+      "split": "Böl",
+      "trimStart": "Başlangıcı oynatma çizgisine kırp",
+      "trimEnd": "Sonu oynatma çizgisine kırp",
+      "delete": "Sil",
+      "snap": "Yapıştırma",
+      "zoom": "Yakınlaştırma",
+      "zoomIn": "Yakınlaştır",
+      "zoomOut": "Uzaklaştır",
+      "fit": "Sığdır",
+      "setFixedLength": "Sabit süre yap",
+      "unsorted": "Bölümsüz",
+      "rampIn": "Giriş animasyonunu değiştirmek için sürükle",
+      "rampOut": "Çıkış animasyonunu değiştirmek için sürükle",
+      "mainLabel": "Klip {n} / {total}, {label}, {duration}",
+      "overlayLabel": "{kind}: {label}, {start}–{end}",
+      "bandLabel": "{name} geçişi, {seconds}",
+      "addFade": "{n}. kesme noktasına geçiş ekle",
+      "cutLabel": "{n}. kesme noktası",
+      "lanes": {
+        "sections": "Bölümler",
+        "overlay": "Üst katman {n}",
+        "overlayShort": "K{n}",
+        "main": "Ana",
+        "voice": "Ses",
+        "music": "Müzik",
+        "sfx": "Efekt",
+        "captions": "Altyazı"
+      },
+      "labels": {
+        "clip": "Klip {n}",
+        "video": "Video",
+        "image": "Görsel"
+      },
+      "kinds": {
+        "clip": "Medya",
+        "text": "Metin",
+        "shape": "Şekil",
+        "motion_instance": "Hareket",
+        "pending_slot": "Hazırlanıyor",
+        "narration": "Anlatım",
+        "music": "Müzik",
+        "sfx": "Ses efekti",
+        "captions": "Altyazı"
+      },
+      "notices": {
+        "dropNeedsAttach": "Önce bu dosyayı projeye ekle (tuvale bırak ya da Ekle'ye bas), sonra ana parçaya yerleştir."
+      },
+      "refusals": {
+        "unresolved": "Bu sahnenin henüz süresi yok.",
+        "narration_bound": "Bu sahne anlatımını izliyor: senaryosuna göre bölünür, süresi sesten gelir.",
+        "pending": "Burada hâlâ bir şey hazırlanıyor; hazır olunca tekrar dene.",
+        "split_at_edge": "Bölmek için oynatma çizgisini bir klibin içine getir.",
+        "crosses_layer": "Bir metin, şekil ya da Hareket oynatma çizgisinin üzerinden geçiyor; önce kırp ya da taşı.",
+        "crosses_audio": "Sahne sesi oynatma çizgisinin üzerinden geçiyor; başka bir yerden böl.",
+        "animated_after_cut": "Oynatma çizgisinden sonra animasyonlu bir katman var; önce animasyonlarını kaldır.",
+        "anchor_crosses": "Bir animasyon oynatma çizgisinin iki yanına bağlı; önce bağlantıyı kaldır.",
+        "leaves_gap": "Oynatma çizgisine hiçbir medya ulaşmıyor; ilk parça kısalırdı.",
+        "outside_source": "Videonun orada başka görüntüsü yok.",
+        "clip_animated": "Bu klibin animasyonları var; bölmeden önce kaldır.",
+        "no_room": "Burada buna yer yok.",
+        "out_of_bounds": "Bu, klibin izin verdiğinin ötesine geçiyor.",
+        "not_attached": "Önce bu dosyayı projeye ekle.",
+        "audio_on_main": "Ses ana parçaya değil müzik parçasına gider.",
+        "not_audio": "Müzik yatağı yalnızca bir ses dosyası olabilir.",
+        "narration_delete": "Anlatım, sahnenin ses ayarlarından değiştirilir."
+      }
+    }
+  }
+}

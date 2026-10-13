@@ -1,0 +1,6 @@
+{
+  "composer": {
+    "modelChangeDefaultsOwnerOnly": "Yeni işlerin modelini yalnız sohbet sahibi değiştirebilir.",
+    "modelChangeJobOnly": "Yalnız başlattığın bu işin modeli değişti. Yeni işlerin modelini sohbet sahibi belirler."
+  }
+}

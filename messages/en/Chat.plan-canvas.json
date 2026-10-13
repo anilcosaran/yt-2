@@ -1,0 +1,9 @@
+{
+  "planCanvas": {
+    "close": "Close plan",
+    "open": "View plan",
+    "hide": "Close plan",
+    "fixPrompt": "Change this in the plan: ",
+    "replan": "Replan"
+  }
+}

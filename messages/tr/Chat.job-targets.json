@@ -1,0 +1,33 @@
+{
+  "typedComposer": {
+    "jobs": {
+      "focusLabel": "İş: {label}",
+      "newJob": "Yeni iş",
+      "unnamed": "Adsız iş",
+      "menuLabel": "Mesajın hedefi",
+      "clearFocus": "Yalnız yeni işleri hedefle",
+      "followLive": "Canlı işi takip et",
+      "focusHint": "Model ve mod değişikliği bu işin sonraki adımlarına ve yeni işlere uygulanır; diğer işler kendi ayarını korur.",
+      "newJobsHint": "Değişiklikler yalnız bundan sonra açılan işlere uygulanır; süren işler ayarlarını korur.",
+      "choiceTitle": "Bu mesaj hangi iş için?",
+      "choiceBody": "Birden fazla iş yanıt bekliyor. Birini seç; yalnız o iş devam eder.",
+      "choiceNewJob": "Yeni iş olarak gönder",
+      "choiceDismiss": "Vazgeç",
+      "states": {
+        "created": "Sırada",
+        "running": "Çalışıyor",
+        "waiting_for_user": "Yanıtını bekliyor",
+        "waiting_for_approval": "Onay bekliyor",
+        "waiting_for_payment": "Kredi bekliyor",
+        "waiting_on_workflow": "Üretimde",
+        "waiting_on_agent": "Üretimde",
+        "cancelling": "Durduruluyor",
+        "draining": "Durduruluyor",
+        "cancellation_attention_required": "Durdurma kontrol istiyor",
+        "completed": "Tamamlandı",
+        "failed": "Başarısız",
+        "cancelled": "Durduruldu"
+      }
+    }
+  }
+}

@@ -1,0 +1,29 @@
+{
+  "connectorAccounts": {
+    "title": "Bağlı hesaplar",
+    "empty": "Henüz bağlı hesap yok.",
+    "loadFailed": "Bağlı hesaplar yüklenemedi. Tekrar denemek için sayfayı yenile.",
+    "connect": "Bağla",
+    "reconnect": "Yeniden bağla",
+    "revoke": "Bağlantıyı kaldır",
+    "revokeTitle": "{name} bağlantısı kaldırılsın mı?",
+    "revokeDescription": "Youtorch bu hesabı hemen kullanmayı bırakır. Projelerine alınmış dosyalar kalır.",
+    "enabledLabel": "{name} Youtorch'ta kullanılsın",
+    "pickResource": "Youtorch'un kullanacağını seç",
+    "serverConnector": "Bağlanmaya hazır.",
+    "availableGroup": "Kullanılabilir",
+    "status": {
+      "active": "Bağlı",
+      "disabled": "Kapalı",
+      "reauth": "Kullanmaya devam etmek için yeniden giriş yap",
+      "unhealthy": "Servis yanıt vermiyor; bağlantında sorun yok",
+      "inactive": "Bağlı değil"
+    },
+    "flow": {
+      "popup_blocked": "Tarayıcı pencereyi engelledi. Açılır pencerelere izin verip tekrar dene.",
+      "closed": "Bağlantı tamamlanmadı.",
+      "failed": "Bir sorun oluştu. Tekrar dene.",
+      "no_resources": "Bu hesapta Youtorch'un kullanabileceği bir şey yok."
+    }
+  }
+}

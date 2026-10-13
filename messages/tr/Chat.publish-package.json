@@ -1,0 +1,57 @@
+{
+  "scriptReview": {
+    "sections": {
+      "publish": "Yayın paketi"
+    },
+    "rawVideo": {
+      "title": "Video planı"
+    },
+    "publish": {
+      "titles": "Başlık seçenekleri",
+      "titleOption": "Başlık seçeneği {n}",
+      "selected": "Seçili",
+      "select": "Bunu seç",
+      "description": "Açıklama",
+      "tags": "Etiketler",
+      "tagsHint": "Virgülle ayır",
+      "thumbnail": "Kapak görseli",
+      "thumbnailText": "Kapaktaki yazı",
+      "thumbnailFrameScene": "S{order} sahnesi",
+      "thumbnailFrameAt": "{seconds} sn",
+      "thumbnailImage": "Senin görselin",
+      "thumbnailGeneration": "Yapay zekâ ile üretilecek",
+      "source": {
+        "engine_frame": "Filmden kare",
+        "user_image": "Senin görselin",
+        "ai_image": "Yapay zekâ görseli"
+      },
+      "cost": {
+        "free": "Ücretsiz",
+        "priced": "{credits} kredi",
+        "not_ready": "Fiyat henüz hazır değil"
+      },
+      "costHint": "Filmden kare ve kendi görselin ücretsizdir. Yapay zekâ görseli plana ücretli satır olarak girer.",
+      "chapters": "Bölümler",
+      "chapterTitle": "Bölüm başlığı",
+      "origin": {
+        "agent": "Asistan yazdı",
+        "user": "Senin düzenlemen"
+      },
+      "stale": "Güncel değil",
+      "staleReasons": {
+        "script_changed": "Script değişti.",
+        "shot_plan_changed": "Sahne planı değişti.",
+        "transcript_changed": "Transkript değişti."
+      },
+      "staleNotice": "İşaretli alanlar değişen plana göre güncel değil. Kendiliğinden yeniden yazılmaz: kendin düzenleyebilir ya da asistandan paketi yeniden yazmasını isteyebilirsin.",
+      "notPublishing": "Plan onayı yayın izni değildir. Yayınlamak için ayrı bir izin gerekir.",
+      "saving": "Kaydediliyor…",
+      "errors": {
+        "conflict": "Paket başka bir yerde değişti. Güncel hâli okundu; düzenlemeni yeniden yap.",
+        "failed": "Değişiklik kaydedilemedi. Tekrar dene.",
+        "refused": "Bu değişiklik pakete uymuyor (boş, yer tutucu ya da tekrar eden metin olabilir). Kaydedilmedi.",
+        "unavailable": "Yayın paketi bu ortamda kapalı."
+      }
+    }
+  }
+}

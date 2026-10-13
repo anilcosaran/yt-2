@@ -1,0 +1,9 @@
+{
+  "editor": {
+    "placement": {
+      "videoTrimmed": "Video bu sahneden uzun olduğu için {seconds} sn'ye kısaltıldı. Geri almak için Ctrl+Z.",
+      "audioTrimmed": "Müzik bu sahneden uzun olduğu için {seconds} sn çalacak. Geri almak için Ctrl+Z.",
+      "sceneFollowsMedia": "Bu sahne artık videonun uzunluğunu izliyor."
+    }
+  }
+}

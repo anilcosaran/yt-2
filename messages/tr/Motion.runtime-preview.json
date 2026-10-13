@@ -1,0 +1,19 @@
+{
+  "editor": {
+    "preview": {
+      "player": {
+        "frame": "Motion önizlemesi",
+        "loading": "Önizleme oynatıcısı yükleniyor…",
+        "play": "Oynat",
+        "pause": "Duraklat",
+        "scrub": "Motion içindeki konum",
+        "time": "Süre",
+        "failed": {
+          "runtime_unavailable": "Önizleme motoru yüklenemedi.",
+          "font_unavailable": "Bu Motion'ın bir yazı tipi yüklenemedi, bu yüzden önizleme gösterilmiyor. Birazdan tekrar dene.",
+          "ir_refused": "Derlenen bu Motion çizilemedi."
+        }
+      }
+    }
+  }
+}

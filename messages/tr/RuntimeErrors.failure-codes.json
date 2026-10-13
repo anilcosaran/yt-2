@@ -1,0 +1,7 @@
+{
+  "resultReconciling": "Bu isteğin sonucu ve kredileri otomatik olarak uzlaştırılıyor. İki kez ücret alınmaz. Hata kodu: {code}",
+  "mediaUnreadable": "Bu medya dosyası okunamadı. Dosyanın düzgün oynatıldığını kontrol edin veya başka bir dosya deneyin. Hata kodu: {code}",
+  "providerRejected": "Hizmet bu isteği reddetti. Girdileri ve ayarları kontrol edip tekrar deneyin. Hata kodu: {code}",
+  "providerEmptyOutput": "Hizmet boş veya eksik bir sonuç döndürdü. Tekrar deneyin veya başka bir model seçin. Hata kodu: {code}",
+  "outputDeliveryPending": "Sonuç oluşturuldu ve teslimi sürüyor. Teslim tamamlanınca otomatik olarak görünür. Hata kodu: {code}"
+}

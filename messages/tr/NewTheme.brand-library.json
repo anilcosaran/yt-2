@@ -1,0 +1,24 @@
+{
+  "brandLibrary": {
+    "loadFailed": "Brand Kit'ler yüklenemedi",
+    "retry": "Tekrar dene",
+    "readOnlyNote": "Bu Brand Kit'i yalnız sahibi düzenleyebilir.",
+    "sharedBadge": "Paylaşıldı",
+    "share": "Kanal üyeleriyle paylaş",
+    "unshare": "Paylaşımı durdur",
+    "shareTitle": "Bu Brand Kit kanal üyeleriyle paylaşılsın mı?",
+    "shareDescription": "{channel} üyeleri bu Kit'i yeni videolarda kullanabilir ve varsayılanları yapabilir. Yalnız sen düzenleyebilirsin.",
+    "shareConfirm": "Paylaş",
+    "unshareTitle": "Bu Brand Kit'in paylaşımı durdurulsun mu?",
+    "unshareDescription": "{channel} üyeleri bu Kit'i artık yeni videolarda kullanamaz. Onu kullanan projelerin görünümü değişmez.",
+    "unshareConfirm": "Paylaşımı durdur",
+    "privateDefaultTitle": "Bu varsayılan Kit özel",
+    "privateDefaultDescription": "{kit} artık {channel} için varsayılan, ancak özel: kanal üyeleri sen paylaşana kadar nötr Kit'i kullanır.",
+    "privateDefaultKeep": "Özel kalsın",
+    "toast": {
+      "shared": "Brand Kit kanal üyeleriyle paylaşıldı",
+      "unshared": "Brand Kit yeniden özel",
+      "conflict": "Bu Brand Kit başka bir pencerede değişti. Son sürüm yüklendi; değişikliğini yeniden uygula."
+    }
+  }
+}

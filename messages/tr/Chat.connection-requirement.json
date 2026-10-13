@@ -1,0 +1,45 @@
+{
+  "connectionRequirement": {
+    "title": {
+      "connect": "Bağlantı gerekiyor",
+      "enable": "Bağlantı kapalı",
+      "reconnect": "Yeniden bağlanman gerekiyor",
+      "add_permission": "İzin gerekiyor",
+      "select_account": "Hesap seç",
+      "retry_later": "Servis yanıt vermiyor",
+      "none": "Bağlantı isteği"
+    },
+    "status": {
+      "loading": "Bağlantı kontrol ediliyor…",
+      "popup": "Açılan pencerede işlemi tamamla.",
+      "checking": "Bu iş için bağlantı kontrol ediliyor…",
+      "waiting_owner": "Bu işi başlatan kişinin bağlanması bekleniyor.",
+      "closed": "Bu bağlantı isteği kapandı.",
+      "satisfied": "Bağlandı. Aynı iş devam ediyor.",
+      "unavailable": "Bu servis şu anda buradan bağlanamıyor.",
+      "popup_blocked": "Tarayıcı pencereyi engelledi. Açılır pencerelere izin verip tekrar dene.",
+      "not_connected": "Bağlantı tamamlanmadı. İş hâlâ bekliyor.",
+      "failed": "Bir sorun oluştu. Tekrar dene.",
+      "last_attempt_failed": "Son deneme tamamlanmadı. İş hâlâ bekliyor."
+    },
+    "reason": {
+      "needs_connection": "Bu işin devam etmesi için bir hesap bağlanmalı.",
+      "connection_disabled": "Hesap bağlı ama kapalı.",
+      "reauth_required": "Hesaba yeniden giriş yapılmalı.",
+      "scope_required": "Hesabın bu iş için bir izne daha ihtiyacı var.",
+      "resource_selection_required": "Bu işin hangi hesabı veya kanalı kullanacağını seç.",
+      "upstream_unavailable": "Servis yanıt vermiyor. Bağlantında sorun yok.",
+      "rate_limited": "Servis şu anda yoğun. Bağlantında sorun yok.",
+      "other": "Bağlantı bu iş için henüz kullanılamıyor."
+    },
+    "action": {
+      "connectTo": "{name} bağla",
+      "enable": "Aç",
+      "reconnect": "Yeniden bağla",
+      "add_permission": "İzin ekle",
+      "select_account": "Seç",
+      "retry_later": "Tekrar dene"
+    },
+    "pickResource": "Kullanılacak hesabı seç"
+  }
+}

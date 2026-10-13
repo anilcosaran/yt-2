@@ -1,0 +1,17 @@
+{
+  "runDelivery": {
+    "billingLabel": "Billing",
+    "outputLabel": "Output",
+    "finance": {
+      "pending": "Finalizing",
+      "settled": "Settled",
+      "attention": "Needs attention"
+    },
+    "delivery": {
+      "pending": "Preparing",
+      "ready": "Ready",
+      "held": "Held for payment review",
+      "none": "No output"
+    }
+  }
+}

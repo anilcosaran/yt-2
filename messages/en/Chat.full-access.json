@@ -1,0 +1,124 @@
+{
+  "fullAccessCard": {
+    "title": "Turn on Full access?",
+    "description": "In Full access the assistant starts and pays for the steps of a job without asking you every time.",
+    "points": {
+      "spend": "It can spend your credits on research, generation and rendering. A job never starts when its estimate is higher than your balance.",
+      "limitAmount": "It still asks you once when a job would cost more than your approval limit, now {amount} credits. You can change or turn off the limit in Settings.",
+      "limitOff": "You turned the approval limit off, so it asks about cost only when your balance is too low. You can turn the limit back on in Settings.",
+      "limitUnknown": "It still asks you once when a job would cost more than your approval limit, which you set in Settings.",
+      "skip": "Write “don't ask for approval” in a message to skip that one question for that job.",
+      "revoke": "You confirm this once. You can go back to Ask or Auto at any time, or withdraw your confirmation in Settings."
+    },
+    "settingsLink": "Approval settings",
+    "confirm": "Turn on Full access",
+    "cancel": "Not now",
+    "close": "Close",
+    "revisionChanged": "The text above was updated. Read it again and confirm to continue.",
+    "failed": "Your confirmation could not be saved. Try again.",
+    "notice": {
+      "membersNotAllowed": "Your workspace admin has not allowed Full access for members. The current mode continues.",
+      "unavailable": "Full access could not be checked right now. The current mode continues."
+    },
+    "limitAsk": {
+      "text": "This job could cost more than your Full access approval limit of {amount} credits, so I am asking once. Write “don't ask for approval” next to your request to skip this question, or change the limit in Settings."
+    }
+  },
+  "spendMeter": {
+    "chipLabel": "Credits: {summary}",
+    "usage": "{spent} / {ceiling} credits",
+    "balanceOnly": "{balance} credits",
+    "balanceLeft": "{balance} left",
+    "creditsValue": "{credits} credits",
+    "state": {
+      "awaiting_approval": "Waiting for your approval",
+      "funding_required": "Not enough credits"
+    },
+    "details": {
+      "title": "Credit meter",
+      "thisJob": "This job",
+      "noJob": "Nothing running",
+      "spent": "Spent so far",
+      "approved": "Approved for this job",
+      "remaining": "Left of that",
+      "pending": "Asking to approve up to",
+      "balance": "Your balance",
+      "plan": "Plan credits this period",
+      "cap": "Per-job cap",
+      "capSource": {
+        "tenant": "workspace",
+        "user": "yours"
+      },
+      "settings": "Approval settings"
+    },
+    "rule": {
+      "ask": "Ask mode: I ask before every paid job.",
+      "auto": "Auto mode: I ask once when a job is estimated at {threshold} credits or more. Your balance always stops a job it cannot pay for.",
+      "fullAccess": "Full access: I ask only above your approval limit. Your balance always stops a job it cannot pay for. Write “don't ask for approval” to skip that question for one job.",
+      "fullAccessLimit": "Full access: I ask once when a job would cost more than {limit} credits. Write “don't ask for approval” to skip that question for one job. Your balance always stops a job it cannot pay for.",
+      "fullAccessNoLimit": "Full access: you turned the approval limit off, so only your balance can stop a job."
+    }
+  },
+  "spendReceipt": {
+    "label": "Spend breakdown",
+    "labelHint": "Where the credits of this turn went. This is not an invoice: invoices are issued only for payments (credit top-ups, plan purchases and renewals, and usage charged to your card) and are in Settings > Billing.",
+    "total": "Used {credits} credits in this turn",
+    "totalRunning": "Used {credits} credits so far in this turn",
+    "kind": {
+      "planning": "Planning {credits}",
+      "preparation": "Preparation {credits}",
+      "production": "Production {credits}"
+    },
+    "balanceAfter": "Balance {credits}",
+    "nodeLine": "{name} {credits}",
+    "node": {
+      "ai_shot_trim": "AI shot trim",
+      "angle": "Multi-angle image",
+      "avatar_generate": "Avatar video",
+      "background_remove": "Background removal",
+      "caption": "Captions",
+      "clip_planner": "Clip planning",
+      "code_sandbox": "Code sandbox",
+      "composition_render": "Video render",
+      "describe_image": "Image description",
+      "extract_media_tags": "Media tags",
+      "frame_extract": "Frame extraction",
+      "generate_embeddings": "Embeddings",
+      "html_preview": "HTML preview",
+      "image_generate": "Image generation",
+      "llm": "Text generation",
+      "magic_clip_metadata": "Clip metadata",
+      "magic_clips": "Magic Clips",
+      "media_downloader": "Media download",
+      "media_sync": "Media sync",
+      "media_transform": "Media processing",
+      "prompt_enhance": "Prompt enhancement",
+      "prompt_generate": "Prompt writing",
+      "reference_analyze": "Reference analysis",
+      "render": "Video render",
+      "render_preview": "Preview render",
+      "research_agent": "Research",
+      "scene_analysis": "Scene analysis",
+      "script_generate": "Script writing",
+      "speech_generate": "Voice-over",
+      "subtitle_translate": "Subtitle translation",
+      "summarize_media": "Media summary",
+      "suno": "Music generation",
+      "transcribe_media": "Transcription",
+      "transcription": "Transcription",
+      "upload": "Upload",
+      "video_generate": "Video generation",
+      "video_to_gif": "GIF export",
+      "viral_clip_analyzer": "Viral clip analysis",
+      "viral_clips": "Viral Clips",
+      "voice_clone": "Voice clone"
+    },
+    "funding": {
+      "title": "Paid from {sources}",
+      "quota": "plan quota {credits}",
+      "plan": "plan credits {credits}",
+      "topUp": "top-up credits {credits}",
+      "pending": "not settled yet {credits}"
+    }
+  }
+}

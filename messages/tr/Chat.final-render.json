@@ -1,0 +1,25 @@
+{
+  "finalRender": {
+    "title": "Final video",
+    "revision": "Sürüm {version}",
+    "estimate": "Tahmini ~{value} kredi",
+    "included": "Plan tavanına dahil",
+    "separate": "Bu tutar için ayrı onay",
+    "automatic": "Tam erişimle otomatik başlatıldı",
+    "render": "Final videoyu oluştur",
+    "reject": "Şimdi değil",
+    "decisionFailed": "Karar kaydedilmedi. Video önizlemeden sonra değişmiş olabilir; son önizlemeyi kontrol et.",
+    "status": {
+      "awaiting": "Önizleme hazır. Bu sürümün final videosu oluşturulsun mu?",
+      "expired": "Bu final render onayının süresi doldu.",
+      "starting": "Onaylandı · final render başlatılıyor",
+      "rendering": "Final dosyası hazırlanıyor",
+      "completed": "Final video hazır",
+      "failed": "Final render tamamlanamadı",
+      "refused": "Oluşturulmadı: video önizlemeden sonra değişti.",
+      "rejected": "Final render atlandı",
+      "changes_requested": "Düzeltme istendi",
+      "superseded": "Daha yeni bir önizleme kendi kararını bekliyor."
+    }
+  }
+}

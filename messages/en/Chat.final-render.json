@@ -1,0 +1,25 @@
+{
+  "finalRender": {
+    "title": "Final video",
+    "revision": "Version {version}",
+    "estimate": "About {value} credits",
+    "included": "Included in the plan's ceiling",
+    "separate": "Separate approval of this amount",
+    "automatic": "Started automatically (Full access)",
+    "render": "Render the final video",
+    "reject": "Not now",
+    "decisionFailed": "The decision was not recorded. The video may have changed after the preview; check the latest preview.",
+    "status": {
+      "awaiting": "The preview is ready. Render the final video of this version?",
+      "expired": "This final render approval expired.",
+      "starting": "Approved · the final render is starting",
+      "rendering": "Rendering the final file",
+      "completed": "The final video is ready",
+      "failed": "The final render did not complete",
+      "refused": "Not rendered: the video changed after the preview.",
+      "rejected": "Final render skipped",
+      "changes_requested": "Changes requested",
+      "superseded": "A newer preview is waiting for its own decision."
+    }
+  }
+}

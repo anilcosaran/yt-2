@@ -1,0 +1,66 @@
+{
+  "customMcpReview": {
+    "open": "Araçları incele",
+    "title": "{name} araçları",
+    "description": "Her araç için İzin ver, Sor ya da Engelle seç. Yeni ve değişen araçlar senin kararın olmadan çalışmaz.",
+    "loading": "Araçlar yükleniyor…",
+    "loadFailed": "Araç incelemesi yüklenemedi. Pencereyi kapatıp tekrar dene.",
+    "notReviewable": "İnceleme için tam bir tarama gerekiyor. Önce sunucuyu Tara.",
+    "noTools": "Bu sunucuda incelenecek araç yok.",
+    "toolsLabel": "{name} araçları",
+    "change": {
+      "added": "Yeni",
+      "changed": "Değişti",
+      "unchanged": "Aynı",
+      "removed": "Kaldırıldı"
+    },
+    "decision": {
+      "label": "{tool} için karar",
+      "allow": "İzin ver",
+      "ask": "Sor",
+      "block": "Engelle"
+    },
+    "decisionRequired": "Karar gerekiyor",
+    "blockOnly": "Bu araç yalnız engellenebilir (üretim, harcama ya da yönetim aracı).",
+    "removedHint": "Sunucu bu aracı artık sunmuyor; kullanılmaz.",
+    "effect": {
+      "label": "Etki",
+      "placeholder": "Etki seç",
+      "read": "Okur",
+      "write": "Yazar",
+      "send": "Gönderir",
+      "delete": "Siler"
+    },
+    "capability": {
+      "label": "Yetenek",
+      "placeholder": "Yetenek seç",
+      "ads": "Reklam",
+      "calendar": "Takvim",
+      "crm": "CRM",
+      "docs": "Belgeler",
+      "drive": "Dosyalar",
+      "email": "E-posta",
+      "messaging": "Mesajlaşma",
+      "publish": "Yayınlama",
+      "social": "Sosyal medya"
+    },
+    "cancel": "Vazgeç",
+    "activate": "Etkinleştir",
+    "reapply": "Yeniden uygula",
+    "saving": "Uygulanıyor…",
+    "failedTitle": "Uygulanamadı",
+    "errors": {
+      "stale": "Sunucu bu arada değişti. Pencereyi kapatıp yeniden aç.",
+      "decision_invalid": "Bir araç kararı geçersiz. Etki ve yeteneği kontrol et.",
+      "snapshot_stale": "Son tarama eski. Sunucuyu yeniden Tara, sonra tekrar dene.",
+      "review_pending": "İncelenmemiş değişiklik var. Araçları yeniden incele.",
+      "not_reviewed": "Önce araçları incele.",
+      "auth_not_supported": "Oturum isteyen sunucular henüz etkinleştirilemez.",
+      "no_open_tools": "İnceleme kaydedildi, ama izin verilen ya da sorulan araç olmadığı için sunucu kullanılamaz.",
+      "disabled": "Kapalı sunucu etkinleştirilemez.",
+      "feature_unavailable": "Custom MCP şu an kapalı.",
+      "not_found": "Bu kayıt artık yok. Sayfayı yenile.",
+      "failed": "Bir şeyler ters gitti. Tekrar dene."
+    }
+  }
+}

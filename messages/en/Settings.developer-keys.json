@@ -1,0 +1,35 @@
+{
+  "developer": {
+    "keys": {
+      "title": "API keys",
+      "description": "Personal keys for your own scripts and automations. Each key can only do what you allow here, within its credit limits.",
+      "create": "Create key",
+      "empty": "No API keys yet.",
+      "loadFailed": "API keys could not be loaded. Refresh the page to try again.",
+      "createTitle": "Create an API key",
+      "createDescription": "Choose what the key may do, which items it may use and how many credits it may spend.",
+      "fieldName": "Key name",
+      "fieldTest": "Test key (sample data only, no credits used)",
+      "fieldPerJob": "Credit limit per job",
+      "fieldMonthly": "Credit limit per month",
+      "fieldIps": "Allowed IP addresses (optional, one per line)",
+      "submit": "Create key",
+      "failed": "That did not work. Check the fields and try again.",
+      "secretTitle": "Copy your API key now",
+      "secretDescription": "This is the only time the full key is shown. Store it somewhere safe; you can create a new one any time.",
+      "secretLabel": "API key",
+      "caps": "Up to {perJob} credits per job, {monthly} per month",
+      "lastUsed": "Last used {date} from {ip}",
+      "neverUsed": "Not used yet",
+      "ipRestricted": "{count, plural, one {# allowed address} other {# allowed addresses}}",
+      "expires": "Expires {date}",
+      "endOldSecret": "End old key now",
+      "rotate": "New key",
+      "revoke": "Delete key",
+      "revokeTitle": "Delete {name}?",
+      "revokeDescription": "Anything using this key stops working right away.",
+      "suspended": "Paused: key was exposed",
+      "revoked": "Deleted"
+    }
+  }
+}

@@ -1,0 +1,84 @@
+.row {
+  container-type: inline-size;
+  display: grid;
+  grid-template-columns: minmax(0, min(38%, 17.5rem)) minmax(0, 1fr);
+  align-items: start;
+  gap: clamp(0.75rem, 2vw, 1.25rem);
+}
+
+.details {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.controls {
+  min-width: 0;
+}
+
+@container (max-width: 520px) {
+  .details {
+    display: contents;
+  }
+
+  .controls {
+    grid-column: 1 / -1;
+  }
+}
+
+.waves {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+  background: #030306;
+}
+
+.wave {
+  position: absolute;
+  width: 64%;
+  height: 68%;
+  border-radius: 40% 60% 58% 42% / 55% 40% 60% 45%;
+  background:
+    radial-gradient(ellipse at 30% 45%, rgb(var(--wave-color) / 88%), rgb(var(--wave-color) / 42%) 30%, rgb(var(--wave-color) / 14%) 52%, rgb(var(--wave-color) / 3%) 68%, transparent 80%),
+    radial-gradient(ellipse at 70% 65%, rgb(var(--wave-color) / 70%), rgb(var(--wave-color) / 26%) 28%, rgb(var(--wave-color) / 6%) 50%, transparent 74%);
+  filter: blur(20px);
+  mask-image: radial-gradient(ellipse, #000 22%, rgb(0 0 0 / 78%) 48%, rgb(0 0 0 / 24%) 70%, transparent 90%);
+  mix-blend-mode: screen;
+  will-change: transform, opacity;
+}
+
+.bluePrimary {
+  --wave-color: 61 79 249;
+  left: 12%;
+  top: 12%;
+}
+
+.violetPrimary {
+  --wave-color: 163 47 234;
+  left: 32%;
+  top: 30%;
+}
+
+.blueSecondary {
+  --wave-color: 40 66 206;
+  left: 38%;
+  top: 12%;
+  width: 54%;
+  height: 57%;
+}
+
+.violetSecondary {
+  --wave-color: 114 38 200;
+  left: 10%;
+  top: 36%;
+  width: 57%;
+  height: 61%;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .wave {
+    will-change: auto;
+  }
+}

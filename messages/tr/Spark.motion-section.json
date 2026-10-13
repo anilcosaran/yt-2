@@ -1,0 +1,16 @@
+{
+  "editor": {
+    "motionSection": {
+      "label": "Hareket",
+      "energy": "Enerji",
+      "pattern": "Kalıp",
+      "energies": {
+        "sakin": "Sakin",
+        "dengeli": "Dengeli",
+        "canli": "Canlı"
+      },
+      "loading": "Yükleniyor…",
+      "unavailable": "Bu sahnede kullanılamıyor"
+    }
+  }
+}

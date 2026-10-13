@@ -1,0 +1,20 @@
+{
+  "googleConnect": {
+    "description": "{channel} kanalını Google hesabınla bağla. Youtorch kendi Google uygulamasını kullanır; token veya Google Cloud anahtarı girmezsin.",
+    "connect": "Google ile bağlan",
+    "reconnect": "Google ile yeniden bağlan",
+    "hint": "Google penceresi açılır; ardından YouTube kanalını seçersin.",
+    "popupOpen": "Açılan Google penceresinde işlemi tamamla.",
+    "pickChannel": "YouTube kanalını seç",
+    "errorTitle": "Bağlantı tamamlanmadı",
+    "popupBlocked": "Tarayıcı Google penceresini engelledi. Açılır pencerelere izin verip tekrar dene.",
+    "notCompleted": "Google penceresi bağlantı bitmeden kapandı.",
+    "noChannels": "Bu Google hesabında YouTube kanalı yok.",
+    "bindFailed": "YouTube kanalı bu çalışma alanı kanalına bağlanamadı.",
+    "failed": "Bir sorun oluştu. Tekrar dene.",
+    "unavailableTitle": "Google bağlantısı henüz açık değil",
+    "unavailableDescription": "YouTube şu anda bu ortamda bağlanamıyor.",
+    "reauthTitle": "Yeniden bağlanman gerekiyor",
+    "reauthDescription": "Youtorch'un bu kanalı kullanabilmesi için Google yeniden giriş istiyor."
+  }
+}

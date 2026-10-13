@@ -1,0 +1,71 @@
+/* E1-J scene panel "Background": the few rules the ported studio design (../studio/studio.css) does not have. */
+.yt-studio .field input[type='color'].sw {
+  -webkit-appearance: none;
+  appearance: none;
+  padding: 0;
+  border: 0;
+  cursor: pointer;
+  background: transparent;
+  flex: none;
+}
+.yt-studio .field input[type='color'].sw::-webkit-color-swatch-wrapper {
+  padding: 0;
+}
+.yt-studio .field input[type='color'].sw::-webkit-color-swatch {
+  border: 0;
+  border-radius: 5px;
+}
+.yt-studio .field input[type='color'].sw::-moz-color-swatch {
+  border: 0;
+  border-radius: 5px;
+}
+.yt-studio .field.invalid {
+  border-color: var(--st-danger, #ef4444);
+}
+.yt-studio .bg-swatches {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+.yt-studio .bg-swatch {
+  width: 26px;
+  height: 26px;
+  border-radius: 7px;
+  box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.12);
+  cursor: pointer;
+}
+.yt-studio .bg-swatch[aria-pressed='true'] {
+  box-shadow: 0 0 0 2px var(--st-accent);
+}
+.yt-studio .bg-swatch:disabled {
+  cursor: default;
+  opacity: 0.6;
+}
+.yt-studio .bg-current {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 32px;
+  padding: 0 4px 0 10px;
+  border: 1px solid var(--st-border);
+  border-radius: var(--st-r);
+  font-weight: 500;
+}
+.yt-studio .bg-current > span:first-of-type {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.yt-studio .bg-status {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--st-text-3);
+  font-size: 12px;
+}
+.yt-studio .bg-note {
+  color: var(--st-text-3);
+  font-size: 11.5px;
+}

@@ -1,0 +1,36 @@
+{
+  "editor": {
+    "outline": {
+      "title": "Ana hat",
+      "listLabel": "Videonun ana hattı",
+      "unsorted": "Bölümsüz",
+      "clipName": "Klip {n}",
+      "sectionLabel": "{title}, başlangıç {start}, {duration}, {count, plural, other {# klip}}",
+      "clipLabel": "{label}, klip {n} / {total}, {duration}",
+      "clipStatusLabel": "{label}, {status}",
+      "collapse": "{title} bölümünü daralt",
+      "expand": "{title} bölümünü genişlet",
+      "moreActions": "{title} işlemleri",
+      "menuLabel": "Bölüm işlemleri",
+      "rename": "Yeniden adlandır",
+      "renameLabel": "Bölüm adı",
+      "addBefore": "Öncesine bölüm ekle",
+      "addAfter": "Sonrasına bölüm ekle",
+      "mergeNext": "Sonrakiyle birleştir",
+      "delete": "Bölümü sil",
+      "addSection": "Bölüm ekle",
+      "addSections": "Bölümlere ayır",
+      "addSectionsHint": "İlk klibi Giriş'e, sonuncuyu Sonuç'a, kalanları Gelişme'ye koyar",
+      "newSection": "Yeni bölüm",
+      "defaults": {
+        "intro": "Giriş",
+        "body": "Gelişme",
+        "outro": "Sonuç"
+      },
+      "dropHere": "Klipleri buraya sürükle",
+      "dragClip": "Taşımak için sürükle, başka bir bölüme de (klavyede Alt+↑/↓)",
+      "dragSection": "Bölümü klipleriyle taşımak için sürükle (klavyede Alt+↑/↓); adını değiştirmek için çift tıkla (F2)",
+      "tooMany": "Tek değişiklik için çok fazla klip (bir seferde en fazla {max} adım)"
+    }
+  }
+}

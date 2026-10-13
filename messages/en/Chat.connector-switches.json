@@ -1,0 +1,9 @@
+{
+  "typedComposer": {
+    "connectionSwitch": {
+      "toggleLabel": "Use {name} in this chat",
+      "off": "Off in this chat",
+      "failed": "Could not change it. Try again."
+    }
+  }
+}

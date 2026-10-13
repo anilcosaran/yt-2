@@ -1,0 +1,28 @@
+{
+  "shotPlan": {
+    "title": "Shot list",
+    "summary": "{count, plural, one {# shot} other {# shots}} · {duration}",
+    "draftBadge": "Storyboard draft",
+    "draftHint": "This is a draft: stills only, no voice-over. Ask for the full video when you like it.",
+    "total": "Shots: {credits} credits",
+    "totalUnpriced": "{unpriced, plural, one {# shot has no price yet} other {# shots have no price yet}}",
+    "seconds": "{value} s",
+    "shotLabel": "Shot {order}",
+    "noSource": "Source not chosen yet",
+    "replan": "Plan again",
+    "replanLabel": "Plan shot {order} again",
+    "changeSource": "Change source",
+    "changeSourceLabel": "Change the source of shot {order}",
+    "closeSource": "Close",
+    "sourceChoices": "Choose a source for shot {order}",
+    "sourceLoading": "Loading the options…",
+    "sourceUnavailable": "The options could not be loaded now.",
+    "sourceNone": "There is no other source for this shot.",
+    "sourceChanged": "Source changed. Send the message to update the plan and the price.",
+    "sourceFailed": "The source was not changed. The plan may have changed; reload the list.",
+    "produceFull": "Produce the full video",
+    "askReplan": "Plan shot {order} ({shotId}) again: ",
+    "askRefresh": "I changed the source of shot {order} ({shotId}). Update the plan and the price.",
+    "askProduceFull": "Produce the full video with this plan."
+  }
+}

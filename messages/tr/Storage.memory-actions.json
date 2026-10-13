@@ -1,0 +1,18 @@
+{
+  "memoryActions": {
+    "approve": "Belleğe eklemeyi onayla",
+    "addAnyway": "Yine de Belleğe ekle",
+    "retry": "Belleğe eklemeyi yeniden dene",
+    "addAnywayTitle": "Kanal kuralına rağmen Belleğe eklensin mi?",
+    "addAnywayDescription": "{name} eklenmedi çünkü {reason}. Yine de eklemek bu kanalın Bellek kuralını yalnız bu dosya için aşar.",
+    "addAnywayConfirm": "Yine de ekle",
+    "cancel": "Vazgeç",
+    "refusal": {
+      "rule_off": "bu kanalda bu dosya türü için Bellek kapalı",
+      "max_size_exceeded": "dosya kanalın Bellek boyut sınırından büyük",
+      "max_duration_exceeded": "dosya kanalın Bellek süre sınırından uzun",
+      "custom_rule_skip": "bir kanal kuralı bu tür dosyaları atlıyor",
+      "other": "bir kanal kuralı buna izin vermedi"
+    }
+  }
+}

@@ -1,0 +1,6 @@
+{
+  "runCards": {
+    "step": "Step {n}",
+    "stepsDone": "{done}/{total} steps"
+  }
+}

@@ -1,0 +1,10 @@
+{
+  "composerConnectors": {
+    "title": "Connectors",
+    "loading": "Loading…",
+    "failed": "Connectors could not be loaded.",
+    "empty": "No connected connectors yet.",
+    "add": "Add",
+    "addTitle": "Open the Connector page in a new tab"
+  }
+}

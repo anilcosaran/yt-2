@@ -1,0 +1,11 @@
+{
+  "typedComposer": {
+    "jobs": {
+      "fix": "Fix",
+      "fixLabel": "Fix: {label}",
+      "fixHint": "Your next message corrects this running job; no new job is started.",
+      "fixEnded": "This job has ended or is stopping, so it cannot be corrected. Send your message as a new job instead.",
+      "fixUnknown": "The job could not be read right now. Try again."
+    }
+  }
+}

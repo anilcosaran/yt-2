@@ -1,0 +1,84 @@
+{
+  "editor": {
+    "motionCode": {
+      "tab": "Code",
+      "loading": "Loading the source…",
+      "assistantNotApplied": "The Assistant's new version is saved in My Motions, but it could not be applied to the Motion you selected.",
+      "title": "Code",
+      "scene": "Scene {n}",
+      "originSaved": "Saved Motion",
+      "originLibrary": "Library Motion",
+      "warning": "Editing code can break this scene. Changes are your responsibility; you can undo.",
+      "readOnlyRole": "You can read this source here, but you cannot change this project.",
+      "readOnlyOff": "Editing Motion source is not available yet. You can read it here.",
+      "readOnlyLegacy": "This Motion is an older kind and cannot be edited here.",
+      "sourceLabel": "Motion source (JSON)",
+      "apply": "Apply",
+      "reset": "Reset to saved",
+      "revert": "Revert",
+      "revertHint": "Go back to the previous version of this Motion on the scene",
+      "undo": "Undo",
+      "applied": "Applied to the scene. You can undo it.",
+      "reverted": "Went back to the previous version. You can undo it.",
+      "dropped": "Not carried over to the new version: {names}.",
+      "lost": "Per-element tweaks and animations of the old layer were not carried over.",
+      "followUpFailed": "The layer's position or lock could not be carried over.",
+      "failed": "Could not finish \"{stage}\". Nothing changed on your video. Try again.",
+      "notApplied": "The new version is saved in My Motions, but the scene could not take it: {reason}.",
+      "revertFailed": "Could not go back: {reason}.",
+      "stage": {
+        "local": "checking the source",
+        "fork": "making a copy",
+        "write": "saving the source",
+        "validator": "checking it with the Motion validator",
+        "publish": "saving it as a Motion"
+      },
+      "pending": {
+        "local": "Checking the source…",
+        "fork": "Making your own copy…",
+        "write": "Saving the source…",
+        "validator": "Checking it with the Motion validator…",
+        "publish": "Saving it as a Motion…",
+        "repoint": "Applying it to the scene…",
+        "revert": "Going back to the previous version…"
+      },
+      "issues": {
+        "empty": "The source is empty.",
+        "not_json": "This is not valid JSON. {detail}",
+        "not_object": "The source must be one JSON object.",
+        "too_large": "The source is far too large for a Motion.",
+        "missing_manifest": "The source lost its \"manifest\" part.",
+        "missing_body": "The source lost its \"body\" part.",
+        "unchanged": "Nothing changed yet.",
+        "other": "The source is not accepted. {detail}"
+      },
+      "blocked": {
+        "local": "The source cannot be applied:",
+        "write": "The server did not accept this source. {reason}",
+        "validator": "The Motion validator refused this source, so nothing was applied:",
+        "publish": "It cannot be saved as a Motion yet: {reason}.",
+        "source_not_editable": "The source of this Motion cannot be edited."
+      },
+      "publishReasons": {
+        "not_available": "saving is not available",
+        "archived": "the copy is archived",
+        "validation_missing": "it has not been validated",
+        "validation_stale": "the validation is out of date",
+        "validation_failed": "the validation failed",
+        "unchanged": "nothing changed since the last saved version",
+        "other": "the server refused"
+      },
+      "notAppliedReasons": {
+        "layer_missing": "the layer is gone",
+        "not_v2": "this layer is an older kind of Motion",
+        "no_range": "the layer has no length",
+        "video_style_unavailable": "the look of the layer is not available",
+        "target_project_private": "a private code version cannot be placed on a scene yet",
+        "needs_image": "the new version needs an image and the project has none",
+        "exposure": "the new version could not be read",
+        "write": "the project did not take the change",
+        "other": "something prevented it"
+      }
+    }
+  }
+}

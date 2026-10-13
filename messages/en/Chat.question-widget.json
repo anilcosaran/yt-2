@@ -1,0 +1,14 @@
+{
+  "questionWidget": {
+    "recommended": "Recommended",
+    "skip": "Skip",
+    "skipTitle": "Let Spark decide",
+    "own": "My own answer",
+    "ownHint": "Type it below and send",
+    "ownPlaceholder": "Type your own answer…",
+    "chip": {
+      "narrator": "Narrator",
+      "default": "Question"
+    }
+  }
+}

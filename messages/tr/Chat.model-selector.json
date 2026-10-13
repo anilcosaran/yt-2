@@ -1,0 +1,8 @@
+{
+  "modelSelector": {
+    "title": "Model seç",
+    "description": "Sohbet, video ve görsel için kullanılacak modeli seç.",
+    "search": "Model ara…",
+    "empty": "Bu adla bir model yok."
+  }
+}

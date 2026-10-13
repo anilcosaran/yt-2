@@ -1,0 +1,138 @@
+{
+  "editor": {
+    "loading": "Opening the Motion…",
+    "backToLibrary": "Motion library",
+    "backToProject": "Back to the project",
+    "retry": "Try again",
+    "status": {
+      "not_found": "This Motion draft does not exist or is not yours.",
+      "forbidden": "You do not have access to do this.",
+      "unavailable": "Motion authoring is not available yet.",
+      "invalid": "This link is not a valid Motion draft.",
+      "error": "The Motion draft could not be loaded."
+    },
+    "regions": {
+      "preview": "Preview",
+      "chat": "Chat",
+      "parameters": "Parameters",
+      "source": "Source"
+    },
+    "draftBadge": "Private draft",
+    "sourceOf": "Copy of {blueprint}",
+    "returnToProject": "Return to the project",
+    "actions": {
+      "showSource": "Show source",
+      "hideSource": "Hide source",
+      "saveSource": "Save source",
+      "validate": "Validate",
+      "applyValues": "Apply values",
+      "archive": "Archive draft",
+      "publish": "Save as Motion"
+    },
+    "notices": {
+      "conflict": "This draft changed elsewhere. The latest version is shown; repeat your change.",
+      "sourceNotJson": "The source is not valid JSON. Nothing was saved.",
+      "sourceRejected": "The change was refused: {reason}.",
+      "saveFailed": "The change could not be saved.",
+      "validated": "Validation finished.",
+      "archived": "The draft was archived.",
+      "published": "Saved as a new Motion revision. Projects that already use this Motion keep the revision they pinned.",
+      "publishBlocked": "Saving as a Motion was refused: {reason}.",
+      "publishUnchanged": "Nothing changed since the last saved revision."
+    },
+    "preview": {
+      "loading": "Compiling the preview…",
+      "compiled": "Compiled for {ratio}, {energy}: {frames} frames.",
+      "ratio": "Format",
+      "energy": "Energy",
+      "energies": {
+        "sakin": "Calm",
+        "dengeli": "Balanced",
+        "canli": "Lively"
+      },
+      "failed": {
+        "fonts_unavailable": "The pinned font set is still loading. Try again in a moment.",
+        "video_style_unavailable": "The look chosen for this draft is no longer available.",
+        "invalid": "The draft cannot be compiled with its current source or values.",
+        "forbidden": "You do not have access to this preview.",
+        "not_found": "The draft was not found.",
+        "unavailable": "Motion authoring is not available.",
+        "conflict": "The draft changed while compiling.",
+        "error": "The preview could not be compiled."
+      }
+    },
+    "parameters": {
+      "empty": "This Motion exposes no parameters.",
+      "kind": {
+        "text": "Text",
+        "color": "Colour",
+        "media": "Media",
+        "duration": "Duration (frames)",
+        "number": "Number",
+        "enum": "Choice",
+        "boolean": "Switch"
+      },
+      "sparkField": "Editable in Spark",
+      "authoringOnly": "Authoring only",
+      "mediaBound": "Bound in the project",
+      "lookLabel": "Look"
+    },
+    "validation": {
+      "none": "Not validated yet.",
+      "ok": "Valid: source rules and all sample compiles passed.",
+      "stale": "The last validation is for an older version.",
+      "issues": "{count} issue(s) to fix.",
+      "skipped": {
+        "source_invalid": "Sample compiles were skipped because the source has issues.",
+        "video_style_unavailable": "Sample compiles were skipped: the look is not available.",
+        "fonts_unavailable": "Sample compiles were skipped: the font set is still loading."
+      }
+    },
+    "source": {
+      "hint": "The typed source of this Motion (motion-library@1). Its identity cannot change.",
+      "label": "Motion source"
+    },
+    "chat": {
+      "loading": "Loading the conversation…",
+      "empty": "Ask for a change to this Motion.",
+      "placeholder": "Describe what to change",
+      "send": "Send",
+      "loadFailed": "The conversation could not be loaded.",
+      "sendFailed": "The message could not be sent."
+    },
+    "latestRevision": "Saved as Motion · revision {number}",
+    "publish": {
+      "reason": {
+        "validation_missing": "Validate this version to save it as a Motion.",
+        "validation_stale": "The last validation is for an older version. Validate again to save it as a Motion.",
+        "validation_failed": "Fix the validation issues to save it as a Motion.",
+        "unchanged": "Nothing changed since the last saved revision."
+      }
+    }
+  },
+  "library": {
+    "title": "Motion library",
+    "loading": "Loading the Motion library…",
+    "loadFailed": "The Motion library could not be loaded.",
+    "unavailable": "Motion authoring is not available yet.",
+    "retry": "Try again",
+    "myDrafts": "My drafts",
+    "noDrafts": "You have no drafts yet. Customize a Motion to start one.",
+    "platform": "Platform Motions",
+    "catalogueClosed": "The platform Motion catalogue is not available yet.",
+    "customize": "Customize",
+    "lookLabel": "Look",
+    "draftMeta": "Copy of {blueprint} · version {version}",
+    "validated": "Validated",
+    "archivedHidden": "Archived drafts are hidden.",
+    "createFailed": {
+      "forbidden": "This Motion cannot be copied by you.",
+      "not_found": "This Motion or look is not available.",
+      "video_style_unavailable": "The chosen look is not available.",
+      "invalid": "The copy could not be created: {reason}.",
+      "conflict": "This copy request conflicts with an earlier one.",
+      "unavailable": "Motion authoring is not available yet.",
+      "error": "The copy could not be created."
+    }
+  }
+}

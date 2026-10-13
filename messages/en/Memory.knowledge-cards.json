@@ -1,0 +1,13 @@
+{
+  "cards": {
+    "totalAtLeast": "{total}+",
+    "searchLoadedOnly": "Search and type filters cover the loaded items. Load more to look further.",
+    "changedSinceStart": "Memory changed since this list was loaded.",
+    "refresh": "Refresh list",
+    "loadingDetail": "Loading the full memory…",
+    "detailError": "The full memory could not be loaded.",
+    "retry": "Retry",
+    "versionConflict": "This memory was changed somewhere else. The latest version is shown now; review it and try again.",
+    "listPending": "Memory list is catching up. Retrying…"
+  }
+}

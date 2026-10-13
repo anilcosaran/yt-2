@@ -1,0 +1,20 @@
+{
+  "googleConnect": {
+    "description": "Connect {channel} with your Google account. Youtorch uses its own Google app; you never enter tokens or Google Cloud keys.",
+    "connect": "Connect with Google",
+    "reconnect": "Reconnect with Google",
+    "hint": "A Google window opens; then choose the YouTube channel.",
+    "popupOpen": "Finish in the Google window that opened.",
+    "pickChannel": "Choose the YouTube channel",
+    "errorTitle": "Connection not completed",
+    "popupBlocked": "The browser blocked the Google window. Allow pop-ups and try again.",
+    "notCompleted": "The Google window was closed before the connection finished.",
+    "noChannels": "This Google account has no YouTube channel.",
+    "bindFailed": "The YouTube channel could not be linked to this workspace channel.",
+    "failed": "Something went wrong. Try again.",
+    "unavailableTitle": "Google connection is not available yet",
+    "unavailableDescription": "YouTube can't be connected in this environment right now.",
+    "reauthTitle": "Reconnect needed",
+    "reauthDescription": "Google asks you to sign in again before Youtorch can use this channel."
+  }
+}

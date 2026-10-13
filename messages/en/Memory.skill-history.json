@@ -1,0 +1,32 @@
+{
+  "skillsTab": {
+    "history": {
+      "fieldChange": "{field}: {change}",
+      "fromTo": "{from} → {to}",
+      "sectionChange": "{section}: {added} added, {removed} removed, {changed} changed",
+      "bodyLines": "Method text: {added, plural, one {# line added} other {# lines added}}, {removed, plural, one {# line removed} other {# lines removed}}.",
+      "more": "+{count} more",
+      "complexValue": "changed value",
+      "fields": {
+        "name": "Name",
+        "description": "When to use",
+        "locale": "Language",
+        "category": "Category",
+        "risk_level": "Risk",
+        "compatible_surfaces": "Where it runs",
+        "trigger_examples": "Example requests",
+        "negative_trigger_examples": "Not for",
+        "required_capabilities": "Capabilities",
+        "dependencies": "Required skills",
+        "other": "Another setting"
+      },
+      "sections": {
+        "inputs": "Inputs",
+        "outputs": "Outputs",
+        "examples": "Examples",
+        "source_refs": "Sources",
+        "eval_cases": "Test cases"
+      }
+    }
+  }
+}

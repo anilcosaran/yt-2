@@ -1,0 +1,33 @@
+{
+  "developer": {
+    "connectedApps": {
+      "limits": {
+        "open": "Limitler",
+        "title": "{name} limitleri",
+        "description": "Bu uygulamanın API/MCP işlerinin harcayabileceği en fazla kredi. Tavanı aşan iş başlamaz.",
+        "loading": "Limitler yükleniyor…",
+        "loadFailed": "Limitler yüklenemedi. Pencereyi kapatıp tekrar dene.",
+        "perJob": "İş başına en fazla kredi",
+        "monthly": "Aylık en fazla kredi",
+        "defaults": "Yeni bağlantılar {perJob} / {monthly} kredi ile başlar.",
+        "readOnly": "Limitleri yalnız çalışma alanı sahibi ya da yöneticisi değiştirebilir.",
+        "problems": {
+          "per_job_invalid": "İş başı limit {min} ile {max} kredi arasında olmalı.",
+          "monthly_invalid": "Aylık limit {min} ile {max} kredi arasında olmalı.",
+          "monthly_below_per_job": "Aylık limit iş başı limitten küçük olamaz."
+        },
+        "cancel": "Vazgeç",
+        "save": "Kaydet",
+        "saving": "Kaydediliyor…",
+        "errors": {
+          "forbidden": "Limitleri yalnız çalışma alanı sahibi ya da yöneticisi değiştirebilir.",
+          "stale": "Limitler bu arada değişti. Güncel değerleri kontrol edip tekrar kaydet.",
+          "invalid": "Limitler geçersiz. Değerleri kontrol et.",
+          "revoked": "Bu uygulamanın bağlantısı kaldırılmış.",
+          "not_found": "Bu bağlantı artık yok. Sayfayı yenile.",
+          "failed": "Limitler kaydedilemedi. Tekrar dene."
+        }
+      }
+    }
+  }
+}

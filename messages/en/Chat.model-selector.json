@@ -1,0 +1,8 @@
+{
+  "modelSelector": {
+    "title": "Choose a model",
+    "description": "Choose the model for chat, video and images.",
+    "search": "Search models…",
+    "empty": "No model by that name."
+  }
+}

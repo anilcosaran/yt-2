@@ -1,0 +1,8 @@
+{
+  "failure": {
+    "skillRemovedTitle": "A skill was removed",
+    "skillRevokedDetail": "A skill this plan relied on was removed for security reasons. The next step was not started.",
+    "skillUnavailableDetail": "A skill this plan relied on is no longer enabled. The next step was not started.",
+    "replanWithoutSkill": "Prepare the plan again without this skill"
+  }
+}

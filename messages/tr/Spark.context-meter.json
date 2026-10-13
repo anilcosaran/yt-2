@@ -1,0 +1,66 @@
+{
+  "editor": {
+    "contextMeter": {
+      "hover": "Bağlamın %{percent} kadarı kullanıldı",
+      "hoverEmpty": "Bağlam kullanımı asistanın bir sonraki cevabından sonra görünür",
+      "ringLabel": "Bağlam: %{percent} kullanıldı. Ayrıntıları göster",
+      "ringLabelEmpty": "Bağlam kullanımı. Ayrıntıları göster",
+      "title": "Bağlam",
+      "percent": "%{percent}",
+      "close": "Kapat",
+      "used": "{used} / {limit} token",
+      "kind": {
+        "counted": "sayıldı",
+        "estimated": "tahmini"
+      },
+      "untilTrim": "Eski bağlam kırpılmadan önce {tokens} token yer var",
+      "atTrim": "Sınırda: eski bağlam sığması için kırpılıyor",
+      "trimPoint": "Eski bağlam buradan itibaren kırpılır",
+      "breakdown": "Bağlamda neler var",
+      "sections": {
+        "system": "Asistan talimatları",
+        "tools": "Araçlar ve düğüm kataloğu",
+        "skill_index": "Skill listesi",
+        "skills": "Aktif skill'ler",
+        "rules": "Kuralların",
+        "memory": "Hafıza",
+        "history": "Sohbet geçmişi",
+        "tool_results": "Araç sonuçları",
+        "turn_state": "İş durumu",
+        "user_message": "Mesajın"
+      },
+      "skillAuto": "otomatik",
+      "basis": "Her bölümün, sayılan girdideki boyutuna göre payı.",
+      "outputBudget": "Cevap bütçesi",
+      "outputKind": {
+        "final_answer": "cevap",
+        "job_draft": "plan taslağı"
+      },
+      "window": "Modelin bağlam penceresi",
+      "inputBudget": "Girdi bütçesi",
+      "cacheRead": "Önbellekten okunan",
+      "trimmed": {
+        "title": "Sığdırmak için kırpıldı",
+        "omitted": "{count} eski mesaj yalnız referans olarak gönderildi",
+        "compacted": "{count} eski mesaj özetlendi",
+        "memory": "{count} hafıza eşleşmesi dışarıda bırakıldı",
+        "skillIndex": "Skill listesi kısaltıldı",
+        "guides": "Otomatik yüklenen rehberler geri çekildi",
+        "olderTurns": "Eski turlar ve araç sonuçları kısaltıldı"
+      },
+      "totals": {
+        "title": "Kullanım",
+        "chat": "Bu sohbet ({count} cevap)",
+        "job": "Son iş ({count} cevap)"
+      },
+      "credits": "{credits} kredi",
+      "spend": "Harcama",
+      "spendAttention": {
+        "attention": "işin harcaması ilgini bekliyor",
+        "blocked": "iş için kredi yetmiyor"
+      },
+      "notRecorded": "Bağlam kullanımı asistanın bir sonraki cevabından sonra görünür.",
+      "loadFailed": "Bağlam kullanımı okunamadı. Bir sonraki cevaptan sonra yeniden gösterilir."
+    }
+  }
+}

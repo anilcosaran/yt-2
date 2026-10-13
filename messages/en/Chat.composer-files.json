@@ -1,0 +1,9 @@
+{
+  "typedComposer": {
+    "groups": {
+      "attachedFiles": "Attached files"
+    },
+    "pickFromLibrary": "Choose from library",
+    "pickFromLibraryHint": "Add an image or video, then call it by its name, like @image1."
+  }
+}

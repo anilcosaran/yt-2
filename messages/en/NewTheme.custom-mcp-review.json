@@ -1,0 +1,66 @@
+{
+  "customMcpReview": {
+    "open": "Review tools",
+    "title": "{name} tools",
+    "description": "Choose Allow, Ask or Block for each tool. New and changed tools never run without your decision.",
+    "loading": "Loading tools…",
+    "loadFailed": "The tool review could not be loaded. Close the dialog and try again.",
+    "notReviewable": "A complete scan is needed for the review. Scan the server first.",
+    "noTools": "This server has no tools to review.",
+    "toolsLabel": "{name} tools",
+    "change": {
+      "added": "New",
+      "changed": "Changed",
+      "unchanged": "Same",
+      "removed": "Removed"
+    },
+    "decision": {
+      "label": "Decision for {tool}",
+      "allow": "Allow",
+      "ask": "Ask",
+      "block": "Block"
+    },
+    "decisionRequired": "Decision needed",
+    "blockOnly": "This tool can only be blocked (generation, spending or admin tool).",
+    "removedHint": "The server no longer offers this tool; it is not used.",
+    "effect": {
+      "label": "Effect",
+      "placeholder": "Choose an effect",
+      "read": "Reads",
+      "write": "Writes",
+      "send": "Sends",
+      "delete": "Deletes"
+    },
+    "capability": {
+      "label": "Capability",
+      "placeholder": "Choose a capability",
+      "ads": "Ads",
+      "calendar": "Calendar",
+      "crm": "CRM",
+      "docs": "Documents",
+      "drive": "Files",
+      "email": "Email",
+      "messaging": "Messaging",
+      "publish": "Publishing",
+      "social": "Social media"
+    },
+    "cancel": "Cancel",
+    "activate": "Activate",
+    "reapply": "Reapply",
+    "saving": "Applying…",
+    "failedTitle": "Could not apply",
+    "errors": {
+      "stale": "The server changed in the meantime. Close and reopen the dialog.",
+      "decision_invalid": "A tool decision is not valid. Check its effect and capability.",
+      "snapshot_stale": "The last scan is too old. Scan the server again, then retry.",
+      "review_pending": "There are unreviewed changes. Review the tools again.",
+      "not_reviewed": "Review the tools first.",
+      "auth_not_supported": "Servers that ask for sign-in cannot be activated yet.",
+      "no_open_tools": "The review was saved, but with no allowed or asked tool the server cannot be used.",
+      "disabled": "A disabled server cannot be activated.",
+      "feature_unavailable": "Custom MCP is turned off right now.",
+      "not_found": "This registration no longer exists. Refresh the page.",
+      "failed": "Something went wrong. Try again."
+    }
+  }
+}

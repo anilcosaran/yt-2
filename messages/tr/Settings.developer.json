@@ -1,0 +1,82 @@
+{
+  "developer": {
+    "title": "Geliştirici",
+    "description": "Bu çalışma alanına bağlı uygulamalar ve geliştirdiğin OAuth uygulamaları.",
+    "connectedApps": {
+      "title": "Bağlı uygulamalar",
+      "empty": "Bu çalışma alanına bağlı uygulama yok.",
+      "loadFailed": "Bağlı uygulamalar yüklenemedi. Tekrar denemek için sayfayı yenile.",
+      "actsForYou": "Senin adına çalışır",
+      "actsForWorkspace": "Çalışma alanı otomasyonu",
+      "testEnvironment": "Test",
+      "unavailable": "Youtorch tarafından durduruldu",
+      "permissions": "{count, plural, one {# izin} other {# izin}}",
+      "items": "{count, plural, =0 {seçili öğe yok} one {# öğe seçili} other {# öğe seçili}}",
+      "revoke": "Bağlantıyı kaldır",
+      "revokeTitle": "{name} bağlantısı kaldırılsın mı?",
+      "revokeDescription": "{name} bu çalışma alanıyla hemen çalışmayı bırakır. Başlamış işler yalnız en dar erişimle tamamlanır.",
+      "revokeFailed": "Uygulamanın bağlantısı kaldırılamadı. Tekrar dene."
+    },
+    "apps": {
+      "title": "OAuth uygulamalarım",
+      "empty": "Henüz bir uygulama kaydetmedin.",
+      "loadFailed": "Uygulamaların yüklenemedi. Tekrar denemek için sayfayı yenile.",
+      "register": "Uygulama kaydet",
+      "registerTitle": "OAuth uygulaması kaydet",
+      "registerDescription": "Youtorch, başka çalışma alanları bağlamadan önce her uygulamayı inceler.",
+      "fieldName": "Uygulama adı",
+      "fieldPurpose": "Ne yapar",
+      "fieldDomain": "Alan adı",
+      "fieldHomepage": "Ana sayfa adresi",
+      "fieldSupport": "Destek adresi",
+      "fieldPrivacy": "Gizlilik politikası adresi",
+      "fieldRedirects": "Yönlendirme adresleri (her satıra bir tane)",
+      "fieldPermissions": "İzinler",
+      "fieldAccess": "Erişim türü",
+      "accessDelegated": "Bağlayan kişinin adına çalışır",
+      "accessService": "Çalışma alanı otomasyonu",
+      "submit": "Kaydet",
+      "cancel": "Vazgeç",
+      "failed": "Olmadı. Alanları kontrol edip tekrar dene.",
+      "version": "Sürüm {number}",
+      "enableTesting": "Bu sürümü test et",
+      "activate": "Yayına al",
+      "rotateSecret": "Yeni gizli anahtar",
+      "clientTest": "Test istemcisi",
+      "clientLive": "Canlı istemci",
+      "secretHint": "Gizli anahtar {hint} ile biter",
+      "secretTitle": "İstemci gizli anahtarını kopyala",
+      "secretDescription": "Yalnız bu kez gösterilir. Güvenli bir yerde sakla; kaybedersen yenisini oluştur.",
+      "copy": "Kopyala",
+      "copied": "Kopyalandı",
+      "done": "Tamam",
+      "status": {
+        "draft": "Taslak",
+        "test": "Testte",
+        "reviewed": "Onaylandı",
+        "active": "Yayında",
+        "suspended": "Askıya alındı"
+      },
+      "review": {
+        "unreviewed": "İnceleme bekliyor",
+        "approved": "Onaylandı",
+        "rejected": "Onaylanmadı"
+      }
+    },
+    "scope": {
+      "channels_read": "Seçtiğin kanalları görür",
+      "templates_read": "Seçtiğin şablonları kullanır",
+      "projects_read": "Seçtiğin projeleri okur",
+      "projects_write": "Seçtiğin projeleri düzenler",
+      "assets_metadata_read": "Seçtiğin dosyaların ayrıntılarını görür",
+      "assets_content_read": "Seçtiğin dosyaları indirir",
+      "assets_upload": "Seçtiğin kanallara yeni dosya yükler",
+      "jobs_create": "İzin verilen video işlerini başlatır",
+      "jobs_read": "Başlattığı işleri görür",
+      "exports_create": "Seçtiğin projeleri dışa aktarır",
+      "exports_read": "Tamamlanan dışa aktarımlarını indirir",
+      "usage_read": "Kendi kullanımını görür",
+      "webhooks_manage": "Kendi bildirimlerini yönetir"
+    }
+  }
+}

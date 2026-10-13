@@ -1,0 +1,9 @@
+{
+  "typedComposer": {
+    "groups": {
+      "attachedFiles": "Ekli dosyalar"
+    },
+    "pickFromLibrary": "Kütüphaneden seç",
+    "pickFromLibraryHint": "Görsel ya da video ekle; @image1 gibi adıyla çağırırsın."
+  }
+}

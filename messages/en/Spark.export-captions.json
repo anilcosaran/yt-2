@@ -1,0 +1,12 @@
+{
+  "editor": {
+    "export": {
+      "reason": {
+        "captions_unavailable": "A caption track of this video cannot be read right now. Check the captions, or remove the caption track to export this video.",
+        "captions_text": "Some caption text cannot be drawn by the exporter (for example characters the caption font does not have). Edit the caption text or remove the caption track.",
+        "captions_font": "The caption font is not available for export. Pick another caption style.",
+        "captions_motion_scene": "Captions over a Motion-only scene cannot be exported with this Motion. Add another layer to that scene or remove the captions."
+      }
+    }
+  }
+}

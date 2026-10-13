@@ -1,0 +1,7 @@
+{
+  "quota": {
+    "publishExhausted": "Bugün {limit, plural, other {# paylaşım}} yaptın, günlük sınırına ulaştın. {time} sonrasında yeniden paylaşabilirsin.",
+    "likeExhausted": "Bugünkü {limit, plural, other {# yeni beğeni}} hakkını kullandın. {time} sonrasında yeni gönderileri yeniden beğenebilirsin.",
+    "previewsPaused": "Community önizlemeleri bir süreliğine duraklatıldı. Lütfen daha sonra yeniden dene."
+  }
+}

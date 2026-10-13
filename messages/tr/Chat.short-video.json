@@ -1,0 +1,28 @@
+{
+  "shotPlan": {
+    "title": "Çekim listesi",
+    "summary": "{count} çekim · {duration}",
+    "draftBadge": "Storyboard taslağı",
+    "draftHint": "Bu bir taslak: yalnızca durağan görseller, seslendirme yok. Beğenirsen tam videoyu iste.",
+    "total": "Çekimler: {credits} kredi",
+    "totalUnpriced": "{unpriced} çekimin fiyatı henüz yok",
+    "seconds": "{value} sn",
+    "shotLabel": "Çekim {order}",
+    "noSource": "Kaynak henüz seçilmedi",
+    "replan": "Yeniden planla",
+    "replanLabel": "{order}. çekimi yeniden planla",
+    "changeSource": "Kaynağı değiştir",
+    "changeSourceLabel": "{order}. çekimin kaynağını değiştir",
+    "closeSource": "Kapat",
+    "sourceChoices": "{order}. çekim için kaynak seç",
+    "sourceLoading": "Seçenekler yükleniyor…",
+    "sourceUnavailable": "Seçenekler şu an yüklenemedi.",
+    "sourceNone": "Bu çekim için başka kaynak yok.",
+    "sourceChanged": "Kaynak değişti. Planı ve fiyatı güncellemek için mesajı gönder.",
+    "sourceFailed": "Kaynak değişmedi. Plan değişmiş olabilir; listeyi yenile.",
+    "produceFull": "Tam videoyu üret",
+    "askReplan": "{order}. çekimi ({shotId}) yeniden planla: ",
+    "askRefresh": "{order}. çekimin ({shotId}) kaynağını değiştirdim. Planı ve fiyatı güncelle.",
+    "askProduceFull": "Bu planla tam videoyu üret."
+  }
+}

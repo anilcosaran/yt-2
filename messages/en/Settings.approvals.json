@@ -1,0 +1,58 @@
+{
+  "approvals": {
+    "intro": "Choose when the assistant asks you before it spends credits. Your balance always stops a job it cannot pay for, whatever you set here.",
+    "loadFailed": "Approval settings could not be loaded. Reload the page to try again.",
+    "saved": "Saved.",
+    "conflict": "These settings changed elsewhere. The latest values are shown; try again.",
+    "failed": "The change could not be saved. Try again.",
+    "aboveCeiling": "That is above your workspace's limit. “Don't ask below” can be at most {credits} credits.",
+    "save": "Save",
+    "cancel": "Cancel",
+    "close": "Close",
+    "creditsUnit": "credits",
+    "invalidAmount": "Enter a number of credits, with at most four decimals.",
+    "consent": {
+      "label": "Full access",
+      "none": "Not confirmed yet. You are asked once when you first switch a chat to Full access.",
+      "accepted": "Confirmed on {date}.",
+      "revoked": "You withdrew your confirmation. You are asked again the next time.",
+      "outdated_revision": "The warning text changed. You are asked to confirm again next time.",
+      "blocked_by_workspace": "Confirmed, but your workspace admin has not allowed Full access for members.",
+      "help": "Withdrawing your confirmation switches Full access chats back to Auto at their next step.",
+      "revoke": "Withdraw",
+      "revokeTitle": "Withdraw your Full access confirmation?",
+      "revokeDescription": "Running Full access jobs continue in Auto mode from their next step. You are asked to confirm again before you use Full access next time.",
+      "revokeConfirm": "Withdraw confirmation"
+    },
+    "limit": {
+      "label": "Full access limit",
+      "switch": "Ask when a job costs more than",
+      "amount": "Approval limit in credits",
+      "useDefault": "Use default ({credits})",
+      "helpOn": "In Full access I ask you once when a job would cost more than {credits} credits. The default is 1,000 credits.",
+      "helpOff": "Off: in Full access I never ask about cost. Only your balance can stop a job.",
+      "skipHint": "You can skip this question for one job by writing “don't ask for approval” in your message."
+    },
+    "members": {
+      "label": "Members",
+      "switch": "Allow Full access for members",
+      "help": "Off by default. Owners and admins can always use Full access; members can only when this is on."
+    },
+    "autoFloor": {
+      "label": "Auto: don't ask below",
+      "amount": "Don't ask below this many credits",
+      "useDefault": "Use plan default",
+      "help": "In Auto mode a job whose total cost stays below this number never asks (now {credits} credits). Your balance still stops any job it cannot pay for.",
+      "helpUnknown": "In Auto mode a job whose total cost stays below this number never asks. Your balance still stops any job it cannot pay for.",
+      "max": "Your workspace allows at most {credits} credits here."
+    },
+    "jobCap": {
+      "label": "Cap per job",
+      "amount": "Cap per job in credits",
+      "none": "No cap",
+      "clear": "Remove cap",
+      "help": "Optional. A job estimated above this never starts. Empty means no cap.",
+      "tenant": "Your workspace also has a cap of {credits} credits; the lower one applies."
+    }
+  }
+}

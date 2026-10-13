@@ -1,0 +1,259 @@
+{
+  "title": "Memory",
+  "noChannel": "No channel selected",
+  "statusOn": "Active",
+  "statusOff": "Auto intake off",
+  "description": "What the assistant knows about this channel, the rules it always follows and the skills it can use.",
+  "tabsLabel": "Memory sections",
+  "tabs": {
+    "knowledge": "Knowledge",
+    "rules": "Assistant rules",
+    "skills": "Skills"
+  },
+  "add": {
+    "knowledge": "Add knowledge",
+    "rules": "Add rule",
+    "skills": "Add skill"
+  },
+  "intro": {
+    "knowledge": "Notes, files and links the assistant knows. Knowledge you switch off is not used, but not deleted.",
+    "rules": "Sentences the assistant follows in every job. Optionally only in certain situations.",
+    "skills": "Methods the assistant follows for specific jobs. It uses the ones that are on."
+  },
+  "common": {
+    "processing": "Reading…",
+    "failed": "Could not be read",
+    "more": "More actions",
+    "personal": "Only me",
+    "channel": "Whole channel",
+    "scopeLabel": "Who is it for?",
+    "close": "Close",
+    "cancel": "Cancel",
+    "save": "Save",
+    "add": "Add",
+    "back": "Back",
+    "done": "Done"
+  },
+  "knowledge": {
+    "search": "Search knowledge…",
+    "filter": {
+      "all": "All",
+      "note": "Notes",
+      "file": "Files",
+      "link": "Links",
+      "media": "From library"
+    },
+    "count": "{count, plural, one {# item} other {# items}}",
+    "noResults": "No matching knowledge",
+    "noResultsHint": "Try another search or filter.",
+    "emptyTitle": "The assistant doesn't know anything yet",
+    "emptyHint": "Add short notes about your brand, products or audience; the assistant uses them in every job.",
+    "example0": "Our brand voice is friendly and witty.",
+    "example1": "Our audience is 25–40 years old.",
+    "example2": "New product shoots every Monday.",
+    "fromLibrary": "From library",
+    "toggle": "Use this knowledge",
+    "view": "View",
+    "edit": "Edit",
+    "retry": "Try again",
+    "delete": "Delete",
+    "deletedToast": "Knowledge deleted",
+    "savedToast": "Knowledge updated",
+    "addedToast": "Knowledge added",
+    "readingToast": "Added; reading the content",
+    "addTitle": "Add knowledge",
+    "editTitle": "Edit knowledge",
+    "addHint": "Write what the assistant should know, or add a file or a link.",
+    "autoHint": "Taken automatically from media in your library.",
+    "kind": {
+      "note": "Write",
+      "file": "File",
+      "link": "Link"
+    },
+    "titleLabel": "Title",
+    "titlePlaceholder": "Title (optional)",
+    "titleOptional": "Title (optional)",
+    "noteLabel": "Knowledge",
+    "notePlaceholder": "e.g. Our brand voice is friendly; we speak informally and avoid big promises.",
+    "chooseFile": "Choose a file",
+    "fileFormats": "PDF, Word, text · up to 50 MB",
+    "linkLabel": "Link",
+    "linkPlaceholder": "https://…",
+    "autoSource": "Source: {source}.",
+    "openLibrary": "Open in library"
+  },
+  "rules": {
+    "search": "Search rules…",
+    "filter": {
+      "all": "All",
+      "on": "On",
+      "off": "Off"
+    },
+    "count": "{count, plural, one {# rule} other {# rules}}",
+    "noResults": "No matching rules",
+    "noResultsHint": "Try another search or filter.",
+    "emptyTitle": "No rules yet",
+    "emptyHint": "Write in one sentence what the assistant should always do.",
+    "example0": "Always use the brand intro in videos.",
+    "example1": "Never mention competitors.",
+    "example2": "Keep Shorts under 30 seconds.",
+    "whenLabel": "When: {when}",
+    "always": "Always",
+    "toggle": "Apply this rule",
+    "edit": "Edit",
+    "delete": "Delete",
+    "deletedToast": "Rule deleted",
+    "savedToast": "Rule updated",
+    "addedToast": "Rule added",
+    "addTitle": "Add rule",
+    "editTitle": "Edit rule",
+    "addHint": "Write in one sentence what the assistant should follow.",
+    "ruleLabel": "Rule",
+    "placeholder": "e.g. Always use the brand intro in videos.",
+    "whenTitle": "When does it apply?",
+    "whenPlaceholder": "Or write your own: e.g. In campaign videos",
+    "when": {
+      "always": "Always",
+      "shorts": "In Shorts",
+      "longVideo": "In long videos",
+      "voiceover": "When a voice-over is needed",
+      "captions": "In descriptions and titles"
+    }
+  },
+  "skills": {
+    "search": "Search skills…",
+    "filter": {
+      "all": "All",
+      "on": "On",
+      "mine": "Mine"
+    },
+    "count": "{count, plural, one {# skill} other {# skills}}",
+    "noResults": "No matching skills",
+    "noResultsHint": "Try another search or filter.",
+    "emptyTitle": "No skills yet",
+    "emptyHint": "Describe in one sentence a job the assistant should learn; AI writes the method.",
+    "example0": "Promote a menu item in 20 seconds",
+    "example1": "Make a short video from customer reviews",
+    "example2": "Prepare a campaign announcement in the first week of every month",
+    "origin": {
+      "builtin": "Youtorch",
+      "shared": "Shared by {name}"
+    },
+    "draft": "Draft",
+    "updateAvailable": "Update available",
+    "toggle": "Use this skill",
+    "edit": "Edit",
+    "view": "View",
+    "update": "Update",
+    "updatedToast": "Skill updated",
+    "copy": "Copy and edit",
+    "delete": "Delete",
+    "deletedToast": "Skill deleted",
+    "addTitle": "Add skill",
+    "describeHint": "Describe in one sentence a job the assistant should learn; AI writes the steps, you check them.",
+    "builtinHint": "A ready-made Youtorch skill. Make a copy to change it.",
+    "sharedHint": "Shared with you by {name}. Make a copy to change it.",
+    "describeLabel": "Skill request",
+    "describePlaceholder": "e.g. Prepare a 20-second video that promotes a menu item with its price.",
+    "generate": "Create with AI",
+    "generating": "Creating…",
+    "nameLabel": "Name",
+    "namePlaceholder": "Skill name",
+    "descriptionLabel": "What is it for?",
+    "descriptionPlaceholder": "What is it for? (one sentence)",
+    "enableNow": "Use it right away",
+    "enableNowHint": "When off it stays a draft; the assistant does not use it.",
+    "savedToast": "Skill saved",
+    "addedToast": "Skill added"
+  },
+  "skillEditor": {
+    "nameRequired": "Give the skill a name first.",
+    "bodyLabel": "Method",
+    "bodyPlaceholder": "## When to use\nWrite which requests this skill is for.\n\n## Steps\n1. First step\n2. Second step\n\n## Keep in mind\n- A rule to always follow",
+    "stepsHeading": "Steps",
+    "whenHeading": "When to use",
+    "ai": {
+      "writing": "AI is writing…",
+      "stop": "Stop"
+    },
+    "applied": {
+      "ai": "The AI draft is ready. Check it and change it as you like.",
+      "catalog": "Added “{name}”. Edit it to fit your job.",
+      "file": "{name} uploaded. Check it and change it as you like."
+    },
+    "undo": "Undo",
+    "approve": "Approve and add",
+    "catalog": {
+      "title": "Catalog",
+      "method": {
+        "title": "Step-by-step method",
+        "hint": "A basic outline that fits any job.",
+        "body": "## When to use\nWrite in a sentence or two which requests this skill is for.\n\n## Steps\n1. Write what to do first.\n2. Write the next step.\n3. Write how to check the result.\n\n## Keep in mind\n- A rule to always follow.\n- Something to avoid.\n\n## Example request\n> A sentence the user might write."
+      },
+      "product": {
+        "title": "Product promo",
+        "hint": "Promotes a product in a short video.",
+        "name": "Product promo video",
+        "description": "Prepares a short vertical video that promotes a product with its price and best feature.",
+        "body": "## When to use\nWhen the user wants to promote a product or service with a short video.\n\n## Steps\n1. Take the product’s name, price and best feature from what is in memory.\n2. Write an attention-grabbing opening line for the first 3 seconds.\n3. Show the product in 2–3 short scenes; pick an image from the library for each.\n4. Add a closing in the brand voice and a single call to action.\n\n## Keep in mind\n- Do not guess the price; if it is not in memory, ask the user.\n- Keep the video under **30 seconds**.\n\n## Example request\n> Promote the pumpkin risotto in 20 seconds."
+      },
+      "titles": {
+        "title": "Title and description",
+        "hint": "Writes a title, description and tags for a video.",
+        "name": "Title and description writing",
+        "description": "Writes title suggestions, a description and tags for a video.",
+        "body": "## When to use\nWhen the user asks for a title, description or tags for a video.\n\n## Steps\n1. Sum up the video’s main topic in one sentence.\n2. Suggest 3 titles of at most 60 characters.\n3. Write a description whose first two lines spark curiosity.\n4. Add at most 10 tags.\n\n## Keep in mind\n- No exaggerated promises in the title.\n- Follow the brand voice.\n\n## Output format\n- **Titles:** numbered list\n- **Description:** at most 3 paragraphs\n- **Tags:** one comma-separated line"
+      }
+    },
+    "upload": "Upload a .md file",
+    "download": "Download as .md",
+    "uploadError": {
+      "wrongType": "You can only upload a .md or .txt file.",
+      "tooLarge": "The file is too large; the limit is 200 KB.",
+      "failed": "The file could not be read.",
+      "empty": "The file looks empty."
+    },
+    "discard": {
+      "title": "Close without saving?",
+      "description": "What you wrote in this skill will be lost.",
+      "confirm": "Close",
+      "cancel": "Keep writing"
+    },
+    "toolbar": "Formatting",
+    "tool": {
+      "heading": "Heading",
+      "bold": "Bold",
+      "italic": "Italic",
+      "bullets": "Bulleted list",
+      "numbers": "Numbered list",
+      "quote": "Quote",
+      "code": "Code",
+      "link": "Link"
+    },
+    "sample": {
+      "bold": "bold text",
+      "italic": "italic text",
+      "code": "code",
+      "link": "link text"
+    },
+    "mode": {
+      "write": "Write",
+      "preview": "Preview"
+    },
+    "previewEmpty": "Nothing written yet."
+  },
+  "ingestion": {
+    "title": "Memory intake settings",
+    "description": "What the assistant learns automatically from the content in your library.",
+    "enabled": "Learn from the library automatically",
+    "enabledHint": "When off, only the knowledge you add is used.",
+    "transcripts": "Video and audio transcripts",
+    "transcriptsHint": "Speech is turned into text and added as knowledge.",
+    "images": "Image descriptions",
+    "imagesHint": "A short description of what an image shows is added.",
+    "documents": "Documents",
+    "documentsHint": "The content of PDF and text files is added.",
+    "askFirst": "Ask me before adding",
+    "askFirstHint": "New knowledge waits for your approval first."
+  }
+}

@@ -1,0 +1,42 @@
+{
+  "productionG1": {
+    "title": "Production plan",
+    "planRevision": "Plan v{revision}",
+    "estimateRange": "About {min}–{max} credits",
+    "estimatePoint": "About {value} credits",
+    "ceiling": "Up to {value} credits",
+    "produce": "Produce with this plan",
+    "reject": "Cancel",
+    "decisionFailed": "The decision was not recorded. The plan may have changed; check the current plan.",
+    "status": {
+      "awaiting": "Waiting for your approval",
+      "plan_changed": "The plan or its estimate changed; you can approve once the current plan is shown.",
+      "expired": "This approval expired.",
+      "approved": "Approved",
+      "handed_off": "Approved · production is starting",
+      "queued": "Approved · queued",
+      "producing": "Producing",
+      "funding_required": "Credits are needed to continue",
+      "refused": "Not started: the job moved on from this plan.",
+      "rejected": "Not started",
+      "changes_requested": "Changes requested"
+    },
+    "stages": {
+      "brief": "Preparing the request",
+      "research": "Researching sources",
+      "script": "Writing the script",
+      "plan": "Preparing scenes and cost",
+      "approval": "Approval",
+      "audio_media": "Preparing audio and media",
+      "apply_qc": "Editing and checks",
+      "preview": "Preview",
+      "render": "Final file"
+    },
+    "counters": {
+      "chapters": "{completed}/{total} chapters",
+      "shots": "{completed}/{total} shots",
+      "outputs": "{completed}/{total} outputs",
+      "items": "{completed}/{total} steps"
+    }
+  }
+}

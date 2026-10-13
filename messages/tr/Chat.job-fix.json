@@ -1,0 +1,11 @@
+{
+  "typedComposer": {
+    "jobs": {
+      "fix": "Düzelt",
+      "fixLabel": "Düzelt: {label}",
+      "fixHint": "Sonraki mesajın bu çalışan işe düzeltme olarak gider; yeni iş açılmaz.",
+      "fixEnded": "Bu iş bitti ya da durduruluyor, düzeltilemez. Mesajını yeni iş olarak gönder.",
+      "fixUnknown": "İşin durumu şu an okunamadı. Tekrar dene."
+    }
+  }
+}

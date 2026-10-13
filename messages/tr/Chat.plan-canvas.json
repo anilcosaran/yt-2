@@ -1,0 +1,9 @@
+{
+  "planCanvas": {
+    "close": "Planı kapat",
+    "open": "Planı gör",
+    "hide": "Planı kapat",
+    "fixPrompt": "Planda şunu değiştir: ",
+    "replan": "Yeniden planla"
+  }
+}

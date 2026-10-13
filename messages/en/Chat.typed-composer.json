@@ -1,0 +1,38 @@
+{
+  "typedComposer": {
+    "chipsLabel": "Message context",
+    "chipKinds": {
+      "skill": "Skill",
+      "tool": "Tool",
+      "mention": "Resource",
+      "attachment": "Attachment"
+    },
+    "removeChip": "Remove {label}",
+    "slashMenuLabel": "Commands",
+    "mentionMenuLabel": "Resources",
+    "groups": {
+      "tools": "Youtorch tools",
+      "skills": "My skills"
+    },
+    "menuLoading": "Loading…",
+    "menuError": "The list could not be loaded. Your text is still sent as written.",
+    "slashEmpty": "No matching command. The text will be sent as written.",
+    "mentionEmpty": "No matching resource.",
+    "modeLabel": "Mode: {mode}",
+    "fullAccess": "Full access",
+    "fullAccessDetail": "Runs without questions after a one-time confirmation",
+    "noticeTitle": "Composer",
+    "modeNotice": {
+      "stale": "Settings changed elsewhere. The latest are shown; pick again.",
+      "targetGone": "This job has ended. Pick again to change the mode for new jobs.",
+      "consentRequired": "Full access needs a one-time confirmation first. The current mode continues.",
+      "forbidden": "Only the person who started this job can change its mode.",
+      "failed": "The mode could not be changed. Try again."
+    },
+    "attachmentNotReady": "“{name}” is still being prepared in Storage. Send it again when it is ready.",
+    "attachmentNotStorage": "“{name}” is not a Storage file and cannot be attached. Save it to Storage first.",
+    "requestedCountOutOfRange": "This model makes {min}–{max} outputs per request; {count} was requested.",
+    "submitInvalid": "The message could not be prepared. Check the chips and try again.",
+    "tooManyChips": "The message already has the maximum number of resources."
+  }
+}

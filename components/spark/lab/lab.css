@@ -1,0 +1,731 @@
+/* Spark lab (`/spark/lab`): styles of the three agent-workspace prototypes. Loaded after `studio.css`, scoped to
+   `.yt-studio` and prefixed `lb-`; only `--st-*` tokens plus the agent's own hue. */
+
+.yt-studio.lb-root{display:flex;flex-direction:column;--lb-agent:#8b5cf6;--lb-agent-text:#6d3fe0;--lb-agent-soft:rgba(139,92,246,.14);--lb-agent-border:rgba(139,92,246,.45);--lb-amber:#d98a0b}
+.dark .yt-studio.lb-root{--lb-agent-text:#c4b5fd;--lb-amber:#fbbf24}
+.yt-studio .lb-shell{flex:1;height:auto}
+.yt-studio .btn.on{background:var(--st-active)}
+.yt-studio .btn:disabled{opacity:.45;pointer-events:none}
+
+/* ---------- the top bar: project and save mark, the view switch in the middle, actions on the right ---------- */
+.yt-studio .lb-top{gap:10px}
+.yt-studio .lb-top .title-in{width:auto;min-width:80px;max-width:240px;field-sizing:content}
+.yt-studio .lb-save{display:grid;place-items:center;width:20px;height:20px;flex:none;color:var(--st-text-3)}
+.yt-studio .lb-save .i{grid-area:1/1;width:15px;height:15px}
+.yt-studio .lb-save .i:first-child{opacity:0;animation:lb-sync .9s linear}
+.yt-studio .lb-save .i:last-child{color:var(--st-ok);animation:lb-saved .9s ease-out backwards}
+@keyframes lb-sync{0%{opacity:1;transform:rotate(0)}70%{opacity:1}100%{opacity:0;transform:rotate(300deg)}}
+@keyframes lb-saved{0%,70%{opacity:0;transform:scale(.5)}86%{opacity:1;transform:scale(1.2)}100%{opacity:1;transform:scale(1)}}
+.yt-studio .lb-views{flex:none}
+.yt-studio .lb-views button{flex:none;height:26px;padding:0 12px 0 10px;white-space:nowrap}
+.yt-studio .lb-views button .i{width:14px;height:14px;color:var(--st-text-3);transition:color .12s}
+.yt-studio .lb-views button.on .i{color:var(--st-accent-text)}
+.yt-studio .lb-views button[aria-disabled=true]{opacity:.4;cursor:default}
+.yt-studio .lb-views button[aria-disabled=true]:hover{color:var(--st-text-2)}
+.yt-studio .lb-views-dot{position:absolute;top:4px;right:5px;width:6px;height:6px;border-radius:50%;background:var(--st-accent);animation:lb-fade .2s ease-out}
+@media (prefers-reduced-motion:reduce){
+.yt-studio .lb-save .i:first-child{animation:none}
+.yt-studio .lb-save .i:last-child{animation:none}
+}
+/* ---------- the project's format, changed in place; the board's view switch ---------- */
+.yt-studio .lb-format{display:inline-flex;align-items:center;gap:5px;border-radius:6px;padding:1px 5px;margin:-1px -5px;text-align:left;transition:background .12s}
+.yt-studio .lb-format:hover{background:var(--st-hover)}
+.yt-studio .lb-format > .i:last-child{width:12px;height:12px;opacity:.5}
+.yt-studio .lb-format-seg{display:inline-flex;flex:none;animation:lb-fade .15s ease-out}
+.yt-studio .lb-format-seg button,.yt-studio .lb-view button{flex:none;height:24px;padding:0 10px;font-size:12px;white-space:nowrap}
+.yt-studio .lb-view{flex:none}
+
+/* ---------- shared: appear, channel layer ---------- */
+/* `from`-only keyframes: the element settles on its own opacity and transform (layers and the cursor are positioned with transform). */
+@keyframes lb-in{from{opacity:0;transform:translateY(4px)}}
+@keyframes lb-fade{from{opacity:0}}
+.yt-studio .lb-in{animation:lb-in .28s ease-out backwards}
+.yt-studio .lb-inherit{display:inline-flex;align-items:center;gap:8px;height:32px;padding:0 8px 0 5px;border:1px solid var(--st-border);border-radius:99px;background:var(--st-surface);font-size:12.5px;color:var(--st-text);text-decoration:none;max-width:100%;min-width:0;transition:background .12s,border-color .12s}
+.yt-studio .lb-inherit:hover{border-color:var(--st-border-strong);background:var(--st-hover)}
+.yt-studio .lb-av{width:22px;height:22px;border-radius:50%;background:linear-gradient(135deg,#ff7a45,#ff3d6e);color:#fff;font-size:9.5px;font-weight:700;display:grid;place-items:center;flex:none}
+.yt-studio .lb-inherit b{font-weight:600;white-space:nowrap}
+.yt-studio .lb-inherit-meta{color:var(--st-text-3);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0}
+.yt-studio .lb-inherit .i{color:var(--st-text-3)}
+.yt-studio .lb-inherit.compact{height:28px;font-size:12px;gap:7px}
+.yt-studio .lb-inherit.compact .lb-av{width:18px;height:18px;font-size:8px}
+
+/* ---------- shared: brief, context, assets, assumptions ---------- */
+.yt-studio .lb-assume{list-style:none;display:grid;gap:1px}
+.yt-studio .lb-assume li{display:flex;align-items:flex-start;gap:9px;padding:6px 0 6px 2px;font-size:12.5px;line-height:1.45;color:var(--st-text-2)}
+.yt-studio .lb-assume li::before{content:'';width:6px;height:6px;border-radius:50%;background:var(--lb-amber);margin-top:6px;flex:none}
+.yt-studio .lb-assume li span{flex:1;min-width:0}
+.yt-studio .lb-assume li .btn{flex:none;height:24px;margin-top:-2px;color:var(--st-text-3)}
+.yt-studio .lb-assume li.dropped span{text-decoration:line-through;color:var(--st-text-3)}
+.yt-studio .lb-assume li.dropped::before{background:var(--st-border-strong)}
+.yt-studio .lb-est{display:inline-flex;align-items:center;gap:5px;font-size:12px;font-weight:500;color:var(--st-text-2);font-variant-numeric:tabular-nums;white-space:nowrap;padding:0 4px}
+.yt-studio .lb-est .i{color:var(--st-text-3)}
+
+/* ---------- shared: scene pictures (CSS-drawn stand-ins) and their layers ---------- */
+.yt-studio .lb-thumb{position:absolute;inset:0;overflow:hidden;container-type:size;background:#0c0c0d}
+.yt-studio .lb-art{position:absolute;inset:0;transition:filter .5s}
+.yt-studio .lb-thumb.sketch .lb-art{filter:saturate(.28) brightness(.74)}
+.yt-studio .lb-art.intro{background:radial-gradient(90% 60% at 50% 42%,#2f3532 0,#121514 72%)}
+.yt-studio .lb-art.intro::after{content:'';position:absolute;left:50%;top:38%;width:20cqmin;aspect-ratio:1;transform:translate(-50%,-50%) rotate(45deg);border-radius:14%;background:#f2e9dc}
+.yt-studio .lb-art.hook{background:radial-gradient(ellipse 31cqmin 27cqmin at 50% 60%,#fbd98c 0,#f0a43a 52%,#c56c18 99%,transparent 100%),radial-gradient(ellipse 43cqmin 37cqmin at 50% 60%,#f6f1e7 0 99%,transparent 100%),radial-gradient(ellipse 52cqmin 46cqmin at 50% 64%,rgba(0,0,0,.5) 0,transparent 100%),linear-gradient(180deg,#54331b 0,#22140b 100%)}
+.yt-studio .lb-art.chef{background:linear-gradient(180deg,#66746b 0,#2b3531 100%)}
+.yt-studio .lb-art.chef::before{content:'';position:absolute;left:50%;top:36%;width:27cqmin;aspect-ratio:1;transform:translate(-50%,-50%);border-radius:50%;background:#e8c7a6;z-index:1}
+.yt-studio .lb-art.chef::after{content:'';position:absolute;left:50%;width:62cqmin;transform:translateX(-50%);top:47%;bottom:0;border-radius:44% 44% 0 0/30% 30% 0 0;background:#f4f1ea}
+.yt-studio .lb-art.dish{background:radial-gradient(circle closest-side at 50% 46%,#fbd98c 0,#ee9e33 30%,#c9741c 40%,#f6f1e7 41%,#f6f1e7 64%,#ddd5c5 65%,#ddd5c5 68%,transparent 69%),linear-gradient(135deg,#3f2d20,#1d140d)}
+.yt-studio .lb-art.outro{background:radial-gradient(80% 46% at 50% 32%,rgba(247,198,106,.28),transparent 70%),linear-gradient(160deg,#21433a,#0e1f1b)}
+.yt-studio .lb-layer{position:absolute;left:50%;transform:translateX(-50%);color:#fff;text-align:center;font-family:var(--st-font-display),sans-serif;font-weight:600;line-height:1.15;white-space:nowrap;transition:opacity .3s,box-shadow .2s;animation:lb-fade .3s ease-out}
+.yt-studio .lb-layer.k-logo{top:52%;font-size:8cqmin;letter-spacing:.02em}
+.yt-studio .lb-layer.k-title{top:12%;width:84%;font-size:10.5cqmin;white-space:normal;text-shadow:0 .4cqmin 2.4cqmin rgba(0,0,0,.55)}
+.yt-studio .lb-layer.k-lower{left:7%;transform:none;bottom:19%;font-size:5.4cqmin;background:#f6f1e7;color:#22140b;padding:1.4cqmin 3.4cqmin;border-radius:1.6cqmin}
+.yt-studio .lb-layer.k-price{bottom:20%;font-size:6cqmin;background:#f6f1e7;color:#3a2413;padding:2.2cqmin 4cqmin;border-radius:2.4cqmin}
+.yt-studio .lb-layer.k-badge{left:auto;right:6%;transform:none;top:6%;font-size:4.6cqmin;background:rgba(0,0,0,.6);padding:1.4cqmin 3cqmin;border-radius:99px}
+.yt-studio .lb-layer.k-place{top:43%;width:80%;font-size:6.4cqmin;white-space:normal}
+.yt-studio .lb-layer.k-caption{bottom:7%;max-width:86%;width:max-content;font:500 4.4cqmin/1.3 var(--st-font-ui),sans-serif;background:rgba(0,0,0,.62);padding:1.2cqmin 2.6cqmin;border-radius:1.4cqmin;white-space:normal}
+.yt-studio .lb-layer.ghost{opacity:.5}
+.yt-studio .lb-agent-on{box-shadow:0 0 0 2px var(--lb-agent),0 0 0 6px var(--lb-agent-soft)}
+.yt-studio .lb-layer.lb-agent-on{opacity:1;border-radius:1.6cqmin}
+
+/* ---------- shared: plan rows, scene cards, status ---------- */
+.yt-studio .lb-plan{list-style:none;display:grid;gap:2px}
+.yt-studio .lb-plan-row button{width:100%;display:flex;align-items:center;gap:10px;padding:8px;border-radius:10px;text-align:left;border:1px solid transparent}
+.yt-studio .lb-plan-row button:hover{background:var(--st-hover)}
+.yt-studio .lb-plan-row.on button{background:var(--st-accent-soft);border-color:var(--st-accent-border)}
+.yt-studio .lb-plan-n{width:20px;height:20px;border-radius:6px;background:var(--st-hover);display:grid;place-items:center;font-size:11px;font-weight:600;color:var(--st-text-2);flex:none;font-variant-numeric:tabular-nums}
+.yt-studio .lb-plan-text{flex:1;min-width:0;display:grid}
+.yt-studio .lb-plan-text b{font-weight:500;font-size:12.5px}
+.yt-studio .lb-plan-text span{font-size:12px;color:var(--st-text-3);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.yt-studio .lb-plan-dur{font-size:11.5px;color:var(--st-text-3);font-variant-numeric:tabular-nums;flex:none}
+.yt-studio .lb-dot{width:8px;height:8px;border-radius:50%;background:var(--st-border-strong);flex:none}
+.yt-studio .lb-dot.working{background:var(--lb-agent);animation:st-blink 1s ease-in-out infinite}
+.yt-studio .lb-dot.ready{background:var(--st-ok)}
+.yt-studio .lb-dot.yours{background:var(--st-accent)}
+.yt-studio .lb-pace{display:flex;gap:3px;height:6px;min-width:0}
+.yt-studio .lb-pace i{flex-basis:0;border-radius:3px;background:var(--st-border-strong);min-width:4px;transition:background .3s}
+.yt-studio .lb-pace i.working{background:var(--lb-agent)}
+.yt-studio .lb-pace i.ready{background:var(--st-ok)}
+.yt-studio .lb-pace i.yours{background:var(--st-accent)}
+
+/* ---------- shared: composer, ideas, hero ---------- */
+.yt-studio .lb-ideas{justify-content:center;margin-bottom:0}
+.yt-studio .lb-ideas button{height:auto;min-height:28px;padding:5px 11px;text-align:left;white-space:normal;line-height:1.35}
+.yt-studio .empty .lb-ideas{flex-direction:column;align-items:stretch;width:100%}
+.yt-studio .empty .lb-ideas button{border-radius:10px;padding:8px 10px}
+.yt-studio .lb-start{position:relative;min-height:0;overflow:auto;display:grid;place-items:center;padding:32px 24px;background:radial-gradient(58% 44% at 50% 0,color-mix(in srgb,var(--lb-agent) 14%,transparent),transparent 72%),radial-gradient(38% 32% at 24% 2%,color-mix(in srgb,var(--st-accent) 11%,transparent),transparent 74%),var(--st-bg)}
+.yt-studio .lb-start-in{width:100%;max-width:720px;margin-top:-5vh;display:grid;grid-template-columns:minmax(0,1fr);gap:14px;justify-items:center;text-align:center;animation:lb-in .35s ease-out backwards}
+.yt-studio .lb-start-orb{width:48px;height:48px;margin-bottom:6px;border-radius:15px;display:grid;place-items:center;color:#fff;background:linear-gradient(135deg,var(--st-accent),#8b5cf6);box-shadow:0 10px 28px color-mix(in srgb,var(--st-accent) 34%,transparent)}
+.yt-studio .lb-start-orb .i{width:24px;height:24px}
+.yt-studio .lb-start h1{font:600 40px/1.1 var(--st-font-display),sans-serif;letter-spacing:-.025em}
+.yt-studio .lb-start p{max-width:560px;color:var(--st-text-2);font-size:15px;line-height:1.6}
+.yt-studio .lb-start .lb-composer{width:100%;margin-top:10px}
+.yt-studio .lb-start .lb-ideas{margin-top:2px}
+.yt-studio .lb-start .lb-inherit{margin-top:8px;background:transparent}
+.yt-studio .lb-skel{display:inline-block;width:62%;height:18px;border-radius:6px;background:var(--st-hover);vertical-align:middle}
+
+/* ---------- shared: job card, driving bar, closing suggestion ---------- */
+.yt-studio .lb-job-title{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.yt-studio .lb-job .lb-steps li{min-height:30px}
+.yt-studio .lb-job .lb-steps li span.lb-step-label{flex:1;min-width:0;margin-left:0;color:inherit}
+.yt-studio .lb-job .lb-steps li.pending{color:var(--st-text-3)}
+.yt-studio .lb-job .lb-steps li.current{color:var(--st-text);font-weight:500}
+.yt-studio .lb-job .lb-steps li.skipped{color:var(--st-text-3);font-style:italic}
+.yt-studio .lb-job .lb-steps li.undone .lb-step-label{text-decoration:line-through;color:var(--st-text-3)}
+.yt-studio .lb-job .lb-steps li.undone .i{color:var(--st-text-3)}
+.yt-studio .lb-pending{width:14px;height:14px;display:grid;place-items:center;flex:none}
+.yt-studio .lb-pending::before{content:'';width:5px;height:5px;border-radius:50%;background:var(--st-border-strong)}
+.yt-studio .lb-step-undo{flex:none;height:22px;padding:0 6px;border-radius:6px;font-size:11.5px;font-weight:500;color:var(--st-accent-text);opacity:0;transition:opacity .12s,background .12s}
+.yt-studio .lb-step-undo:hover{background:var(--st-accent-soft)}
+.yt-studio .lb-steps li:hover .lb-step-undo,.yt-studio .lb-steps li.undone .lb-step-undo,.yt-studio .lb-step-undo:focus-visible{opacity:1}
+.yt-studio .lb-job-plan{border-top:1px solid var(--st-border);padding:12px;display:grid;gap:8px}
+.yt-studio .lb-job-meta{display:flex;justify-content:space-between;align-items:center;font-size:12.5px;color:var(--st-text-2)}
+.yt-studio .lb-job-note{font-size:11.5px;color:var(--st-text-3)}
+.yt-studio .lb-job .card-f{align-items:center}
+.yt-studio .lb-job-count{font-size:12px;color:var(--st-text-3);font-variant-numeric:tabular-nums}
+.yt-studio .lb-autostart{display:inline-flex;align-items:center;gap:8px;font-size:12px;color:var(--st-text-2);white-space:nowrap}
+.yt-studio .lb-autostart i{width:44px;height:4px;border-radius:2px;background:var(--st-hover);position:relative;overflow:hidden}
+.yt-studio .lb-autostart i::after{content:'';position:absolute;inset:0;background:var(--st-accent);transform-origin:0 50%;animation:lb-fill 2.6s linear forwards}
+@keyframes lb-fill{from{transform:scaleX(0)}to{transform:scaleX(1)}}
+.yt-studio .lb-bar{display:flex;align-items:center;gap:10px;height:42px;padding:0 10px 0 14px;background:color-mix(in srgb,var(--lb-agent) 9%,var(--st-panel));border-bottom:1px solid color-mix(in srgb,var(--lb-agent) 28%,var(--st-border));font-size:12.5px;min-width:0;animation:lb-in .2s ease-out}
+.yt-studio .lb-bar-who{display:flex;align-items:center;gap:8px;font-weight:600;white-space:nowrap}
+.yt-studio .lb-bar-who i{width:8px;height:8px;border-radius:50%;background:var(--lb-agent);animation:st-blink 1s ease-in-out infinite}
+.yt-studio .lb-bar-step{flex:1;min-width:0;color:var(--st-text-2);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.yt-studio .lb-bar-meter{width:88px;height:4px;border-radius:2px;background:var(--st-hover);overflow:hidden;flex:none}
+.yt-studio .lb-bar-meter i{display:block;height:100%;background:var(--lb-agent);transition:width .4s}
+.yt-studio .lb-bar-count{color:var(--st-text-3);font-variant-numeric:tabular-nums}
+.yt-studio .lb-bar .btn{background:var(--st-surface)}
+.yt-studio .lb-bar .btn.ghost{background:transparent}
+.yt-studio .lb-bar .btn.primary{background:var(--st-accent)}
+.yt-studio .lb-follow.on{color:var(--lb-agent-text)}
+.yt-studio .lb-bar{container-type:inline-size;container-name:lbbar}
+.yt-studio .lb-bar .btn{flex:none}
+@container lbbar (max-width:680px){
+.yt-studio .lb-bar-meter,.yt-studio .lb-bar-count,.yt-studio .lb-follow span{display:none}
+.yt-studio .lb-follow{padding:0 8px}
+}
+.yt-studio .lb-bar.paused{background:var(--st-surface-2);border-bottom-color:var(--st-border)}
+.yt-studio .lb-bar.paused .lb-bar-who i{background:var(--st-text-3);animation:none}
+.yt-studio .lb-bar.user{background:var(--st-ok-soft);border-bottom-color:color-mix(in srgb,var(--st-ok) 30%,var(--st-border))}
+.yt-studio .lb-bar.user .lb-bar-who i{background:var(--st-ok);animation:none}
+.yt-studio .lb-bar.user .lb-bar-meter i{background:var(--st-ok)}
+.yt-studio .lb-closing-list{list-style:none;border-top:1px solid var(--st-border)}
+.yt-studio .lb-closing-list li{display:flex;align-items:center;gap:10px;padding:9px 12px;font-size:12.5px;line-height:1.45;border-bottom:1px solid var(--st-border)}
+.yt-studio .lb-closing-list li:last-child{border-bottom:0}
+.yt-studio .lb-closing-list li span{flex:1;min-width:0}
+.yt-studio .lb-closing-list li .btn{flex:none}
+
+/* ---------- shared: the editor surface ---------- */
+.yt-studio .lb-stage-in{position:absolute;inset:0;display:grid;place-items:center;padding:22px 24px 52px;container-type:size}
+.yt-studio .lb-frame{width:min(100cqw,calc(min(100cqh,620px)*var(--lb-r)));aspect-ratio:var(--lb-ar);border-radius:10px;background:#0b0b0c;display:grid;place-items:center;transition:box-shadow .2s}
+.yt-studio .lb-frame-empty{position:relative;z-index:1;color:rgba(255,255,255,.42);font-size:12.5px}
+.yt-studio .lb-frame-empty.shimmer{background:linear-gradient(90deg,rgba(255,255,255,.35) 0,#fff 40%,rgba(255,255,255,.35) 80%);background-size:200% 100%;-webkit-background-clip:text;background-clip:text;color:transparent;animation:st-shimmer 1.4s linear infinite}
+.yt-studio .lb-dock{height:auto}
+.yt-studio .lb-dock-empty{padding:18px 24px 22px;text-align:center;color:var(--st-text-3);font-size:12.5px;line-height:1.5}
+.yt-studio .lb-dock.compact .transport{padding:7px 12px}
+.yt-studio .lb-dock.compact .play{width:28px;height:28px}
+.yt-studio .lb-cursor{position:absolute;left:0;top:0;z-index:60;pointer-events:none;display:flex;align-items:flex-start;transition:transform .7s cubic-bezier(.2,.8,.2,1),opacity .2s;filter:drop-shadow(0 2px 6px rgba(0,0,0,.35));animation:lb-fade .2s ease-out}
+.yt-studio .lb-cursor svg{width:17px;height:17px;fill:var(--lb-agent);stroke:#fff;stroke-width:1.1;stroke-linejoin:round;flex:none}
+.yt-studio .lb-cursor span{margin:12px 0 0 -3px;background:var(--lb-agent);color:#fff;font-size:10.5px;font-weight:600;line-height:16px;padding:0 6px;border-radius:3px 7px 7px 7px}
+.yt-studio .lb-cursor.paused{opacity:.45}
+
+/* ---------- Editör view ---------- */
+.yt-studio .lb-a{position:relative}
+.yt-studio .lb-a .center{grid-template-rows:auto minmax(0,1fr) auto}
+.yt-studio .lb-file-empty{display:grid;justify-items:center;text-align:center;gap:6px;padding:40px 16px;color:var(--st-text-3);font-size:12.5px;line-height:1.5}
+.yt-studio .lb-file-empty b{color:var(--st-text);font-size:13.5px;font-weight:600}
+.yt-studio .lb-file-ic{width:40px;height:40px;border-radius:12px;background:var(--st-hover);display:grid;place-items:center;color:var(--st-text-2);margin-bottom:6px}
+
+/* ---------- Plan view ---------- */
+.yt-studio .lb-b{position:relative}
+.yt-studio .lb-b-main{display:grid;grid-template-columns:minmax(0,1fr) var(--lb-b-right,360px);min-height:0}
+.yt-studio .lb-b-work{display:grid;grid-template-rows:auto minmax(0,1fr) auto;min-width:0;min-height:0;background:var(--st-bg);overflow:hidden}
+.yt-studio .lb-b-brief{padding:16px 28px 14px;border-bottom:1px solid var(--st-border);background:var(--st-panel);display:grid;gap:10px;min-width:0}
+.yt-studio .lb-b-line{display:flex;align-items:center;gap:12px;min-width:0}
+.yt-studio .lb-b-line p{flex:1;min-width:0;font:600 17px/1.35 var(--st-font-display),sans-serif;letter-spacing:-.01em}
+.yt-studio .lb-b-board{overflow:auto;min-width:0;min-height:0}
+.yt-studio .lb-card{position:relative;max-width:var(--lb-card-max);background:var(--st-panel);border:1px solid var(--st-border);border-radius:14px;padding:10px;display:grid;align-content:start;gap:9px;transition:border-color .2s,box-shadow .2s}
+.yt-studio .lb-card > header{display:flex;align-items:center;gap:7px;font-size:12.5px;min-width:0}
+.yt-studio .lb-card > header b{flex:1;min-width:0;font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.yt-studio .lb-card-dur{color:var(--st-text-3);font-size:11.5px;font-variant-numeric:tabular-nums;flex:none}
+.yt-studio .lb-card-pic{position:relative;aspect-ratio:var(--lb-ar);border-radius:9px;overflow:hidden;background:#111}
+.yt-studio .lb-card-say{font-size:12.5px;line-height:1.45;color:var(--st-text-2);min-height:36px}
+.yt-studio .lb-card-tags{display:flex;flex-wrap:wrap;gap:4px;align-content:flex-start;min-height:22px}
+.yt-studio .lb-card-tags .stag{height:22px;padding:0 7px;font-size:11px;max-width:100%;white-space:nowrap;overflow:hidden}
+.yt-studio .lb-card-step{font-size:11.5px;font-weight:500;color:var(--lb-agent-text);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0}
+.yt-studio .lb-card.yours{border-color:var(--st-accent-border)}
+.yt-studio .lb-card .ib.on,.yt-studio .lb-tr .ib.on{background:var(--st-accent-soft);color:var(--st-accent-text)}
+/* a scene's hold button stays out of the way until the scene is pointed at, or held */
+.yt-studio .lb-lock{opacity:0;transition:opacity .12s,background .12s,color .12s}
+.yt-studio .lb-card:hover .lb-lock,.yt-studio .lb-tr:hover .lb-lock,.yt-studio .lb-lock.on,.yt-studio .lb-lock:focus-visible{opacity:1}
+.yt-studio .lb-card > header .lb-lock{margin:-3px -4px -3px 0}
+.yt-studio .lb-card-say.muted{color:var(--st-text-3)}
+/* Plan · Senaryo: the plan in full, as a document. A section menu on the left; each part is a heading over a
+   rule, then open rows separated by hairlines (no boxes, no fills), and the way to add to it as the last row. */
+.yt-studio .lb-script{display:grid;grid-template-columns:204px minmax(0,1fr);overflow:hidden}
+.yt-studio .lb-nav{overflow:auto;display:grid;align-content:start;gap:18px;padding:16px 10px 16px 12px;background:var(--st-panel);border-right:1px solid var(--st-border)}
+.yt-studio .lb-nav-group{display:grid;gap:1px}
+.yt-studio .lb-nav-h{padding:0 8px 5px;font-size:11.5px;font-weight:500;color:var(--st-text-3)}
+.yt-studio .lb-nav button{display:flex;align-items:center;gap:8px;height:28px;padding:0 8px;border-radius:6px;text-align:left;font-size:13px;color:var(--st-text-2);transition:background .12s,color .12s}
+.yt-studio .lb-nav button span{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.yt-studio .lb-nav button small{font-size:11.5px;color:var(--st-text-3);font-variant-numeric:tabular-nums}
+.yt-studio .lb-nav button:hover{background:var(--st-hover);color:var(--st-text)}
+.yt-studio .lb-nav button.on{background:var(--st-active);color:var(--st-text);font-weight:500}
+.yt-studio .lb-nav button.on small{color:var(--st-text-2)}
+.yt-studio .lb-nav button.pending{opacity:.38;pointer-events:none}
+.yt-studio .lb-plan-doc{overflow:auto;min-width:0;scroll-behavior:smooth}
+.yt-studio .lb-plan-in{max-width:984px;margin:0 auto;padding:30px 44px 80px;display:grid;grid-template-columns:minmax(0,1fr);gap:46px}
+/* the heading's rule and the rows' rules run 12px past the text on both sides, so a row can be marked whole */
+.yt-studio .lb-sec{scroll-margin-top:18px}
+.yt-studio .lb-sec > header{display:flex;align-items:baseline;gap:12px;margin:0 -12px;padding:0 12px 11px;border-bottom:1px solid var(--st-border-strong)}
+.yt-studio .lb-sec > header h3{font:500 22px/1.2 var(--st-font-display),sans-serif;letter-spacing:-.018em;color:var(--st-text);white-space:nowrap}
+.yt-studio .lb-sec > header small{min-width:0;font-size:12.5px;color:var(--st-text-3);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.yt-studio .lb-table{margin:0 -12px}
+.yt-studio .lb-tr{display:grid;grid-template-columns:136px minmax(0,1fr) auto;align-items:center;gap:16px;min-height:48px;padding:10px 12px;border-bottom:1px solid var(--st-border);transition:background .12s}
+.yt-studio .lb-tr.wide{grid-template-columns:minmax(0,1fr) auto}
+.yt-studio .lb-tr:hover{background:var(--st-surface-2)}
+.yt-studio .lb-th{font-size:13px;color:var(--st-text-2)}
+.yt-studio .lb-td{min-width:0;font-size:14px;line-height:1.5;color:var(--st-text)}
+.yt-studio .lb-td b{display:block;font-weight:500}
+.yt-studio .lb-td small{display:block;margin-top:1px;font-size:12.5px;color:var(--st-text-2)}
+.yt-studio .lb-tr.dropped .lb-td{text-decoration:line-through;color:var(--st-text-3)}
+.yt-studio .lb-tr-acts{display:flex;align-items:center;justify-content:flex-end;gap:4px;margin-right:-8px}
+/* a row's own actions are plain words; they wake when the row is pointed at */
+.yt-studio .lb-act{display:inline-flex;align-items:center;gap:5px;height:28px;padding:0 8px;border-radius:6px;font-size:12.5px;font-weight:500;color:var(--st-text-2);white-space:nowrap;transition:background .12s,color .12s}
+.yt-studio .lb-act .i{width:13px;height:13px}
+.yt-studio .lb-tr:hover .lb-act,.yt-studio .lb-act.add{color:var(--st-text)}
+.yt-studio .lb-act:hover{background:var(--st-active);color:var(--st-text)}
+/* a kept choice says so where its action was */
+.yt-studio .lb-note{display:inline-flex;align-items:center;gap:5px;padding:0 8px;font-size:12.5px;color:var(--st-text-2);white-space:nowrap}
+.yt-studio .lb-note .i{width:13px;height:13px}
+.yt-studio .lb-note.saved .i{color:var(--st-ok)}
+/* adding to a part: its last row */
+.yt-studio .lb-add{display:flex;align-items:center;gap:10px;width:100%;min-height:48px;padding:0 12px;text-align:left;font-size:13.5px;font-weight:500;color:var(--st-text-2);transition:background .12s,color .12s}
+.yt-studio .lb-add i{width:22px;height:22px;border-radius:6px;border:1px solid var(--st-border-strong);display:grid;place-items:center;flex:none;transition:background .12s,border-color .12s,color .12s}
+.yt-studio .lb-add i .i{width:13px;height:13px}
+.yt-studio .lb-add .spin{margin:0 4px}
+.yt-studio button.lb-add:hover{background:var(--st-surface-2);color:var(--st-text)}
+.yt-studio button.lb-add:hover i{background:var(--st-text);border-color:var(--st-text);color:var(--st-panel)}
+/* the script: one row per scene under a line of column names */
+.yt-studio .lb-tr.scene{grid-template-columns:20px 40px calc(96px*var(--lb-r)) minmax(0,1fr) minmax(150px,232px) 24px;align-items:start;padding:14px 8px 14px 12px}
+.yt-studio .lb-tr.scene.head{align-items:center;min-height:32px;padding-top:0;padding-bottom:0}
+.yt-studio .lb-tr.scene.head:hover{background:none}
+.yt-studio .lb-tr.scene.head .lb-th{font-size:11.5px;color:var(--st-text-3)}
+.yt-studio .lb-tr-n{padding-top:1px;font-size:13px;font-weight:500;color:var(--st-text-2);font-variant-numeric:tabular-nums}
+.yt-studio .lb-tr-time{padding-top:2px;font-size:12px;color:var(--st-text-2);font-variant-numeric:tabular-nums}
+.yt-studio .lb-tr-pic{position:relative;height:96px;border-radius:4px;overflow:hidden;background:#111;box-shadow:0 0 0 1px var(--st-frame-ring)}
+.yt-studio .lb-tr-title{display:flex;align-items:center;gap:8px;margin-bottom:4px;font-size:13px;min-width:0}
+.yt-studio .lb-tr-title b{display:inline;font-weight:600;white-space:nowrap}
+.yt-studio .lb-tr-title span{font-size:12px;color:var(--st-text-2);font-variant-numeric:tabular-nums;white-space:nowrap}
+.yt-studio .lb-tr-title em{min-width:0;font-style:normal;font-size:12px;font-weight:500;color:var(--lb-agent-text);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.yt-studio .lb-tr.scene .lb-td p{font-size:14px;line-height:1.5}
+.yt-studio .lb-tr-screen{margin-top:6px;font-size:12px;color:var(--st-text-2)}
+.yt-studio .lb-tr-screen span{margin-right:6px;color:var(--st-text-3)}
+.yt-studio .lb-tr-tags{display:flex;flex-wrap:wrap;align-content:flex-start;gap:4px;min-width:0}
+.yt-studio .lb-script .stag{height:22px;padding:0 9px;border-radius:99px;border-color:var(--st-border-strong);font-size:11.5px;max-width:100%;white-space:nowrap;overflow:hidden}
+.yt-studio .lb-tr.scene.yours{box-shadow:inset 2px 0 0 var(--lb-you,var(--st-accent))}
+.yt-studio .lb-tr.lb-agent-on{background:var(--lb-agent-soft);box-shadow:inset 2px 0 0 var(--lb-agent)}
+/* the same sharper line for the rest of the Plan view */
+.yt-studio .lb-plan-n{border-radius:4px}
+.yt-studio .lb-view{border-radius:6px}
+.yt-studio .lb-view button{border-radius:4px}
+.yt-studio .lb-b-brief > .lb-inherit{border-radius:6px}
+.yt-studio .lb-b-brief > .lb-inherit .lb-av{border-radius:4px}
+.yt-studio .lb-strip-board .lb-card{border-radius:8px;border-color:var(--st-border-strong)}
+.yt-studio .lb-strip-board .lb-card-pic,.yt-studio .lb-strip-board .lb-add-frame{border-radius:4px}
+@container studio (max-width:1180px){
+.yt-studio .lb-script{grid-template-columns:minmax(0,1fr)}
+.yt-studio .lb-nav{display:none}
+.yt-studio .lb-plan-in{padding:24px 28px 64px}
+.yt-studio .lb-tr.scene{grid-template-columns:20px 40px calc(96px*var(--lb-r)) minmax(0,1fr) 24px}
+.yt-studio .lb-tr.scene > .lb-tr-tags,.yt-studio .lb-tr.scene.head > :nth-child(5){display:none}
+}
+/* Plan · Şerit: frame cards; the strip wraps, the card width follows the ratio */
+/* `--lb-n` is the number of tiles. They share the row while each stays above the minimum, never grow past the
+   maximum (the board itself stops there), and wrap into equal columns when they no longer fit. */
+.yt-studio .lb-strip-board{--lb-n:6;--lb-card-min:158px;--lb-card-max:240px;max-width:calc(var(--lb-n)*var(--lb-card-max) + (var(--lb-n) - 1)*16px + 56px);padding:24px 28px 28px;display:grid;grid-template-columns:repeat(auto-fill,minmax(max(var(--lb-card-min),calc((100% - (var(--lb-n) - 1)*16px)/var(--lb-n))),1fr));gap:16px;align-content:start}
+.yt-studio[data-ratio="1:1"] .lb-strip-board{--lb-card-min:164px;--lb-card-max:260px}
+.yt-studio[data-ratio="16:9"] .lb-strip-board{--lb-card-min:246px;--lb-card-max:360px}
+.yt-studio .lb-add-tile{display:block;max-width:var(--lb-card-max);padding:42px 10px 0;align-self:start;text-align:center}
+.yt-studio .lb-add-frame{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;aspect-ratio:var(--lb-ar);border:1.5px dashed var(--st-border-strong);border-radius:9px;color:var(--st-text-3);font-size:12.5px;font-weight:500;transition:background .12s,color .12s,border-color .12s}
+.yt-studio button.lb-add-tile:hover .lb-add-frame{background:var(--st-hover);color:var(--st-text);border-color:var(--st-text-3)}
+.yt-studio .lb-insert{position:absolute;right:-18px;top:calc(42px + 22%);z-index:3;width:20px;height:20px;border-radius:50%;background:var(--st-accent);color:#fff;display:grid;place-items:center;opacity:0;transition:opacity .12s,transform .12s}
+.yt-studio .lb-insert .i{width:12px;height:12px;stroke-width:2.4}
+.yt-studio .lb-card:hover .lb-insert,.yt-studio .lb-insert:focus-visible{opacity:1}
+.yt-studio .lb-insert:hover{transform:scale(1.12)}
+/* Plan · Akış: the Flow editor's own canvas. It is app-themed (Tailwind) and the Spark scope resets paddings and
+   borders, so it is mounted in a layer beside `.yt-studio`, over this slot (see `lab-real-flow.tsx`). */
+.yt-studio .lb-flow-slot{overflow:hidden}
+.lb-overlay{position:absolute;inset:0;pointer-events:none}
+.lb-flow-host{position:absolute;overflow:hidden;pointer-events:auto;background:var(--background)}
+.lb-flow-loading{height:100%;display:grid;place-items:center;font-size:13px;color:var(--muted-foreground)}
+.yt-studio .lb-b-foot{position:relative;border-top:1px solid var(--st-border);background:var(--st-panel)}
+.yt-studio .lb-b-strip{display:flex;align-items:center;gap:12px;padding:10px 210px 10px 14px}
+.yt-studio .lb-b-strip .play{width:30px;height:30px}
+.yt-studio .lb-b-strip .lb-pace{flex:1;height:8px}
+.yt-studio .lb-b-toggle{position:absolute;right:10px;top:11px}
+.yt-studio .lb-b-foot .lb-dock{border-top:0}
+.yt-studio .lb-b-foot.open .transport{padding-right:210px}
+.yt-studio .lb-b-right{position:relative;background:var(--st-panel);border-left:1px solid var(--st-border);display:flex;flex-direction:column;min-width:0;min-height:0;overflow:hidden;animation:lb-in .25s ease-out}
+
+/* ---------- Sohbet view ---------- */
+.yt-studio .lb-c-main{display:grid;grid-template-columns:minmax(0,1fr);min-height:0}
+.yt-studio .lb-c.watching .lb-c-main{grid-template-columns:minmax(0,1fr) var(--lb-c-side,minmax(400px,45%))}
+/* the page scrolls as one, so its scrollbar runs the whole height; the composer stays at the bottom of it */
+.yt-studio .lb-c-page{display:flex;flex-direction:column;overflow-y:auto;min-width:0;min-height:0;background:var(--st-bg);scroll-behavior:smooth}
+.yt-studio .lb-c-thread{flex:1 0 auto;display:flex;flex-direction:column}
+.yt-studio .lb-c-thread .msgs{flex:1 0 auto;overflow:visible;width:100%;max-width:824px;margin:0 auto;padding:32px 32px 16px;gap:22px}
+.yt-studio .lb-c-thread .m-user{max-width:78%}
+.yt-studio .lb-c-thread .bubble,.yt-studio .lb-c-thread .ai-text{font-size:14.5px}
+.yt-studio .lb-c-compose{position:sticky;bottom:0;z-index:2;flex:none;width:100%;max-width:824px;margin:0 auto;padding:14px 32px 16px;display:grid;gap:8px;background:linear-gradient(to bottom,transparent,var(--st-bg) 14px)}
+.yt-studio .lb-assume-card .lb-assume{border-top:1px solid var(--st-border);padding:6px 8px 8px 12px}
+.yt-studio .lb-c-side{position:relative;display:flex;min-width:0;min-height:0;padding:14px 14px 14px 8px}
+.yt-studio .lb-screen{flex:1;display:grid;grid-template-rows:auto minmax(0,1fr) auto;min-width:0;border:1px solid var(--st-border);border-radius:16px;overflow:hidden;background:var(--st-panel);box-shadow:var(--st-shadow)}
+.yt-studio .lb-screen-head{display:flex;align-items:center;gap:10px;height:46px;padding:0 10px 0 14px;border-bottom:1px solid var(--st-border);font-size:12.5px;min-width:0}
+.yt-studio .lb-live{display:inline-flex;align-items:center;gap:8px;font-weight:600;white-space:nowrap}
+.yt-studio .lb-live i{width:8px;height:8px;border-radius:50%;background:var(--st-border-strong)}
+.yt-studio .lb-live.on i{background:var(--lb-agent);animation:st-blink 1s ease-in-out infinite}
+.yt-studio .lb-screen-step{color:var(--st-text-2);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0}
+.yt-studio .lb-screen-body{position:relative;display:grid;grid-template-rows:minmax(0,1fr) auto;min-height:0}
+.yt-studio .lb-scrub{display:flex;align-items:center;gap:12px;padding:10px 14px;border-top:1px solid var(--st-border)}
+.yt-studio .lb-scrub-ticks{display:flex;gap:4px;flex:1;min-width:0}
+.yt-studio .lb-scrub-ticks button{flex:1;height:6px;border-radius:3px;background:var(--st-hover);transition:background .3s,transform .12s}
+.yt-studio .lb-scrub-ticks button:not(:disabled):hover{transform:scaleY(1.8)}
+.yt-studio .lb-scrub-ticks button:disabled{cursor:default}
+.yt-studio .lb-scrub-ticks button.done{background:var(--lb-agent)}
+.yt-studio .lb-scrub-ticks button.current{background:var(--lb-agent);animation:st-blink 1s ease-in-out infinite}
+.yt-studio .lb-scrub-ticks button.undone{background:var(--lb-amber)}
+.yt-studio .lb-scrub-ticks button.skipped{background:var(--st-accent)}
+.yt-studio .lb-scrub-count{font-size:12px;color:var(--st-text-3);font-variant-numeric:tabular-nums;white-space:nowrap}
+
+/* The lab is laid out for a desktop editor width; below it the side surfaces give way to the main one. */
+@container studio (max-width:1020px){
+.yt-studio .lb-b-main,.yt-studio .lb-c.watching .lb-c-main{grid-template-columns:minmax(0,1fr)}
+.yt-studio .lb-b-right,.yt-studio .lb-c-side{display:none}
+}
+@media (prefers-reduced-motion:reduce){
+.yt-studio .lb-in,.yt-studio .lb-layer,.yt-studio .lb-cursor,.yt-studio .lb-bar{animation:none}
+.yt-studio .lb-cursor{transition:none}
+}
+
+/* Single-column grids hold ellipsised text: the track must not grow to the text's full width. */
+.yt-studio .lb-card,.yt-studio .lb-job-plan,.yt-studio .lb-b-brief,.yt-studio .lb-c-compose{grid-template-columns:minmax(0,1fr)}
+.yt-studio .lb-b-brief > .lb-inherit{justify-self:start}
+
+/* ---------- scrollbars: thin, no track, a thumb that takes the theme ---------- */
+/* The measures of the app's own thin scrollbar (`.youtorch-thin-scrollbar`, globals.css). The pseudo-elements are
+   used where they exist, because they also drop the arrow buttons; elsewhere the standard properties. */
+.yt-studio.lb-root{--lb-scroll:color-mix(in srgb,var(--st-text) 20%,transparent);--lb-scroll-on:color-mix(in srgb,var(--st-text) 36%,transparent)}
+.yt-studio.lb-root ::-webkit-scrollbar{width:8px;height:8px}
+.yt-studio.lb-root ::-webkit-scrollbar-track,.yt-studio.lb-root ::-webkit-scrollbar-corner{background:transparent}
+.yt-studio.lb-root ::-webkit-scrollbar-thumb{border-radius:99px;border:2px solid transparent}
+@supports not selector(::-webkit-scrollbar){
+.yt-studio.lb-root *{scrollbar-width:thin}
+}
+
+/* ---------- panes sized by dragging their edge (the editor's own handles, `.rz`) ---------- */
+.yt-studio .rz{outline:0;touch-action:none}
+.yt-studio .rz:focus-visible::after{opacity:1}
+.yt-studio .app.no-drawer .drawer .rz{display:none}
+.yt-studio .lb-dock.sized{overflow:hidden}
+.yt-studio .lb-dock.sized .lb-dock-empty{margin:auto 0}
+
+/* ---------- a text that can be rewritten: plain until its pencil is used, then a proper field ---------- */
+.yt-studio .lb-edit-btn{display:inline-grid;place-items:center;width:22px;height:22px;margin:-3px 0 -3px 6px;border-radius:5px;vertical-align:middle;color:var(--st-text-3);opacity:0;transition:opacity .12s,background .12s,color .12s}
+.yt-studio .lb-edit-btn .i{width:13px;height:13px}
+.yt-studio .lb-tr:hover .lb-edit-btn,.yt-studio .lb-card:hover .lb-edit-btn,.yt-studio .lb-edit-btn:focus-visible{opacity:1}
+.yt-studio .lb-edit-btn:hover{background:var(--st-active);color:var(--st-text)}
+.yt-studio .lb-field{display:grid;gap:5px;width:100%}
+.yt-studio .lb-field textarea{display:block;width:100%;min-height:36px;padding:7px 10px;border:1px solid var(--st-border-strong);border-radius:8px;background:var(--st-surface);font:inherit;line-height:1.5;color:var(--st-text);resize:none;field-sizing:content;outline:0;transition:border-color .12s,box-shadow .12s}
+.yt-studio .lb-field textarea:focus{border-color:var(--st-accent-border);box-shadow:0 0 0 3px var(--st-accent-soft)}
+.yt-studio .lb-field small{display:block;margin:0;font-size:11.5px;color:var(--st-text-3)}
+
+/* ---------- a choice (who, which voice, which kit…): what was chosen, and the things to choose from ---------- */
+.yt-studio .lb-token{display:inline-flex;align-items:center;gap:10px;max-width:100%;min-height:36px;margin:-4px 0 -4px -8px;padding:4px 10px 4px 8px;border-radius:8px;text-align:left;transition:background .12s}
+.yt-studio .lb-token:hover,.yt-studio .lb-tr.open .lb-token{background:var(--st-active)}
+.yt-studio .lb-token-text{display:grid;min-width:0}
+.yt-studio .lb-token-text b{display:block;font-size:13.5px;font-weight:500;line-height:1.3;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.yt-studio .lb-token-text small{display:block;margin:0;font-size:12px;line-height:1.35;color:var(--st-text-2);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.yt-studio .lb-token .stag{flex:none}
+.yt-studio .lb-mark{width:28px;height:28px;border-radius:7px;display:grid;place-items:center;flex:none;background:var(--st-hover);color:var(--st-text-2);font-size:10.5px;font-weight:600;overflow:hidden}
+.yt-studio .lb-mark .i{width:14px;height:14px}
+.yt-studio .lb-mark.face{border-radius:50%;background:linear-gradient(135deg,#7c8a84,#3f4c46);color:#fff}
+.yt-studio .lb-mark.swatch{grid-template-columns:repeat(3,1fr);place-items:stretch;box-shadow:inset 0 0 0 1px var(--st-frame-ring)}
+.yt-studio .lb-mark.swatch i{display:block}
+.yt-studio .lb-mark.cap{background:#1b1b1d;color:#fff;font-size:11px}
+.yt-studio .lb-mark.cap.bold{color:#ffd84a;font-weight:800}
+.yt-studio .lb-mark.cap.minimal{background:var(--st-hover);color:var(--st-text);font-weight:500}
+.yt-studio .lb-mark.cap.off{background:var(--st-hover);color:var(--st-text-3);text-decoration:line-through}
+/* nothing chosen yet: only the way to add */
+.yt-studio .lb-addbtn{display:inline-flex;align-items:center;gap:7px;height:32px;padding:0 14px 0 11px;border:1px dashed var(--st-border-strong);border-radius:99px;font-size:13px;font-weight:500;color:var(--st-text);transition:background .12s,border-color .12s}
+.yt-studio .lb-addbtn .i{width:13px;height:13px}
+.yt-studio .lb-addbtn:hover,.yt-studio .lb-addbtn[aria-expanded=true]{background:var(--st-hover);border-style:solid;border-color:var(--st-text-3)}
+.yt-studio .lb-picker{grid-column:1/-1;display:grid;grid-template-columns:minmax(0,1fr);gap:12px;justify-items:start;margin:6px 0 4px;padding:12px;border:1px solid var(--st-border-strong);border-radius:10px;background:var(--st-surface);animation:lb-in .18s ease-out}
+.yt-studio .lb-opts{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:6px;width:100%}
+.yt-studio .lb-opt{display:flex;align-items:center;gap:10px;min-height:48px;padding:8px 10px;border:1px solid var(--st-border);border-radius:8px;text-align:left;transition:background .12s,border-color .12s}
+.yt-studio .lb-opt:hover{background:var(--st-hover);border-color:var(--st-border-strong)}
+.yt-studio .lb-opt.on{border-color:var(--st-text);background:var(--st-surface-2)}
+.yt-studio .lb-opt > .i{margin-left:auto;width:14px;height:14px}
+.yt-studio .lb-make{display:grid;gap:8px;width:100%;padding-top:12px;border-top:1px solid var(--st-border);justify-items:start}
+.yt-studio .lb-make > b{font-size:12.5px;font-weight:600}
+.yt-studio .lb-make-row{display:flex;flex-wrap:wrap;align-items:center;gap:6px}
+.yt-studio .lb-make-row > span{width:72px;font-size:12.5px;color:var(--st-text-2)}
+.yt-studio .lb-chip{height:28px;padding:0 12px;border:1px solid var(--st-border-strong);border-radius:99px;font-size:12.5px;font-weight:500;color:var(--st-text-2);transition:background .12s,color .12s,border-color .12s}
+.yt-studio .lb-chip:hover{background:var(--st-hover);color:var(--st-text)}
+.yt-studio .lb-chip.on{background:var(--st-text);border-color:var(--st-text);color:var(--st-bg)}
+
+/* ---------- a row being added, where it will be ---------- */
+.yt-studio .lb-draft{display:flex;align-items:center;gap:8px;min-height:52px;padding:8px 12px;border-bottom:1px solid var(--st-border);animation:lb-in .18s ease-out}
+.yt-studio .lb-draft input{flex:1;min-width:0;height:34px;padding:0 11px;border:1px solid var(--st-border-strong);border-radius:8px;background:var(--st-surface);font-size:13.5px;color:var(--st-text);outline:0;transition:border-color .12s,box-shadow .12s}
+.yt-studio .lb-draft input:focus{border-color:var(--st-accent-border);box-shadow:0 0 0 3px var(--st-accent-soft)}
+.yt-studio .lb-draft input::placeholder{color:var(--st-text-3)}
+.yt-studio .lb-draft input.name{flex:0 1 230px}
+.yt-studio .lb-draft .secs{display:inline-flex;align-items:center;gap:6px;flex:none;font-size:12.5px;color:var(--st-text-2)}
+.yt-studio .lb-draft .secs input{flex:none;width:60px;padding:0 6px 0 10px}
+.yt-studio .lb-tr-pic.vacant{background:none;box-shadow:none;border:1px dashed var(--st-border-strong)}
+
+/* ---------- a question from Spark, on the composer ---------- */
+.yt-studio .lb-compose{display:grid;grid-template-columns:minmax(0,1fr);gap:8px;width:100%;min-width:0}
+.yt-studio .lb-ask{display:grid;grid-template-columns:minmax(0,1fr);gap:8px;padding:12px;border:1px solid var(--st-border-strong);border-radius:12px;background:var(--st-surface);box-shadow:var(--st-shadow-sm);text-align:left}
+.yt-studio .lb-ask-h{display:flex;align-items:center;gap:8px;min-height:24px}
+.yt-studio .lb-ask-chip{display:inline-flex;align-items:center;height:22px;padding:0 9px;border-radius:99px;background:var(--lb-agent-soft);color:var(--lb-agent-text);font-size:11.5px;font-weight:600}
+.yt-studio .lb-ask-n{font-size:12px;color:var(--st-text-3);font-variant-numeric:tabular-nums}
+.yt-studio .lb-ask-q{font-size:14.5px;font-weight:500;line-height:1.4;color:var(--st-text)}
+.yt-studio .lb-ask-opts{display:grid;gap:2px}
+.yt-studio .lb-ask-opts button{display:flex;align-items:center;gap:10px;min-height:40px;margin:0 -4px;padding:6px 8px;border-radius:8px;text-align:left;transition:background .12s}
+.yt-studio .lb-ask-opts button:hover{background:var(--st-hover)}
+.yt-studio .lb-ask-opts kbd{display:grid;place-items:center;width:22px;height:22px;flex:none;padding:0;border:1px solid var(--st-border-strong);border-radius:6px;background:none;font:500 11.5px var(--st-font-ui),sans-serif;color:var(--st-text-2)}
+.yt-studio .lb-ask-opts kbd .i{width:12px;height:12px}
+.yt-studio .lb-ask-opts button > span{display:grid;min-width:0}
+.yt-studio .lb-ask-opts b{font-size:13.5px;font-weight:500;color:var(--st-text)}
+.yt-studio .lb-ask-opts small{font-size:12px;color:var(--st-text-2)}
+
+/* ---------- the job card's list is its status; a plan is approved in the Plan view ---------- */
+.yt-studio .lb-waiting{display:grid;place-items:center;flex:none}
+.yt-studio .lb-job .lb-steps li .lb-waiting .i{color:var(--lb-amber)}
+.yt-studio .lb-job .lb-steps li.done.go > span:last-child{color:var(--st-text-2)}
+.yt-studio .lb-job .card-f{flex-wrap:wrap;row-gap:6px}
+.yt-studio .lb-job-count{white-space:nowrap}
+.yt-studio .lb-b-work{display:flex;flex-direction:column}
+.yt-studio .lb-b-work > .lb-b-board{flex:1 1 0}
+.yt-studio .lb-b-work > .lb-b-brief,.yt-studio .lb-b-work > .lb-b-foot,.yt-studio .lb-approve{flex:none}
+.yt-studio .lb-approve{display:flex;align-items:center;gap:14px;min-height:54px;padding:8px 14px 8px 20px;border-top:1px solid var(--st-border);background:var(--st-panel)}
+.yt-studio .lb-approve-t{display:flex;align-items:baseline;gap:10px;font-size:12.5px;color:var(--st-text-2);white-space:nowrap}
+.yt-studio .lb-approve-t b{font-size:13.5px;font-weight:600;color:var(--st-text)}
+
+/* ---------- top bar: the view switch sits in the exact middle, whatever is on either side ---------- */
+.yt-studio .lb-top{display:grid;grid-template-columns:minmax(0,1fr) auto minmax(0,1fr);gap:12px}
+.yt-studio .lb-top-l{display:flex;align-items:center;gap:8px;min-width:0}
+.yt-studio .lb-top-r{display:flex;align-items:center;justify-content:flex-end;gap:8px;min-width:0}
+
+/* ---------- scrollbars show while something is being scrolled, then go ---------- */
+@property --lb-thumb{syntax:'<color>';inherits:true;initial-value:transparent}
+.yt-studio.lb-root .lb-scrolling > *{--lb-thumb:transparent}
+.yt-studio.lb-root .lb-scroller{transition:--lb-thumb .35s ease-out}
+.yt-studio.lb-root .lb-scrolling{--lb-thumb:var(--lb-scroll)}
+.yt-studio.lb-root ::-webkit-scrollbar-thumb{background:var(--lb-thumb);background-clip:content-box}
+.yt-studio.lb-root ::-webkit-scrollbar-thumb:hover{background:var(--lb-scroll-on);background-clip:content-box}
+@supports not selector(::-webkit-scrollbar){
+.yt-studio.lb-root *{scrollbar-color:var(--lb-thumb) transparent}
+}
+
+/* ---------- Sohbet: Spark's screen is a panel of its own, parted from the thread by a line ---------- */
+.yt-studio .lb-c-side{padding:0;border-left:1px solid var(--st-border);background:var(--st-panel)}
+.yt-studio .lb-c-side .lb-screen{border:0;border-radius:0;box-shadow:none;background:var(--st-panel)}
+
+/* ---------- the scene list: each scene by its picture; pointing at the picture shows it larger ---------- */
+.yt-studio .lb-plan-pic{position:relative;width:40px;height:44px;flex:none;display:grid;place-items:center}
+.yt-studio[data-ratio="16:9"] .lb-plan-pic{width:64px;height:36px}
+.yt-studio[data-ratio="1:1"] .lb-plan-pic{width:40px;height:40px}
+.yt-studio .lb-plan-frame{position:relative;height:100%;aspect-ratio:var(--lb-ar);border-radius:4px;overflow:hidden;background:#111;box-shadow:0 0 0 1px var(--st-frame-ring)}
+.yt-studio .lb-plan-pic > i{position:absolute;left:-4px;top:-4px;min-width:15px;height:15px;padding:0 3px;border-radius:4px;background:var(--st-panel);box-shadow:0 0 0 1px var(--st-border-strong);font:600 9.5px/15px var(--st-font-ui),sans-serif;text-align:center;color:var(--st-text-2)}
+.yt-studio .lb-peek{position:fixed;z-index:70;transform:translateY(-50%);display:grid;gap:6px;padding:8px;border:1px solid var(--st-border-strong);border-radius:10px;background:var(--st-surface);box-shadow:var(--st-shadow-lg);pointer-events:none;animation:lb-fade .12s ease-out}
+.yt-studio .lb-peek-frame{position:relative;width:calc(260px*var(--lb-r));max-width:340px;aspect-ratio:var(--lb-ar);border-radius:6px;overflow:hidden;background:#111}
+.yt-studio .lb-peek span{font-size:12px;color:var(--st-text-2)}
+
+/* ---------- the timeline: tools on the transport row, a ruler, one track per kind of thing ---------- */
+.yt-studio .lb-transport{display:flex;align-items:center;gap:8px;padding:6px 10px}
+/* in the Plan view the bar's far end holds the button that closes the timeline */
+.yt-studio .lb-b-foot.open .lb-dock .lb-transport{padding-right:214px}
+.yt-studio .lb-tools{display:flex;align-items:center;gap:2px;min-width:0}
+.yt-studio .lb-tools.end{justify-content:flex-end}
+.yt-studio .lb-tools .vsep{height:16px;margin:0 4px}
+.yt-studio .lb-tools .ib .i{width:15px;height:15px}
+.yt-studio .lb-play{display:flex;align-items:center;gap:10px}
+.yt-studio .lb-play .time{min-width:0}
+.yt-studio .lb-zoom{height:24px;min-width:44px;padding:0 6px;border-radius:6px;font-size:11.5px;font-weight:500;font-variant-numeric:tabular-nums;color:var(--st-text-2)}
+.yt-studio .lb-zoom:hover{background:var(--st-hover);color:var(--st-text)}
+/* labels and tracks are two columns with the same rows; the tracks scroll sideways when zoomed in */
+.yt-studio .lb-tlw{--lb-rows:18px 24px 26px repeat(4,22px);display:grid;grid-template-columns:58px minmax(0,1fr);gap:0 8px;padding:6px 12px 12px 14px;min-height:0}
+.yt-studio .lb-tl-labels,.yt-studio .lb-tl-inner{display:grid;grid-template-rows:var(--lb-rows);grid-template-columns:minmax(0,1fr);row-gap:4px;align-content:start}
+.yt-studio .lb-tl-labels span{display:flex;align-items:center;font-size:11px;font-weight:500;color:var(--st-text-3);white-space:nowrap}
+.yt-studio .lb-tl-scroll{overflow:auto hidden;min-width:0}
+.yt-studio .lb-tl-inner{position:relative;min-width:100%}
+.yt-studio .lb-ruler{position:relative;border-bottom:1px solid var(--st-border);cursor:ew-resize;touch-action:none}
+.yt-studio .lb-ruler span{position:absolute;bottom:2px;padding-left:4px;border-left:1px solid var(--st-border-strong);font-size:10px;line-height:10px;color:var(--st-text-3);font-variant-numeric:tabular-nums;pointer-events:none}
+.yt-studio .lb-trk{position:relative;min-width:0;border-radius:5px;background:color-mix(in srgb,var(--st-text) 4%,transparent)}
+.yt-studio .lb-trk.strip{display:flex;gap:2px;background:none}
+.yt-studio .lb-trk.strip .seg-b{flex-basis:0;min-width:0}
+/* clips: text, shapes, sound and captions are solid bars, each kind in its own colour */
+/* a clip sits at its own time on the track: its body is dragged to move it, its ends to trim it */
+.yt-studio .lb-tl{position:absolute;top:0;bottom:0;min-width:0;border-radius:5px;overflow:hidden;text-align:left;touch-action:none}
+.yt-studio .lb-tl.on{cursor:grab}
+.yt-studio .lb-tl.lb-held{cursor:grabbing;z-index:3;opacity:.94;box-shadow:0 0 0 2px var(--st-text),0 6px 18px rgba(0,0,0,.35)}
+.yt-studio .lb-tl-h{position:absolute;top:0;bottom:0;width:8px;cursor:ew-resize;z-index:1}
+.yt-studio .lb-tl-h.l{left:0}
+.yt-studio .lb-tl-h.r{right:0}
+.yt-studio .lb-tl-h::after{content:'';position:absolute;top:22%;bottom:22%;width:2px;border-radius:1px;background:rgba(255,255,255,.85);opacity:0;transition:opacity .12s}
+.yt-studio .lb-tl-h.l::after{left:3px}
+.yt-studio .lb-tl-h.r::after{right:3px}
+.yt-studio .lb-tl:hover .lb-tl-h::after,.yt-studio .lb-tl.lb-picked .lb-tl-h::after{opacity:1}
+.yt-studio .lb-tl.lb-slot{border:1px dashed var(--st-border-strong)}
+.yt-studio .lb-tl.on{background:var(--lane);color:#fff;animation:lb-fade .3s ease-out}
+.yt-studio .lb-tl-tag{position:relative;display:flex;align-items:center;gap:5px;height:100%;padding:0 7px;font-size:10.5px;font-weight:600;line-height:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.yt-studio .lb-tl-tag .i{width:11px;height:11px;flex:none;opacity:.9}
+.yt-studio .ln-text{--lane:#0e8a7d}
+.yt-studio .ln-shape{--lane:#2f6fed}
+.yt-studio .ln-audio{--lane:#6449cf}
+.yt-studio .ln-captions{--lane:#b85a2b}
+.yt-studio .lb-tl.lb-picked{box-shadow:0 0 0 2px var(--st-text);z-index:1}
+.yt-studio .lb-tl.lb-agent-on{box-shadow:0 0 0 1.5px var(--lb-agent),0 0 0 5px var(--lb-agent-soft);z-index:1}
+/* sound: a solid bar with its waveform */
+.yt-studio .lb-tl.lb-wave.on{background:repeating-linear-gradient(90deg,rgba(255,255,255,.34) 0 1.5px,transparent 1.5px 4px) center/100% 56% no-repeat,var(--lane)}
+.yt-studio .lb-tl.lb-wave .lb-tl-tag{display:inline-flex;height:16px;margin:3px 3px 3px 8px;padding:0 6px;border-radius:3px;background:var(--lane)}
+/* the playhead carries the time and is dragged by it, or by the line (a little wider to the hand than to the eye) */
+.yt-studio .lb-ph{position:absolute;top:0;bottom:0;width:2px;margin-left:-1px;background:var(--lb-key,var(--st-accent));cursor:ew-resize;touch-action:none;z-index:4}
+.yt-studio .lb-ph::before{content:'';position:absolute;top:0;bottom:0;left:-4px;width:10px}
+.yt-studio .lb-ph b{position:absolute;top:0;left:50%;transform:translateX(-50%);height:16px;padding:0 5px;border-radius:4px;background:var(--lb-key,var(--st-accent));color:#fff;font:600 10px/16px var(--st-font-ui),sans-serif;font-variant-numeric:tabular-nums;white-space:nowrap}
+.yt-studio .lb-dock.compact .lb-transport{padding:5px 10px}
+.yt-studio .lb-dock.compact .lb-tlw{padding:4px 12px 10px}
+/* a timeline with a height: the tracks take the room, up to a point */
+.yt-studio .lb-dock.sized .lb-tlw{flex:1;--lb-rows:18px 24px minmax(26px,40px) repeat(4,minmax(22px,36px))}
+.yt-studio .lb-dock.sized .lb-tl-inner{height:100%}
+
+/* ---------- the timeline, round two: a magnetic picture track, cuts with transitions, entrance animations ---------- */
+/* a clip slides to its place when the track is rearranged; the one in the hand follows the hand */
+.yt-studio .lb-tl{transition:left .18s cubic-bezier(.2,.8,.2,1),width .18s cubic-bezier(.2,.8,.2,1)}
+.yt-studio .lb-tl.lb-held,.yt-studio .lb-trimming .lb-tl{transition:none}
+/* pictures: a slim bar like the others, led by the scene's picture */
+.yt-studio .ln-video{--lane:#3a4150}
+.yt-studio .lb-tl.lb-film{display:flex;align-items:center}
+.yt-studio .lb-film-pic{position:relative;flex:none;height:calc(100% - 4px);margin-left:11px;aspect-ratio:var(--lb-ar);border-radius:3px;overflow:hidden;container-type:size;background:#111}
+.yt-studio .lb-film .lb-tl-tag{flex:1;min-width:0;padding:0 6px;font-weight:500}
+.yt-studio .lb-film .lb-tl-tag .i{display:none}
+/* a picture is trimmed once it is picked: until then its ends belong to the cuts, and taking it anywhere carries it */
+.yt-studio .ln-video .lb-tl:not(.lb-picked) .lb-tl-h{display:none}
+.yt-studio .lb-tl.lb-picked .lb-tl-h{background:var(--st-text)}
+.yt-studio .lb-tl.lb-picked .lb-tl-h::after{background:var(--st-bg,var(--st-surface))}
+/* where a carried clip will land: the room its neighbours made on that track */
+.yt-studio .lb-drop{position:absolute;top:0;bottom:0;border:1px dashed var(--lb-key,var(--st-accent));border-radius:6px;background:color-mix(in srgb,var(--lb-key,var(--st-accent)) 12%,transparent);pointer-events:none;transition:left .18s cubic-bezier(.2,.8,.2,1)}
+/* the cut between two pictures: its button opens the transitions (over the playhead, which stands on a fresh cut) */
+.yt-studio .lb-cut{position:absolute;top:50%;z-index:5;width:16px;height:16px;margin:-8px 0 0 -8px;display:grid;place-items:center;border-radius:5px;background:#fff;color:#2a2e37;box-shadow:0 0 0 1px rgba(0,0,0,.2),0 1px 3px rgba(0,0,0,.3);transition:transform .12s,background .12s;animation:lb-fade .2s ease-out}
+.yt-studio .lb-cut .i{width:10px;height:10px}
+.yt-studio .lb-cut:hover{transform:scale(1.2)}
+.yt-studio .lb-cut.on{background:var(--lb-key,var(--st-accent));color:#fff;box-shadow:0 0 0 1px rgba(255,255,255,.5),0 1px 3px rgba(0,0,0,.28)}
+/* a picked clip offers its entrance animation; once one is set, its mark stays */
+.yt-studio .lb-tl-fx{position:absolute;right:11px;top:50%;z-index:1;width:16px;height:16px;margin-top:-8px;display:grid;place-items:center;border-radius:4px;background:rgba(0,0,0,.34);color:#fff;cursor:pointer;transition:background .12s}
+.yt-studio .lb-tl-fx .i{width:10px;height:10px}
+.yt-studio .lb-tl-fx:hover{background:rgba(0,0,0,.6)}
+.yt-studio .lb-tl-fx.set{background:#fff;color:#111}
+/* the small menu of a cut or a clip, above what was clicked */
+.yt-studio .lb-menu-veil{position:fixed;inset:0;z-index:79}
+.yt-studio .lb-menu{position:fixed;z-index:80;transform:translate(-50%,-100%);min-width:176px;display:grid;gap:1px;padding:5px;border:1px solid var(--st-border-strong);border-radius:10px;background:var(--st-surface);box-shadow:var(--st-shadow-lg);animation:lb-fade .12s ease-out}
+.yt-studio .lb-menu > b{padding:5px 8px 4px;font-size:11px;font-weight:500;color:var(--st-text-3)}
+.yt-studio .lb-menu button{display:flex;align-items:center;justify-content:space-between;gap:12px;height:28px;padding:0 8px;border-radius:6px;font-size:12.5px;color:var(--st-text);text-align:left}
+.yt-studio .lb-menu button:hover,.yt-studio .lb-menu button:focus-visible{background:var(--st-hover);outline:none}
+.yt-studio .lb-menu button[aria-checked="true"]{font-weight:600}
+.yt-studio .lb-menu button .i{color:var(--lb-key,var(--st-accent))}
+
+/* The main Chat's canvas (`lab-canvas.tsx`): Spark's screen under a slim bar, the approval bar under it, filling the panel. */
+.yt-studio .lb-canvas .lb-canvas-title{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:13px;font-weight:600;padding-left:4px}
+.yt-studio .lb-canvas-body{position:relative;display:flex;flex-direction:column;min-width:0;min-height:0}
+.yt-studio .lb-canvas-body > .lb-screen{flex:1 1 0;min-height:0;border:0;border-radius:0;box-shadow:none}
+.yt-studio .lb-canvas a.btn{text-decoration:none;color:inherit}
+.yt-studio .lb-canvas .lb-top{display:flex;align-items:center;gap:8px}
+.yt-studio .lb-canvas .lb-top-l{flex:1;display:grid;gap:1px;min-width:0}
+.yt-studio .lb-canvas .lb-top-r{flex:none}
+.yt-studio .lb-canvas-meta{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;padding-left:4px;font-size:11.5px;color:var(--st-text-3);font-variant-numeric:tabular-nums}
+.yt-studio .lb-canvas-meta b{font-weight:600;color:var(--lb-amber)}
+.yt-studio .lb-canvas-body > .lb-b-board{flex:1 1 0}
+.yt-studio .lb-canvas-body > .lb-b-foot{flex:none}
+
+/* ---- The agent's side of a conversation (components/spark/agent/agent-thread.tsx): one set of parts for the Spark
+   project's chat and the main Chat; outside a Spark page they sit in an inline scope (`.lb-inline`). */
+.yt-studio.lb-inline{height:auto;overflow:visible;background:transparent}
+.yt-studio .lb-reason{display:grid;gap:8px;justify-items:start}
+.yt-studio .lb-reason-head{display:inline-flex;align-items:center;gap:8px;min-height:22px;color:var(--st-text-2);font-size:13px;border-radius:6px;text-align:left}
+.yt-studio .lb-reason-head:disabled{cursor:default;opacity:1}
+.yt-studio .lb-reason-head:not(:disabled):hover{color:var(--st-text)}
+.yt-studio .lb-reason-head > .i{width:14px;height:14px;flex:none}
+.yt-studio .lb-reason-head > .i.sm{width:12px;height:12px;transition:transform .15s}
+.yt-studio .lb-reason.open .lb-reason-head > .i.sm{transform:rotate(180deg)}
+.yt-studio .lb-media{display:grid;grid-template-columns:repeat(var(--lb-media-n),minmax(0,1fr));gap:6px;width:calc(var(--lb-media-n) * 64px);max-width:100%}
+.yt-studio .lb-media-tile{position:relative;margin:0;aspect-ratio:var(--lb-media-ar);border-radius:8px;overflow:hidden;background:var(--st-hover);border:1px solid var(--st-border);animation:st-pop .2s ease-out}
+.yt-studio .lb-media-tile.rendering{background:linear-gradient(100deg,var(--st-hover) 30%,color-mix(in srgb,var(--st-text) 12%,var(--st-hover)) 50%,var(--st-hover) 70%);background-size:220% 100%;animation:lb-media-sheen 1.4s linear infinite}
+@keyframes lb-media-sheen{from{background-position:120% 0}to{background-position:-120% 0}}
+.yt-studio .lb-media-tile.chosen{outline:2px solid var(--lb-agent);outline-offset:1px}
+.yt-studio .lb-media-pick{position:absolute;right:4px;top:4px;z-index:2;width:16px;height:16px;border-radius:50%;background:var(--lb-agent);display:grid;place-items:center}
+.yt-studio .lb-media-pick .i{width:10px;height:10px;color:#fff}
+.yt-studio .lb-media-tile .lb-art.v2{filter:hue-rotate(-14deg) saturate(1.15)}
+.yt-studio .lb-media-tile .lb-art.v3{filter:brightness(.86) contrast(1.08)}
+.yt-studio .lb-ask-rec{margin-left:8px;font-style:normal;font-size:11px;font-weight:500;padding:1px 6px;border-radius:99px;background:var(--lb-agent-soft);color:var(--lb-agent-text);vertical-align:1px}
+.yt-studio .lb-suggest{margin:0 0 8px}
+@media (prefers-reduced-motion:reduce){.yt-studio .lb-media-tile.rendering{animation:none}}
+.yt-studio .m-ai > .lb-job-note{margin-top:-2px}
+/* A narrow canvas keeps its top bar on one line: the secondary buttons show their icon only (title on hover). */
+@container studio (max-width:760px){
+.yt-studio .lb-canvas .lb-top-r .btn:not(.primary){font-size:0;gap:0;padding:0 7px}
+}
+
+/* Reasoning, Queue and Chain of Thought (AI Elements) in Spark's look: no heavy card, quiet text, thin lines. */
+.yt-studio .lb-reason-body{display:grid;gap:8px;padding:2px 0 2px 22px;font-size:13px;line-height:1.55;color:var(--st-text-2);animation:st-pop .2s ease-out}
+.yt-studio .lb-shimmer{background:linear-gradient(90deg,var(--st-text-3) 0%,var(--st-text) 40%,var(--st-text-3) 80%);background-size:200% 100%;-webkit-background-clip:text;background-clip:text;color:transparent;animation:lb-shimmer 2s linear infinite}
+@keyframes lb-shimmer{from{background-position:100% 0}to{background-position:-100% 0}}
+.yt-studio .lb-failed{display:grid;place-items:center;flex:none}
+.yt-studio .lb-failed .i{color:#e5484d}
+.yt-studio .lb-job-flow{display:grid;gap:14px}
+
+.yt-studio .lb-queue{display:grid;gap:4px;padding:6px;border:1px solid var(--st-border-strong);border-radius:12px;background:var(--st-panel)}
+.yt-studio .lb-queue-bar{display:flex;align-items:center;gap:8px;width:100%;min-height:34px;padding:0 10px;border-radius:8px;background:color-mix(in srgb,var(--st-hover) 75%,transparent);font-size:13px;color:var(--st-text-2);text-align:left;transition:background .12s}
+.yt-studio .lb-queue-bar:hover{background:var(--st-hover)}
+.yt-studio .lb-queue-bar > .i{width:13px;height:13px;color:var(--st-text-3);transform:rotate(-90deg);transition:transform .15s}
+.yt-studio .lb-queue-sec.open .lb-queue-bar > .i{transform:none}
+.yt-studio .lb-queue-label{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.yt-studio .lb-queue-label b{font-weight:600;color:var(--st-text);margin-right:5px}
+.yt-studio .lb-queue-meta{flex:none;color:var(--st-text-3);font-size:12px}
+.yt-studio .lb-queue-meta .lb-est{padding:0}
+.yt-studio .lb-queue-list{list-style:none;margin:2px 0 0;padding:0;display:grid}
+.yt-studio .lb-queue-item{display:grid;grid-template-columns:14px minmax(0,1fr) auto auto;align-items:center;column-gap:10px;row-gap:2px;padding:6px 10px;border-radius:8px;font-size:13px;color:var(--st-text);animation:st-pop .2s ease-out}
+.yt-studio .lb-queue-item.go{cursor:pointer}
+.yt-studio .lb-queue-item:hover{background:var(--st-hover)}
+.yt-studio .lb-queue-ind{display:grid;place-items:center;width:14px;height:14px}
+.yt-studio .lb-queue-ind .i{width:13px;height:13px;color:var(--st-ok)}
+.yt-studio .lb-queue-ind .spin{width:12px;height:12px}
+.yt-studio .lb-queue-ind .lb-waiting .i{color:var(--lb-amber)}
+.yt-studio .lb-queue-dot{display:block;width:10px;height:10px;border-radius:50%;border:1.5px solid color-mix(in srgb,var(--st-text-2) 55%,transparent)}
+.yt-studio .lb-queue-text{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.yt-studio .lb-queue-item.done .lb-queue-text{color:var(--st-text-3);text-decoration:line-through;text-decoration-color:color-mix(in srgb,var(--st-text-3) 70%,transparent)}
+.yt-studio .lb-queue-item.current .lb-queue-text{font-weight:500}
+.yt-studio .lb-queue-item.skipped .lb-queue-text{color:var(--st-text-3);font-style:italic}
+.yt-studio .lb-queue-end{color:var(--st-text-3);font-size:12px;font-variant-numeric:tabular-nums;white-space:nowrap}
+.yt-studio .lb-queue-acts{display:flex;gap:4px;opacity:0;transition:opacity .12s}
+.yt-studio .lb-queue-item:hover .lb-queue-acts,.yt-studio .lb-queue-acts:focus-within{opacity:1}
+.yt-studio .lb-queue-desc{grid-column:2/-1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:12px;color:var(--st-text-3)}
+.yt-studio .lb-queue-item.done .lb-queue-desc{text-decoration:line-through;opacity:.7}
+.yt-studio .lb-queue-files{grid-column:2/-1;display:flex;gap:6px;margin-top:4px}
+.yt-studio .lb-queue-thumb{position:relative;display:block;width:22px;height:32px;border-radius:5px;overflow:hidden;border:1px solid var(--st-border)}
+.yt-studio .lb-queue-thumb .lb-thumb,.yt-studio .lb-queue-thumb .lb-art{display:block}
+.yt-studio .lb-queue-foot{display:flex;align-items:center;flex-wrap:wrap;gap:6px;padding:6px 4px 2px 10px;border-top:1px solid var(--st-border);margin-top:2px}
+.yt-studio .lb-queue-state{display:inline-flex;align-items:center;gap:8px;font-size:12.5px;font-weight:500;color:var(--st-text)}
+.yt-studio .lb-queue-state .i{width:14px;height:14px}
+.yt-studio .lb-queue-state .lb-waiting .i{color:var(--lb-amber)}
+
+.yt-studio .lb-cot{display:grid;gap:12px}
+.yt-studio .lb-cot-head{display:flex;align-items:center;gap:8px;width:100%;min-height:22px;font-size:13px;color:var(--st-text-2);text-align:left}
+.yt-studio .lb-cot-head:hover{color:var(--st-text)}
+.yt-studio .lb-cot-head > .i{width:14px;height:14px;flex:none}
+.yt-studio .lb-cot-head > .i.sm{width:12px;height:12px;transition:transform .15s}
+.yt-studio .lb-cot.open .lb-cot-head > .i.sm{transform:rotate(180deg)}
+.yt-studio .lb-cot-title{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.yt-studio .lb-cot-steps{list-style:none;margin:0;padding:0;display:grid}
+.yt-studio .lb-cot-step{position:relative;display:grid;grid-template-columns:16px minmax(0,1fr);column-gap:10px;padding-bottom:14px;font-size:13px;line-height:1.45;color:var(--st-text-2);animation:st-pop .25s ease-out}
+.yt-studio .lb-cot-step:last-child{padding-bottom:0}
+.yt-studio .lb-cot-step::before{content:'';position:absolute;left:7.5px;top:20px;bottom:2px;width:1px;background:var(--st-border-strong)}
+.yt-studio .lb-cot-step:last-child::before{display:none}
+.yt-studio .lb-cot-step.go{cursor:pointer}
+.yt-studio .lb-cot-step.current{color:var(--st-text)}
+.yt-studio .lb-cot-step.pending{color:var(--st-text-3)}
+.yt-studio .lb-cot-step.undone .lb-cot-label{text-decoration:line-through;color:var(--st-text-3)}
+.yt-studio .lb-cot-ico{display:grid;place-items:center;width:16px;height:19px}
+.yt-studio .lb-cot-ico .i{width:14px;height:14px;color:var(--st-ok)}
+.yt-studio .lb-cot-step.undone .lb-cot-ico .i{color:var(--st-text-3)}
+.yt-studio .lb-cot-ico .spin{width:12px;height:12px}
+.yt-studio .lb-cot-ico .lb-waiting .i{color:var(--lb-amber)}
+.yt-studio .lb-cot-dot{display:block;width:6px;height:6px;border-radius:50%;background:var(--st-border-strong)}
+.yt-studio .lb-cot-main{display:grid;gap:6px;min-width:0}
+.yt-studio .lb-cot-row{display:flex;align-items:center;gap:8px;min-width:0;min-height:19px}
+.yt-studio .lb-cot-label{min-width:0;flex:1}
+.yt-studio .lb-cot-act{flex:none;opacity:0;transition:opacity .12s}
+.yt-studio .lb-cot-step:hover .lb-cot-act,.yt-studio .lb-cot-act:focus-within{opacity:1}
+.yt-studio .lb-cot-act .lb-step-undo{opacity:1}
+.yt-studio .lb-cot-desc{font-size:12px;color:var(--st-text-3)}
+.yt-studio .lb-cot-badges{display:flex;flex-wrap:wrap;gap:6px}
+.yt-studio .lb-cot-badges span{display:inline-flex;align-items:center;height:20px;padding:0 7px;border-radius:6px;background:var(--st-hover);font-size:11.5px;color:var(--st-text-2)}
+.yt-studio .lb-cot-media{padding:8px;border-radius:10px;background:color-mix(in srgb,var(--st-hover) 60%,transparent);justify-self:start}
+.yt-studio .lb-cot-foot{display:flex;align-items:center;flex-wrap:wrap;gap:6px;padding-left:26px}
+@media (prefers-reduced-motion:reduce){.yt-studio .lb-shimmer{animation:none;color:var(--st-text);background:none}}
+.yt-studio .lb-screen.no-head{grid-template-rows:minmax(0,1fr) auto}
+.yt-studio .lb-canvas-live{display:flex;align-items:center;gap:8px}
+.yt-studio .lb-canvas-live .lb-live{flex:none;font-size:11.5px}
+.yt-studio .lb-canvas-live .lb-screen-step{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:11.5px}
+
+/* The agent's activity indicator: eight spokes turning in the text colour (Apple's spinner), not a coloured ring. */
+.yt-studio .lb-activity{display:block;flex:none;width:14px;height:14px;color:var(--st-text);stroke:currentColor;stroke-width:2.4;stroke-linecap:round;animation:lb-spokes .9s steps(8) infinite}
+@keyframes lb-spokes{to{transform:rotate(360deg)}}
+.yt-studio .lb-queue-ind .lb-activity,.yt-studio .lb-cot-ico .lb-activity{width:13px;height:13px}
+.yt-studio .lb-cot-meta{flex:none;font-size:12px;color:var(--st-text-3);font-variant-numeric:tabular-nums}
+.yt-studio .lb-cot-preview{padding-left:22px}
+.yt-studio .lb-cot-preview .lb-media{padding:8px;border-radius:10px;background:color-mix(in srgb,var(--st-hover) 60%,transparent);box-sizing:content-box}
+/* In the main Chat the agent's lines sit beside 15 px chat text: a size up. */
+.yt-studio.lb-inline .ai-who{font-size:13px}
+.yt-studio.lb-inline .ai-text{font-size:15px;line-height:1.6}
+.yt-studio.lb-inline .lb-reason-head,.yt-studio.lb-inline .lb-cot-head{font-size:14px}
+.yt-studio.lb-inline .lb-reason-body{font-size:14px}
+.yt-studio.lb-inline .lb-queue-item,.yt-studio.lb-inline .lb-queue-bar{font-size:14px}
+@media (prefers-reduced-motion:reduce){.yt-studio .lb-activity{animation-duration:2.4s}}

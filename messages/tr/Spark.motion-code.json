@@ -1,0 +1,84 @@
+{
+  "editor": {
+    "motionCode": {
+      "tab": "Kod",
+      "loading": "Kaynak yükleniyor…",
+      "assistantNotApplied": "Asistanın yeni sürümü Motion'larıma kaydedildi ama seçtiğin Motion'a uygulanamadı.",
+      "title": "Kod",
+      "scene": "Sahne {n}",
+      "originSaved": "Kaydedilmiş Motion",
+      "originLibrary": "Kütüphane Motion'ı",
+      "warning": "Kodu düzenlemek bu sahneyi bozabilir. Değişiklikler senin sorumluluğunda; geri alabilirsin.",
+      "readOnlyRole": "Bu kaynağı okuyabilirsin ama bu projeyi değiştiremezsin.",
+      "readOnlyOff": "Motion kaynağını düzenleme henüz açık değil. Burada okuyabilirsin.",
+      "readOnlyLegacy": "Bu Motion eski bir türde ve burada düzenlenemez.",
+      "sourceLabel": "Motion kaynağı (JSON)",
+      "apply": "Uygula",
+      "reset": "Kayıtlıya dön",
+      "revert": "Eski haline getir",
+      "revertHint": "Sahnedeki bu Motion'ın önceki sürümüne dön",
+      "undo": "Geri al",
+      "applied": "Sahneye uygulandı. Geri alabilirsin.",
+      "reverted": "Önceki sürüme dönüldü. Geri alabilirsin.",
+      "dropped": "Yeni sürüme taşınmadı: {names}.",
+      "lost": "Eski katmanın öğe bazlı ayarları ve animasyonları taşınmadı.",
+      "followUpFailed": "Katmanın konumu veya kilidi taşınamadı.",
+      "failed": "\"{stage}\" adımı tamamlanamadı. Videonda hiçbir şey değişmedi. Tekrar dene.",
+      "notApplied": "Yeni sürüm Motion'larıma kaydedildi ama sahne onu alamadı: {reason}.",
+      "revertFailed": "Geri dönülemedi: {reason}.",
+      "stage": {
+        "local": "kaynak denetimi",
+        "fork": "kopya oluşturma",
+        "write": "kaynağı kaydetme",
+        "validator": "Motion doğrulayıcısı ile denetim",
+        "publish": "Motion olarak kaydetme"
+      },
+      "pending": {
+        "local": "Kaynak denetleniyor…",
+        "fork": "Kendi kopyan oluşturuluyor…",
+        "write": "Kaynak kaydediliyor…",
+        "validator": "Motion doğrulayıcısı ile denetleniyor…",
+        "publish": "Motion olarak kaydediliyor…",
+        "repoint": "Sahneye uygulanıyor…",
+        "revert": "Önceki sürüme dönülüyor…"
+      },
+      "issues": {
+        "empty": "Kaynak boş.",
+        "not_json": "Bu geçerli bir JSON değil. {detail}",
+        "not_object": "Kaynak tek bir JSON nesnesi olmalı.",
+        "too_large": "Kaynak bir Motion için fazla büyük.",
+        "missing_manifest": "Kaynak \"manifest\" bölümünü kaybetmiş.",
+        "missing_body": "Kaynak \"body\" bölümünü kaybetmiş.",
+        "unchanged": "Henüz bir şey değişmedi.",
+        "other": "Kaynak kabul edilmedi. {detail}"
+      },
+      "blocked": {
+        "local": "Kaynak uygulanamıyor:",
+        "write": "Sunucu bu kaynağı kabul etmedi. {reason}",
+        "validator": "Motion doğrulayıcısı bu kaynağı reddetti, bu yüzden hiçbir şey uygulanmadı:",
+        "publish": "Henüz Motion olarak kaydedilemiyor: {reason}.",
+        "source_not_editable": "Bu Motion'ın kaynağı düzenlenemez."
+      },
+      "publishReasons": {
+        "not_available": "kaydetme kullanılamıyor",
+        "archived": "kopya arşivlenmiş",
+        "validation_missing": "doğrulanmamış",
+        "validation_stale": "doğrulama güncel değil",
+        "validation_failed": "doğrulama başarısız",
+        "unchanged": "son kaydedilen sürümden beri bir şey değişmedi",
+        "other": "sunucu reddetti"
+      },
+      "notAppliedReasons": {
+        "layer_missing": "katman artık yok",
+        "not_v2": "bu katman eski bir Motion türünde",
+        "no_range": "katmanın süresi yok",
+        "video_style_unavailable": "katmanın görünümü kullanılamıyor",
+        "target_project_private": "özel bir kod sürümü henüz sahneye konamıyor",
+        "needs_image": "yeni sürüm bir görsel istiyor ve projede görsel yok",
+        "exposure": "yeni sürüm okunamadı",
+        "write": "proje değişikliği kabul etmedi",
+        "other": "bir şey engelledi"
+      }
+    }
+  }
+}

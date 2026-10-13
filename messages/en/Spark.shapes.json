@@ -1,0 +1,28 @@
+{
+  "editor": {
+    "shapes": {
+      "basic": "Basic",
+      "hint": "Click or drag",
+      "colour": "Colour",
+      "fromKit": "From your Brand Kit",
+      "custom": "Pick another colour",
+      "swatch": "Colour {colour}",
+      "add": "Add {shape}",
+      "addTitle": "Add a {shape} to this scene (or drag it onto the video)",
+      "kinds": {
+        "square": "Square",
+        "rectangle": "Rectangle",
+        "circle": "Circle",
+        "ellipse": "Ellipse",
+        "pill": "Pill"
+      }
+    },
+    "stage": {
+      "inspector": {
+        "width": "Width (px)",
+        "height": "Height (px)",
+        "cornerRadius": "Corner radius (px)"
+      }
+    }
+  }
+}

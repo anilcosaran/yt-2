@@ -1,0 +1,21 @@
+{
+  "sparkEntry": {
+    "open": "Open in Spark",
+    "opening": "Opening in Spark…",
+    "defaultTitle": "Project from chat",
+    "nothingToOpen": "This result has no media Spark can open.",
+    "failed": "Could not open in Spark. Try again.",
+    "partial": "Some results could not be added to the project.",
+    "notOpenable": "The project cannot be opened yet. Try again shortly."
+  },
+  "sparkHandoff": {
+    "title": "Spark project",
+    "continue": "Continue in Spark",
+    "state": {
+      "preparing": "Media is being prepared; the project can open now.",
+      "ready": "Ready",
+      "partial": "Partly ready: some results could not be added.",
+      "failed": "The project could not be prepared."
+    }
+  }
+}

@@ -1,0 +1,7 @@
+{
+  "resultReconciling": "The result and credits of this request are being reconciled automatically. You will not be charged twice. Error code: {code}",
+  "mediaUnreadable": "This media file could not be read. Check that it plays correctly, or try a different file. Error code: {code}",
+  "providerRejected": "The service rejected this request. Check the inputs and settings, then try again. Error code: {code}",
+  "providerEmptyOutput": "The service returned an empty or incomplete result. Try again or choose another model. Error code: {code}",
+  "outputDeliveryPending": "The result was created and is still being delivered. It appears automatically when delivery completes. Error code: {code}"
+}

@@ -1,0 +1,12 @@
+{
+  "aiElements": {
+    "reasoning": {
+      "thinking": "Düşünüyor…",
+      "thought": "Düşündü",
+      "thoughtFor": "{duration} düşündü",
+      "seconds": "{count} sn",
+      "minutes": "{count} dk",
+      "minutesSeconds": "{minutes} dk {seconds} sn"
+    }
+  }
+}

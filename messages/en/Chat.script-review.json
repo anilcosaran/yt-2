@@ -1,0 +1,221 @@
+{
+  "scriptReview": {
+    "open": "Open script",
+    "openActive": "Script open",
+    "close": "Close",
+    "closeHint": "Close (Esc)",
+    "panelLabel": "Script: {title}",
+    "untitled": "Video script",
+    "loading": "Loading the script…",
+    "loadFailed": "The script could not be read.",
+    "retryLoad": "Try again",
+    "noScript": "This job has no script yet.",
+    "scriptRevision": "Script v{revision}",
+    "planRevision": "Plan v{revision}",
+    "outline": "Outline · not the full text",
+    "readiness": {
+      "draft": "Draft",
+      "not_ready": "Incomplete",
+      "ready": "Ready",
+      "stale": "Plan out of date"
+    },
+    "save": {
+      "pending": "Saving…",
+      "saving": "Saving…",
+      "saved": "Saved",
+      "failed": "Not saved",
+      "conflict": "Changed elsewhere",
+      "invalid": "Empty fields can't be saved",
+      "retry": "Try again",
+      "closing": "Saving, then closing…"
+    },
+    "conflict": {
+      "title": "This script was updated in another tab or chat.",
+      "body": "Your changes are still here. Apply them to the latest version or drop them.",
+      "apply": "Apply to latest version",
+      "discard": "Drop my changes"
+    },
+    "invalidField": "This field can't be saved empty.",
+    "sections": {
+      "summary": "Summary",
+      "approach": "Script approach",
+      "resources": "Avatar, voice and template",
+      "script": "Script and scenes",
+      "sourcesCost": "Sources and cost"
+    },
+    "fields": {
+      "title": "Video title",
+      "angle": "Summary",
+      "purpose": "Purpose",
+      "keyMessage": "Key message",
+      "hook": "Hook",
+      "narrativeFlow": "Narrative flow",
+      "audience": "Audience",
+      "narration": "Voiceover",
+      "onScreen": "On screen",
+      "chapterTitle": "Section title"
+    },
+    "specs": {
+      "ratio": "Aspect ratio",
+      "language": "Language",
+      "models": "Media models",
+      "duration": "{planned} planned · {target} target",
+      "durationPlanned": "{planned} planned",
+      "durationTarget": "{target} target",
+      "shots": "{count} shots"
+    },
+    "chapter": {
+      "beats": "{count} beats · {duration}",
+      "disabled": "Off",
+      "disable": "Turn section off",
+      "enable": "Turn section on",
+      "roles": {
+        "intro": "Intro",
+        "main": "Main section",
+        "outro": "Outro",
+        "cta": "Call to action"
+      }
+    },
+    "beatNumber": "B{n}",
+    "beatSeconds": "{value} s",
+    "shot": {
+      "label": "S{order}",
+      "seconds": "{value} s",
+      "parts": "{count} generation parts",
+      "stale": "The scenes were planned on an earlier script version; they refresh when the plan is updated.",
+      "media": {
+        "native": "In the editor",
+        "existing_asset": "Existing media",
+        "stock": "Stock",
+        "generate": "To generate",
+        "avatar": "Avatar",
+        "motion": "Motion"
+      },
+      "source": {
+        "label": "Source: {source}",
+        "modality": {
+          "typed_scene": "Typed scene",
+          "brand_motion": "Motion template",
+          "own_media": "Your media",
+          "youtorch_stock": "Youtorch Stock",
+          "ai_image": "AI image",
+          "llm_motion": "Motion scene",
+          "ai_video": "AI video",
+          "stock_create": "Create in Stock",
+          "omitted": "Left out",
+          "none": "Source needed",
+          "other": "Other"
+        },
+        "cost": {
+          "free": "free",
+          "priced": "{credits} credits",
+          "not_ready": "price not ready"
+        },
+        "reason": {
+          "requested": "You asked for this route in this video.",
+          "requestedUnavailable": "The route you asked for is not available for this scene.",
+          "stockOnlyNoMatch": "Your Stock-only rule found no matching Stock record.",
+          "noSource": "No suitable source was found.",
+          "stock": "A licensed Stock record matches the scene.",
+          "ownMedia": "Your own media fits this scene.",
+          "brandMotion": "A Motion template fits this scene.",
+          "typedScene": "A typed scene fits this scene.",
+          "generated": "Generated from the scene's description with an enabled catalogue model.",
+          "other": "Chosen by the director."
+        },
+        "fromRule": "Follows your saved rule.",
+        "userResponsibility": "Photoreal depiction produced at your explicit request and under your responsibility."
+      }
+    },
+    "bindings": {
+      "roles": {
+        "avatar": "Avatar",
+        "voice": "Voice",
+        "template": "Template",
+        "intro": "Intro",
+        "outro": "Outro",
+        "kit": "Brand kit"
+      },
+      "state": {
+        "selected": "Selected",
+        "none": "None",
+        "unset": "Not chosen"
+      },
+      "noAvatar": "No avatar · voiceover only",
+      "source": {
+        "thisVideo": "This video",
+        "template": "From template",
+        "savedPreference": "Your saved preference",
+        "suggested": "Suggested"
+      },
+      "overrides": "Different in {count} shots"
+    },
+    "estimate": {
+      "title": "Estimated usage",
+      "range": "~{min}–{max} credits",
+      "point": "~{value} credits",
+      "state": {
+        "current": "Up to date",
+        "previous": "Previous estimate · will update",
+        "computing": "Calculating",
+        "unavailable": "Estimate unavailable",
+        "script_only": "No estimate yet for producing a video",
+        "missing": "No estimate yet"
+      },
+      "counts": "{shots} shots · {images} new images · {videos} video generations",
+      "reused": "{count} existing assets reused",
+      "parts": "{count} generation parts",
+      "disclaimer": "Approximate; it can change with model, shot and duration choices.",
+      "ceiling": "Spending limit: {value} credits",
+      "finalRenderIncluded": "Final render included",
+      "finalRenderExcluded": "Final render not included",
+      "lineItems": "Cost breakdown",
+      "lineItem": "{operations} operations · ~{min}–{max} credits",
+      "categories": {
+        "research": "Research",
+        "script": "Script",
+        "image": "Image",
+        "video": "Video",
+        "voice": "Voice",
+        "avatar": "Avatar",
+        "stock": "Stock",
+        "render": "Render",
+        "repair": "Repair",
+        "other": "Other"
+      }
+    },
+    "sources": {
+      "title": "Sources",
+      "readStatus": {
+        "read": "Read",
+        "snippet_only": "Snippet only",
+        "unreadable": "Unreadable",
+        "paywalled": "Paywalled"
+      },
+      "claims": "{count} claims"
+    },
+    "card": {
+      "status": {
+        "plan_ready": "Plan ready",
+        "plan_stale": "Script changed · plan and estimate will update",
+        "plan_draft": "Preparing the plan",
+        "plan_not_ready": "Plan incomplete",
+        "script_only": "Script ready",
+        "script_ready": "Script ready · preparing the plan"
+      },
+      "target": "{duration} target",
+      "chapters": "{count} sections",
+      "shots": "{count} shots",
+      "estimate": {
+        "current": "Estimate ~{min}–{max} credits",
+        "previous": "Previous estimate ~{min}–{max} credits",
+        "currentPoint": "Estimate ~{value} credits",
+        "previousPoint": "Previous estimate ~{value} credits",
+        "computing": "Calculating the estimate",
+        "unavailable": "Estimate unavailable",
+        "script_only": "No video estimate yet"
+      },
+      "ceiling": "Up to {value} credits"
+    }
+  }
+}

@@ -1,0 +1,259 @@
+{
+  "title": "Bellek",
+  "noChannel": "Kanal seçilmedi",
+  "statusOn": "Aktif",
+  "statusOff": "Otomatik alma kapalı",
+  "description": "Asistanın bu kanal hakkında bildikleri, her zaman uyduğu kurallar ve kullanabildiği yetenekler.",
+  "tabsLabel": "Bellek bölümleri",
+  "tabs": {
+    "knowledge": "Bilgiler",
+    "rules": "Asistan kuralları",
+    "skills": "Yetenekler"
+  },
+  "add": {
+    "knowledge": "Bilgi ekle",
+    "rules": "Kural ekle",
+    "skills": "Yetenek ekle"
+  },
+  "intro": {
+    "knowledge": "Asistanın bildiği notlar, dosyalar ve bağlantılar. Kapattığın bilgi kullanılmaz ama silinmez.",
+    "rules": "Asistanın her işte uyduğu cümleler. İstersen yalnızca belirli durumlarda geçerli olsun.",
+    "skills": "Asistanın belirli işler için izlediği yöntemler. Açık olanları kullanır."
+  },
+  "common": {
+    "processing": "Okunuyor…",
+    "failed": "Okunamadı",
+    "more": "Diğer işlemler",
+    "personal": "Sadece ben",
+    "channel": "Kanal geneli",
+    "scopeLabel": "Kim için geçerli?",
+    "close": "Kapat",
+    "cancel": "Vazgeç",
+    "save": "Kaydet",
+    "add": "Ekle",
+    "back": "Geri",
+    "done": "Tamam"
+  },
+  "knowledge": {
+    "search": "Bilgilerde ara…",
+    "filter": {
+      "all": "Tümü",
+      "note": "Notlar",
+      "file": "Dosyalar",
+      "link": "Bağlantılar",
+      "media": "Kütüphaneden"
+    },
+    "count": "{count} bilgi",
+    "noResults": "Eşleşen bilgi yok",
+    "noResultsHint": "Aramayı ya da filtreyi değiştirmeyi dene.",
+    "emptyTitle": "Asistan henüz bir şey bilmiyor",
+    "emptyHint": "Markan, ürünlerin ya da kitlen hakkında kısa notlar ekle; asistan her işte bunları kullanır.",
+    "example0": "Marka sesimiz samimi ve esprili.",
+    "example1": "Hedef kitlemiz 25–40 yaş arası.",
+    "example2": "Her pazartesi yeni ürün çekimi var.",
+    "fromLibrary": "Kütüphaneden",
+    "toggle": "Bilgiyi kullan",
+    "view": "Görüntüle",
+    "edit": "Düzenle",
+    "retry": "Yeniden dene",
+    "delete": "Sil",
+    "deletedToast": "Bilgi silindi",
+    "savedToast": "Bilgi güncellendi",
+    "addedToast": "Bilgi eklendi",
+    "readingToast": "Eklendi; içerik okunuyor",
+    "addTitle": "Bilgi ekle",
+    "editTitle": "Bilgiyi düzenle",
+    "addHint": "Asistanın bilmesini istediğin şeyi yaz ya da bir dosya veya bağlantı ekle.",
+    "autoHint": "Bu bilgi kütüphanendeki bir medyadan otomatik çıkarıldı.",
+    "kind": {
+      "note": "Yaz",
+      "file": "Dosya",
+      "link": "Bağlantı"
+    },
+    "titleLabel": "Başlık",
+    "titlePlaceholder": "Başlık (isteğe bağlı)",
+    "titleOptional": "Başlık (isteğe bağlı)",
+    "noteLabel": "Bilgi",
+    "notePlaceholder": "Örn. Marka sesimiz samimi; “sen” dili kullanırız, abartılı vaatlerden kaçınırız.",
+    "chooseFile": "Dosya seç",
+    "fileFormats": "PDF, Word, metin · en fazla 50 MB",
+    "linkLabel": "Bağlantı",
+    "linkPlaceholder": "https://…",
+    "autoSource": "Kaynak: {source}.",
+    "openLibrary": "Kütüphanede aç"
+  },
+  "rules": {
+    "search": "Kurallarda ara…",
+    "filter": {
+      "all": "Tümü",
+      "on": "Açık",
+      "off": "Kapalı"
+    },
+    "count": "{count} kural",
+    "noResults": "Eşleşen kural yok",
+    "noResultsHint": "Aramayı ya da filtreyi değiştirmeyi dene.",
+    "emptyTitle": "Henüz kural yok",
+    "emptyHint": "Asistanın her zaman uymasını istediğin şeyleri tek cümleyle yaz.",
+    "example0": "Videolarda her zaman marka intro’sunu kullan.",
+    "example1": "Rakip markaların adını anma.",
+    "example2": "Shorts 30 saniyeyi geçmesin.",
+    "whenLabel": "Ne zaman: {when}",
+    "always": "Her zaman",
+    "toggle": "Kuralı uygula",
+    "edit": "Düzenle",
+    "delete": "Sil",
+    "deletedToast": "Kural silindi",
+    "savedToast": "Kural güncellendi",
+    "addedToast": "Kural eklendi",
+    "addTitle": "Kural ekle",
+    "editTitle": "Kuralı düzenle",
+    "addHint": "Asistanın uymasını istediğin şeyi tek bir cümleyle yaz.",
+    "ruleLabel": "Kural",
+    "placeholder": "Örn. Videolarda her zaman marka intro’sunu kullan.",
+    "whenTitle": "Ne zaman geçerli?",
+    "whenPlaceholder": "Ya da kendin yaz: örn. Kampanya videolarında",
+    "when": {
+      "always": "Her zaman",
+      "shorts": "Shorts videolarında",
+      "longVideo": "Uzun videolarda",
+      "voiceover": "Seslendirme gerektiğinde",
+      "captions": "Açıklama ve başlıklarda"
+    }
+  },
+  "skills": {
+    "search": "Yeteneklerde ara…",
+    "filter": {
+      "all": "Tümü",
+      "on": "Açık",
+      "mine": "Benim"
+    },
+    "count": "{count} yetenek",
+    "noResults": "Eşleşen yetenek yok",
+    "noResultsHint": "Aramayı ya da filtreyi değiştirmeyi dene.",
+    "emptyTitle": "Henüz yetenek yok",
+    "emptyHint": "Asistanın öğrenmesini istediğin işi bir cümleyle anlat; AI yöntemini yazsın.",
+    "example0": "Menüden bir ürünü 20 saniyede tanıt",
+    "example1": "Müşteri yorumlarından kısa video yap",
+    "example2": "Her ayın ilk haftası kampanya duyurusu hazırla",
+    "origin": {
+      "builtin": "Youtorch",
+      "shared": "{name} paylaştı"
+    },
+    "draft": "Taslak",
+    "updateAvailable": "Güncelleme var",
+    "toggle": "Yeteneği kullan",
+    "edit": "Düzenle",
+    "view": "Görüntüle",
+    "update": "Güncelle",
+    "updatedToast": "Yetenek güncellendi",
+    "copy": "Kopyala ve düzenle",
+    "delete": "Sil",
+    "deletedToast": "Yetenek silindi",
+    "addTitle": "Yetenek ekle",
+    "describeHint": "Asistanın öğrenmesini istediğin işi bir cümleyle anlat; AI adımlarını yazar, sen kontrol edersin.",
+    "builtinHint": "Youtorch’un hazır yeteneği. Değiştirmek için bir kopyasını oluştur.",
+    "sharedHint": "{name} seninle paylaştı. Değiştirmek için bir kopyasını oluştur.",
+    "describeLabel": "Yetenek isteği",
+    "describePlaceholder": "Örn. Menüden bir ürünü fiyatıyla birlikte 20 saniyede tanıtan bir video hazırla.",
+    "generate": "AI ile oluştur",
+    "generating": "Oluşturuluyor…",
+    "nameLabel": "Ad",
+    "namePlaceholder": "Yetenek adı",
+    "descriptionLabel": "Ne işe yarar?",
+    "descriptionPlaceholder": "Ne işe yarar? (tek cümle)",
+    "enableNow": "Hemen kullanılsın",
+    "enableNowHint": "Kapalıysa taslak olarak kalır; asistan kullanmaz.",
+    "savedToast": "Yetenek kaydedildi",
+    "addedToast": "Yetenek eklendi"
+  },
+  "skillEditor": {
+    "nameRequired": "Önce yeteneğe bir ad ver.",
+    "bodyLabel": "Yöntem",
+    "bodyPlaceholder": "## Ne zaman kullanılır\nBu yeteneğin hangi isteklerde devreye gireceğini yaz.\n\n## Adımlar\n1. İlk adım\n2. İkinci adım\n\n## Dikkat\n- Her zaman uyulması gereken bir kural",
+    "stepsHeading": "Adımlar",
+    "whenHeading": "Ne zaman kullanılır",
+    "ai": {
+      "writing": "AI yazıyor…",
+      "stop": "Durdur"
+    },
+    "applied": {
+      "ai": "AI taslağı hazır. Kontrol et, istediğin gibi değiştir.",
+      "catalog": "“{name}” eklendi. Kendi işine göre düzenle.",
+      "file": "{name} yüklendi. Kontrol et, istediğin gibi değiştir."
+    },
+    "undo": "Geri al",
+    "approve": "Onayla ve ekle",
+    "catalog": {
+      "title": "Katalog",
+      "method": {
+        "title": "Adım adım yöntem",
+        "hint": "Her işe uyan temel iskelet.",
+        "body": "## Ne zaman kullanılır\nBu yeteneğin hangi isteklerde devreye gireceğini bir iki cümleyle yaz.\n\n## Adımlar\n1. İlk olarak ne yapılacağını yaz.\n2. Sonraki adımı yaz.\n3. Sonucun nasıl kontrol edileceğini yaz.\n\n## Dikkat\n- Her zaman uyulması gereken bir kural.\n- Kaçınılması gereken bir şey.\n\n## Örnek istek\n> Kullanıcının yazabileceği örnek bir cümle."
+      },
+      "product": {
+        "title": "Ürün tanıtımı",
+        "hint": "Bir ürünü kısa videoyla tanıtır.",
+        "name": "Ürün tanıtım videosu",
+        "description": "Bir ürünü fiyatı ve öne çıkan özelliğiyle tanıtan kısa dikey video hazırlar.",
+        "body": "## Ne zaman kullanılır\nKullanıcı bir ürünü ya da hizmeti kısa bir videoyla tanıtmak istediğinde.\n\n## Adımlar\n1. Ürünün adını, fiyatını ve öne çıkan özelliğini bellekteki bilgilerden al.\n2. İlk 3 saniye için dikkat çekici bir açılış cümlesi yaz.\n3. Ürünü 2–3 kısa sahnede göster; her sahne için kütüphaneden bir görsel seç.\n4. Marka sesine uygun bir kapanış ve tek bir çağrı ekle.\n\n## Dikkat\n- Fiyatı tahmin etme; bellekte yoksa kullanıcıya sor.\n- Video **30 saniyeyi** geçmesin.\n\n## Örnek istek\n> Balkabaklı risottoyu 20 saniyede tanıt."
+      },
+      "titles": {
+        "title": "Başlık ve açıklama",
+        "hint": "Videoya başlık, açıklama ve etiket yazar.",
+        "name": "Başlık ve açıklama yazımı",
+        "description": "Bir video için başlık önerileri, açıklama ve etiketler yazar.",
+        "body": "## Ne zaman kullanılır\nKullanıcı bir video için başlık, açıklama ya da etiket istediğinde.\n\n## Adımlar\n1. Videonun ana konusunu tek cümleyle özetle.\n2. 60 karakteri geçmeyen 3 başlık öner.\n3. İlk iki satırı merak uyandıran bir açıklama yaz.\n4. En fazla 10 etiket ekle.\n\n## Dikkat\n- Başlıkta abartılı vaat kullanma.\n- Marka sesine uy.\n\n## Çıktı biçimi\n- **Başlıklar:** numaralı liste\n- **Açıklama:** en fazla 3 paragraf\n- **Etiketler:** virgülle ayrılmış tek satır"
+      }
+    },
+    "upload": ".md dosyası yükle",
+    "download": ".md olarak indir",
+    "uploadError": {
+      "wrongType": "Yalnızca .md ya da .txt dosyası yükleyebilirsin.",
+      "tooLarge": "Dosya çok büyük; en fazla 200 KB olabilir.",
+      "failed": "Dosya okunamadı.",
+      "empty": "Dosya boş görünüyor."
+    },
+    "discard": {
+      "title": "Kaydetmeden kapatılsın mı?",
+      "description": "Bu yetenekte yazdıkların kaybolur.",
+      "confirm": "Kapat",
+      "cancel": "Yazmaya devam et"
+    },
+    "toolbar": "Biçimlendirme",
+    "tool": {
+      "heading": "Başlık",
+      "bold": "Kalın",
+      "italic": "İtalik",
+      "bullets": "Madde listesi",
+      "numbers": "Numaralı liste",
+      "quote": "Alıntı",
+      "code": "Kod",
+      "link": "Bağlantı"
+    },
+    "sample": {
+      "bold": "kalın metin",
+      "italic": "italik metin",
+      "code": "kod",
+      "link": "bağlantı metni"
+    },
+    "mode": {
+      "write": "Yaz",
+      "preview": "Önizleme"
+    },
+    "previewEmpty": "Henüz bir şey yazmadın."
+  },
+  "ingestion": {
+    "title": "Belleğe alma ayarları",
+    "description": "Kütüphanedeki içeriklerden asistanın otomatik olarak ne öğreneceği.",
+    "enabled": "Kütüphaneden otomatik bilgi al",
+    "enabledHint": "Kapalıyken yalnızca senin eklediğin bilgiler kullanılır.",
+    "transcripts": "Video ve ses transkriptleri",
+    "transcriptsHint": "Konuşmalar metne çevrilip bilgi olarak eklenir.",
+    "images": "Görsel açıklamaları",
+    "imagesHint": "Görsellerde ne olduğu kısa bir açıklamayla eklenir.",
+    "documents": "Belgeler",
+    "documentsHint": "PDF ve metin dosyalarının içeriği eklenir.",
+    "askFirst": "Eklemeden önce bana sor",
+    "askFirstHint": "Yeni bilgiler önce onayına gelir."
+  }
+}

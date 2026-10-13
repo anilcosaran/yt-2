@@ -1,0 +1,124 @@
+{
+  "fullAccessCard": {
+    "title": "Tam erişim açılsın mı?",
+    "description": "Tam erişimde asistan, bir işin adımlarını her seferinde sormadan başlatır ve öder.",
+    "points": {
+      "spend": "Araştırma, üretim ve render için kredilerini harcayabilir. Tahmini maliyeti bakiyenden yüksek olan iş hiçbir zaman başlamaz.",
+      "limitAmount": "Bir işin maliyeti onay limitini, şu an {amount} kredi, aşacaksa yine de bir kez sorar. Limiti Ayarlar’dan değiştirebilir veya kapatabilirsin.",
+      "limitOff": "Onay limitini kapattın; bu yüzden yalnızca bakiyen yetmediğinde maliyet konusunda durur. Limiti Ayarlar’dan yeniden açabilirsin.",
+      "limitUnknown": "Bir işin maliyeti onay limitini aşacaksa yine de bir kez sorar; limiti Ayarlar’dan belirlersin.",
+      "skip": "Mesajına “onay sorma” yazarsan o iş için bu tek soru atlanır.",
+      "revoke": "Bunu bir kez onaylarsın. İstediğin an Sor veya Otomatik moduna dönebilir, onayını Ayarlar’dan geri çekebilirsin."
+    },
+    "settingsLink": "Onay ayarları",
+    "confirm": "Tam erişimi aç",
+    "cancel": "Şimdi değil",
+    "close": "Kapat",
+    "revisionChanged": "Yukarıdaki metin güncellendi. Yeniden oku ve devam etmek için onayla.",
+    "failed": "Onayın kaydedilemedi. Tekrar dene.",
+    "notice": {
+      "membersNotAllowed": "Çalışma alanı yöneticin üyeler için Tam erişime izin vermedi. Mevcut mod devam ediyor.",
+      "unavailable": "Tam erişim şu an kontrol edilemedi. Mevcut mod devam ediyor."
+    },
+    "limitAsk": {
+      "text": "Bu işin maliyeti Tam erişim onay limitin olan {amount} krediyi aşabilir, bu yüzden bir kez soruyorum. Bu soruyu atlamak için isteğinin yanına “onay sorma” yaz veya limiti Ayarlar’dan değiştir."
+    }
+  },
+  "spendMeter": {
+    "chipLabel": "Kredi: {summary}",
+    "usage": "{spent} / {ceiling} kredi",
+    "balanceOnly": "{balance} kredi",
+    "balanceLeft": "{balance} kaldı",
+    "creditsValue": "{credits} kredi",
+    "state": {
+      "awaiting_approval": "Onayını bekliyor",
+      "funding_required": "Kredi yetmiyor"
+    },
+    "details": {
+      "title": "Kredi sayacı",
+      "thisJob": "Bu iş",
+      "noJob": "Çalışan iş yok",
+      "spent": "Şu ana kadar harcanan",
+      "approved": "Bu iş için onaylanan",
+      "remaining": "Bunun kalanı",
+      "pending": "Şu tutara kadar onay istiyor",
+      "balance": "Bakiyen",
+      "plan": "Bu dönemin plan kredisi",
+      "cap": "İş başına üst sınır",
+      "capSource": {
+        "tenant": "çalışma alanı",
+        "user": "senin"
+      },
+      "settings": "Onay ayarları"
+    },
+    "rule": {
+      "ask": "Sor modu: ücretli her işten önce sorarım.",
+      "auto": "Otomatik mod: bir işin tahmini {threshold} kredi veya üzeriyse bir kez sorarım. Bakiyen yetmeyen işi her zaman durdururum.",
+      "fullAccess": "Tam erişim: yalnızca onay limitini aşan işte sorarım. Bakiyen yetmeyen işi her zaman durdururum. Bir işte bu soruyu atlamak için “onay sorma” yaz.",
+      "fullAccessLimit": "Tam erişim: bir işin maliyeti {limit} krediyi aşacaksa bir kez sorarım. Bir işte bu soruyu atlamak için “onay sorma” yaz. Bakiyen yetmeyen işi her zaman durdururum.",
+      "fullAccessNoLimit": "Tam erişim: onay limitini kapattın; bir işi yalnızca bakiyen durdurabilir."
+    }
+  },
+  "spendReceipt": {
+    "label": "Harcama dökümü",
+    "labelHint": "Bu turda kredilerin nereye gittiği. Bu bir fatura değildir: faturalar yalnızca ödemeler (kredi yükleme, plan satın alma ve yenileme, kartınızdan alınan kullanım ücreti) için düzenlenir ve Ayarlar > Faturalandırma'dadır.",
+    "total": "Bu turda {credits} kredi kullanıldı",
+    "totalRunning": "Bu turda şu ana kadar {credits} kredi kullanıldı",
+    "kind": {
+      "planning": "Planlama {credits}",
+      "preparation": "Hazırlık {credits}",
+      "production": "Üretim {credits}"
+    },
+    "balanceAfter": "Bakiye {credits}",
+    "nodeLine": "{name} {credits}",
+    "node": {
+      "ai_shot_trim": "AI çekim kırpma",
+      "angle": "Çoklu açı görseli",
+      "avatar_generate": "Avatar videosu",
+      "background_remove": "Arka plan silme",
+      "caption": "Altyazı",
+      "clip_planner": "Klip planlama",
+      "code_sandbox": "Kod çalıştırma",
+      "composition_render": "Video işleme",
+      "describe_image": "Görsel açıklama",
+      "extract_media_tags": "Medya etiketleri",
+      "frame_extract": "Kare çıkarma",
+      "generate_embeddings": "Embedding üretimi",
+      "html_preview": "HTML önizleme",
+      "image_generate": "Görsel üretimi",
+      "llm": "Metin üretimi",
+      "magic_clip_metadata": "Klip bilgileri",
+      "magic_clips": "Magic Clips",
+      "media_downloader": "Medya indirme",
+      "media_sync": "Medya senkronu",
+      "media_transform": "Medya işleme",
+      "prompt_enhance": "İstem iyileştirme",
+      "prompt_generate": "İstem yazımı",
+      "reference_analyze": "Referans analizi",
+      "render": "Video işleme",
+      "render_preview": "Önizleme işleme",
+      "research_agent": "Araştırma",
+      "scene_analysis": "Sahne analizi",
+      "script_generate": "Senaryo yazımı",
+      "speech_generate": "Seslendirme",
+      "subtitle_translate": "Altyazı çevirisi",
+      "summarize_media": "Medya özeti",
+      "suno": "Müzik üretimi",
+      "transcribe_media": "Döküm",
+      "transcription": "Döküm",
+      "upload": "Yükleme",
+      "video_generate": "Video üretimi",
+      "video_to_gif": "GIF dışa aktarma",
+      "viral_clip_analyzer": "Viral klip analizi",
+      "viral_clips": "Viral Clips",
+      "voice_clone": "Ses klonlama"
+    },
+    "funding": {
+      "title": "Ödeme: {sources}",
+      "quota": "plan kotası {credits}",
+      "plan": "plan kredisi {credits}",
+      "topUp": "ek kredi {credits}",
+      "pending": "henüz kesinleşmedi {credits}"
+    }
+  }
+}

@@ -1,0 +1,89 @@
+{
+  "invoices": {
+    "title": "Invoices and credit notes",
+    "description": "Invoices for your plan purchases and renewals, your credit top-ups and any usage charged to your card when your credits did not cover it, and credit notes for refunds. They are created automatically when a payment succeeds. The spend breakdowns in chat only show where your credits went; they are not invoices.",
+    "loading": "Loading…",
+    "empty": {
+      "title": "No invoices yet",
+      "detail": "An invoice appears here after each successful plan payment (purchase or renewal) or credit purchase."
+    },
+    "kind": {
+      "plan": "Plan",
+      "creditTopUp": "Credit top-up",
+      "usageCharge": "Usage charge",
+      "creditNote": "Credit note",
+      "other": "Invoice"
+    },
+    "row": {
+      "issued": "Issued {date}",
+      "corrects": "Corrects invoice {number}",
+      "vat": "Net {net} + VAT {rate}% {vat}",
+      "vatNoRate": "Net {net} + VAT {vat}",
+      "paid": "Paid",
+      "refunded": "Refunded"
+    },
+    "actions": {
+      "view": "View / print",
+      "download": "Download PDF",
+      "viewLabel": "View or print {number}",
+      "downloadLabel": "Download {number} as PDF",
+      "errors": {
+        "popupBlocked": "Your browser blocked the new window. Allow pop-ups for this site or use Download PDF.",
+        "forbidden": "Only the workspace owner and admins can open invoice documents.",
+        "failed": "The document could not be loaded. Try again."
+      }
+    },
+    "pagination": {
+      "previous": "Previous",
+      "next": "Next",
+      "pageOf": "Page {page} of {total}"
+    },
+    "details": {
+      "title": "Billing details",
+      "description": "Printed on your future invoices. Invoices already issued never change.",
+      "none": "No billing details saved yet. Until you add them, invoices are issued to your workspace name and email.",
+      "add": "Add details",
+      "edit": "Edit",
+      "billedTo": "Billed to",
+      "billingEmail": "Billing email (optional)",
+      "vatNumberShort": "VAT number",
+      "legalName": "Name or company",
+      "addressLine1": "Address line 1",
+      "addressLine2": "Address line 2 (optional)",
+      "city": "City",
+      "postalCode": "Postcode",
+      "country": "Country",
+      "countryPlaceholder": "Select a country",
+      "vatNumber": "VAT number (optional)",
+      "vatNumberHint": "For businesses: printed on your invoices.",
+      "save": "Save details",
+      "saving": "Saving…",
+      "cancel": "Cancel",
+      "saved": "Billing details saved. They appear on your next invoice.",
+      "loadFailed": "Billing details could not be loaded. Refresh the page and try again.",
+      "forbiddenRead": "Only the workspace owner and admins can see billing details.",
+      "problems": {
+        "required": "This field is required.",
+        "too_long": "This is too long.",
+        "invalid": "Check this value."
+      },
+      "errors": {
+        "forbidden": "Only the workspace owner can change billing details.",
+        "conflict": "Your billing details were changed elsewhere. The form now shows the latest version; check it and save again.",
+        "invalid": "Some details were not accepted. Check the fields and try again.",
+        "failed": "Billing details could not be saved. Try again."
+      }
+    },
+    "checkout": {
+      "title": "Invoice details",
+      "saved": "Invoice to {summary}",
+      "missing": "Add your name and address to have them printed on this invoice. Without them it is issued to your workspace name and email.",
+      "add": "Add details",
+      "edit": "Edit"
+    },
+    "topUp": {
+      "vat": "VAT ({rate}%)",
+      "total": "Total charge"
+    }
+  }
+}

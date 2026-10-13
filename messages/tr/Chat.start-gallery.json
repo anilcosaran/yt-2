@@ -1,0 +1,97 @@
+{
+  "startGallery": {
+    "title": "İlham al",
+    "subtitle": "Bir örnek ya da araç seç; isteği, formatı ve süreyi kutuya hazırlarız. Göndermeden önce değiştirebilirsin.",
+    "filter": {
+      "all": "Tümü",
+      "example": "Örnek videolar",
+      "tool": "Araçlar"
+    },
+    "kind": {
+      "example": "Örnek",
+      "tool": "Araç"
+    },
+    "use": "Kullan",
+    "useLabel": "{title} — kutuya ekle",
+    "image": "Görsel",
+    "scriptMode": "Senaryo",
+    "seconds": "{count} sn",
+    "minutes": "{count} dk",
+    "minutesSeconds": "{minutes} dk {seconds} sn",
+    "mode": {
+      "label": "Çalışma şekli",
+      "agentHint": "Niyetine göre karar verir: gerekirse önce plan yazar, gerekirse doğrudan üretir.",
+      "scriptHint": "Önce senaryo ve planı yazar; video sen onaylayınca başlar."
+    },
+    "items": {
+      "news": {
+        "title": "Haber bülteni",
+        "prompt": "Bu haftanın sektör haberlerini 60 saniyelik bir haber bülteni olarak hazırla: sunucu, alt bant ve b-roll kullan."
+      },
+      "tips": {
+        "title": "İpucu Shorts",
+        "prompt": "Kanalımın konusunda 3 hızlı ipucu veren, 30 saniyelik dikey bir Shorts videosu yap."
+      },
+      "clips": {
+        "title": "Viral klipler",
+        "prompt": "Yüklediğim uzun videodan en ilgi çekici anları bul ve 30 saniyelik 3 dikey klip çıkar, altyazı ekle."
+      },
+      "angles": {
+        "title": "Çok açılı çekim",
+        "prompt": "Ürünü/kişiyi önden, yandan ve yakından gösteren 15 saniyelik dikey bir tanıtım videosu yap."
+      },
+      "storyboard": {
+        "title": "Senaryo ve storyboard",
+        "prompt": "Önce 90 saniyelik bir tanıtım videosunun senaryosunu ve sahne planını yaz; ben onaylayınca üretime geç."
+      },
+      "expert": {
+        "title": "Uzman röportajı",
+        "prompt": "Bir uzmanın konuştuğu, önemli cümleleri ekranda vurgulayan 45 saniyelik dikey bir röportaj videosu yap."
+      },
+      "background": {
+        "title": "Arka plan kaldır",
+        "prompt": "Yüklediğim görselin arka planını kaldır ve şeffaf PNG olarak ver."
+      },
+      "avatar": {
+        "title": "Konuşan avatar",
+        "prompt": "Kendi avatarımla, senin yazacağın kısa bir metni anlatan 60 saniyelik konuşan video yap."
+      },
+      "educational": {
+        "title": "Eğitim videosu",
+        "prompt": "Bir konuyu adım adım anlatan 2 dakikalık eğitim videosu için önce senaryo ve bölümleri çıkar; onaydan sonra üret."
+      },
+      "lookbook": {
+        "title": "Moda lookbook",
+        "prompt": "Kıyafetleri farklı açılardan gösteren, müzikli 20 saniyelik dikey bir lookbook videosu yap."
+      },
+      "sales": {
+        "title": "Satış videosu",
+        "prompt": "Ürünümün en güçlü 3 faydasını anlatan, sonunda harekete çağrı olan 30 saniyelik dikey bir satış videosu yap."
+      },
+      "captions": {
+        "title": "Altyazı ekle",
+        "prompt": "Yüklediğim videodaki konuşmaları yazıya dök ve okunaklı, vurgulu altyazılar ekle."
+      },
+      "campaign": {
+        "title": "Kampanya duyurusu",
+        "prompt": "Yeni kampanyamız için önce mesajı ve sahne planını yaz; onaylayınca 30 saniyelik dikey duyuru videosunu üret."
+      },
+      "character": {
+        "title": "Sanal karakter",
+        "prompt": "Markamız için sanal bir karakter tasarla ve onunla 30 saniyelik dikey bir tanışma videosu yap."
+      },
+      "course": {
+        "title": "Kurs tanıtımı",
+        "prompt": "Online kursum için 90 saniyelik tanıtım videosunun senaryosunu yaz; onaylayınca üretime geç."
+      },
+      "topdown": {
+        "title": "Üstten ürün çekimi",
+        "prompt": "Ürünü üstten gösteren, hızlı geçişli 15 saniyelik dikey bir tanıtım videosu yap."
+      },
+      "demo": {
+        "title": "Ürün demosu",
+        "prompt": "Uygulamamızın ana özelliklerini ekran görüntüleriyle anlatan 60 saniyelik bir demo videosu yap."
+      }
+    }
+  }
+}

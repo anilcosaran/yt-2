@@ -1,0 +1,137 @@
+{
+  "editor": {
+    "shapes": {
+      "appliesToSelected": "Seçili şekli de boyar"
+    },
+    "stage": {
+      "ctb": {
+        "animate": "Animasyon",
+        "duplicate": "Çoğalt",
+        "duplicateMotion": "Motion'u Motion aracından yeniden ekleyin",
+        "copy": "Kopyala",
+        "paste": "Yapıştır",
+        "lock": "Kilitle",
+        "unlock": "Kilidi aç",
+        "lockHint": "Kilitle: tuval bu katmanı artık seçmez ve taşımaz (paneller düzenlemeye devam eder)",
+        "lockedHint": "Kilitli: zaman çizelgesinden seçin; tuvalde taşımak için kilidini açın",
+        "underline": "Altı çizili",
+        "underlineHint": "Altı çizili (Ctrl+U)",
+        "strikethrough": "Üstü çizili",
+        "strikethroughHint": "Üstü çizili (Ctrl+Shift+X)",
+        "lineHeight": "Satır aralığı",
+        "lineHeightDefault": "Varsayılan",
+        "lineHeightCustom": "Aralık",
+        "outline": "Kenar çizgisi",
+        "outlineOff": "Yok",
+        "outlineOn": "Kenar çizgisi",
+        "outlineColor": "Renk",
+        "outlineWidth": "Kalınlık",
+        "opacity": "Saydamlık",
+        "opacityValue": "%{percent}",
+        "smaller": "Küçült",
+        "larger": "Büyüt",
+        "replace": "Değiştir",
+        "replaceImageHint": "Bu görseli değiştir: Medya'dan başka bir görsel seçin",
+        "replaceVideoHint": "Bu videoyu değiştir: Medya'dan başka bir video seçin (bu klip kadar uzun olmalı)",
+        "replacing": "Seçili olanın yerine koymak için Medya'dan bir görsel veya video seçin",
+        "cancel": "Vazgeç",
+        "fit": {
+          "label": "Çerçeveye sığdırma",
+          "cover": "Doldur",
+          "contain": "Sığdır",
+          "coverHint": "Tüm çerçeveyi doldur (çerçevenin dışında kalan kısım görünmez)",
+          "containHint": "Resmin tamamını çerçevenin içinde göster"
+        },
+        "notYet": {
+          "group": "Henüz yok",
+          "reason": "Henüz yok: video bunu saklayamıyor ve çizemiyor",
+          "stroke": "Kenar çizgisi",
+          "opacity": "Saydamlık",
+          "crop": "Kırp"
+        }
+      },
+      "inspector": {
+        "layer": "Katman",
+        "opacity": "Opaklık",
+        "locked": "Tuvalde kilitli"
+      },
+      "shortcuts": {
+        "open": "Klavye kısayolları (?)",
+        "title": "Klavye kısayolları",
+        "close": "Kapat",
+        "soon": "yakında",
+        "drag": "sürükle",
+        "groups": {
+          "select": "Seçim",
+          "edit": "Düzenleme",
+          "move": "Taşıma",
+          "playback": "Oynatma",
+          "history": "Geçmiş ve yardım"
+        },
+        "items": {
+          "deselect": "Seçimi kaldır",
+          "nextLayer": "Sonraki / önceki katman",
+          "editText": "Metni düzenle",
+          "delete": "Sil",
+          "duplicate": "Çoğalt",
+          "copy": "Kopyala",
+          "paste": "Yapıştır",
+          "underline": "Metnin altını çiz",
+          "strikethrough": "Metnin üstünü çiz",
+          "forward": "Öne getir / en öne getir",
+          "backward": "Geriye gönder / en arkaya gönder",
+          "askAi": "Yapay zekâya sor",
+          "nudge": "1 px kaydır",
+          "nudgeFar": "10 px kaydır",
+          "dragAxis": "Tek eksende taşı",
+          "dragFree": "Hizalamadan taşı",
+          "resizeCentre": "Merkezden boyutlandır",
+          "play": "Oynat / duraklat",
+          "frame": "Önceki / sonraki kare",
+          "second": "Bir saniye geri / ileri",
+          "ends": "Başa / sona git",
+          "undo": "Geri al",
+          "redo": "Yinele",
+          "sheet": "Bu liste"
+        }
+      },
+      "aspect": {
+        "change": "Video biçimini değiştir",
+        "current": "Video biçimi {ratio}",
+        "formats": {
+          "16x9": "Yatay",
+          "9x16": "Dikey",
+          "1x1": "Kare"
+        },
+        "reviewTitle": "{from} biçimi {to} olsun mu?",
+        "planning": "Neyin değişeceğine bakılıyor…",
+        "undoHint": "Her şey tek adımda değişir; tek bir Geri al hepsini eski hâline getirir.",
+        "failed": "Biçim değiştirilemedi. Henüz açılmamış olabilir ya da proje bu sırada değişti.",
+        "cancel": "Vazgeç",
+        "apply": "{ratio} yap",
+        "applying": "Değiştiriliyor…",
+        "impact": {
+          "nothing": "Hiçbir şeyin yer değiştirmesi gerekmiyor.",
+          "recovered": "Çerçeveyi dolduran {count, plural, one {# görsel} other {# görsel}} yeni çerçeveyi de doldurur",
+          "refitted": "Sığdırılmış {count, plural, one {# görsel} other {# görsel}} yeni çerçeveye sığdırılır",
+          "moved": "{count, plural, one {# katman} other {# katman}} çerçevedeki yerini korur ve güvenli alanın içine alınır",
+          "review": "{count, plural, one {# görselin} other {# görselin}} boyutu okunamadı: değişiklikten sonra yerini kontrol edin",
+          "motion": "{count, plural, one {# Motion katmanı} other {# Motion katmanı}} başka bir biçim için yapıldı; değiştirilene kadar gösterilmez"
+        }
+      },
+      "notices": {
+        "copied": "Kopyalandı. Yapıştırmak için Ctrl+V'ye basın.",
+        "copyUnsupported": "Bu katman kopyalanamaz. Motion'u Motion aracından yeniden ekleyin.",
+        "clipboardEmpty": "Henüz bir şey kopyalanmadı.",
+        "pasteDoesNotFit": "Kopyalanan video bu sahneden uzun.",
+        "pasteUnsupported": "Bu katman buraya yapıştırılamaz.",
+        "pasteMissingSource": "Kopyalanan medya artık bu projede değil.",
+        "replaceKind": "Aynı türü seçin: görselin yerine görsel, videonun yerine video.",
+        "replaceTooShort": "O video, yerine geçeceği klipten kısa.",
+        "replaceFailed": "Medya değiştirilemedi.",
+        "replaced": "Değiştirildi.",
+        "redoSoon": "Yinele henüz yok. Geri almak için Ctrl+Z."
+      }
+    }
+  }
+}

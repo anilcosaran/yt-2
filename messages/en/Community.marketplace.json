@@ -1,0 +1,34 @@
+{
+  "marketplace": {
+    "purchase": {
+      "state": {
+        "charging": "Completing your purchase…",
+        "sold": "Purchased. It's yours to use in every project.",
+        "failed": "The purchase didn't go through."
+      }
+    },
+    "earnings": {
+      "state": {
+        "pending": "Earned, available soon",
+        "settled": "Added to your credits"
+      }
+    },
+    "errors": {
+      "unavailable": "The marketplace isn't available right now.",
+      "priceNotAllowed": {
+        "publisher_not_verified": "Only verified creators can set a price. Everything else you share is free.",
+        "post_removed": "This post was removed, so its price can't be changed.",
+        "price_out_of_range": "Choose a whole number of credits from 1 to 10,000, or 0 for free."
+      },
+      "listingChanged": "This listing changed while you were editing it. Reload it and try again.",
+      "priceChanged": "The price changed to {price, plural, one {# credit} other {# credits}}. Check it and buy again if you'd like.",
+      "priceChangedFree": "This item is free now. You can use it without buying it.",
+      "changed": "The creator updated this post. Reload it and try again.",
+      "selfPurchase": "This is your own item, so there's nothing to buy.",
+      "notForSale": "This item isn't for sale right now.",
+      "insufficientCredits": "You need {price, plural, one {# credit} other {# credits}} to buy this. Add credits and try again.",
+      "purchaseRequired": "Buy this item for {price, plural, one {# credit} other {# credits}} to use it in your projects.",
+      "stillProcessing": "Your purchase is still being completed. It will be ready to use shortly."
+    }
+  }
+}

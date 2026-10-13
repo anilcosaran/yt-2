@@ -1,0 +1,9 @@
+{
+  "editor": {
+    "openInChat": {
+      "label": "Sohbette aç",
+      "title": "Bu projenin konuşmasını Sohbet sayfasında sürdür",
+      "none": "Önce asistana bir mesaj yaz; sonra bu projenin sohbeti Sohbet sayfasında açılabilir."
+    }
+  }
+}

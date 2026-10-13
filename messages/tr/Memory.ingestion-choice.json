@@ -1,0 +1,18 @@
+{
+  "ingestionChoice": {
+    "label": "Belleğe de ekle",
+    "hint": "Bu dosyaların Belleğe nasıl ekleneceğine kanalın Bellek kuralları karar verir; onay gereken dosyalar onayı bekler.",
+    "unavailable": {
+      "channel_memory_disabled": "Bu kanalda Bellek kapalı. Dosyalar Belleğe eklenmeden yüklenir.",
+      "plan": "Planınız Belleği içermiyor. Dosyalar Belleğe eklenmeden yüklenir.",
+      "retention": "Bu kanalın Belleği kapatılıyor. Dosyalar Belleğe eklenmeden yüklenir."
+    },
+    "summary": {
+      "prefix": "Bellek:",
+      "queued": "{count, plural, one {# eklenecek} other {# eklenecek}}",
+      "approval": "{count, plural, one {# onay bekliyor} other {# onay bekliyor}}",
+      "notAdded": "{count, plural, one {# kanal kuralıyla eklenmeyecek} other {# kanal kuralıyla eklenmeyecek}}",
+      "skipped": "{count, plural, one {# eklenmedi (seçiminiz)} other {# eklenmedi (seçiminiz)}}"
+    }
+  }
+}

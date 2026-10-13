@@ -1,0 +1,7 @@
+{
+  "quota": {
+    "publishExhausted": "You've shared {limit, plural, one {# post} other {# posts}} today, your daily limit. You can share again after {time}.",
+    "likeExhausted": "You've used today's {limit, plural, one {# new like} other {# new likes}}. You can like new posts again after {time}.",
+    "previewsPaused": "Community previews are paused for a while. Please try again later."
+  }
+}

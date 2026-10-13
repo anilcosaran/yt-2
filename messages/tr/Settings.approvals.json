@@ -1,0 +1,58 @@
+{
+  "approvals": {
+    "intro": "Asistanın kredi harcamadan önce ne zaman sorduğunu belirle. Bakiyen yetmeyen işi burada ne seçersen seç her zaman durdururum.",
+    "loadFailed": "Onay ayarları yüklenemedi. Tekrar denemek için sayfayı yenile.",
+    "saved": "Kaydedildi.",
+    "conflict": "Bu ayarlar başka yerden değişti. Son değerler gösteriliyor; tekrar dene.",
+    "failed": "Değişiklik kaydedilemedi. Tekrar dene.",
+    "aboveCeiling": "Bu, çalışma alanının sınırının üstünde. “Şunun altında sorma” en fazla {credits} kredi olabilir.",
+    "save": "Kaydet",
+    "cancel": "Vazgeç",
+    "close": "Kapat",
+    "creditsUnit": "kredi",
+    "invalidAmount": "En fazla dört ondalıklı bir kredi sayısı gir.",
+    "consent": {
+      "label": "Tam erişim",
+      "none": "Henüz onaylanmadı. Bir sohbeti ilk kez Tam erişime aldığında bir kez sorulur.",
+      "accepted": "{date} tarihinde onaylandı.",
+      "revoked": "Onayını geri çektin. Bir sonraki sefer yeniden sorulur.",
+      "outdated_revision": "Uyarı metni değişti. Bir sonraki sefer yeniden onay istenir.",
+      "blocked_by_workspace": "Onaylandı, ancak çalışma alanı yöneticin üyeler için Tam erişime izin vermedi.",
+      "help": "Onayını geri çekersen Tam erişim sohbetleri bir sonraki adımda Otomatik moda döner.",
+      "revoke": "Geri çek",
+      "revokeTitle": "Tam erişim onayın geri çekilsin mi?",
+      "revokeDescription": "Çalışan Tam erişim işleri bir sonraki adımdan itibaren Otomatik modda devam eder. Tam erişimi bir daha kullanmadan önce yeniden onay istenir.",
+      "revokeConfirm": "Onayı geri çek"
+    },
+    "limit": {
+      "label": "Tam erişim limiti",
+      "switch": "Şu tutarı aşan işte sor",
+      "amount": "Kredi cinsinden onay limiti",
+      "useDefault": "Varsayılanı kullan ({credits})",
+      "helpOn": "Tam erişimde bir işin maliyeti {credits} krediyi aşacaksa bir kez sorarım. Varsayılan 1.000 kredidir.",
+      "helpOff": "Kapalı: Tam erişimde maliyet konusunda hiç sormam. Bir işi yalnızca bakiyen durdurabilir.",
+      "skipHint": "Mesajına “onay sorma” yazarak bu soruyu tek bir iş için atlayabilirsin."
+    },
+    "members": {
+      "label": "Üyeler",
+      "switch": "Üyeler için Tam erişime izin ver",
+      "help": "Varsayılan olarak kapalı. Sahipler ve yöneticiler Tam erişimi her zaman kullanabilir; üyeler yalnızca bu açıkken kullanabilir."
+    },
+    "autoFloor": {
+      "label": "Otomatik: şunun altında sorma",
+      "amount": "Bu kadar kredinin altında sorma",
+      "useDefault": "Plan varsayılanını kullan",
+      "help": "Otomatik modda toplam maliyeti bu sayının altında kalan iş hiç sormaz (şu an {credits} kredi). Bakiyen yetmeyen işi yine de durdururum.",
+      "helpUnknown": "Otomatik modda toplam maliyeti bu sayının altında kalan iş hiç sormaz. Bakiyen yetmeyen işi yine de durdururum.",
+      "max": "Çalışma alanın burada en fazla {credits} krediye izin veriyor."
+    },
+    "jobCap": {
+      "label": "İş başına üst sınır",
+      "amount": "Kredi cinsinden iş başına üst sınır",
+      "none": "Sınır yok",
+      "clear": "Sınırı kaldır",
+      "help": "İsteğe bağlı. Tahmini bunu aşan iş hiç başlamaz. Boş bırakırsan sınır yoktur.",
+      "tenant": "Çalışma alanının da {credits} kredilik bir sınırı var; düşük olan geçerli olur."
+    }
+  }
+}

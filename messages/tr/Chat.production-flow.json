@@ -1,0 +1,28 @@
+{
+  "productionFlow": {
+    "credits": "~{min}–{max} kredi",
+    "creditsPoint": "~{value} kredi",
+    "closing": {
+      "render": "Son render’ı al",
+      "keep": "Bu videodan öğrendiklerini kanal için kural ve şablon olarak kaydet"
+    },
+    "suggestions": {
+      "label": "Öneriler",
+      "plan": {
+        "1": "Kancayı daha merak uyandırıcı yap",
+        "2": "Süreyi 20 saniyeye indir",
+        "3": "Müziği daha enerjik yap"
+      },
+      "producing": {
+        "1": "4. sahnede fiyatı büyüt",
+        "2": "Altyazıları daha büyük yap",
+        "3": "Kapanışa adres haritası ekle"
+      },
+      "done": {
+        "1": "Yatay sürümünü de çıkar",
+        "2": "15 saniyelik kısa sürümünü yap",
+        "3": "Kapak görselini değiştir"
+      }
+    }
+  }
+}

@@ -1,0 +1,6 @@
+/* E1-N: the header's "Not saved — retry" chip next to the design's "Saving… / Saved" (`.saved`, studio.css); the design's tokens only. */
+.yt-studio .saved.err .save-retry{display:flex;align-items:center;gap:5px;height:26px;padding:0 9px;border:1px solid color-mix(in srgb,var(--st-danger) 45%,transparent);border-radius:999px;background:var(--st-danger-soft);color:var(--st-danger);font:inherit;font-size:12px;cursor:pointer;white-space:nowrap}
+.yt-studio .saved.err .save-retry:hover{background:color-mix(in srgb,var(--st-danger) 16%,var(--card))}
+.yt-studio .saved.err .save-retry:focus-visible{outline:2px solid var(--st-accent);outline-offset:2px}
+.yt-studio .saved.err .save-retry .i{color:inherit}
+.yt-studio .saved.err .save-retry b{font-weight:500;display:inline!important}

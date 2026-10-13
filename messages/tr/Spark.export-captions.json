@@ -1,0 +1,12 @@
+{
+  "editor": {
+    "export": {
+      "reason": {
+        "captions_unavailable": "Bu videonun bir altyazı izi şu an okunamıyor. Altyazıları kontrol et ya da videoyu dışa aktarmak için altyazı izini kaldır.",
+        "captions_text": "Bazı altyazı metinleri dışa aktarıcı tarafından çizilemiyor (örneğin altyazı fontunda olmayan karakterler). Altyazı metnini düzenle ya da altyazı izini kaldır.",
+        "captions_font": "Altyazı fontu dışa aktarma için kullanılamıyor. Başka bir altyazı stili seç.",
+        "captions_motion_scene": "Yalnızca bir Motion'dan oluşan sahnedeki altyazılar bu Motion ile dışa aktarılamaz. O sahneye başka bir katman ekle ya da altyazıları kaldır."
+      }
+    }
+  }
+}

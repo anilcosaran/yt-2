@@ -1,0 +1,14 @@
+{
+  "editor": {
+    "export": {
+      "reason": {
+        "motion_camera": "Bu videodaki bir Motion kamera hareketi kullanıyor, bu yüzden diğer katmanların üstüne konamaz. Kendi sahnesi olarak kullan.",
+        "motion_timing": "Bu videodaki bir Motion kendi kelime zamanlamasını izliyor, bu yüzden diğer katmanların üstüne konamaz. Kendi sahnesi olarak kullan.",
+        "motion_format": "Bu videodaki bir Motion başka bir biçim ya da kare hızı için yapılmış. Bu videonun biçimini destekleyen bir Motion seç.",
+        "motion_length": "Bu videodaki bir Motion, kendisine verilen süreyle uyuşmuyor.",
+        "motion_unavailable": "Bu videodaki bir Motion şu an kullanılamıyor ya da mevcut ayarlarıyla çizilemiyor.",
+        "motion_content": "Bu videodaki bir Motion, dışa aktarıcının henüz çizemediği içerik taşıyor."
+      }
+    }
+  }
+}

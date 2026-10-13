@@ -1,0 +1,15 @@
+{
+  "rules": {
+    "sharing": {
+      "share": "Kanal üyeleriyle paylaş",
+      "unshare": "Paylaşımı kaldır",
+      "sharedBadge": "Paylaşıldı",
+      "shareTitle": "Bu kural kanal üyeleriyle paylaşılsın mı?",
+      "shareDescription": "{channel} üyeleri bu kuralı görür ve asistanları bu kanalda ona uyar. Kuralı yalnız siz düzenleyebilir, duraklatabilir veya silebilirsiniz.",
+      "shareConfirm": "Paylaş",
+      "unshareTitle": "Bu kuralın paylaşımı kaldırılsın mı?",
+      "unshareDescription": "{channel} üyeleri bu kuralı artık görmez ve asistanları onu kullanmaz. Kural sizin için etkin kalır.",
+      "unshareConfirm": "Paylaşımı kaldır"
+    }
+  }
+}

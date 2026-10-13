@@ -1,0 +1,116 @@
+{
+  "editor": {
+    "record": {
+      "title": "Ekranını, kameranı veya sesini kaydet",
+      "modes": {
+        "screen": { "label": "Ekran", "hint": "Bir sekmeyi, pencereyi veya tüm ekranı kaydet" },
+        "camera": { "label": "Kamera", "hint": "Kendini sunucu olarak kaydet" },
+        "screenCamera": { "label": "Ekran + kamera", "hint": "İki klip: ekranın ve köşede küçük bir kamera klibi" },
+        "voice": { "label": "Yalnızca ses", "hint": "Bu sahne için bir seslendirme kaydet" }
+      },
+      "audioSection": "Ses",
+      "microphone": "Mikrofonu kaydet",
+      "microphoneHint": "Ekran ve kamera kayıtlarına sesini ekler",
+      "limitNote": "Bir kayıt en fazla {minutes} dakika olabilir. Depolama alanındaki “Recordings” klasörüne kaydedilir ve oynatma çizgisinin olduğu yere eklenir.",
+      "limitPlan": "Planın dosya başına en fazla {limit} MB’a izin veriyor.",
+      "unsupported": "Bu tarayıcı kayıt yapamıyor. Bilgisayarda Chrome, Edge veya Firefox’u dene.",
+      "screenUnsupportedTitle": "Bu tarayıcı ekran kaydı yapamıyor",
+      "cancel": "Vazgeç",
+      "requesting": {
+        "title": "İznin bekleniyor…",
+        "screen": "Tarayıcı penceresinde neyi paylaşacağını seç.",
+        "camera": "Tarayıcının sorusunda kameraya ve mikrofona izin ver.",
+        "voice": "Tarayıcının sorusunda mikrofona izin ver."
+      },
+      "previews": {
+        "screen": "Ekranın",
+        "camera": "Kameran"
+      },
+      "ready": {
+        "title": "Kayda hazır",
+        "hint": "Hazır olduğunda “Kaydı başlat”a bas.",
+        "voiceHint": "Seviyeyi görmek için birkaç söz söyle."
+      },
+      "start": "Kaydı başlat",
+      "micLevel": "Mikrofon seviyesi",
+      "micUnavailable": "Kullanılabilir bir mikrofon yok, bu kayıtta ses olmayacak.",
+      "recording": "Kaydediliyor",
+      "paused": "Duraklatıldı",
+      "elapsed": "Kaydedilen: {time}",
+      "timeLeft": "{time} kaldı",
+      "limitSoon": "Kayıt {seconds} sn sonra kendiliğinden duracak.",
+      "pause": "Duraklat",
+      "resume": "Devam et",
+      "stop": "Durdur",
+      "finishing": "Kayıt tamamlanıyor…",
+      "review": {
+        "title": "Kaydın",
+        "meta": "{duration} · {size} MB",
+        "tooLarge": "Bu kayıt {size} MB; planının dosya başına izin verdiği {limit} MB’ı aşıyor. Daha kısa bir kayıt çek.",
+        "limitReached": "10 dakikalık sınıra ulaşıldı, kayıt durdu.",
+        "interrupted": "Kayıt kesildi. O ana kadar yakalananlar kaydın olarak saklandı.",
+        "download": "Kaydı indir",
+        "downloadPart": "{name} dosyasını indir",
+        "persist": {
+          "uploading": "Kaydın Kayıtlar klasörüne kaydediliyor… %{percent}",
+          "saved": "Kaydın Kayıtlar klasörüne kaydedildi. Sayfayı yenilemek ya da başka bir projeye geçmek onu kaybettirmez.",
+          "failed": "Kaydın kaydedilene kadar yalnızca bu sayfada duruyor. Kaybolmaması için indir ya da yeniden dene.",
+          "retry": "Tekrar kaydetmeyi dene"
+        },
+        "parts": {
+          "screen": "Ekran",
+          "camera": "Kamera",
+          "voice": "Ses"
+        },
+        "notes": {
+          "video": "Oynatma çizgisinin olduğu yerde sahneye eklenir.",
+          "pair": "Ekran klibini ve sağ alt köşede küçük bir kamera klibini ekler. Kamera klibini sonra taşıyıp boyutlandırabilirsin.",
+          "voice": "Seslendirme bu sahnenin anlatımı olur. Sahnede yapay zekâ sesi varsa onun yerine geçer. Geri almak için Ctrl+Z."
+        }
+      },
+      "retake": "Yeniden çek",
+      "add": "Videoya ekle",
+      "saving": {
+        "title": "Kaydın ekleniyor",
+        "waiting": "Bekleniyor…",
+        "ready": "Hazır",
+        "failed": "Başarısız",
+        "uploading": "{name} yükleniyor… %{percent}",
+        "processing": "İşleniyor…",
+        "processingHint": "Kayıt, düzenlenebilmesi için hazırlanıyor. Bu bir dakika sürebilir.",
+        "inserting": "Sahneye ekleniyor…",
+        "stalledTitle": "Hâlâ işleniyor",
+        "stalledHint": "Bu, her zamankinden uzun sürüyor. Kaydın depolama alanındaki “Recordings” klasöründe güvende.",
+        "checkAgain": "Yeniden kontrol et",
+        "cancel": "Vazgeç"
+      },
+      "saved": {
+        "title": "Videoya eklendi",
+        "body": "Kaydın {scene}. sahnede, oynatma çizgisinin olduğu yerde.",
+        "again": "Bir kayıt daha yap"
+      },
+      "toast": {
+        "inserted": "Kayıt {scene}. sahneye eklendi.",
+        "narrationReplaced": "Kaydın bu sahnenin anlatımının yerine geçti. Geri almak için Ctrl+Z.",
+        "voiceRunsPast": "Kayıt bu sahneden {seconds} sn uzun, bu yüzden sonraki sahnelerde de çalar."
+      },
+      "tryAgain": "Yeniden dene",
+      "back": "Geri",
+      "errors": {
+        "screenUnsupported": "Bu tarayıcı ekran kaydı yapamıyor. Bilgisayarda Chrome, Edge veya Firefox’u dene.",
+        "screenDenied": "Ekran paylaşımı iptal edildi veya engellendi.",
+        "screenBusy": "Ekran paylaşılamadı. Yeniden dene.",
+        "recorder": "Kayıt oluşturulamadı. Yeniden dene.",
+        "tooLarge": "Kayıt yükleme sınırından büyük veya depolama alanın dolu. Daha kısa bir kayıt yap veya yer aç.",
+        "unsupportedType": "Bu kayıt biçimi kabul edilmiyor. Başka bir tarayıcı dene.",
+        "uploadFailed": "Yükleme başarısız oldu. Bağlantını kontrol edip yeniden dene.",
+        "notReady": "Kayıt henüz hazır değil. Biraz sonra yeniden dene.",
+        "probeInvalid": "Kayıt okunamadı. Yeniden kaydet.",
+        "tooLong": "Kayıt editörün kabul ettiğinden uzun. Daha kısa bir kayıt yap.",
+        "attachFailed": "Kayıt projeye eklenemedi. Yeniden dene.",
+        "forbidden": "Bu projeye kayıt ekleyemezsin.",
+        "insertFailed": "Kayıt projende ama yerleştirilemedi. Oynatma çizgisini bir sahnenin üzerine getirip yeniden dene."
+      }
+    }
+  }
+}

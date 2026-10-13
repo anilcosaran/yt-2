@@ -1,0 +1,42 @@
+{
+  "typedComposer": {
+    "groups": {
+      "avatar": "Avatarlar",
+      "voice": "Sesler",
+      "brand_template": "Şablonlar",
+      "brand_kit": "Brand Kit'ler",
+      "asset": "Dosyalar",
+      "model": "Modeller",
+      "project": "Projeler"
+    },
+    "resourceKinds": {
+      "avatar": "Avatar",
+      "voice": "Ses",
+      "brand_template": "Şablon",
+      "brand_kit": "Brand Kit",
+      "asset": "Dosya",
+      "model": "Model",
+      "project": "Proje"
+    },
+    "mediaKinds": {
+      "image": "Görsel",
+      "video": "Video",
+      "audio": "Ses",
+      "document": "Belge",
+      "other": "Dosya"
+    },
+    "origins": {
+      "human_clone": "Klon",
+      "digital_human": "Dijital insan",
+      "public_template": "Hazır",
+      "stock": "Kütüphane",
+      "instant_clone": "Anında klon",
+      "professional_clone": "Profesyonel klon",
+      "designed": "Tasarlanmış",
+      "localized": "Yerelleştirilmiş"
+    },
+    "revision": "Revizyon {number}",
+    "updatedOn": "{date} güncellendi",
+    "resourcesPartial": "Bazı kaynak türleri şu an yüklenemedi."
+  }
+}

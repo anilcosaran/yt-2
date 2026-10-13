@@ -1,0 +1,32 @@
+{
+  "skillsTab": {
+    "history": {
+      "fieldChange": "{field}: {change}",
+      "fromTo": "{from} → {to}",
+      "sectionChange": "{section}: {added} eklendi, {removed} çıkarıldı, {changed} değişti",
+      "bodyLines": "Yöntem metni: {added, plural, one {# satır eklendi} other {# satır eklendi}}, {removed, plural, one {# satır çıkarıldı} other {# satır çıkarıldı}}.",
+      "more": "+{count} daha",
+      "complexValue": "değişen değer",
+      "fields": {
+        "name": "Ad",
+        "description": "Ne zaman kullanılır",
+        "locale": "Dil",
+        "category": "Kategori",
+        "risk_level": "Risk",
+        "compatible_surfaces": "Çalıştığı yerler",
+        "trigger_examples": "Örnek istekler",
+        "negative_trigger_examples": "Şunlar için değil",
+        "required_capabilities": "Yetenekler",
+        "dependencies": "Gerekli yetenekler",
+        "other": "Başka bir ayar"
+      },
+      "sections": {
+        "inputs": "Girdiler",
+        "outputs": "Çıktılar",
+        "examples": "Örnekler",
+        "source_refs": "Kaynaklar",
+        "eval_cases": "Test durumları"
+      }
+    }
+  }
+}

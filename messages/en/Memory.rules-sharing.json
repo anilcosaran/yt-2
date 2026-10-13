@@ -1,0 +1,15 @@
+{
+  "rules": {
+    "sharing": {
+      "share": "Share with channel members",
+      "unshare": "Stop sharing",
+      "sharedBadge": "Shared",
+      "shareTitle": "Share this rule with the channel's members?",
+      "shareDescription": "Members of {channel} will see this rule and their assistant will follow it in this channel. Only you can edit, pause or delete it.",
+      "shareConfirm": "Share",
+      "unshareTitle": "Stop sharing this rule?",
+      "unshareDescription": "Members of {channel} will no longer see this rule and their assistant will stop using it. It stays active for you.",
+      "unshareConfirm": "Stop sharing"
+    }
+  }
+}

@@ -1,0 +1,89 @@
+{
+  "invoices": {
+    "title": "Faturalar ve iade belgeleri",
+    "description": "Plan satın alma ve yenileme ödemeleriniz, kredi yüklemeleriniz ve kredileriniz yetmediğinde kartınızdan alınan kullanım ücretleri için faturalar, iadeler için iade belgeleri. Ödeme başarılı olunca otomatik oluşturulur. Sohbetteki harcama dökümleri yalnızca kredilerinizin nereye gittiğini gösterir; fatura değildir.",
+    "loading": "Yükleniyor…",
+    "empty": {
+      "title": "Henüz fatura yok",
+      "detail": "Her başarılı plan ödemesinden (satın alma veya yenileme) ya da kredi alımından sonra burada bir fatura görünür."
+    },
+    "kind": {
+      "plan": "Plan",
+      "creditTopUp": "Kredi yükleme",
+      "usageCharge": "Kullanım ücreti",
+      "creditNote": "İade belgesi",
+      "other": "Fatura"
+    },
+    "row": {
+      "issued": "Düzenlenme: {date}",
+      "corrects": "{number} numaralı faturayı düzeltir",
+      "vat": "KDV hariç {net} + %{rate} KDV {vat}",
+      "vatNoRate": "KDV hariç {net} + KDV {vat}",
+      "paid": "Ödenen",
+      "refunded": "İade edilen"
+    },
+    "actions": {
+      "view": "Görüntüle / yazdır",
+      "download": "PDF indir",
+      "viewLabel": "{number} belgesini görüntüle veya yazdır",
+      "downloadLabel": "{number} belgesini PDF olarak indir",
+      "errors": {
+        "popupBlocked": "Tarayıcınız yeni pencereyi engelledi. Bu site için açılır pencerelere izin verin ya da PDF indir düğmesini kullanın.",
+        "forbidden": "Fatura belgelerini yalnızca çalışma alanı sahibi ve yöneticiler açabilir.",
+        "failed": "Belge yüklenemedi. Tekrar deneyin."
+      }
+    },
+    "pagination": {
+      "previous": "Önceki",
+      "next": "Sonraki",
+      "pageOf": "Sayfa {page} / {total}"
+    },
+    "details": {
+      "title": "Fatura bilgileri",
+      "description": "Gelecek faturalarınıza basılır. Düzenlenmiş faturalar asla değişmez.",
+      "none": "Henüz kayıtlı fatura bilginiz yok. Ekleyene kadar faturalar çalışma alanı adınız ve e-postanız adına düzenlenir.",
+      "add": "Bilgi ekle",
+      "edit": "Düzenle",
+      "billedTo": "Fatura adresi",
+      "billingEmail": "Fatura e-postası (isteğe bağlı)",
+      "vatNumberShort": "KDV numarası",
+      "legalName": "Ad veya şirket unvanı",
+      "addressLine1": "Adres satırı 1",
+      "addressLine2": "Adres satırı 2 (isteğe bağlı)",
+      "city": "Şehir",
+      "postalCode": "Posta kodu",
+      "country": "Ülke",
+      "countryPlaceholder": "Ülke seçin",
+      "vatNumber": "KDV numarası (isteğe bağlı)",
+      "vatNumberHint": "İşletmeler için: faturalarınıza basılır.",
+      "save": "Bilgileri kaydet",
+      "saving": "Kaydediliyor…",
+      "cancel": "Vazgeç",
+      "saved": "Fatura bilgileri kaydedildi. Sonraki faturanızda görünür.",
+      "loadFailed": "Fatura bilgileri yüklenemedi. Sayfayı yenileyip tekrar deneyin.",
+      "forbiddenRead": "Fatura bilgilerini yalnızca çalışma alanı sahibi ve yöneticiler görebilir.",
+      "problems": {
+        "required": "Bu alan zorunludur.",
+        "too_long": "Bu değer çok uzun.",
+        "invalid": "Bu değeri kontrol edin."
+      },
+      "errors": {
+        "forbidden": "Fatura bilgilerini yalnızca çalışma alanı sahibi değiştirebilir.",
+        "conflict": "Fatura bilgileriniz başka bir yerde değiştirilmiş. Form şimdi en son sürümü gösteriyor; kontrol edip tekrar kaydedin.",
+        "invalid": "Bazı bilgiler kabul edilmedi. Alanları kontrol edip tekrar deneyin.",
+        "failed": "Fatura bilgileri kaydedilemedi. Tekrar deneyin."
+      }
+    },
+    "checkout": {
+      "title": "Fatura bilgileri",
+      "saved": "Fatura adı: {summary}",
+      "missing": "Adınızı ve adresinizi ekleyin; bu faturaya basılsın. Eklemezseniz fatura çalışma alanı adınız ve e-postanız adına düzenlenir.",
+      "add": "Bilgi ekle",
+      "edit": "Düzenle"
+    },
+    "topUp": {
+      "vat": "KDV (%{rate})",
+      "total": "Toplam çekim"
+    }
+  }
+}

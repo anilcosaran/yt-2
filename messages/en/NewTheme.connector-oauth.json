@@ -1,0 +1,8 @@
+{
+  "connectorOAuthResult": {
+    "okTitle": "Almost done",
+    "failedTitle": "Connection not completed",
+    "closing": "You can return to Youtorch. This window closes by itself.",
+    "closeManually": "You can close this window and return to Youtorch."
+  }
+}

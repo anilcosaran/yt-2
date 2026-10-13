@@ -1,0 +1,28 @@
+{
+  "productionFlow": {
+    "credits": "~{min}–{max} credits",
+    "creditsPoint": "~{value} credits",
+    "closing": {
+      "render": "Take the final render",
+      "keep": "Save what this video taught as a rule and a template for the channel"
+    },
+    "suggestions": {
+      "label": "Suggestions",
+      "plan": {
+        "1": "Make the hook more intriguing",
+        "2": "Cut it down to 20 seconds",
+        "3": "Make the music more energetic"
+      },
+      "producing": {
+        "1": "Make the price bigger in scene 4",
+        "2": "Make the captions larger",
+        "3": "Add a map to the closing"
+      },
+      "done": {
+        "1": "Make a landscape version too",
+        "2": "Make a 15-second cut",
+        "3": "Change the cover image"
+      }
+    }
+  }
+}

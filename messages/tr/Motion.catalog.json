@@ -1,0 +1,126 @@
+{
+  "catalog": {
+    "title": "Motion",
+    "subtitle": "Animasyonlu başlıklar, grafikler, katmanlar ve daha fazlası. Birini önizle, bir Spark projesine ekle ya da yapay zekâyla sana göre uyarlasın.",
+    "community": "Topluluk Motion'ları",
+    "tabsLabel": "Motion bölümleri",
+    "tabs": {
+      "catalog": "Katalog",
+      "mine": "Motion'larım",
+      "drafts": "Taslaklar"
+    },
+    "search": {
+      "label": "Motion ara",
+      "placeholder": "Motion ara",
+      "clear": "Aramayı temizle"
+    },
+    "categoriesLabel": "Kategoriler",
+    "categories": {
+      "all": "Tümü",
+      "titles": "Başlıklar",
+      "data": "Veri ve grafikler",
+      "social": "Sosyal",
+      "overlays": "Katmanlar",
+      "captions": "Altyazılar",
+      "logo": "Logo ve kapanış",
+      "camera": "Geçişler ve kamera",
+      "media": "Medya",
+      "other": "Diğer"
+    },
+    "resultCount": "{count, plural, one {# Motion} other {# Motion}}",
+    "create": {
+      "label": "Yapay zekâyla Motion oluştur",
+      "placeholder": "Nasıl bir hareket istiyorsun?",
+      "submit": "Motion oluştur",
+      "submitting": "Oluşturuluyor…",
+      "examplesLabel": "Bir örnek dene",
+      "examples": {
+        "lowerThird": "Röportaj konuğu için sade bir alt bant",
+        "counter": "12.500 abonene kadar sayan büyük, animasyonlu bir sayı",
+        "title": "\"Lansman günü\" yazan gösterişli bir kinetik başlık",
+        "logo": "Marka renklerimle ve bir harekete geçirici mesajla logo kapanışı"
+      },
+      "unavailable": "Motion oluşturma şu an kullanılamıyor.",
+      "failed": "Motion oluşturulamadı. Tekrar dene."
+    },
+    "card": {
+      "open": "{title} aç",
+      "preview": "{title} önizlemesi",
+      "premium": "Premium",
+      "locked": "Kilitli",
+      "draft": "Taslak",
+      "validated": "Doğrulandı",
+      "draftVersion": "Sürüm {version}",
+      "playHint": "Oynatmak için üzerine gel",
+      "previewFailed": "Canlı önizleme kullanılamıyor",
+      "reducedMotion": "Animasyon, azaltılmış hareket ayarın nedeniyle duraklatıldı"
+    },
+    "empty": {
+      "catalog": "Platform Motion kataloğu henüz kullanılamıyor.",
+      "mine": "Henüz bir Motion kaydetmedin. Birini özelleştir, taslağı aç ve “Motion olarak kaydet”i seç; sonra burada ve Spark'ta görünür.",
+      "drafts": "Henüz taslağın yok. Başlamak için katalogdan bir Motion'u özelleştir.",
+      "filtered": "Aramana uyan Motion yok.",
+      "clear": "Filtreleri temizle",
+      "archivedHidden": "Arşivlenmiş taslaklar gizli."
+    },
+    "dialog": {
+      "label": "Motion ayrıntıları",
+      "description": "Bu Motion'u önizle, alanlarına bak ve kullan.",
+      "previewTitle": "Önizleme",
+      "formats": "Biçimler",
+      "duration": "Süre",
+      "category": "Kategori",
+      "fields": "Alanlar",
+      "fieldsHint": "Motion'un sunduğu alanlar bunlar. Projeye ekledikten sonra değiştir ya da yapay zekâyla özelleştir.",
+      "fieldsNone": "Bu Motion düzenlenebilir alan sunmuyor.",
+      "fieldsDraft": "Alanlarını görmek ve değiştirmek için taslağı aç.",
+      "fieldsLocked": "Premium bir Motion'un alanları, çalışma alanın onu satın aldıktan sonra görünür.",
+      "sample": "Örnek",
+      "required": "Zorunlu",
+      "maxChars": "En çok {count} karakter",
+      "frames": "{min}–{max} kare",
+      "noLivePreview": "Platform Motion'ları için canlı önizleme henüz yok. Düzenleyicide açıp hareketini görmek için yapay zekâyla özelleştir.",
+      "previewFailed": "Canlı önizleme yüklenemedi.",
+      "addToSpark": "Spark projesine ekle",
+      "customize": "Yapay zekâyla özelleştir",
+      "customizing": "Düzenleyici açılıyor…",
+      "openDraft": "Taslağı aç",
+      "buy": "Topluluk Motion'larından edin",
+      "premiumNote": "Bu premium bir Motion. Topluluk Motion'larından çalışma alanın için bir kez satın al, sonra projelerine ekle.",
+      "draftNote": "Bir taslak projeye eklenemez. Önce aç, doğrula ve “Motion olarak kaydet”i seç."
+    },
+    "spark": {
+      "title": "Bir proje seç",
+      "loading": "Projelerin yükleniyor…",
+      "empty": "Henüz Spark projen yok.",
+      "newProject": "Spark projelerini aç",
+      "loadFailed": "Projelerin yüklenemedi.",
+      "noChannel": "Projelerini görmek için önce bir çalışma alanı kanalı seç.",
+      "retry": "Tekrar dene",
+      "cancel": "Vazgeç",
+      "add": "Yeni sahne olarak ekle",
+      "adding": "Ekleniyor…",
+      "added": "“{project}” projesine yeni sahne olarak eklendi.",
+      "openProject": "Projeyi aç",
+      "ratioUnavailable": "{ratio} yok",
+      "failed": {
+        "not_saved": "Bir taslak projeye eklenemez. Önce Motion olarak kaydet.",
+        "locked": "Bu premium Motion'u bir projeye eklemek için önce satın al.",
+        "read_only": "Bu projeyi yalnızca görüntüleyebilirsin, bu yüzden ona bir şey eklenemez.",
+        "failed": "Motion eklenemedi. Hiçbir şey değişmedi; tekrar dene."
+      },
+      "refused": {
+        "premium_not_bought": "Bu premium Motion'u bir projeye eklemek için önce satın al.",
+        "no_scene": "Bu projede ekleme yapılacak bir sahne yok.",
+        "video_style_unavailable": "Bu Motion'u eklemek için kullanılabilir bir görünüm yok.",
+        "ratio_not_available": "Bu Motion'un, bu projenin biçimi olan {ratio} sürümü yok.",
+        "scene_too_short": "Motion en az {seconds} sn gerektiriyor.",
+        "needs_image": "Bu Motion bir görsel gerektiriyor ve projede henüz görsel yok.",
+        "own_scene_only": "Bu Motion yalnızca kendi başına bir sahne olabilir.",
+        "scene_policy": "Bu proje sahnelerini şablonundan ekler, bir Motion'dan değil.",
+        "project_private": "Bu Motion tek bir projeye ait ve başka yere eklenemez.",
+        "energy_not_available": "Bu Motion, bir projenin kullanabileceği bir enerjiyle başlayamıyor."
+      }
+    }
+  }
+}

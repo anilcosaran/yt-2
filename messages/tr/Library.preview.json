@@ -1,0 +1,100 @@
+{
+  "preview": {
+    "close": "Kapat",
+    "previous": "Önceki",
+    "next": "Sonraki",
+    "useInSpark": "Spark’ta kullan",
+    "useInSparkToast": "Spark’a eklenecek (demo)",
+    "download": "İndir",
+    "downloadUnavailable": "Bu dosya şimdilik indirilemiyor",
+    "more": "Diğer seçenekler",
+    "rename": "Yeniden adlandır",
+    "nameLabel": "Ad",
+    "delete": "Sil",
+    "deleteTitle": "Bu dosya silinsin mi?",
+    "deleteBody": "“{name}” kütüphaneden ve tüm koleksiyonlardan kaldırılır.",
+    "cancel": "Vazgeç",
+    "deleted": "Silindi",
+    "tools": "AI araçları",
+    "collections": "Koleksiyonlar",
+    "add": "Ekle",
+    "addToCollection": "Koleksiyona ekle",
+    "removeFrom": "{name} koleksiyonundan çıkar",
+    "searchOrCreate": "Ara veya yeni oluştur",
+    "create": "“{name}” oluştur",
+    "noCollections": "Henüz koleksiyon yok",
+    "details": "Detaylar",
+    "prompt": "İstek",
+    "tool": {
+      "clips": {
+        "title": "Kliplere ayır",
+        "hint": "Shorts için kısa parçalar çıkar"
+      },
+      "captions": {
+        "title": "Altyazı ekle",
+        "hint": "Konuşmaları yazıya döküp videoya ekle"
+      },
+      "transform": {
+        "title": "Kırp ve boyutlandır",
+        "hint": "Boyutu, kadrajı veya hızı değiştir"
+      },
+      "transformImage": {
+        "title": "Kırp ve boyutlandır",
+        "hint": "Boyutu veya kadrajı değiştir"
+      },
+      "logo": {
+        "title": "Logo ekle",
+        "hint": "Logo, giriş veya kapanış ekle"
+      },
+      "frame": {
+        "title": "Kare al",
+        "hint": "Kapak için bir kare kaydet"
+      },
+      "gif": {
+        "title": "GIF yap",
+        "hint": "Kısa, tekrar eden bir GIF oluştur"
+      },
+      "talkingVideo": {
+        "title": "Konuşan video yap",
+        "hint": "Bu yüzle konuşan bir video oluştur"
+      },
+      "saveAvatar": {
+        "title": "Avatar olarak kaydet",
+        "hint": "Bu yüzü yeni videolarda kullan"
+      },
+      "cloneVoice": {
+        "title": "Sesi klonla",
+        "hint": "Bu sesle yeni seslendirmeler yap"
+      }
+    },
+    "analysis": {
+      "title": "AI analizi",
+      "again": "Yeniden analiz et",
+      "run": "Analiz et",
+      "failed": "Bu dosya analiz edilemedi.",
+      "skipped": "Bu dosya henüz analiz edilmedi.",
+      "state": {
+        "queued": "Sırada",
+        "analyzing": "Analiz ediliyor…"
+      }
+    },
+    "tags": {
+      "add": "+ Etiket ekle",
+      "remove": "“{tag}” etiketini kaldır"
+    },
+    "memory": {
+      "off": "Belleğe ekle",
+      "adding": "Belleğe ekleniyor…",
+      "added": "Bellekte",
+      "hint": "Asistan bu dosyayı hatırlar ve sohbetlerde kullanır."
+    },
+    "notes": {
+      "title": "Notlar",
+      "hint": "AI bu dosyayı seçerken notlarını okur.",
+      "placeholder": "Not ekle — örn. menü tanıtımlarında açılış karesi olsun",
+      "add": "Not ekle",
+      "edit": "Notu düzenle",
+      "remove": "Notu sil"
+    }
+  }
+}

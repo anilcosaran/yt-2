@@ -1,0 +1,103 @@
+{
+  "editor": {
+    "stage": {
+      "kinds": {
+        "motion_instance": "Motion"
+      }
+    },
+    "motionDrawer": {
+      "tabsLabel": "Motion kaynakları",
+      "tabs": {
+        "library": "Kütüphane",
+        "mine": "Motion'larım",
+        "premium": "Premium"
+      },
+      "searchPlaceholder": "Motion ara",
+      "loading": "Motion'lar yükleniyor…",
+      "loadFailed": "Motion'lar yüklenemedi.",
+      "retry": "Tekrar dene",
+      "unavailable": {
+        "library": "Motion kütüphanesi henüz kullanılamıyor.",
+        "mine": "Kaydettiğin Motion'lar henüz kullanılamıyor.",
+        "premium": "Motion kütüphanesi henüz kullanılamıyor.",
+        "market": "Premium Motion’lar henüz satışta değil."
+      },
+      "empty": {
+        "library": "Burada henüz Motion yok.",
+        "mine": "Henüz kaydedilmiş Motion'ın yok. Motion alanında bir Motion'ı özelleştirip kaydet.",
+        "premium": "Henüz Premium Motion yok."
+      },
+      "noMatch": "“{query}” ile eşleşen Motion yok.",
+      "results": "{count, plural, other {# Motion}}",
+      "needsScene": "Motion eklemek için önce bir sahne ekle.",
+      "styleUnavailable": "Motion görünümü henüz kullanılamıyor, bu yüzden Motion eklenemiyor.",
+      "openArea": "Motion alanını aç",
+      "price": "{credits} kredi",
+      "buy": "Satın al",
+      "buyLabel": "{title} satın al",
+      "buyTitle": "{title} Motion’unu {credits} krediye satın al, bu çalışma alanı için bir kez",
+      "buyUnavailable": "Satın alma şu anda kullanılamıyor.",
+      "buyFirst": "Kullanmak için bu Premium Motion’u satın al.",
+      "owned": "Kütüphanende",
+      "lengthRange": "{min}–{max} sn",
+      "ratioChip": "{ratio} yok",
+      "needsImage": "Görsel gerekir",
+      "mineChip": "Sürüm {number}",
+      "adding": "Motion ekleniyor…",
+      "addLabel": "{title} Motion'ını oynatma konumuna ekle",
+      "addTitle": "{title} Motion'ını oynatma konumuna ekle ya da tuvale veya zaman çizelgesine sürükle",
+      "added": "{title} {time} konumuna eklendi.",
+      "addedShortened": "{title} {time} konumuna eklendi, sahneye sığması için kısaltıldı.",
+      "refused": {
+        "premium_not_bought": "{title} bir Premium Motion. Kullanmak için önce satın al.",
+        "no_scene": "Motion'ın ekleneceği bir sahne yok.",
+        "video_style_unavailable": "Motion görünümü henüz kullanılamıyor.",
+        "ratio_not_available": "{title} için {ratio} sürümü yok, bu yüzden bu projeye eklenemez.",
+        "scene_too_short": "{title} için başlangıçtan sonra en az {seconds} sn gerekir. Oynatma konumunu öne al ya da daha uzun bir sahne kullan.",
+        "needs_image": "{title} için bir görsel gerekir. Önce projeye bir görsel ekle (Medya).",
+        "own_scene_only": {
+          "camera": "{title} bir kamera hareketi kullanıyor, bu yüzden diğer katmanların üstüne konamaz. Kartındaki “Yeni sahne olarak ekle”yi kullan.",
+          "anchor": "{title} kendi kelime veya vuruş zamanlamasını izliyor, bu yüzden diğer katmanların üstüne konamaz. Kartındaki “Yeni sahne olarak ekle”yi kullan.",
+          "content": "{title} henüz diğer katmanların üstünde çizilemeyen içerik taşıyor. Kartındaki “Yeni sahne olarak ekle”yi kullan."
+        }
+      },
+      "ownSceneOnly": "Yalnız kendi sahnesi",
+      "sceneLabel": "{title} Motion'ını yeni sahne olarak ekle",
+      "sceneTitle": "{title} Motion'ını seçili sahnenin ardına kendi sahnesi olarak ekle",
+      "sceneAdded": "{title} yeni bir sahne olarak eklendi.",
+      "overlayWarning": {
+        "camera": "{title} eklendi ama diğer katmanların üstünde çizilemiyor: kamera hareketi kullanıyor. Geri al ve kartındaki “Yeni sahne olarak ekle”yi kullan.",
+        "anchor": "{title} eklendi ama diğer katmanların üstünde çizilemiyor: kendi kelime veya vuruş zamanlamasını izliyor. Geri al ve kartındaki “Yeni sahne olarak ekle”yi kullan.",
+        "content": "{title} eklendi ama diğer katmanların üstünde çizilemiyor: henüz orada çizilmeyen içerik taşıyor. Geri al ve kartındaki “Yeni sahne olarak ekle”yi kullan."
+      }
+    },
+    "motionProps": {
+      "look": "Görünüm",
+      "parameters": "İçerik",
+      "loading": "Bu Motion'ın alanları yükleniyor…",
+      "mismatch": "Bu proje Motion'ın artık listelenmeyen bir sürümünü kullanıyor, bu yüzden alanları gösterilemiyor.",
+      "unavailable": "Bu Motion'ın alanları şu anda okunamıyor.",
+      "noFields": "Bu Motion'ın burada düzenlenecek alanı yok.",
+      "required": "zorunlu",
+      "tooLong": "En fazla {max} karakter.",
+      "textEmpty": "Bu alan boş olamaz.",
+      "colorDefault": "Varsayılan renk",
+      "useDefault": "Varsayılanı kullan",
+      "noImages": "Önce projeye bir görsel ekle (Medya).",
+      "chooseImage": "Bir görsel seç",
+      "imageN": "Görsel {n}",
+      "length": "Süre",
+      "seconds": "sn",
+      "lengthRange": "{min}–{max} sn",
+      "outOfRange": "Aralık dışı: {min}–{max} sn.",
+      "noRoom": "Sahnede başlangıçtan sonra bu Motion için yer kalmadı.",
+      "timing": "Zamanlama",
+      "start": "Başlangıç",
+      "startOutside": "Motion sahnenin içinde kalmalı: en geç {max} sn'de başlayabilir.",
+      "editStructure": "Yapıyı düzenle",
+      "editStructureHint": "Bu Motion'ın özel bir kopyasını Motion alanında açar. Projeler sabitledikleri sürümü korur.",
+      "opening": "Açılıyor…",
+      "openFailed": "Motion alanı açılamadı."
+    }
+  }
+}

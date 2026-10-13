@@ -1,0 +1,23 @@
+{
+  "typedComposer": {
+    "groups": {
+      "templates": "Şablonlar"
+    }
+  },
+  "mcpTemplates": {
+    "argumentsTitle": "{name} şablonu",
+    "argumentsTitleFallback": "Şablon",
+    "argumentsDescription": "{connector} bağlantısının şablonu. Değerleri gir; metin mesaj kutusuna eklenir, gönderilmez.",
+    "required": "zorunlu",
+    "cancel": "Vazgeç",
+    "insert": "Ekle",
+    "inserting": "Ekleniyor…",
+    "errors": {
+      "template_unavailable": "{name} şablonu artık kullanılamıyor.",
+      "argument_invalid": "Şablon değerleri geçersiz. Zorunlu alanları doldurup tekrar dene.",
+      "feature_unavailable": "MCP şablonları şu an kapalı.",
+      "unavailable": "Şablonun sunucusu şu an yanıt vermiyor. Biraz sonra tekrar dene.",
+      "failed": "{name} şablonu eklenemedi. Tekrar dene."
+    }
+  }
+}

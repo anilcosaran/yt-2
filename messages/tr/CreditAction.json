@@ -1,0 +1,20 @@
+{
+  "pillFree": "Ücretsiz",
+  "pillCredits": "{count, plural, one {# kredi} other {# kredi}}",
+  "pillCreditsApprox": "≈{count, plural, one {# kredi} other {# kredi}}",
+  "pillPending": "Hesaplanıyor…",
+  "pillUnavailable": "Fiyat alınamadı",
+  "statusFree": "Ücretsiz · kredi harcanmaz",
+  "statusFreeRemaining": "Bu ay {remaining}/{limit} ücretsiz hakkın kaldı",
+  "statusCredits": "Kredinden düşer · {available, number} kredin var",
+  "statusCreditsUnknownBalance": "Kredinden düşer",
+  "statusInsufficient": "Kredin yetersiz (gereken {required, number}, mevcut {available, number})",
+  "statusReserve": "En az {required, number} kredi gerekir (kesilecek ≈{price, number})",
+  "statusPending": "Fiyat hesaplanıyor…",
+  "statusUnavailable": "Fiyat hesaplanamadı. Birazdan tekrar dene.",
+  "statusUpgrade": "Starter ve üzeri planlarda",
+  "addCredits": "Kredi ekle",
+  "upgradePlan": "Planını yükselt",
+  "upgradeWithCredits": "Planını yükselt (her ay dahil kredi)",
+  "busy": "Oluşturuluyor…"
+}

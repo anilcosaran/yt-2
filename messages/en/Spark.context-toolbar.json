@@ -1,0 +1,137 @@
+{
+  "editor": {
+    "shapes": {
+      "appliesToSelected": "Also colours the selected shape"
+    },
+    "stage": {
+      "ctb": {
+        "animate": "Animate",
+        "duplicate": "Duplicate",
+        "duplicateMotion": "Add a Motion again from the Motion tool",
+        "copy": "Copy",
+        "paste": "Paste",
+        "lock": "Lock",
+        "unlock": "Unlock",
+        "lockHint": "Lock: the canvas no longer selects or moves this layer (the panels still edit it)",
+        "lockedHint": "Locked: select it on the timeline; unlock it to move it on the canvas",
+        "underline": "Underline",
+        "underlineHint": "Underline (Ctrl+U)",
+        "strikethrough": "Strikethrough",
+        "strikethroughHint": "Strikethrough (Ctrl+Shift+X)",
+        "lineHeight": "Line spacing",
+        "lineHeightDefault": "Default",
+        "lineHeightCustom": "Spacing",
+        "outline": "Outline",
+        "outlineOff": "None",
+        "outlineOn": "Outline",
+        "outlineColor": "Colour",
+        "outlineWidth": "Width",
+        "opacity": "Transparency",
+        "opacityValue": "{percent}%",
+        "smaller": "Smaller",
+        "larger": "Larger",
+        "replace": "Replace",
+        "replaceImageHint": "Replace this image: pick another image in Media",
+        "replaceVideoHint": "Replace this video: pick another video in Media (at least as long as this clip)",
+        "replacing": "Pick an image or a video in Media to replace the selected one",
+        "cancel": "Cancel",
+        "fit": {
+          "label": "Fit to the frame",
+          "cover": "Fill",
+          "contain": "Fit",
+          "coverHint": "Fill the whole frame (what falls outside the frame is not shown)",
+          "containHint": "Show the whole picture inside the frame"
+        },
+        "notYet": {
+          "group": "Not available yet",
+          "reason": "Not available yet: the video cannot keep or draw it",
+          "stroke": "Outline",
+          "opacity": "Transparency",
+          "crop": "Crop"
+        }
+      },
+      "inspector": {
+        "layer": "Layer",
+        "opacity": "Opacity",
+        "locked": "Locked on the canvas"
+      },
+      "shortcuts": {
+        "open": "Keyboard shortcuts (?)",
+        "title": "Keyboard shortcuts",
+        "close": "Close",
+        "soon": "coming soon",
+        "drag": "drag",
+        "groups": {
+          "select": "Selection",
+          "edit": "Editing",
+          "move": "Moving",
+          "playback": "Playback",
+          "history": "History and help"
+        },
+        "items": {
+          "deselect": "Deselect",
+          "nextLayer": "Next / previous layer",
+          "editText": "Edit the text",
+          "delete": "Delete",
+          "duplicate": "Duplicate",
+          "copy": "Copy",
+          "paste": "Paste",
+          "underline": "Underline the text",
+          "strikethrough": "Strike the text through",
+          "forward": "Bring forward / to the front",
+          "backward": "Send backward / to the back",
+          "askAi": "Ask AI",
+          "nudge": "Nudge by 1 px",
+          "nudgeFar": "Nudge by 10 px",
+          "dragAxis": "Move along one axis",
+          "dragFree": "Move without snapping",
+          "resizeCentre": "Resize from the centre",
+          "play": "Play / pause",
+          "frame": "Previous / next frame",
+          "second": "One second back / forward",
+          "ends": "Start / end",
+          "undo": "Undo",
+          "redo": "Redo",
+          "sheet": "This list"
+        }
+      },
+      "aspect": {
+        "change": "Change the video format",
+        "current": "Video format {ratio}",
+        "formats": {
+          "16x9": "Landscape",
+          "9x16": "Portrait",
+          "1x1": "Square"
+        },
+        "reviewTitle": "Change {from} to {to}?",
+        "planning": "Checking what changes…",
+        "undoHint": "Everything changes in one step; one Undo puts it all back.",
+        "failed": "The format could not be changed. It may not be enabled yet, or the project changed meanwhile.",
+        "cancel": "Cancel",
+        "apply": "Change to {ratio}",
+        "applying": "Changing…",
+        "impact": {
+          "nothing": "Nothing needs to move.",
+          "recovered": "{count, plural, one {# picture that fills the frame fills} other {# pictures that fill the frame fill}} the new frame too",
+          "refitted": "{count, plural, one {# fitted picture is} other {# fitted pictures are}} fitted to the new frame",
+          "moved": "{count, plural, one {# layer keeps its place} other {# layers keep their place}} in the frame and {count, plural, one {is} other {are}} moved into the safe area",
+          "review": "{count, plural, one {# picture} other {# pictures}} could not be measured: check {count, plural, one {its} other {their}} place after the change",
+          "motion": "{count, plural, one {# Motion layer was} other {# Motion layers were}} made for another format and will not be shown until replaced"
+        }
+      },
+      "notices": {
+        "copied": "Copied. Press Ctrl+V to paste it.",
+        "copyUnsupported": "This layer cannot be copied. Add a Motion again from the Motion tool.",
+        "clipboardEmpty": "Nothing has been copied yet.",
+        "pasteDoesNotFit": "The copied video is longer than this scene.",
+        "pasteUnsupported": "This layer cannot be pasted here.",
+        "pasteMissingSource": "The copied media is no longer in this project.",
+        "replaceKind": "Pick the same kind: an image for an image, a video for a video.",
+        "replaceTooShort": "That video is shorter than the clip it would replace.",
+        "replaceFailed": "The media could not be replaced.",
+        "replaced": "Replaced.",
+        "redoSoon": "Redo is not available yet. Undo is Ctrl+Z."
+      }
+    }
+  }
+}

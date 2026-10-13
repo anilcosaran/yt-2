@@ -1,0 +1,31 @@
+{
+  "acquisition": {
+    "progress": {
+      "requested": "Getting ready…",
+      "reserving": "Making room in your storage…",
+      "projecting": "Creating your project…",
+      "copying": "Copying it to your storage…",
+      "attaching": "Adding it to your project…",
+      "ready": "Added to your project.",
+      "failed": "It couldn't be added."
+    },
+    "reuseReasons": {
+      "license_unsupported": "The publisher's terms for this media can't be used in a project.",
+      "project_use_not_granted": "The publisher hasn't allowed using this media in projects.",
+      "unsupported_media_type": "This kind of media can't be used in a project yet.",
+      "size_limit_exceeded": "This file is too large to use in a project."
+    },
+    "targetUnavailable": {
+      "project": "That project isn't available. Open a project you can edit and try again.",
+      "channel": "That channel isn't available. Choose another one and try again."
+    },
+    "sourceUnavailable": "This media isn't ready to use yet. Try again in a moment.",
+    "unavailable": "This media was taken down and can't be added anymore.",
+    "changed": "The publisher updated this post. Reload it and try again.",
+    "limit": "You have several imports in progress. Try again in {seconds, plural, one {# second} other {# seconds}}.",
+    "storageFull": "Your storage is full. Free up some space and try again.",
+    "purchaseRequired": "Buy this item for {price, plural, one {# credit} other {# credits}} to use it in your projects.",
+    "stillProcessing": "Still working on it. It will appear in your project when it's ready.",
+    "failed": "It couldn't be added. Please try again."
+  }
+}

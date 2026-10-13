@@ -1,0 +1,52 @@
+{
+  "developer": {
+    "webhooks": {
+      "title": "Webhook'lar",
+      "description": "Bağlı uygulamaların ve API anahtarlarının olay bildirimlerini nereye aldığı ve son gönderimlerde ne olduğu.",
+      "empty": "Henüz webhook yok. Bağlı bir uygulama ya da API anahtarı olaylara abone olunca burada görünür.",
+      "loadFailed": "Webhook'lar yüklenemedi. Sayfayı yenileyip tekrar dene.",
+      "originManifest": "Uygulama tanımladı",
+      "originApi": "API ile eklendi",
+      "ownerApp": "Bağlı uygulama",
+      "ownerKey": "API anahtarı",
+      "events": "{count, plural, one {# olay} other {# olay}}",
+      "columnDate": "Tarih",
+      "columnEvent": "Olay",
+      "columnStatus": "Durum",
+      "columnAttempts": "Deneme",
+      "attempts": "{count, plural, one {# deneme} other {# deneme}}",
+      "deliveriesEmpty": "Henüz gönderim yok.",
+      "deliveriesLoadFailed": "Gönderimler yüklenemedi. Sayfayı yenileyip tekrar dene.",
+      "lastResponse": "Son yanıt: HTTP {code}",
+      "resend": "Tekrar gönder",
+      "resendFailed": "Bu işlem olmadı. Tekrar dene.",
+      "appKey": "Webhook imza anahtarı",
+      "appKeyTitle": "Webhook imza anahtarını şimdi kopyala",
+      "appKeyDescription": "Bildirimlerin gerçekten Youtorch'tan geldiğini bu anahtarla doğrularsın. Yalnız bu kez gösterilir; önceki anahtar 24 saat daha çalışır.",
+      "appKeyLabel": "Webhook imza anahtarı",
+      "status": {
+        "delivered": "Teslim edildi",
+        "sending": "Gönderiliyor",
+        "retrying": "Yeniden denenecek",
+        "failed": "Başarısız",
+        "notSent": "Gönderilmedi"
+      },
+      "reason": {
+        "endpoint_gone": "Adres artık bildirim kabul etmiyor",
+        "max_attempts": "Tekrarlanan hatalardan sonra durduruldu",
+        "max_age_exceeded": "Göndermek için çok eski",
+        "installation_revoked": "Uygulamanın bağlantısı kaldırıldı",
+        "key_revoked": "API anahtarı silindi",
+        "key_suspended": "API anahtarı durduruldu",
+        "scope_not_granted": "Bu olayı alma izni artık yok",
+        "resource_not_granted": "Bu öğeyi kullanma izni artık yok",
+        "signing_key_missing": "Uygulamanın imza anahtarı bekleniyor",
+        "subscription_disabled": "Webhook kapatıldı",
+        "disabled_by_principal": "Kapatıldı",
+        "manifest_removed": "Uygulama artık bu webhook'u kullanmıyor",
+        "membership_lost": "Bağlayan kişi çalışma alanından ayrıldı",
+        "other": "Teslim edilemedi"
+      }
+    }
+  }
+}

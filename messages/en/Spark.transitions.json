@@ -1,0 +1,87 @@
+{
+  "editor": {
+    "export": {
+      "reason": {
+        "transitions": "Scene transitions cannot be exported right now. Remove the transitions to export this video.",
+        "transition_camera": "A scene transition cannot be drawn with a Motion scene that moves the camera. Set a cut at this scene boundary.",
+        "transition_content": "A scene transition cannot be drawn with a Motion scene that uses video or component content. Set a cut at this scene boundary.",
+        "transition_anchor": "A scene transition cannot be drawn with a Motion scene whose timing follows words or beats. Set a cut at this scene boundary.",
+        "transition_invalid": "A scene transition of this video is not valid. Set it again or set a cut.",
+        "transition_video": "Scene transitions cannot be exported together with video clips yet. Set cuts at the scene boundaries to export this video."
+      }
+    },
+    "transition": {
+      "section": "Transition",
+      "firstScene": "The first scene has no scene before it, so it has no transition.",
+      "kindLabel": "Transition type",
+      "kinds": {
+        "cut": "Cut",
+        "fade": "Fade",
+        "dip_to_color": "Dip to colour",
+        "slide": "Slide",
+        "push": "Push",
+        "wipe": "Wipe",
+        "zoom": "Zoom",
+        "blur": "Blur",
+        "flash": "Flash",
+        "whip_pan": "Whip pan",
+        "cross_zoom": "Cross zoom",
+        "zoom_blur": "Zoom blur",
+        "spin": "Spin",
+        "zoom_spin": "Zoom spin",
+        "squeeze": "Squeeze",
+        "stretch": "Stretch",
+        "cover": "Cover",
+        "uncover": "Uncover",
+        "bounce_in": "Bounce in",
+        "shake": "Shake",
+        "diagonal_wipe": "Diagonal wipe",
+        "rotate_in": "Rotate in"
+      },
+      "duration": "Transition length",
+      "seconds": "s",
+      "direction": "Direction",
+      "directions": {
+        "left": "Left",
+        "right": "Right",
+        "up": "Up",
+        "down": "Down",
+        "in": "In",
+        "out": "Out",
+        "cw": "Clockwise",
+        "ccw": "Counter-clockwise",
+        "up_left": "Up left",
+        "up_right": "Up right",
+        "down_left": "Down left",
+        "down_right": "Down right"
+      },
+      "color": "Dip colour",
+      "easing": "Easing",
+      "easings": {
+        "linear": "Even",
+        "ease_in": "Ease in",
+        "ease_out": "Ease out",
+        "ease_in_out": "Ease in and out"
+      },
+      "shortened": "Shortened to {seconds} s: the scenes next to it are not long enough for more.",
+      "tooShort": "A scene next to this boundary is too short for a transition, so it plays as a cut.",
+      "unresolved": "A scene next to this boundary has no length yet, so it plays as a cut.",
+      "videoCut": "A scene next to this boundary holds video, so it plays as a cut, in the editor preview and in the exported video.",
+      "cannotPreview": "This transition cannot be previewed (a scene next to it cannot take part), so the preview shows a cut.",
+      "off": "Scene transitions are not available right now.",
+      "needsPreview": "Turn on the editor preview to set scene transitions.",
+      "loading": "Reading the preview…",
+      "chip": {
+        "set": "Transition into scene {n}: {name}, {seconds} s. Press Enter to edit it.",
+        "cut": "No transition into scene {n} (a cut). Press Enter to add one.",
+        "text": "{name} {seconds} s"
+      },
+      "previewOnlyCut": "Preview only: the editor plays this transition, the exported video plays a cut here (footage cannot be blended in the export yet).",
+      "previewOnlyRefused": "Preview only: the editor plays this transition, but a video that holds footage cannot be exported with scene transitions yet.",
+      "previewOnlyBadge": {
+        "cut": "Preview only · exports as a cut",
+        "refused": "Preview only · cannot be exported yet"
+      }
+    }
+  }
+}

@@ -1,0 +1,52 @@
+{
+  "developer": {
+    "webhooks": {
+      "title": "Webhooks",
+      "description": "Where your connected apps and API keys receive event notifications, and what happened to the latest deliveries.",
+      "empty": "No webhooks yet. They appear when a connected app or an API key subscribes to events.",
+      "loadFailed": "Webhooks could not be loaded. Refresh the page to try again.",
+      "originManifest": "Set by the app",
+      "originApi": "Added through the API",
+      "ownerApp": "Connected app",
+      "ownerKey": "API key",
+      "events": "{count, plural, one {# event} other {# events}}",
+      "columnDate": "Date",
+      "columnEvent": "Event",
+      "columnStatus": "Status",
+      "columnAttempts": "Attempts",
+      "attempts": "{count, plural, one {# attempt} other {# attempts}}",
+      "deliveriesEmpty": "No deliveries yet.",
+      "deliveriesLoadFailed": "Deliveries could not be loaded. Refresh the page to try again.",
+      "lastResponse": "Last response: HTTP {code}",
+      "resend": "Send again",
+      "resendFailed": "That did not work. Try again.",
+      "appKey": "Webhook signing key",
+      "appKeyTitle": "Copy your webhook signing key now",
+      "appKeyDescription": "Use this key to check that notifications really come from Youtorch. This is the only time it is shown; the previous key keeps working for 24 hours.",
+      "appKeyLabel": "Webhook signing key",
+      "status": {
+        "delivered": "Delivered",
+        "sending": "Sending",
+        "retrying": "Will retry",
+        "failed": "Failed",
+        "notSent": "Not sent"
+      },
+      "reason": {
+        "endpoint_gone": "The address no longer accepts notifications",
+        "max_attempts": "Stopped after repeated failures",
+        "max_age_exceeded": "Too old to send",
+        "installation_revoked": "The app was disconnected",
+        "key_revoked": "The API key was deleted",
+        "key_suspended": "The API key is paused",
+        "scope_not_granted": "No longer allowed to receive this event",
+        "resource_not_granted": "No longer allowed to use this item",
+        "signing_key_missing": "Waiting for the app's signing key",
+        "subscription_disabled": "Webhook turned off",
+        "disabled_by_principal": "Turned off",
+        "manifest_removed": "The app no longer uses this webhook",
+        "membership_lost": "The person who connected it left the workspace",
+        "other": "Could not be delivered"
+      }
+    }
+  }
+}

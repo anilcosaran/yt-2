@@ -1,0 +1,59 @@
+{
+  "customMcp": {
+    "title": "Custom MCP",
+    "add": "Add custom MCP",
+    "description": "Add your own remote MCP server. None of its tools run before review.",
+    "empty": "No custom MCP servers yet.",
+    "loadFailed": "Custom MCP servers could not be loaded. Refresh the page to try again.",
+    "status": {
+      "draft": "Draft",
+      "private_test": "Private test",
+      "active": "Active",
+      "disabled": "Disabled"
+    },
+    "scan": "Scan",
+    "scanning": "Scanning…",
+    "disable": "Disable",
+    "disableTitle": "Disable {name}?",
+    "disableDescription": "This server is no longer scanned and its tools are not used. It stays in the list as Disabled.",
+    "outcome": {
+      "none": "Not scanned yet.",
+      "complete": "{count, plural, one {# tool found} other {# tools found}}",
+      "partial": "The scan stopped early; {count} tools were read. Scan again.",
+      "auth_required": "This server asks for sign-in; that is not supported yet.",
+      "unsupported": "This server's MCP version is not supported.",
+      "transient": "The server is not responding right now. Scan again in a moment.",
+      "blocked": "This address cannot be reached (private or blocked network address)."
+    },
+    "toolsLabel": "{name} tools",
+    "toolBlocked": "Blocked",
+    "toolBlockedReason": "Uncontracted generation tool; not usable from a custom MCP.",
+    "moreTools": "+{count} more tools",
+    "excluded": "{count} tools were skipped as invalid.",
+    "dialog": {
+      "title": "Add custom MCP",
+      "description": "Enter the server's public https address. Registering sends no request; Scan reads the tools, and none of them run before review.",
+      "urlLabel": "Server URL",
+      "urlPlaceholder": "https://mcp.example.com/mcp",
+      "labelLabel": "Name (optional)",
+      "labelPlaceholder": "Acme CRM",
+      "cancel": "Cancel",
+      "submit": "Add",
+      "submitting": "Adding…",
+      "failedTitle": "Could not add"
+    },
+    "errors": {
+      "endpoint_blocked": "This address cannot be used. Only public https addresses on port 443 can be added.",
+      "invalid_endpoint": "The address is invalid. Enter an https address without a query (?…) or #.",
+      "forbidden": "Only the workspace owner can add a custom MCP.",
+      "feature_unavailable": "Custom MCP is turned off right now.",
+      "already_registered": "Someone else in this workspace already added this address.",
+      "limit_reached": "You can add at most {limit} custom MCP servers.",
+      "not_scannable": "A disabled server cannot be scanned.",
+      "cooldown": "This server was just scanned. Try again in {seconds} s.",
+      "cooldownNoTime": "This server was just scanned. Try again in a moment.",
+      "not_found": "This registration no longer exists. Refresh the page.",
+      "failed": "Something went wrong. Try again."
+    }
+  }
+}

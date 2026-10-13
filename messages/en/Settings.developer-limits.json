@@ -1,0 +1,33 @@
+{
+  "developer": {
+    "connectedApps": {
+      "limits": {
+        "open": "Limits",
+        "title": "{name} limits",
+        "description": "The most credits this app's API/MCP jobs may spend. A job above a limit does not start.",
+        "loading": "Loading limits…",
+        "loadFailed": "The limits could not be loaded. Close the dialog and try again.",
+        "perJob": "Maximum credits per job",
+        "monthly": "Maximum credits per month",
+        "defaults": "New connections start at {perJob} / {monthly} credits.",
+        "readOnly": "Only a workspace owner or admin can change the limits.",
+        "problems": {
+          "per_job_invalid": "The per-job limit must be between {min} and {max} credits.",
+          "monthly_invalid": "The monthly limit must be between {min} and {max} credits.",
+          "monthly_below_per_job": "The monthly limit cannot be below the per-job limit."
+        },
+        "cancel": "Cancel",
+        "save": "Save",
+        "saving": "Saving…",
+        "errors": {
+          "forbidden": "Only a workspace owner or admin can change the limits.",
+          "stale": "The limits changed in the meantime. Check the current values and save again.",
+          "invalid": "The limits are not valid. Check the values.",
+          "revoked": "This app's connection has been removed.",
+          "not_found": "This connection no longer exists. Refresh the page.",
+          "failed": "The limits could not be saved. Try again."
+        }
+      }
+    }
+  }
+}

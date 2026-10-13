@@ -1,0 +1,29 @@
+{
+  "motionResult": {
+    "title": "Motion ready",
+    "draftTitle": "Motion draft ready",
+    "placed": "Placed on your video at {time}.",
+    "revised": "Applied to the Motion you selected, at {time}.",
+    "proposed": "Waiting for your decision before it is placed.",
+    "saved": "Saved to My Motions.",
+    "draftReady": "Open it in Motion to look at it or keep editing.",
+    "notPlaced": "Saved to My Motions, but not placed on the video: {reason}.",
+    "reasons": {
+      "project_unavailable": "you cannot edit this project",
+      "composition_tools_closed": "the assistant cannot edit projects for this workspace",
+      "timeline_empty": "the project has no scene yet",
+      "timeline_unresolved": "a scene has no length yet",
+      "scene_too_short": "the scene is too short for it",
+      "ratio_not_available": "it does not fit this canvas format",
+      "refused": "the project could not take it",
+      "conflict": "the project changed in the meantime",
+      "paid_dispatch_required": "it needs your approval first",
+      "other": "something prevented it"
+    },
+    "undo": "Undo",
+    "undone": "Undone. The Motion is still in My Motions.",
+    "undoConflict": "You changed the project since then. Use Undo in the editor.",
+    "undoFailed": "Could not undo. Try again.",
+    "open": "Open in Motion"
+  }
+}

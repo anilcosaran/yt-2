@@ -1,0 +1,40 @@
+{
+  "tabs": {
+    "explore": "Explore",
+    "mine": "My voices"
+  },
+  "count": "{count} voices",
+  "featured": "Featured",
+  "favorite": "Add to favorites",
+  "unfavorite": "Remove from favorites",
+  "filters": {
+    "gender": {
+      "label": "Gender",
+      "all": "All",
+      "female": "Female",
+      "male": "Male",
+      "nonbinary": "Neutral"
+    },
+    "age": {
+      "label": "Age",
+      "all": "All",
+      "young": "Young",
+      "adult": "Adult",
+      "mature": "Mature"
+    },
+    "allLanguages": "All languages",
+    "allAccents": "All accents",
+    "tags": "Tone and use",
+    "clear": "Clear filters",
+    "moreTags": "+{count} more",
+    "fewerTags": "Fewer"
+  },
+  "languageNames": {
+    "tr": "Turkish",
+    "en": "English",
+    "es": "Spanish",
+    "de": "German",
+    "fr": "French",
+    "ar": "Arabic"
+  }
+}

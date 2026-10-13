@@ -1,0 +1,156 @@
+/* E1-F Record drawer: the few rules the ported studio design (../studio/studio.css) does not have. Everything reuses the
+   design tokens (.yt-studio --st-*) and its classes (.dr-body, .opt-row, .btn, .seg, .tgl, .spin). */
+.yt-studio .rec-note {
+  margin: 10px 4px 0;
+  font-size: 12px;
+  line-height: 1.45;
+  color: var(--st-text-3);
+}
+.yt-studio .rec-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.yt-studio .rec-previews {
+  display: grid;
+  gap: 8px;
+}
+.yt-studio .rec-previews.pair {
+  grid-template-columns: 1fr 1fr;
+}
+.yt-studio .rec-view {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+}
+.yt-studio .rec-view > span {
+  font-size: 11.5px;
+  font-weight: 600;
+  color: var(--st-text-3);
+}
+.yt-studio .rec-video {
+  display: block;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  object-fit: contain;
+  background: #000;
+  border: 1px solid var(--st-border);
+  border-radius: 9px;
+}
+.yt-studio .rec-video.mirror {
+  transform: scaleX(-1);
+}
+.yt-studio .rec-audio {
+  width: 100%;
+}
+.yt-studio .rec-status {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 500;
+}
+.yt-studio .rec-dot {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: var(--st-danger);
+  flex: none;
+}
+.yt-studio .rec-dot.live {
+  animation: rec-pulse 1.2s ease-in-out infinite;
+}
+@keyframes rec-pulse {
+  50% {
+    opacity: 0.35;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .yt-studio .rec-dot.live {
+    animation: none;
+  }
+}
+.yt-studio .rec-clock {
+  font-variant-numeric: tabular-nums;
+  font-size: 22px;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+}
+.yt-studio .rec-left {
+  margin-left: auto;
+  font-size: 12px;
+  color: var(--st-text-3);
+  font-variant-numeric: tabular-nums;
+}
+.yt-studio .rec-left.warn {
+  color: var(--st-danger);
+  font-weight: 600;
+}
+.yt-studio .rec-meter {
+  height: 6px;
+  border-radius: 3px;
+  background: var(--st-hover);
+  overflow: hidden;
+}
+.yt-studio .rec-meter i {
+  display: block;
+  height: 100%;
+  background: var(--st-accent);
+  transition: width 0.08s linear;
+}
+@media (prefers-reduced-motion: reduce) {
+  .yt-studio .rec-meter i {
+    transition: none;
+  }
+}
+.yt-studio .rec-actions {
+  display: flex;
+  gap: 8px;
+}
+.yt-studio .rec-actions .btn {
+  flex: 1;
+}
+.yt-studio .rec-card {
+  border: 1px solid var(--st-border);
+  border-radius: 11px;
+  background: var(--st-surface);
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.yt-studio .rec-card b {
+  font-weight: 500;
+}
+.yt-studio .rec-card small {
+  color: var(--st-text-3);
+  font-size: 12px;
+}
+.yt-studio .rec-progress {
+  height: 4px;
+  border-radius: 2px;
+  background: var(--st-hover);
+  overflow: hidden;
+}
+.yt-studio .rec-progress i {
+  display: block;
+  height: 100%;
+  background: var(--st-accent);
+}
+.yt-studio .rec-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.yt-studio .rec-error {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 10px 12px;
+  border-radius: 11px;
+  background: var(--st-danger-soft);
+  color: var(--st-text);
+}
+.yt-studio .rec-error small {
+  color: var(--st-text-2);
+}

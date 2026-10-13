@@ -1,0 +1,14 @@
+{
+  "questionWidget": {
+    "recommended": "Önerilen",
+    "skip": "Atla",
+    "skipTitle": "Bu kararı Spark versin",
+    "own": "Kendi cevabım",
+    "ownHint": "Aşağıya yaz ve gönder",
+    "ownPlaceholder": "Kendi cevabını yaz…",
+    "chip": {
+      "narrator": "Anlatıcı",
+      "default": "Soru"
+    }
+  }
+}

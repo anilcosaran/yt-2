@@ -1,0 +1,23 @@
+{
+  "skillsTab": {
+    "aiDialog": {
+      "title": "AI ile yetenek oluştur",
+      "description": "Asistanın bu tür bir işi nasıl yapacağını anlatın. AI kendi yeteneğinizin taslağını yazar; hiçbir şey etkinleşmez, kurulmaz veya paylaşılmaz.",
+      "instruction": "Yetenek ne yapsın?",
+      "instructionPlaceholder": "60 saniyelik ürün videoları planla: ilk 3 saniyede kanca, üç fayda, tek çağrı.",
+      "questionsTitle": "Önce birkaç soru",
+      "generate": "Taslak oluştur",
+      "answer": "Yanıtla ve taslak oluştur",
+      "costHint": "Taslak oluşturmak tek bir AI isteği için kredi harcar. Aynı isteği yeniden denemek tekrar ücretlendirilmez.",
+      "created": "AI taslağı oluşturuldu. Benim sekmesinde inceleyip test edin ve etkinleştirin.",
+      "errors": {
+        "budget": "Taslak oluşturmak için kredi veya harcama onayı gerekiyor. Kredi ekleyin ya da harcamayı onaylayın, sonra yeniden deneyin.",
+        "provider": "AI modeli şu anda kullanılamıyor. Ücret alınmadı; daha sonra yeniden deneyin.",
+        "output": "AI yanıtı geçerli bir taslağa dönüşemedi. Yeteneği farklı anlatmayı deneyin.",
+        "unknown": "Sonucu doğrulayamadık. İkinci bir istek gönderilmedi; birazdan Benim sekmesine bakın.",
+        "stillRunning": "Taslak hâlâ oluşturuluyor. Birazdan Benim sekmesine bakın.",
+        "generic": "Taslak oluşturulamadı. Yeniden deneyin."
+      }
+    }
+  }
+}

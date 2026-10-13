@@ -1,0 +1,350 @@
+{
+ "manifest": {
+  "schema_version": "composition_preview_v1",
+  "project_id": "cprj_7a1c2b3d-4e5f-4a6b-8c7d-9e0f1a2b3c4d",
+  "working_copy_version": 3,
+  "scene_compiler_version": 1,
+  "motion_runtime_version": "1.0.0",
+  "canvas": {
+   "width": 1920,
+   "height": 1080,
+   "aspect_ratio": "16:9",
+   "fps": {
+    "num": 30,
+    "den": 1
+   }
+  },
+  "total_frames": 90,
+  "dependency_hash": "ddb2350dcc42519d3e29429a1f332169e758c36745d19f6b9f036949c3d382dc",
+  "safe_area": {
+   "profile": "title_safe",
+   "rect": {
+    "x": 96,
+    "y": 54,
+    "w": 1728,
+    "h": 972
+   },
+   "caption": {
+    "x": 192,
+    "y": 896.4,
+    "w": 1536,
+    "h": 129.6
+   }
+  },
+  "fonts": {
+   "font_set_hash": "3a24ea4f3a1b279b57efdb3d3da20a8ab9a12098f7758f5412fb76048a982d9f",
+   "faces": [
+    {
+     "font_id": "font_anton_400",
+     "font_revision": "fontrev_anton_400_1",
+     "family": "Anton",
+     "weight": 400,
+     "style": "normal",
+     "sha256": "a4ba3a92350ebb031da0cb47630ac49eb265082ca1bc0450442f4a83ab947cab",
+     "url": "/api/v1/composition/fonts/a4ba3a92350ebb031da0cb47630ac49eb265082ca1bc0450442f4a83ab947cab"
+    },
+    {
+     "font_id": "font_archivo_black_400",
+     "font_revision": "fontrev_archivo_black_400_1",
+     "family": "Archivo Black",
+     "weight": 400,
+     "style": "normal",
+     "sha256": "dd9a89a019b4849f66ab75455fe7bdf931311042cbb0f0f97acc061539703180",
+     "url": "/api/v1/composition/fonts/dd9a89a019b4849f66ab75455fe7bdf931311042cbb0f0f97acc061539703180"
+    },
+    {
+     "font_id": "font_bebas_neue_400",
+     "font_revision": "fontrev_bebas_neue_400_1",
+     "family": "Bebas Neue",
+     "weight": 400,
+     "style": "normal",
+     "sha256": "08e4623805102d819f58601e46e345648846075e363b2ceb23313c2d1c83ec73",
+     "url": "/api/v1/composition/fonts/08e4623805102d819f58601e46e345648846075e363b2ceb23313c2d1c83ec73"
+    },
+    {
+     "font_id": "font_montserrat_700",
+     "font_revision": "fontrev_montserrat_700_1",
+     "family": "Montserrat",
+     "weight": 700,
+     "style": "normal",
+     "sha256": "4e2541ee9ddba1e4fdd239e9ab1bb15bdba15eb4753f854a69963e12e4dc0136",
+     "url": "/api/v1/composition/fonts/4e2541ee9ddba1e4fdd239e9ab1bb15bdba15eb4753f854a69963e12e4dc0136"
+    },
+    {
+     "font_id": "font_oswald_400",
+     "font_revision": "fontrev_oswald_400_1",
+     "family": "Oswald",
+     "weight": 400,
+     "style": "normal",
+     "sha256": "5b38c246e255a12f5712d640d56bcced0472466fc68983d2d0410ec0457c2817",
+     "url": "/api/v1/composition/fonts/5b38c246e255a12f5712d640d56bcced0472466fc68983d2d0410ec0457c2817"
+    },
+    {
+     "font_id": "font_playfair_display_400_italic",
+     "font_revision": "fontrev_playfair_display_400_italic_1",
+     "family": "Playfair Display",
+     "weight": 400,
+     "style": "italic",
+     "sha256": "a5e26dc5e2e77fb2803a0bf02fd4f81ee136ec8dea863ccdb0c59a263b21378b",
+     "url": "/api/v1/composition/fonts/a5e26dc5e2e77fb2803a0bf02fd4f81ee136ec8dea863ccdb0c59a263b21378b"
+    },
+    {
+     "font_id": "font_poppins_800",
+     "font_revision": "fontrev_poppins_800_1",
+     "family": "Poppins",
+     "weight": 800,
+     "style": "normal",
+     "sha256": "f2ab17c1a63a0ecc12c2461848fc8a469395e3cd2d641803e889c643d9f958e1",
+     "url": "/api/v1/composition/fonts/f2ab17c1a63a0ecc12c2461848fc8a469395e3cd2d641803e889c643d9f958e1"
+    }
+   ]
+  },
+  "warnings": [],
+  "scenes": [
+   {
+    "scene_id": "scn_00000000-0000-4000-8000-000000000001",
+    "index": 0,
+    "start_frame": 0,
+    "duration_frames": 60,
+    "resolved_by": "fixed",
+    "dependency_hash": "e9112bb10b275246d3f5a0f2daea15ead801f98634e4132394c950fc74c63565",
+    "status": "ready",
+    "warnings": [],
+    "native_layers": []
+   },
+   {
+    "scene_id": "scn_00000000-0000-4000-8000-000000000002",
+    "index": 1,
+    "start_frame": 60,
+    "duration_frames": 30,
+    "resolved_by": "fixed",
+    "dependency_hash": "08a7e344acd00397bc81fff8b16eb1ac029ad9dae996f54e32d5012e69b90732",
+    "status": "ready",
+    "warnings": [],
+    "native_layers": []
+   }
+  ]
+ },
+ "scene": {
+  "scene_id": "scn_00000000-0000-4000-8000-000000000001",
+  "start_frame": 0,
+  "duration_frames": 60,
+  "dependency_hash": "e9112bb10b275246d3f5a0f2daea15ead801f98634e4132394c950fc74c63565",
+  "document": {
+   "ir_version": "motion-ir@1",
+   "fps": 30,
+   "duration_frames": 60,
+   "canvas": {
+    "width": 1920,
+    "height": 1080,
+    "ratio": "16:9"
+   },
+   "seed": 1805015307,
+   "source": {
+    "kind": "typed_scene",
+    "compiler": "scene_compiler@1"
+   },
+   "style": null,
+   "variables": [],
+   "anchors": [],
+   "nodes": [
+    {
+     "handle": "scene_background#1",
+     "kind": "shape",
+     "role": "scene_background",
+     "basis": {
+      "role": "scene_background",
+      "slot_key": null,
+      "list_index": null
+     },
+     "source": {
+      "kind": "typed_scene",
+      "compiler": "scene_compiler@1"
+     },
+     "box": {
+      "x": 0,
+      "y": 0,
+      "width": 1920,
+      "height": 1080
+     },
+     "props": {
+      "fill": "#000000"
+     },
+     "content": {
+      "kind": "shape",
+      "shape": "rect"
+     }
+    },
+    {
+     "handle": "lyr_00000000_0000_4000_8000_000000000001#1",
+     "kind": "group",
+     "role": "lyr_00000000-0000-4000-8000-000000000001",
+     "basis": {
+      "role": "lyr_00000000-0000-4000-8000-000000000001",
+      "slot_key": null,
+      "list_index": null
+     },
+     "source": {
+      "kind": "typed_scene",
+      "compiler": "scene_compiler@1"
+     },
+     "box": {
+      "x": 96,
+      "y": 496,
+      "width": 1728,
+      "height": 88
+     },
+     "origin": [
+      0,
+      0
+     ],
+     "props": {},
+     "children": [
+      {
+       "handle": "lyr_00000000_0000_4000_8000_000000000001_content#1",
+       "kind": "text",
+       "role": "lyr_00000000-0000-4000-8000-000000000001.content",
+       "basis": {
+        "role": "lyr_00000000-0000-4000-8000-000000000001.content",
+        "slot_key": null,
+        "list_index": null
+       },
+       "source": {
+        "kind": "typed_scene",
+        "compiler": "scene_compiler@1"
+       },
+       "box": {
+        "x": 0,
+        "y": 0,
+        "width": 1728,
+        "height": 88
+       },
+       "props": {
+        "fill": "#ffffff"
+       },
+       "content": {
+        "kind": "text",
+        "text": "Merhaba",
+        "font": {
+         "family": "Montserrat",
+         "weight": 700,
+         "size_px": 72,
+         "style": "normal"
+        },
+        "align": "center",
+        "lang": "und",
+        "valign": "top",
+        "fit": {
+         "policy": "wrap"
+        },
+        "layout": {
+         "engine": "motion-text@1",
+         "font_set_hash": "3a24ea4f3a1b279b57efdb3d3da20a8ab9a12098f7758f5412fb76048a982d9f",
+         "lang": "und",
+         "source_text": "Merhaba",
+         "text": "Merhaba",
+         "font": {
+          "family": "Montserrat",
+          "weight": 700,
+          "style": "normal"
+         },
+         "nominal_size_px": 72,
+         "size_px": 72,
+         "line_height_px": 87.768,
+         "box": {
+          "width": 1728,
+          "height": 88
+         },
+         "lines": [
+          {
+           "text": "Merhaba",
+           "first": 0,
+           "end": 7,
+           "x": 697.716,
+           "y": 0,
+           "width": 332.568
+          }
+         ],
+         "width": 332.568,
+         "height": 87.768,
+         "fit": {
+          "policy": "wrap",
+          "status": "fits"
+         }
+        }
+       }
+      }
+     ]
+    },
+    {
+     "handle": "lyr_00000000_0000_4000_8000_000000000002#1",
+     "kind": "group",
+     "role": "lyr_00000000-0000-4000-8000-000000000002",
+     "basis": {
+      "role": "lyr_00000000-0000-4000-8000-000000000002",
+      "slot_key": null,
+      "list_index": null
+     },
+     "source": {
+      "kind": "typed_scene",
+      "compiler": "scene_compiler@1"
+     },
+     "box": {
+      "x": 0,
+      "y": 60,
+      "width": 1920,
+      "height": 960
+     },
+     "origin": [
+      0,
+      0
+     ],
+     "props": {},
+     "children": [
+      {
+       "handle": "lyr_00000000_0000_4000_8000_000000000002_content#1",
+       "kind": "image",
+       "role": "lyr_00000000-0000-4000-8000-000000000002.content",
+       "basis": {
+        "role": "lyr_00000000-0000-4000-8000-000000000002.content",
+        "slot_key": null,
+        "list_index": null
+       },
+       "source": {
+        "kind": "typed_scene",
+        "compiler": "scene_compiler@1"
+       },
+       "box": {
+        "x": 0,
+        "y": 0,
+        "width": 1920,
+        "height": 960
+       },
+       "props": {},
+       "content": {
+        "kind": "media",
+        "media_ref": "666df49c28c481fd4e7472902dc6a869157ffe94bae1a80d29f3aa8e07558876",
+        "fit": "contain"
+       }
+      }
+     ]
+    }
+   ],
+   "labels": [],
+   "tracks": []
+  },
+  "assets": [
+   {
+    "key": "666df49c28c481fd4e7472902dc6a869157ffe94bae1a80d29f3aa8e07558876",
+    "media_type": "image/png",
+    "width": 64,
+    "height": 32,
+    "byte_size": 112,
+    "storage_object_id": "obj_src_logo",
+    "delivery": "storage_download"
+   }
+  ],
+  "warnings": [],
+  "native_layers": []
+ }
+}

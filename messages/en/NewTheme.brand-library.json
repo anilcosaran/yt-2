@@ -1,0 +1,24 @@
+{
+  "brandLibrary": {
+    "loadFailed": "Brand Kits could not be loaded",
+    "retry": "Try again",
+    "readOnlyNote": "Only the owner of this Brand Kit can edit it.",
+    "sharedBadge": "Shared",
+    "share": "Share with channel members",
+    "unshare": "Stop sharing",
+    "shareTitle": "Share this Brand Kit with the channel's members?",
+    "shareDescription": "Members of {channel} can use this Kit for new videos and choose it as their default. Only you can edit it.",
+    "shareConfirm": "Share",
+    "unshareTitle": "Stop sharing this Brand Kit?",
+    "unshareDescription": "Members of {channel} can no longer use this Kit for new videos. Projects that already use it keep their look.",
+    "unshareConfirm": "Stop sharing",
+    "privateDefaultTitle": "This default Kit is private",
+    "privateDefaultDescription": "{kit} is now the default for {channel}, but it is private: channel members keep the neutral Kit until you share it with them.",
+    "privateDefaultKeep": "Keep private",
+    "toast": {
+      "shared": "Brand Kit shared with channel members",
+      "unshared": "Brand Kit is private again",
+      "conflict": "This Brand Kit changed in another window. The latest version is loaded; apply your change again."
+    }
+  }
+}

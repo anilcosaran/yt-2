@@ -1,0 +1,8 @@
+{
+  "composer": {
+    "outputCount": "Adet",
+    "outputCountValue": "{count} adet",
+    "outputCountFromMessage": "Mesajındaki sayı",
+    "outputCountModelMax": "Bu modelin üst sınırı"
+  }
+}

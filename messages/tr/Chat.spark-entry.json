@@ -1,0 +1,21 @@
+{
+  "sparkEntry": {
+    "open": "Spark'ta aç",
+    "opening": "Spark'ta açılıyor…",
+    "defaultTitle": "Sohbetten proje",
+    "nothingToOpen": "Bu sonuçta Spark'ta açılabilecek medya yok.",
+    "failed": "Spark'ta açılamadı. Tekrar dene.",
+    "partial": "Bazı sonuçlar projeye eklenemedi.",
+    "notOpenable": "Proje henüz açılamıyor. Birazdan tekrar dene."
+  },
+  "sparkHandoff": {
+    "title": "Spark projesi",
+    "continue": "Spark'ta devam et",
+    "state": {
+      "preparing": "Medya hazırlanıyor; proje şimdi açılabilir.",
+      "ready": "Hazır",
+      "partial": "Kısmen hazır: bazı sonuçlar eklenemedi.",
+      "failed": "Proje hazırlanamadı."
+    }
+  }
+}

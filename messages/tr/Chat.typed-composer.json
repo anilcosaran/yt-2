@@ -1,0 +1,38 @@
+{
+  "typedComposer": {
+    "chipsLabel": "Mesaj bağlamı",
+    "chipKinds": {
+      "skill": "Skill",
+      "tool": "Araç",
+      "mention": "Kaynak",
+      "attachment": "Ek"
+    },
+    "removeChip": "{label} kaldır",
+    "slashMenuLabel": "Komutlar",
+    "mentionMenuLabel": "Kaynaklar",
+    "groups": {
+      "tools": "Youtorch araçları",
+      "skills": "Skill'lerim"
+    },
+    "menuLoading": "Yükleniyor…",
+    "menuError": "Liste yüklenemedi. Metnin yazdığın gibi gönderilir.",
+    "slashEmpty": "Eşleşen komut yok. Metin yazdığın gibi gönderilir.",
+    "mentionEmpty": "Eşleşen kaynak yok.",
+    "modeLabel": "Mod: {mode}",
+    "fullAccess": "Tam erişim",
+    "fullAccessDetail": "Tek seferlik onaydan sonra soru sormadan çalışır",
+    "noticeTitle": "Mesaj kutusu",
+    "modeNotice": {
+      "stale": "Ayarlar başka bir yerde değişti. Güncel ayarlar gösteriliyor; tekrar seç.",
+      "targetGone": "Bu iş bitti. Yeni işlerin modunu değiştirmek için tekrar seç.",
+      "consentRequired": "Tam erişim için önce tek seferlik onay gerekiyor. Mevcut mod devam ediyor.",
+      "forbidden": "Bu işin modunu yalnız işi başlatan kişi değiştirebilir.",
+      "failed": "Mod değiştirilemedi. Tekrar dene."
+    },
+    "attachmentNotReady": "“{name}” Storage'da hâlâ hazırlanıyor. Hazır olunca tekrar gönder.",
+    "attachmentNotStorage": "“{name}” bir Storage dosyası değil, eklenemez. Önce Storage'a kaydet.",
+    "requestedCountOutOfRange": "Bu model istek başına {min}–{max} çıktı üretir; {count} istendi.",
+    "submitInvalid": "Mesaj hazırlanamadı. Çipleri kontrol edip tekrar dene.",
+    "tooManyChips": "Mesajda en fazla sayıda kaynak var."
+  }
+}

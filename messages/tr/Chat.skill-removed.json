@@ -1,0 +1,8 @@
+{
+  "failure": {
+    "skillRemovedTitle": "Bir skill kaldırıldı",
+    "skillRevokedDetail": "Bu planın kullandığı bir skill güvenlik nedeniyle kaldırıldı. Sonraki adım başlatılmadı.",
+    "skillUnavailableDetail": "Bu planın kullandığı bir skill artık etkin değil. Sonraki adım başlatılmadı.",
+    "replanWithoutSkill": "Planı bu skill olmadan yeniden hazırla"
+  }
+}

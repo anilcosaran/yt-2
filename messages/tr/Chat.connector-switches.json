@@ -1,0 +1,9 @@
+{
+  "typedComposer": {
+    "connectionSwitch": {
+      "toggleLabel": "{name} bu sohbette kullanılsın",
+      "off": "Bu sohbette kapalı",
+      "failed": "Değiştirilemedi. Tekrar dene."
+    }
+  }
+}

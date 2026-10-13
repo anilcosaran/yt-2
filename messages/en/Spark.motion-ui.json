@@ -1,0 +1,103 @@
+{
+  "editor": {
+    "stage": {
+      "kinds": {
+        "motion_instance": "Motion"
+      }
+    },
+    "motionDrawer": {
+      "tabsLabel": "Motion sources",
+      "tabs": {
+        "library": "Library",
+        "mine": "My Motions",
+        "premium": "Premium"
+      },
+      "searchPlaceholder": "Search Motions",
+      "loading": "Loading Motions…",
+      "loadFailed": "The Motions could not be loaded.",
+      "retry": "Try again",
+      "unavailable": {
+        "library": "The Motion library is not available yet.",
+        "mine": "Saved Motions are not available yet.",
+        "premium": "The Motion library is not available yet.",
+        "market": "Premium Motions are not for sale yet."
+      },
+      "empty": {
+        "library": "No Motions here yet.",
+        "mine": "You have no saved Motions yet. Customise a Motion in the Motion area and save it.",
+        "premium": "No Premium Motions yet."
+      },
+      "noMatch": "No Motion matches “{query}”.",
+      "results": "{count, plural, one {# Motion} other {# Motions}}",
+      "needsScene": "Add a scene first to put a Motion on it.",
+      "styleUnavailable": "The Motion look is not available yet, so Motions cannot be added.",
+      "openArea": "Open Motion area",
+      "price": "{credits} credits",
+      "buy": "Buy",
+      "buyLabel": "Buy {title}",
+      "buyTitle": "Buy {title} for {credits} credits, once for this workspace",
+      "buyUnavailable": "Buying is not available right now.",
+      "buyFirst": "Buy this Premium Motion to use it.",
+      "owned": "In your library",
+      "lengthRange": "{min}–{max} s",
+      "ratioChip": "Not in {ratio}",
+      "needsImage": "Needs an image",
+      "mineChip": "Version {number}",
+      "adding": "Adding the Motion…",
+      "addLabel": "Add {title} at the playhead",
+      "addTitle": "Add {title} at the playhead, or drag it onto the canvas or the timeline",
+      "added": "Added {title} at {time}.",
+      "addedShortened": "Added {title} at {time}, shortened to fit the scene.",
+      "refused": {
+        "premium_not_bought": "{title} is a Premium Motion. Buy it first to use it.",
+        "no_scene": "There is no scene to put the Motion on.",
+        "video_style_unavailable": "The Motion look is not available yet.",
+        "ratio_not_available": "{title} has no {ratio} version, so it cannot be added to this project.",
+        "scene_too_short": "{title} needs at least {seconds} s after the start. Move the playhead earlier or use a longer scene.",
+        "needs_image": "{title} needs an image. Add one to the project first (Media).",
+        "own_scene_only": {
+          "camera": "{title} moves a camera, so it cannot sit over other layers. Use “Add as new scene” on its card.",
+          "anchor": "{title} follows its own word or beat timing, so it cannot sit over other layers. Use “Add as new scene” on its card.",
+          "content": "{title} contains content that cannot be drawn over other layers yet. Use “Add as new scene” on its card."
+        }
+      },
+      "ownSceneOnly": "Own scene only",
+      "sceneLabel": "Add {title} as a new scene",
+      "sceneTitle": "Add {title} as a scene of its own after the selected scene",
+      "sceneAdded": "Added {title} as a new scene.",
+      "overlayWarning": {
+        "camera": "{title} was added but cannot be drawn over other layers: it moves a camera. Undo it and use “Add as new scene” on its card.",
+        "anchor": "{title} was added but cannot be drawn over other layers: it follows its own word or beat timing. Undo it and use “Add as new scene” on its card.",
+        "content": "{title} was added but cannot be drawn over other layers: it contains content that is not drawn there yet. Undo it and use “Add as new scene” on its card."
+      }
+    },
+    "motionProps": {
+      "look": "Look",
+      "parameters": "Content",
+      "loading": "Loading the fields of this Motion…",
+      "mismatch": "This project uses a version of the Motion that is no longer listed, so its fields cannot be shown.",
+      "unavailable": "The fields of this Motion cannot be read right now.",
+      "noFields": "This Motion has no fields to edit here.",
+      "required": "required",
+      "tooLong": "At most {max} characters.",
+      "textEmpty": "This field cannot be empty.",
+      "colorDefault": "Default colour",
+      "useDefault": "Use the default",
+      "noImages": "Add an image to the project first (Media).",
+      "chooseImage": "Choose an image",
+      "imageN": "Image {n}",
+      "length": "Length",
+      "seconds": "s",
+      "lengthRange": "{min}–{max} s",
+      "outOfRange": "Out of range: {min}–{max} s.",
+      "noRoom": "The scene has no room left after the start for this Motion.",
+      "timing": "Timing",
+      "start": "Start",
+      "startOutside": "The Motion must stay inside the scene: latest start {max} s.",
+      "editStructure": "Edit structure",
+      "editStructureHint": "Opens a private copy of this Motion in the Motion area. Projects keep the version they pinned.",
+      "opening": "Opening…",
+      "openFailed": "The Motion area could not be opened."
+    }
+  }
+}

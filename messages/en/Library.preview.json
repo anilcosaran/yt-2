@@ -1,0 +1,100 @@
+{
+  "preview": {
+    "close": "Close",
+    "previous": "Previous",
+    "next": "Next",
+    "useInSpark": "Use in Spark",
+    "useInSparkToast": "Will be added to Spark (demo)",
+    "download": "Download",
+    "downloadUnavailable": "This file can’t be downloaded yet",
+    "more": "More options",
+    "rename": "Rename",
+    "nameLabel": "Name",
+    "delete": "Delete",
+    "deleteTitle": "Delete this file?",
+    "deleteBody": "“{name}” will be removed from your library and all collections.",
+    "cancel": "Cancel",
+    "deleted": "Deleted",
+    "tools": "AI tools",
+    "collections": "Collections",
+    "add": "Add",
+    "addToCollection": "Add to collection",
+    "removeFrom": "Remove from {name}",
+    "searchOrCreate": "Search or create new",
+    "create": "Create “{name}”",
+    "noCollections": "No collections yet",
+    "details": "Details",
+    "prompt": "Prompt",
+    "tool": {
+      "clips": {
+        "title": "Cut into clips",
+        "hint": "Pull short clips for Shorts"
+      },
+      "captions": {
+        "title": "Add captions",
+        "hint": "Turn speech into on-screen text"
+      },
+      "transform": {
+        "title": "Crop & resize",
+        "hint": "Change size, framing or speed"
+      },
+      "transformImage": {
+        "title": "Crop & resize",
+        "hint": "Change size or framing"
+      },
+      "logo": {
+        "title": "Add logo",
+        "hint": "Add a logo, intro or outro"
+      },
+      "frame": {
+        "title": "Grab a frame",
+        "hint": "Save a still for a thumbnail"
+      },
+      "gif": {
+        "title": "Make a GIF",
+        "hint": "Create a short looping GIF"
+      },
+      "talkingVideo": {
+        "title": "Make a talking video",
+        "hint": "Create a video of this face talking"
+      },
+      "saveAvatar": {
+        "title": "Save as avatar",
+        "hint": "Reuse this face in new videos"
+      },
+      "cloneVoice": {
+        "title": "Clone this voice",
+        "hint": "Make new voiceovers with this voice"
+      }
+    },
+    "analysis": {
+      "title": "AI analysis",
+      "again": "Analyse again",
+      "run": "Analyse",
+      "failed": "This file couldn’t be analysed.",
+      "skipped": "This file hasn’t been analysed yet.",
+      "state": {
+        "queued": "Queued",
+        "analyzing": "Analysing…"
+      }
+    },
+    "tags": {
+      "add": "+ Add tag",
+      "remove": "Remove tag “{tag}”"
+    },
+    "memory": {
+      "off": "Add to Memory",
+      "adding": "Adding to Memory…",
+      "added": "In Memory",
+      "hint": "The assistant remembers this file and uses it in chats."
+    },
+    "notes": {
+      "title": "Notes",
+      "hint": "AI reads your notes when it picks this file.",
+      "placeholder": "Add a note, e.g. use as the opening shot in menu promos",
+      "add": "Add a note",
+      "edit": "Edit note",
+      "remove": "Delete note"
+    }
+  }
+}

@@ -1,0 +1,35 @@
+{
+  "profile": {
+    "usernameTaken": "Bu kullanıcı adı alınmış. Başka bir tane dene.",
+    "usernameImmutable": "Community kullanıcı adın @{username}. Değiştirilemez.",
+    "usernameReasons": {
+      "empty": "Bir kullanıcı adı yaz.",
+      "invalid_characters": "Yalnızca küçük a-z harfleri, rakam ve alt çizgi kullan.",
+      "too_short": "Kullanıcı adı en az 3 karakter olmalı.",
+      "too_long": "Kullanıcı adı en fazla 30 karakter olabilir.",
+      "reserved": "Bu kullanıcı adı kullanılamıyor. Başka bir tane dene."
+    },
+    "checkThrottled": "Çok fazla kontrol yaptın. {seconds, plural, other {# saniye}} sonra yeniden dene.",
+    "available": "@{username} uygun görünüyor.",
+    "availableNotGuaranteed": "@{username} uygun görünüyor. Alana kadar senin değildir.",
+    "yours": "Bu senin kullanıcı adın.",
+    "avatarReasons": {
+      "unsupported_type": "JPEG, PNG veya WebP bir görsel kullan.",
+      "mime_mismatch": "Dosya türüyle uyuşmuyor. Görseli yeniden seç.",
+      "size_mismatch": "Yükleme eksik kaldı. Yeniden dene.",
+      "size_limit_exceeded": "Bu görsel çok büyük. Avatar en fazla 256 KB olabilir.",
+      "checksum_mismatch": "Yükleme bozuldu. Yeniden dene.",
+      "corrupt_image": "Bu görsel okunamıyor. Başka bir tane seç.",
+      "animated_image": "Hareketli görseller avatar olarak kullanılamaz.",
+      "dimensions_out_of_range": "Avatarın her kenarı 32 ile 512 piksel arasında olmalı.",
+      "storage_refused": "Avatar kaydedilemedi. Başka bir görsel dene.",
+      "storage_quota_exceeded": "Avatarlar şu anda kullanılamıyor. Lütfen daha sonra yeniden dene.",
+      "not_ready_timeout": "Avatarın kontrolü çok uzun sürdü. Yeniden dene."
+    },
+    "avatarLimit": "Bugün avatarını çok değiştirdin. Lütfen daha sonra yeniden dene.",
+    "avatarNotReady": "Avatarın hâlâ kontrol ediliyor. Birazdan yeniden dene.",
+    "avatarUnavailable": "Avatarlar şu anda kullanılamıyor.",
+    "profileRequired": "Önce bir Community kullanıcı adı seç.",
+    "versionConflict": "Profilin başka bir pencerede değişti. Yenile ve yeniden dene."
+  }
+}

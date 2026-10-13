@@ -1,0 +1,221 @@
+{
+  "scriptReview": {
+    "open": "Script'i aç",
+    "openActive": "Script açık",
+    "close": "Kapat",
+    "closeHint": "Kapat (Esc)",
+    "panelLabel": "Script: {title}",
+    "untitled": "Video senaryosu",
+    "loading": "Script yükleniyor…",
+    "loadFailed": "Script okunamadı.",
+    "retryLoad": "Tekrar dene",
+    "noScript": "Bu işte henüz script yok.",
+    "scriptRevision": "Script v{revision}",
+    "planRevision": "Plan v{revision}",
+    "outline": "Ana hat · tam metin değil",
+    "readiness": {
+      "draft": "Taslak",
+      "not_ready": "Eksik",
+      "ready": "Hazır",
+      "stale": "Plan güncel değil"
+    },
+    "save": {
+      "pending": "Kaydediliyor…",
+      "saving": "Kaydediliyor…",
+      "saved": "Kaydedildi",
+      "failed": "Kaydedilemedi",
+      "conflict": "Başka bir yerde değişti",
+      "invalid": "Boş alan kaydedilemez",
+      "retry": "Tekrar dene",
+      "closing": "Kaydediliyor, sonra kapanacak…"
+    },
+    "conflict": {
+      "title": "Bu script başka bir sekmede veya sohbette güncellendi.",
+      "body": "Değişikliklerin burada duruyor. Güncel sürüme uygulayabilir ya da bırakabilirsin.",
+      "apply": "Güncel sürüme uygula",
+      "discard": "Değişikliklerimi bırak"
+    },
+    "invalidField": "Bu alan boş kaydedilemez.",
+    "sections": {
+      "summary": "Özet",
+      "approach": "Senaryo yaklaşımı",
+      "resources": "Avatar, ses ve şablon",
+      "script": "Script ve sahneler",
+      "sourcesCost": "Kaynaklar ve maliyet"
+    },
+    "fields": {
+      "title": "Video adı",
+      "angle": "Özet",
+      "purpose": "Amaç",
+      "keyMessage": "Ana mesaj",
+      "hook": "Kanca",
+      "narrativeFlow": "Anlatı akışı",
+      "audience": "İzleyici",
+      "narration": "Seslendirme",
+      "onScreen": "Ekranda",
+      "chapterTitle": "Bölüm adı"
+    },
+    "specs": {
+      "ratio": "Oran",
+      "language": "Dil",
+      "models": "Medya modelleri",
+      "duration": "{planned} planlanan · {target} hedef",
+      "durationPlanned": "{planned} planlanan",
+      "durationTarget": "{target} hedef",
+      "shots": "{count} sahne"
+    },
+    "chapter": {
+      "beats": "{count} parça · {duration}",
+      "disabled": "Kapalı",
+      "disable": "Bölümü kapat",
+      "enable": "Bölümü aç",
+      "roles": {
+        "intro": "Giriş",
+        "main": "Ana bölüm",
+        "outro": "Kapanış",
+        "cta": "Çağrı"
+      }
+    },
+    "beatNumber": "P{n}",
+    "beatSeconds": "{value} sn",
+    "shot": {
+      "label": "S{order}",
+      "seconds": "{value} sn",
+      "parts": "{count} üretim parçası",
+      "stale": "Sahneler önceki script sürümüne göre planlandı; plan güncellenince yenilenir.",
+      "media": {
+        "native": "Editörde",
+        "existing_asset": "Mevcut medya",
+        "stock": "Stok",
+        "generate": "Üretilecek",
+        "avatar": "Avatar",
+        "motion": "Hareketli"
+      },
+      "source": {
+        "label": "Kaynak: {source}",
+        "modality": {
+          "typed_scene": "Tipli sahne",
+          "brand_motion": "Motion şablonu",
+          "own_media": "Kendi medyanız",
+          "youtorch_stock": "Youtorch Stock",
+          "ai_image": "AI görsel",
+          "llm_motion": "Hareketli sahne",
+          "ai_video": "AI video",
+          "stock_create": "Stock'ta Oluştur",
+          "omitted": "Eklenmedi",
+          "none": "Kaynak gerekli",
+          "other": "Diğer"
+        },
+        "cost": {
+          "free": "ücretsiz",
+          "priced": "{credits} kredi",
+          "not_ready": "fiyat hazır değil"
+        },
+        "reason": {
+          "requested": "Bu video için bu yolu siz istediniz.",
+          "requestedUnavailable": "İstediğiniz yol bu sahne için kullanılamıyor.",
+          "stockOnlyNoMatch": "Yalnız Stock kuralınızla eşleşen Stock kaydı bulunamadı.",
+          "noSource": "Uygun kaynak bulunamadı.",
+          "stock": "Lisanslı bir Stock kaydı sahneyle eşleşiyor.",
+          "ownMedia": "Kendi medyanız bu sahneye uyuyor.",
+          "brandMotion": "Bir Motion şablonu bu sahneye uyuyor.",
+          "typedScene": "Tipli bir sahne bu sahneye uyuyor.",
+          "generated": "Sahnenin açıklamasından, katalogda etkin bir modelle üretilir.",
+          "other": "Yönetmen seçti."
+        },
+        "fromRule": "Kayıtlı kuralınıza göre.",
+        "userResponsibility": "Fotogerçekçi anlatım açık isteğinizle ve sizin sorumluluğunuzda üretilir."
+      }
+    },
+    "bindings": {
+      "roles": {
+        "avatar": "Avatar",
+        "voice": "Ses",
+        "template": "Şablon",
+        "intro": "Giriş",
+        "outro": "Kapanış",
+        "kit": "Marka kiti"
+      },
+      "state": {
+        "selected": "Seçili",
+        "none": "Yok",
+        "unset": "Seçilmedi"
+      },
+      "noAvatar": "Avatar yok · yalnız seslendirme",
+      "source": {
+        "thisVideo": "Bu video",
+        "template": "Şablondan",
+        "savedPreference": "Kayıtlı tercihin",
+        "suggested": "Önerilen"
+      },
+      "overrides": "{count} sahnede farklı"
+    },
+    "estimate": {
+      "title": "Tahmini tüketim",
+      "range": "~{min}–{max} kredi",
+      "point": "~{value} kredi",
+      "state": {
+        "current": "Güncellendi",
+        "previous": "Önceki tahmin · güncellenecek",
+        "computing": "Hesaplanıyor",
+        "unavailable": "Tahmin kullanılamıyor",
+        "script_only": "Video üretilirse tahmin henüz yok",
+        "missing": "Tahmin henüz yok"
+      },
+      "counts": "{shots} sahne · {images} yeni görsel · {videos} video üretimi",
+      "reused": "{count} mevcut varlık yeniden kullanılır",
+      "parts": "{count} üretim parçası",
+      "disclaimer": "Yaklaşık tutardır; model, sahne ve süre seçimlerine göre değişebilir.",
+      "ceiling": "Harcama üst sınırı: {value} kredi",
+      "finalRenderIncluded": "Final render dahil",
+      "finalRenderExcluded": "Final render hariç",
+      "lineItems": "Maliyet ayrıntısı",
+      "lineItem": "{operations} işlem · ~{min}–{max} kredi",
+      "categories": {
+        "research": "Araştırma",
+        "script": "Senaryo",
+        "image": "Görsel",
+        "video": "Video",
+        "voice": "Ses",
+        "avatar": "Avatar",
+        "stock": "Stok",
+        "render": "Render",
+        "repair": "Onarım",
+        "other": "Diğer"
+      }
+    },
+    "sources": {
+      "title": "Kaynaklar",
+      "readStatus": {
+        "read": "Okundu",
+        "snippet_only": "Yalnız özet",
+        "unreadable": "Okunamadı",
+        "paywalled": "Ücretli"
+      },
+      "claims": "{count} iddia"
+    },
+    "card": {
+      "status": {
+        "plan_ready": "Plan hazır",
+        "plan_stale": "Script değişti · plan ve tahmin güncellenecek",
+        "plan_draft": "Plan hazırlanıyor",
+        "plan_not_ready": "Plan eksik",
+        "script_only": "Senaryo hazır",
+        "script_ready": "Senaryo hazır · plan hazırlanıyor"
+      },
+      "target": "{duration} hedef",
+      "chapters": "{count} bölüm",
+      "shots": "{count} sahne",
+      "estimate": {
+        "current": "Tahmini ~{min}–{max} kredi",
+        "previous": "Önceki tahmin ~{min}–{max} kredi",
+        "currentPoint": "Tahmini ~{value} kredi",
+        "previousPoint": "Önceki tahmin ~{value} kredi",
+        "computing": "Tahmin hesaplanıyor",
+        "unavailable": "Tahmin kullanılamıyor",
+        "script_only": "Video tahmini henüz yok"
+      },
+      "ceiling": "En fazla {value} kredi"
+    }
+  }
+}

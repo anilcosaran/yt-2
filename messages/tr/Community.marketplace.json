@@ -1,0 +1,34 @@
+{
+  "marketplace": {
+    "purchase": {
+      "state": {
+        "charging": "Satın alma tamamlanıyor…",
+        "sold": "Satın alındı. Tüm projelerinde kullanabilirsin.",
+        "failed": "Satın alma tamamlanamadı."
+      }
+    },
+    "earnings": {
+      "state": {
+        "pending": "Kazanıldı, yakında kullanılabilir",
+        "settled": "Kredilerine eklendi"
+      }
+    },
+    "errors": {
+      "unavailable": "Pazar yeri şu an kullanılamıyor.",
+      "priceNotAllowed": {
+        "publisher_not_verified": "Fiyatı yalnızca doğrulanmış yaratıcılar belirleyebilir. Paylaştığın diğer her şey ücretsizdir.",
+        "post_removed": "Bu gönderi kaldırıldı, fiyatı değiştirilemez.",
+        "price_out_of_range": "1 ile 10.000 arasında tam sayıda kredi seç ya da ücretsiz için 0 yaz."
+      },
+      "listingChanged": "Sen düzenlerken bu liste değişti. Yenile ve tekrar dene.",
+      "priceChanged": "Fiyat {price, plural, one {# kredi} other {# kredi}} olarak değişti. Kontrol et, istersen yeniden satın al.",
+      "priceChangedFree": "Bu öğe artık ücretsiz. Satın almadan kullanabilirsin.",
+      "changed": "Yaratıcı bu gönderiyi güncelledi. Yenile ve tekrar dene.",
+      "selfPurchase": "Bu senin kendi öğen, satın alınacak bir şey yok.",
+      "notForSale": "Bu öğe şu an satışta değil.",
+      "insufficientCredits": "Bunu satın almak için {price, plural, one {# kredi} other {# kredi}} gerekiyor. Kredi ekleyip tekrar dene.",
+      "purchaseRequired": "Projelerinde kullanmak için bu öğeyi {price, plural, one {# kredi} other {# kredi}} karşılığında satın al.",
+      "stillProcessing": "Satın alman hâlâ tamamlanıyor. Birazdan kullanıma hazır olacak."
+    }
+  }
+}

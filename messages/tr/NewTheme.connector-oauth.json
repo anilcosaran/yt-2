@@ -1,0 +1,8 @@
+{
+  "connectorOAuthResult": {
+    "okTitle": "Neredeyse bitti",
+    "failedTitle": "Bağlantı tamamlanmadı",
+    "closing": "Youtorch'a dönebilirsin. Bu pencere kendiliğinden kapanır.",
+    "closeManually": "Bu pencereyi kapatıp Youtorch'a dönebilirsin."
+  }
+}

@@ -1,0 +1,42 @@
+{
+  "editor": {
+    "avatarTool": {
+      "searchPlaceholder": "Avatar ara",
+      "tabs": {
+        "stock": "Hazır",
+        "mine": "Avatarlarım"
+      },
+      "presenters": "Sunucular",
+      "create": "Kendi avatarını oluştur",
+      "createTitle": "Avatar stüdyosunu yeni sekmede açar",
+      "loading": "Avatarlar yükleniyor…",
+      "loadFailed": "Avatarlar yüklenemedi.",
+      "retry": "Tekrar dene",
+      "emptyStock": "Aramana uyan hazır avatar yok.",
+      "emptyMine": "Henüz hazır avatarın yok. Avatar stüdyosunda bir tane oluştur.",
+      "disabledTitle": "Avatarlar kullanılamıyor",
+      "disabledBody": "Avatarlar çalışma alanı planında açık değil.",
+      "entitlementFailed": "Avatar ayarların yüklenemedi.",
+      "add": "{name} avatarını sahneye ekle",
+      "adding": "Ekleniyor…",
+      "looks": "{name} görünümleri",
+      "looksButton": "Görünümler",
+      "looksTitle": "Görünümler",
+      "back": "Tüm avatarlar",
+      "noLooks": "Bu avatarın henüz hazır bir görünümü yok.",
+      "lookName": "Görünüm {n}",
+      "dragHint": "Oynatma noktasına eklemek için tıkla ya da tuvale veya zaman çizelgesine sürükle.",
+      "added": "{name} sahneye eklendi.",
+      "noLook": "Bu avatarın eklenebilecek hazır bir görünümü yok.",
+      "unsupportedPicture": "Bu avatar resmi sahnede gösterilemez. Yalnızca PNG, JPEG ve WebP görseller çalışır.",
+      "processing": "Resim hâlâ işleniyor. Birazdan tekrar dene.",
+      "unavailable": "Sunucuya şu an ulaşılamıyor. Birazdan tekrar dene.",
+      "failed": "Avatar eklenemedi. Tekrar dene.",
+      "import": {
+        "fetch_failed": "Avatar resmi yüklenemedi. Tekrar dene.",
+        "unsupported_type": "Bu avatar resmi PNG, JPEG veya WebP olmadığı için kullanılamıyor.",
+        "too_large": "Bu avatar resmi eklenemeyecek kadar büyük."
+      }
+    }
+  }
+}

@@ -1,0 +1,35 @@
+{
+  "profile": {
+    "usernameTaken": "This username is already taken. Try another one.",
+    "usernameImmutable": "Your Community username is @{username}. It can't be changed.",
+    "usernameReasons": {
+      "empty": "Enter a username.",
+      "invalid_characters": "Use only lowercase letters a-z, numbers and underscores.",
+      "too_short": "Usernames need at least 3 characters.",
+      "too_long": "Usernames can have at most 30 characters.",
+      "reserved": "This username isn't available. Try another one."
+    },
+    "checkThrottled": "Too many checks. Try again in {seconds, plural, one {# second} other {# seconds}}.",
+    "available": "@{username} looks available.",
+    "availableNotGuaranteed": "@{username} looks available. It is only yours once you claim it.",
+    "yours": "That is your username.",
+    "avatarReasons": {
+      "unsupported_type": "Use a JPEG, PNG or WebP image.",
+      "mime_mismatch": "The file doesn't match its type. Choose the image again.",
+      "size_mismatch": "The upload was incomplete. Try again.",
+      "size_limit_exceeded": "This image is too large. Avatars can be up to 256 KB.",
+      "checksum_mismatch": "The upload was corrupted. Try again.",
+      "corrupt_image": "This image can't be read. Choose another one.",
+      "animated_image": "Animated images can't be used as an avatar.",
+      "dimensions_out_of_range": "Avatars must be between 32 and 512 pixels on each side.",
+      "storage_refused": "The avatar couldn't be saved. Try another image.",
+      "storage_quota_exceeded": "Avatars are temporarily unavailable. Please try again later.",
+      "not_ready_timeout": "The avatar took too long to check. Try again."
+    },
+    "avatarLimit": "You've changed your avatar a lot today. Please try again later.",
+    "avatarNotReady": "Your avatar is still being checked. Try again in a moment.",
+    "avatarUnavailable": "Avatars are temporarily unavailable.",
+    "profileRequired": "Choose a Community username first.",
+    "versionConflict": "Your profile changed in another window. Reload it and try again."
+  }
+}

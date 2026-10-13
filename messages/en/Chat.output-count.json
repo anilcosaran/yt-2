@@ -1,0 +1,8 @@
+{
+  "composer": {
+    "outputCount": "Count",
+    "outputCountValue": "{count} outputs",
+    "outputCountFromMessage": "From your message",
+    "outputCountModelMax": "This model's maximum"
+  }
+}

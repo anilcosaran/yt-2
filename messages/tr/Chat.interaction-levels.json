@@ -1,0 +1,20 @@
+{
+  "interactionLevels": {
+    "planUpdating": "Plan güncelleniyor",
+    "changes": "Değişenler: {items}",
+    "change": "{field}: {from} → {to}",
+    "estimateDelta": "tahmin {delta} kredi",
+    "fields": {
+      "model": "Model",
+      "video_model": "Video modeli",
+      "image_model": "Görsel modeli",
+      "aspect_ratio": "Oran",
+      "duration_seconds": "Süre",
+      "profile": "Profil",
+      "template": "Şablon",
+      "brand_kit": "Marka kiti",
+      "voice": "Ses",
+      "presentation": "Sunum"
+    }
+  }
+}

@@ -1,0 +1,14 @@
+{
+  "editor": {
+    "export": {
+      "reason": {
+        "motion_camera": "A Motion of this video uses a camera move, so it cannot be placed over other layers. Use it as its own scene.",
+        "motion_timing": "A Motion of this video follows its own word timing, so it cannot be placed over other layers. Use it as its own scene.",
+        "motion_format": "A Motion of this video was made for another format or frame rate. Choose a Motion that supports this video's format.",
+        "motion_length": "A Motion of this video does not match the length it was given.",
+        "motion_unavailable": "A Motion of this video is not available right now or cannot be drawn with its current settings.",
+        "motion_content": "A Motion of this video contains content the exporter cannot draw yet."
+      }
+    }
+  }
+}

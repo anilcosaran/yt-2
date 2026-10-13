@@ -1,0 +1,1726 @@
+{
+ "scene": {
+  "scene_id": "scn_00000000-0000-4000-8000-000000000001",
+  "start_frame": 0,
+  "duration_frames": 180,
+  "dependency_hash": "31dd525479d0b0a61cbda0304518f8fdc51697f53b4896d9f500297a05a75023",
+  "document": {
+   "ir_version": "motion-ir@1",
+   "fps": 30,
+   "duration_frames": 180,
+   "canvas": {
+    "width": 1920,
+    "height": 1080,
+    "ratio": "16:9"
+   },
+   "seed": 1805015307,
+   "source": {
+    "kind": "typed_scene",
+    "compiler": "scene_compiler@1"
+   },
+   "style": null,
+   "variables": [],
+   "anchors": [],
+   "nodes": [
+    {
+     "handle": "scene_background#1",
+     "kind": "shape",
+     "role": "scene_background",
+     "basis": {
+      "role": "scene_background",
+      "slot_key": null,
+      "list_index": null
+     },
+     "source": {
+      "kind": "typed_scene",
+      "compiler": "scene_compiler@1"
+     },
+     "box": {
+      "x": 0,
+      "y": 0,
+      "width": 1920,
+      "height": 1080
+     },
+     "props": {
+      "fill": "#000000"
+     },
+     "content": {
+      "kind": "shape",
+      "shape": "rect"
+     }
+    },
+    {
+     "handle": "lyr_00000000_0000_4000_8000_000000000001#1",
+     "kind": "group",
+     "role": "lyr_00000000-0000-4000-8000-000000000001",
+     "basis": {
+      "role": "lyr_00000000-0000-4000-8000-000000000001",
+      "slot_key": null,
+      "list_index": null
+     },
+     "source": {
+      "kind": "typed_scene",
+      "compiler": "scene_compiler@1"
+     },
+     "box": {
+      "x": 0,
+      "y": 0,
+      "width": 1920,
+      "height": 1080
+     },
+     "origin": [
+      0,
+      0
+     ],
+     "props": {},
+     "children": [
+      {
+       "handle": "lyr_00000000_0000_4000_8000_000000000001_content#1",
+       "kind": "shape",
+       "role": "lyr_00000000-0000-4000-8000-000000000001.content",
+       "basis": {
+        "role": "lyr_00000000-0000-4000-8000-000000000001.content",
+        "slot_key": null,
+        "list_index": null
+       },
+       "source": {
+        "kind": "typed_scene",
+        "compiler": "scene_compiler@1"
+       },
+       "box": {
+        "x": 0,
+        "y": 0,
+        "width": 1920,
+        "height": 1080
+       },
+       "props": {
+        "fill": "#102030"
+       },
+       "content": {
+        "kind": "shape",
+        "shape": "rect"
+       }
+      }
+     ]
+    },
+    {
+     "handle": "lyr_00000000_0000_4000_8000_000000000002#1",
+     "kind": "group",
+     "role": "lyr_00000000-0000-4000-8000-000000000002",
+     "basis": {
+      "role": "lyr_00000000-0000-4000-8000-000000000002",
+      "slot_key": null,
+      "list_index": null
+     },
+     "source": {
+      "kind": "typed_scene",
+      "compiler": "scene_compiler@1"
+     },
+     "box": {
+      "x": 96,
+      "y": 496,
+      "width": 1728,
+      "height": 88
+     },
+     "origin": [
+      0,
+      0
+     ],
+     "props": {},
+     "children": [
+      {
+       "handle": "lyr_00000000_0000_4000_8000_000000000002_content#1",
+       "kind": "text",
+       "role": "lyr_00000000-0000-4000-8000-000000000002.content",
+       "basis": {
+        "role": "lyr_00000000-0000-4000-8000-000000000002.content",
+        "slot_key": null,
+        "list_index": null
+       },
+       "source": {
+        "kind": "typed_scene",
+        "compiler": "scene_compiler@1"
+       },
+       "box": {
+        "x": 0,
+        "y": 0,
+        "width": 1728,
+        "height": 88
+       },
+       "props": {
+        "fill": "#ffffff"
+       },
+       "content": {
+        "kind": "text",
+        "text": "Bitcoin neden düştü?",
+        "font": {
+         "family": "Montserrat",
+         "weight": 700,
+         "size_px": 72,
+         "style": "normal"
+        },
+        "align": "center",
+        "lang": "und",
+        "valign": "top",
+        "fit": {
+         "policy": "wrap"
+        },
+        "layout": {
+         "engine": "motion-text@1",
+         "font_set_hash": "3a24ea4f3a1b279b57efdb3d3da20a8ab9a12098f7758f5412fb76048a982d9f",
+         "lang": "und",
+         "source_text": "Bitcoin neden düştü?",
+         "text": "Bitcoin neden düştü?",
+         "font": {
+          "family": "Montserrat",
+          "weight": 700,
+          "style": "normal"
+         },
+         "nominal_size_px": 72,
+         "size_px": 72,
+         "line_height_px": 87.768,
+         "box": {
+          "width": 1728,
+          "height": 88
+         },
+         "lines": [
+          {
+           "text": "Bitcoin neden düştü?",
+           "first": 0,
+           "end": 20,
+           "x": 458.352,
+           "y": 0,
+           "width": 811.296
+          }
+         ],
+         "width": 811.296,
+         "height": 87.768,
+         "fit": {
+          "policy": "wrap",
+          "status": "fits"
+         }
+        }
+       }
+      }
+     ]
+    },
+    {
+     "handle": "caption_t0_c0_p0#1",
+     "kind": "group",
+     "role": "caption.t0.c0.p0",
+     "basis": {
+      "role": "caption.t0.c0.p0",
+      "slot_key": null,
+      "list_index": null
+     },
+     "source": {
+      "kind": "typed_scene",
+      "compiler": "scene_compiler@1"
+     },
+     "box": {
+      "x": 169,
+      "y": 856,
+      "width": 1582,
+      "height": 181
+     },
+     "props": {
+      "opacity": 0
+     },
+     "origin": [
+      0,
+      0
+     ],
+     "children": [
+      {
+       "handle": "caption_t0_c0_p0_plate#1",
+       "kind": "shape",
+       "role": "caption.t0.c0.p0.plate",
+       "basis": {
+        "role": "caption.t0.c0.p0.plate",
+        "slot_key": null,
+        "list_index": null
+       },
+       "source": {
+        "kind": "typed_scene",
+        "compiler": "scene_compiler@1"
+       },
+       "box": {
+        "x": 131.366,
+        "y": 11,
+        "width": 1319.268,
+        "height": 159
+       },
+       "props": {
+        "fill": "#000000BF"
+       },
+       "content": {
+        "kind": "shape",
+        "shape": "rect",
+        "corner_radius": 15
+       }
+      },
+      {
+       "handle": "caption_t0_c0_p0_text#1",
+       "kind": "text",
+       "role": "caption.t0.c0.p0.text",
+       "basis": {
+        "role": "caption.t0.c0.p0.text",
+        "slot_key": null,
+        "list_index": null
+       },
+       "source": {
+        "kind": "typed_scene",
+        "compiler": "scene_compiler@1"
+       },
+       "box": {
+        "x": 23,
+        "y": 23,
+        "width": 1536,
+        "height": 135
+       },
+       "props": {
+        "fill": "#FFFFFF"
+       },
+       "content": {
+        "kind": "text",
+        "text": "Merhaba, bugün Bitcoin'in neden düştüğünü\nkonuşacağız.",
+        "font": {
+         "family": "Montserrat",
+         "weight": 700,
+         "size_px": 54,
+         "style": "normal",
+         "line_height": 1.25
+        },
+        "align": "center",
+        "lang": "tr",
+        "valign": "top",
+        "fit": {
+         "policy": "shrink_then_wrap",
+         "min_size_px": 29
+        },
+        "layout": {
+         "engine": "motion-text@1",
+         "font_set_hash": "3a24ea4f3a1b279b57efdb3d3da20a8ab9a12098f7758f5412fb76048a982d9f",
+         "lang": "tr",
+         "source_text": "Merhaba, bugün Bitcoin'in neden düştüğünü\nkonuşacağız.",
+         "text": "Merhaba, bugün Bitcoin'in neden düştüğünü\nkonuşacağız.",
+         "font": {
+          "family": "Montserrat",
+          "weight": 700,
+          "style": "normal"
+         },
+         "nominal_size_px": 54,
+         "size_px": 54,
+         "line_height_px": 67.5,
+         "box": {
+          "width": 1536,
+          "height": 135
+         },
+         "lines": [
+          {
+           "text": "Merhaba, bugün Bitcoin'in neden düştüğünü",
+           "first": 0,
+           "end": 41,
+           "x": 132.366,
+           "y": 0,
+           "width": 1271.268
+          },
+          {
+           "text": "konuşacağız.",
+           "first": 42,
+           "end": 54,
+           "x": 583.212,
+           "y": 67.5,
+           "width": 369.576
+          }
+         ],
+         "width": 1271.268,
+         "height": 135,
+         "fit": {
+          "policy": "shrink_then_wrap",
+          "status": "fits"
+         }
+        }
+       }
+      },
+      {
+       "handle": "caption_t0_c0_p0_hl0#1",
+       "kind": "text",
+       "role": "caption.t0.c0.p0.hl0",
+       "basis": {
+        "role": "caption.t0.c0.p0.hl0",
+        "slot_key": null,
+        "list_index": null
+       },
+       "source": {
+        "kind": "typed_scene",
+        "compiler": "scene_compiler@1"
+       },
+       "box": {
+        "x": 155.366,
+        "y": 23,
+        "width": 266,
+        "height": 68
+       },
+       "props": {
+        "fill": "#FFE600",
+        "opacity": 0
+       },
+       "content": {
+        "kind": "text",
+        "text": "Merhaba,",
+        "font": {
+         "family": "Montserrat",
+         "weight": 700,
+         "size_px": 54,
+         "style": "normal",
+         "line_height": 1.25
+        },
+        "align": "left",
+        "lang": "tr",
+        "valign": "top",
+        "fit": {
+         "policy": "wrap"
+        },
+        "layout": {
+         "engine": "motion-text@1",
+         "font_set_hash": "3a24ea4f3a1b279b57efdb3d3da20a8ab9a12098f7758f5412fb76048a982d9f",
+         "lang": "tr",
+         "source_text": "Merhaba,",
+         "text": "Merhaba,",
+         "font": {
+          "family": "Montserrat",
+          "weight": 700,
+          "style": "normal"
+         },
+         "nominal_size_px": 54,
+         "size_px": 54,
+         "line_height_px": 67.5,
+         "box": {
+          "width": 266,
+          "height": 68
+         },
+         "lines": [
+          {
+           "text": "Merhaba,",
+           "first": 0,
+           "end": 8,
+           "x": 0,
+           "y": 0,
+           "width": 263.574
+          }
+         ],
+         "width": 263.574,
+         "height": 67.5,
+         "fit": {
+          "policy": "wrap",
+          "status": "fits"
+         }
+        }
+       }
+      },
+      {
+       "handle": "caption_t0_c0_p0_hl1#1",
+       "kind": "text",
+       "role": "caption.t0.c0.p0.hl1",
+       "basis": {
+        "role": "caption.t0.c0.p0.hl1",
+        "slot_key": null,
+        "list_index": null
+       },
+       "source": {
+        "kind": "typed_scene",
+        "compiler": "scene_compiler@1"
+       },
+       "box": {
+        "x": 434.222,
+        "y": 23,
+        "width": 189,
+        "height": 68
+       },
+       "props": {
+        "fill": "#FFE600",
+        "opacity": 0
+       },
+       "content": {
+        "kind": "text",
+        "text": "bugün",
+        "font": {
+         "family": "Montserrat",
+         "weight": 700,
+         "size_px": 54,
+         "style": "normal",
+         "line_height": 1.25
+        },
+        "align": "left",
+        "lang": "tr",
+        "valign": "top",
+        "fit": {
+         "policy": "wrap"
+        },
+        "layout": {
+         "engine": "motion-text@1",
+         "font_set_hash": "3a24ea4f3a1b279b57efdb3d3da20a8ab9a12098f7758f5412fb76048a982d9f",
+         "lang": "tr",
+         "source_text": "bugün",
+         "text": "bugün",
+         "font": {
+          "family": "Montserrat",
+          "weight": 700,
+          "style": "normal"
+         },
+         "nominal_size_px": 54,
+         "size_px": 54,
+         "line_height_px": 67.5,
+         "box": {
+          "width": 189,
+          "height": 68
+         },
+         "lines": [
+          {
+           "text": "bugün",
+           "first": 0,
+           "end": 5,
+           "x": 0,
+           "y": 0,
+           "width": 186.57
+          }
+         ],
+         "width": 186.57,
+         "height": 67.5,
+         "fit": {
+          "policy": "wrap",
+          "status": "fits"
+         }
+        }
+       }
+      },
+      {
+       "handle": "caption_t0_c0_p0_hl2#1",
+       "kind": "text",
+       "role": "caption.t0.c0.p0.hl2",
+       "basis": {
+        "role": "caption.t0.c0.p0.hl2",
+        "slot_key": null,
+        "list_index": null
+       },
+       "source": {
+        "kind": "typed_scene",
+        "compiler": "scene_compiler@1"
+       },
+       "box": {
+        "x": 636.074,
+        "y": 23,
+        "width": 269,
+        "height": 68
+       },
+       "props": {
+        "fill": "#FFE600",
+        "opacity": 0
+       },
+       "content": {
+        "kind": "text",
+        "text": "Bitcoin'in",
+        "font": {
+         "family": "Montserrat",
+         "weight": 700,
+         "size_px": 54,
+         "style": "normal",
+         "line_height": 1.25
+        },
+        "align": "left",
+        "lang": "tr",
+        "valign": "top",
+        "fit": {
+         "policy": "wrap"
+        },
+        "layout": {
+         "engine": "motion-text@1",
+         "font_set_hash": "3a24ea4f3a1b279b57efdb3d3da20a8ab9a12098f7758f5412fb76048a982d9f",
+         "lang": "tr",
+         "source_text": "Bitcoin'in",
+         "text": "Bitcoin'in",
+         "font": {
+          "family": "Montserrat",
+          "weight": 700,
+          "style": "normal"
+         },
+         "nominal_size_px": 54,
+         "size_px": 54,
+         "line_height_px": 67.5,
+         "box": {
+          "width": 269,
+          "height": 68
+         },
+         "lines": [
+          {
+           "text": "Bitcoin'in",
+           "first": 0,
+           "end": 10,
+           "x": 0,
+           "y": 0,
+           "width": 266.598
+          }
+         ],
+         "width": 266.598,
+         "height": 67.5,
+         "fit": {
+          "policy": "wrap",
+          "status": "fits"
+         }
+        }
+       }
+      },
+      {
+       "handle": "caption_t0_c0_p0_hl3#1",
+       "kind": "text",
+       "role": "caption.t0.c0.p0.hl3",
+       "basis": {
+        "role": "caption.t0.c0.p0.hl3",
+        "slot_key": null,
+        "list_index": null
+       },
+       "source": {
+        "kind": "typed_scene",
+        "compiler": "scene_compiler@1"
+       },
+       "box": {
+        "x": 917.954,
+        "y": 23,
+        "width": 183,
+        "height": 68
+       },
+       "props": {
+        "fill": "#FFE600",
+        "opacity": 0
+       },
+       "content": {
+        "kind": "text",
+        "text": "neden",
+        "font": {
+         "family": "Montserrat",
+         "weight": 700,
+         "size_px": 54,
+         "style": "normal",
+         "line_height": 1.25
+        },
+        "align": "left",
+        "lang": "tr",
+        "valign": "top",
+        "fit": {
+         "policy": "wrap"
+        },
+        "layout": {
+         "engine": "motion-text@1",
+         "font_set_hash": "3a24ea4f3a1b279b57efdb3d3da20a8ab9a12098f7758f5412fb76048a982d9f",
+         "lang": "tr",
+         "source_text": "neden",
+         "text": "neden",
+         "font": {
+          "family": "Montserrat",
+          "weight": 700,
+          "style": "normal"
+         },
+         "nominal_size_px": 54,
+         "size_px": 54,
+         "line_height_px": 67.5,
+         "box": {
+          "width": 183,
+          "height": 68
+         },
+         "lines": [
+          {
+           "text": "neden",
+           "first": 0,
+           "end": 5,
+           "x": 0,
+           "y": 0,
+           "width": 180.36
+          }
+         ],
+         "width": 180.36,
+         "height": 67.5,
+         "fit": {
+          "policy": "wrap",
+          "status": "fits"
+         }
+        }
+       }
+      },
+      {
+       "handle": "caption_t0_c0_p0_hl4#1",
+       "kind": "text",
+       "role": "caption.t0.c0.p0.hl4",
+       "basis": {
+        "role": "caption.t0.c0.p0.hl4",
+        "slot_key": null,
+        "list_index": null
+       },
+       "source": {
+        "kind": "typed_scene",
+        "compiler": "scene_compiler@1"
+       },
+       "box": {
+        "x": 1113.596,
+        "y": 23,
+        "width": 316,
+        "height": 68
+       },
+       "props": {
+        "fill": "#FFE600",
+        "opacity": 0
+       },
+       "content": {
+        "kind": "text",
+        "text": "düştüğünü",
+        "font": {
+         "family": "Montserrat",
+         "weight": 700,
+         "size_px": 54,
+         "style": "normal",
+         "line_height": 1.25
+        },
+        "align": "left",
+        "lang": "tr",
+        "valign": "top",
+        "fit": {
+         "policy": "wrap"
+        },
+        "layout": {
+         "engine": "motion-text@1",
+         "font_set_hash": "3a24ea4f3a1b279b57efdb3d3da20a8ab9a12098f7758f5412fb76048a982d9f",
+         "lang": "tr",
+         "source_text": "düştüğünü",
+         "text": "düştüğünü",
+         "font": {
+          "family": "Montserrat",
+          "weight": 700,
+          "style": "normal"
+         },
+         "nominal_size_px": 54,
+         "size_px": 54,
+         "line_height_px": 67.5,
+         "box": {
+          "width": 316,
+          "height": 68
+         },
+         "lines": [
+          {
+           "text": "düştüğünü",
+           "first": 0,
+           "end": 9,
+           "x": 0,
+           "y": 0,
+           "width": 313.038
+          }
+         ],
+         "width": 313.038,
+         "height": 67.5,
+         "fit": {
+          "policy": "wrap",
+          "status": "fits"
+         }
+        }
+       }
+      },
+      {
+       "handle": "caption_t0_c0_p0_hl5#1",
+       "kind": "text",
+       "role": "caption.t0.c0.p0.hl5",
+       "basis": {
+        "role": "caption.t0.c0.p0.hl5",
+        "slot_key": null,
+        "list_index": null
+       },
+       "source": {
+        "kind": "typed_scene",
+        "compiler": "scene_compiler@1"
+       },
+       "box": {
+        "x": 606.212,
+        "y": 90.5,
+        "width": 372,
+        "height": 68
+       },
+       "props": {
+        "fill": "#FFE600",
+        "opacity": 0
+       },
+       "content": {
+        "kind": "text",
+        "text": "konuşacağız.",
+        "font": {
+         "family": "Montserrat",
+         "weight": 700,
+         "size_px": 54,
+         "style": "normal",
+         "line_height": 1.25
+        },
+        "align": "left",
+        "lang": "tr",
+        "valign": "top",
+        "fit": {
+         "policy": "wrap"
+        },
+        "layout": {
+         "engine": "motion-text@1",
+         "font_set_hash": "3a24ea4f3a1b279b57efdb3d3da20a8ab9a12098f7758f5412fb76048a982d9f",
+         "lang": "tr",
+         "source_text": "konuşacağız.",
+         "text": "konuşacağız.",
+         "font": {
+          "family": "Montserrat",
+          "weight": 700,
+          "style": "normal"
+         },
+         "nominal_size_px": 54,
+         "size_px": 54,
+         "line_height_px": 67.5,
+         "box": {
+          "width": 372,
+          "height": 68
+         },
+         "lines": [
+          {
+           "text": "konuşacağız.",
+           "first": 0,
+           "end": 12,
+           "x": 0,
+           "y": 0,
+           "width": 369.576
+          }
+         ],
+         "width": 369.576,
+         "height": 67.5,
+         "fit": {
+          "policy": "wrap",
+          "status": "fits"
+         }
+        }
+       }
+      }
+     ]
+    },
+    {
+     "handle": "caption_t0_c1_p1#1",
+     "kind": "group",
+     "role": "caption.t0.c1.p1",
+     "basis": {
+      "role": "caption.t0.c1.p1",
+      "slot_key": null,
+      "list_index": null
+     },
+     "source": {
+      "kind": "typed_scene",
+      "compiler": "scene_compiler@1"
+     },
+     "box": {
+      "x": 169,
+      "y": 923,
+      "width": 1582,
+      "height": 114
+     },
+     "props": {
+      "opacity": 0
+     },
+     "origin": [
+      0,
+      0
+     ],
+     "children": [
+      {
+       "handle": "caption_t0_c1_p1_plate#1",
+       "kind": "shape",
+       "role": "caption.t0.c1.p1.plate",
+       "basis": {
+        "role": "caption.t0.c1.p1.plate",
+        "slot_key": null,
+        "list_index": null
+       },
+       "source": {
+        "kind": "typed_scene",
+        "compiler": "scene_compiler@1"
+       },
+       "box": {
+        "x": 582.131,
+        "y": 11,
+        "width": 417.738,
+        "height": 92
+       },
+       "props": {
+        "fill": "#000000BF"
+       },
+       "content": {
+        "kind": "shape",
+        "shape": "rect",
+        "corner_radius": 15
+       }
+      },
+      {
+       "handle": "caption_t0_c1_p1_text#1",
+       "kind": "text",
+       "role": "caption.t0.c1.p1.text",
+       "basis": {
+        "role": "caption.t0.c1.p1.text",
+        "slot_key": null,
+        "list_index": null
+       },
+       "source": {
+        "kind": "typed_scene",
+        "compiler": "scene_compiler@1"
+       },
+       "box": {
+        "x": 23,
+        "y": 23,
+        "width": 1536,
+        "height": 68
+       },
+       "props": {
+        "fill": "#FFFFFF"
+       },
+       "content": {
+        "kind": "text",
+        "text": "Önce kısa bir",
+        "font": {
+         "family": "Montserrat",
+         "weight": 700,
+         "size_px": 54,
+         "style": "normal",
+         "line_height": 1.25
+        },
+        "align": "center",
+        "lang": "tr",
+        "valign": "top",
+        "fit": {
+         "policy": "shrink_then_wrap",
+         "min_size_px": 29
+        },
+        "layout": {
+         "engine": "motion-text@1",
+         "font_set_hash": "3a24ea4f3a1b279b57efdb3d3da20a8ab9a12098f7758f5412fb76048a982d9f",
+         "lang": "tr",
+         "source_text": "Önce kısa bir",
+         "text": "Önce kısa bir",
+         "font": {
+          "family": "Montserrat",
+          "weight": 700,
+          "style": "normal"
+         },
+         "nominal_size_px": 54,
+         "size_px": 54,
+         "line_height_px": 67.5,
+         "box": {
+          "width": 1536,
+          "height": 68
+         },
+         "lines": [
+          {
+           "text": "Önce kısa bir",
+           "first": 0,
+           "end": 13,
+           "x": 583.131,
+           "y": 0,
+           "width": 369.738
+          }
+         ],
+         "width": 369.738,
+         "height": 67.5,
+         "fit": {
+          "policy": "shrink_then_wrap",
+          "status": "fits"
+         }
+        }
+       }
+      },
+      {
+       "handle": "caption_t0_c1_p1_hl0#1",
+       "kind": "text",
+       "role": "caption.t0.c1.p1.hl0",
+       "basis": {
+        "role": "caption.t0.c1.p1.hl0",
+        "slot_key": null,
+        "list_index": null
+       },
+       "source": {
+        "kind": "typed_scene",
+        "compiler": "scene_compiler@1"
+       },
+       "box": {
+        "x": 606.131,
+        "y": 23,
+        "width": 151,
+        "height": 68
+       },
+       "props": {
+        "fill": "#FFE600",
+        "opacity": 0
+       },
+       "content": {
+        "kind": "text",
+        "text": "Önce",
+        "font": {
+         "family": "Montserrat",
+         "weight": 700,
+         "size_px": 54,
+         "style": "normal",
+         "line_height": 1.25
+        },
+        "align": "left",
+        "lang": "tr",
+        "valign": "top",
+        "fit": {
+         "policy": "wrap"
+        },
+        "layout": {
+         "engine": "motion-text@1",
+         "font_set_hash": "3a24ea4f3a1b279b57efdb3d3da20a8ab9a12098f7758f5412fb76048a982d9f",
+         "lang": "tr",
+         "source_text": "Önce",
+         "text": "Önce",
+         "font": {
+          "family": "Montserrat",
+          "weight": 700,
+          "style": "normal"
+         },
+         "nominal_size_px": 54,
+         "size_px": 54,
+         "line_height_px": 67.5,
+         "box": {
+          "width": 151,
+          "height": 68
+         },
+         "lines": [
+          {
+           "text": "Önce",
+           "first": 0,
+           "end": 4,
+           "x": 0,
+           "y": 0,
+           "width": 148.716
+          }
+         ],
+         "width": 148.716,
+         "height": 67.5,
+         "fit": {
+          "policy": "wrap",
+          "status": "fits"
+         }
+        }
+       }
+      },
+      {
+       "handle": "caption_t0_c1_p1_hl1#1",
+       "kind": "text",
+       "role": "caption.t0.c1.p1.hl1",
+       "basis": {
+        "role": "caption.t0.c1.p1.hl1",
+        "slot_key": null,
+        "list_index": null
+       },
+       "source": {
+        "kind": "typed_scene",
+        "compiler": "scene_compiler@1"
+       },
+       "box": {
+        "x": 770.129,
+        "y": 23,
+        "width": 116,
+        "height": 68
+       },
+       "props": {
+        "fill": "#FFE600",
+        "opacity": 0
+       },
+       "content": {
+        "kind": "text",
+        "text": "kısa",
+        "font": {
+         "family": "Montserrat",
+         "weight": 700,
+         "size_px": 54,
+         "style": "normal",
+         "line_height": 1.25
+        },
+        "align": "left",
+        "lang": "tr",
+        "valign": "top",
+        "fit": {
+         "policy": "wrap"
+        },
+        "layout": {
+         "engine": "motion-text@1",
+         "font_set_hash": "3a24ea4f3a1b279b57efdb3d3da20a8ab9a12098f7758f5412fb76048a982d9f",
+         "lang": "tr",
+         "source_text": "kısa",
+         "text": "kısa",
+         "font": {
+          "family": "Montserrat",
+          "weight": 700,
+          "style": "normal"
+         },
+         "nominal_size_px": 54,
+         "size_px": 54,
+         "line_height_px": 67.5,
+         "box": {
+          "width": 116,
+          "height": 68
+         },
+         "lines": [
+          {
+           "text": "kısa",
+           "first": 0,
+           "end": 4,
+           "x": 0,
+           "y": 0,
+           "width": 113.67
+          }
+         ],
+         "width": 113.67,
+         "height": 67.5,
+         "fit": {
+          "policy": "wrap",
+          "status": "fits"
+         }
+        }
+       }
+      },
+      {
+       "handle": "caption_t0_c1_p1_hl2#1",
+       "kind": "text",
+       "role": "caption.t0.c1.p1.hl2",
+       "basis": {
+        "role": "caption.t0.c1.p1.hl2",
+        "slot_key": null,
+        "list_index": null
+       },
+       "source": {
+        "kind": "typed_scene",
+        "compiler": "scene_compiler@1"
+       },
+       "box": {
+        "x": 899.081,
+        "y": 23,
+        "width": 79,
+        "height": 68
+       },
+       "props": {
+        "fill": "#FFE600",
+        "opacity": 0
+       },
+       "content": {
+        "kind": "text",
+        "text": "bir",
+        "font": {
+         "family": "Montserrat",
+         "weight": 700,
+         "size_px": 54,
+         "style": "normal",
+         "line_height": 1.25
+        },
+        "align": "left",
+        "lang": "tr",
+        "valign": "top",
+        "fit": {
+         "policy": "wrap"
+        },
+        "layout": {
+         "engine": "motion-text@1",
+         "font_set_hash": "3a24ea4f3a1b279b57efdb3d3da20a8ab9a12098f7758f5412fb76048a982d9f",
+         "lang": "tr",
+         "source_text": "bir",
+         "text": "bir",
+         "font": {
+          "family": "Montserrat",
+          "weight": 700,
+          "style": "normal"
+         },
+         "nominal_size_px": 54,
+         "size_px": 54,
+         "line_height_px": 67.5,
+         "box": {
+          "width": 79,
+          "height": 68
+         },
+         "lines": [
+          {
+           "text": "bir",
+           "first": 0,
+           "end": 3,
+           "x": 0,
+           "y": 0,
+           "width": 76.788
+          }
+         ],
+         "width": 76.788,
+         "height": 67.5,
+         "fit": {
+          "policy": "wrap",
+          "status": "fits"
+         }
+        }
+       }
+      }
+     ]
+    }
+   ],
+   "labels": [],
+   "tracks": [
+    {
+     "handle": "lyr_00000000_0000_4000_8000_000000000001_visible#1",
+     "kind": "tween",
+     "role": "lyr_00000000-0000-4000-8000-000000000001.visible",
+     "basis": {
+      "role": "lyr_00000000-0000-4000-8000-000000000001.visible",
+      "slot_key": null,
+      "list_index": null
+     },
+     "start": {
+      "rel": "at",
+      "frame": 60
+     },
+     "targets": [
+      "lyr_00000000_0000_4000_8000_000000000001#1"
+     ],
+     "property": "opacity",
+     "from": 0,
+     "to": 0,
+     "ease": "linear",
+     "duration_frames": 1,
+     "immediate_render": false
+    },
+    {
+     "handle": "lyr_00000000_0000_4000_8000_000000000002_visible#1",
+     "kind": "tween",
+     "role": "lyr_00000000-0000-4000-8000-000000000002.visible",
+     "basis": {
+      "role": "lyr_00000000-0000-4000-8000-000000000002.visible",
+      "slot_key": null,
+      "list_index": null
+     },
+     "start": {
+      "rel": "at",
+      "frame": 60
+     },
+     "targets": [
+      "lyr_00000000_0000_4000_8000_000000000002#1"
+     ],
+     "property": "opacity",
+     "from": 0,
+     "to": 0,
+     "ease": "linear",
+     "duration_frames": 1,
+     "immediate_render": false
+    },
+    {
+     "handle": "caption_t0_c0_p0_visible#1",
+     "kind": "tween",
+     "role": "caption.t0.c0.p0.visible",
+     "basis": {
+      "role": "caption.t0.c0.p0.visible",
+      "slot_key": null,
+      "list_index": null
+     },
+     "start": {
+      "rel": "at",
+      "frame": 12
+     },
+     "targets": [
+      "caption_t0_c0_p0#1"
+     ],
+     "property": "opacity",
+     "from": 1,
+     "to": 1,
+     "ease": "linear",
+     "duration_frames": 1,
+     "immediate_render": false
+    },
+    {
+     "handle": "caption_t0_c0_p0_visible#2",
+     "kind": "tween",
+     "role": "caption.t0.c0.p0.visible",
+     "basis": {
+      "role": "caption.t0.c0.p0.visible",
+      "slot_key": null,
+      "list_index": null
+     },
+     "start": {
+      "rel": "at",
+      "frame": 112
+     },
+     "targets": [
+      "caption_t0_c0_p0#1"
+     ],
+     "property": "opacity",
+     "from": 0,
+     "to": 0,
+     "ease": "linear",
+     "duration_frames": 1,
+     "immediate_render": false
+    },
+    {
+     "handle": "caption_t0_c0_p0_hl0_visible#1",
+     "kind": "tween",
+     "role": "caption.t0.c0.p0.hl0.visible",
+     "basis": {
+      "role": "caption.t0.c0.p0.hl0.visible",
+      "slot_key": null,
+      "list_index": null
+     },
+     "start": {
+      "rel": "at",
+      "frame": 12
+     },
+     "targets": [
+      "caption_t0_c0_p0_hl0#1"
+     ],
+     "property": "opacity",
+     "from": 1,
+     "to": 1,
+     "ease": "linear",
+     "duration_frames": 1,
+     "immediate_render": false
+    },
+    {
+     "handle": "caption_t0_c0_p0_hl0_visible#2",
+     "kind": "tween",
+     "role": "caption.t0.c0.p0.hl0.visible",
+     "basis": {
+      "role": "caption.t0.c0.p0.hl0.visible",
+      "slot_key": null,
+      "list_index": null
+     },
+     "start": {
+      "rel": "at",
+      "frame": 29
+     },
+     "targets": [
+      "caption_t0_c0_p0_hl0#1"
+     ],
+     "property": "opacity",
+     "from": 0,
+     "to": 0,
+     "ease": "linear",
+     "duration_frames": 1,
+     "immediate_render": false
+    },
+    {
+     "handle": "caption_t0_c0_p0_hl1_visible#1",
+     "kind": "tween",
+     "role": "caption.t0.c0.p0.hl1.visible",
+     "basis": {
+      "role": "caption.t0.c0.p0.hl1.visible",
+      "slot_key": null,
+      "list_index": null
+     },
+     "start": {
+      "rel": "at",
+      "frame": 29
+     },
+     "targets": [
+      "caption_t0_c0_p0_hl1#1"
+     ],
+     "property": "opacity",
+     "from": 1,
+     "to": 1,
+     "ease": "linear",
+     "duration_frames": 1,
+     "immediate_render": false
+    },
+    {
+     "handle": "caption_t0_c0_p0_hl1_visible#2",
+     "kind": "tween",
+     "role": "caption.t0.c0.p0.hl1.visible",
+     "basis": {
+      "role": "caption.t0.c0.p0.hl1.visible",
+      "slot_key": null,
+      "list_index": null
+     },
+     "start": {
+      "rel": "at",
+      "frame": 42
+     },
+     "targets": [
+      "caption_t0_c0_p0_hl1#1"
+     ],
+     "property": "opacity",
+     "from": 0,
+     "to": 0,
+     "ease": "linear",
+     "duration_frames": 1,
+     "immediate_render": false
+    },
+    {
+     "handle": "caption_t0_c0_p0_hl2_visible#1",
+     "kind": "tween",
+     "role": "caption.t0.c0.p0.hl2.visible",
+     "basis": {
+      "role": "caption.t0.c0.p0.hl2.visible",
+      "slot_key": null,
+      "list_index": null
+     },
+     "start": {
+      "rel": "at",
+      "frame": 42
+     },
+     "targets": [
+      "caption_t0_c0_p0_hl2#1"
+     ],
+     "property": "opacity",
+     "from": 1,
+     "to": 1,
+     "ease": "linear",
+     "duration_frames": 1,
+     "immediate_render": false
+    },
+    {
+     "handle": "caption_t0_c0_p0_hl2_visible#2",
+     "kind": "tween",
+     "role": "caption.t0.c0.p0.hl2.visible",
+     "basis": {
+      "role": "caption.t0.c0.p0.hl2.visible",
+      "slot_key": null,
+      "list_index": null
+     },
+     "start": {
+      "rel": "at",
+      "frame": 61
+     },
+     "targets": [
+      "caption_t0_c0_p0_hl2#1"
+     ],
+     "property": "opacity",
+     "from": 0,
+     "to": 0,
+     "ease": "linear",
+     "duration_frames": 1,
+     "immediate_render": false
+    },
+    {
+     "handle": "caption_t0_c0_p0_hl3_visible#1",
+     "kind": "tween",
+     "role": "caption.t0.c0.p0.hl3.visible",
+     "basis": {
+      "role": "caption.t0.c0.p0.hl3.visible",
+      "slot_key": null,
+      "list_index": null
+     },
+     "start": {
+      "rel": "at",
+      "frame": 61
+     },
+     "targets": [
+      "caption_t0_c0_p0_hl3#1"
+     ],
+     "property": "opacity",
+     "from": 1,
+     "to": 1,
+     "ease": "linear",
+     "duration_frames": 1,
+     "immediate_render": false
+    },
+    {
+     "handle": "caption_t0_c0_p0_hl3_visible#2",
+     "kind": "tween",
+     "role": "caption.t0.c0.p0.hl3.visible",
+     "basis": {
+      "role": "caption.t0.c0.p0.hl3.visible",
+      "slot_key": null,
+      "list_index": null
+     },
+     "start": {
+      "rel": "at",
+      "frame": 74
+     },
+     "targets": [
+      "caption_t0_c0_p0_hl3#1"
+     ],
+     "property": "opacity",
+     "from": 0,
+     "to": 0,
+     "ease": "linear",
+     "duration_frames": 1,
+     "immediate_render": false
+    },
+    {
+     "handle": "caption_t0_c0_p0_hl4_visible#1",
+     "kind": "tween",
+     "role": "caption.t0.c0.p0.hl4.visible",
+     "basis": {
+      "role": "caption.t0.c0.p0.hl4.visible",
+      "slot_key": null,
+      "list_index": null
+     },
+     "start": {
+      "rel": "at",
+      "frame": 74
+     },
+     "targets": [
+      "caption_t0_c0_p0_hl4#1"
+     ],
+     "property": "opacity",
+     "from": 1,
+     "to": 1,
+     "ease": "linear",
+     "duration_frames": 1,
+     "immediate_render": false
+    },
+    {
+     "handle": "caption_t0_c0_p0_hl4_visible#2",
+     "kind": "tween",
+     "role": "caption.t0.c0.p0.hl4.visible",
+     "basis": {
+      "role": "caption.t0.c0.p0.hl4.visible",
+      "slot_key": null,
+      "list_index": null
+     },
+     "start": {
+      "rel": "at",
+      "frame": 92
+     },
+     "targets": [
+      "caption_t0_c0_p0_hl4#1"
+     ],
+     "property": "opacity",
+     "from": 0,
+     "to": 0,
+     "ease": "linear",
+     "duration_frames": 1,
+     "immediate_render": false
+    },
+    {
+     "handle": "caption_t0_c0_p0_hl5_visible#1",
+     "kind": "tween",
+     "role": "caption.t0.c0.p0.hl5.visible",
+     "basis": {
+      "role": "caption.t0.c0.p0.hl5.visible",
+      "slot_key": null,
+      "list_index": null
+     },
+     "start": {
+      "rel": "at",
+      "frame": 92
+     },
+     "targets": [
+      "caption_t0_c0_p0_hl5#1"
+     ],
+     "property": "opacity",
+     "from": 1,
+     "to": 1,
+     "ease": "linear",
+     "duration_frames": 1,
+     "immediate_render": false
+    },
+    {
+     "handle": "caption_t0_c0_p0_hl5_visible#2",
+     "kind": "tween",
+     "role": "caption.t0.c0.p0.hl5.visible",
+     "basis": {
+      "role": "caption.t0.c0.p0.hl5.visible",
+      "slot_key": null,
+      "list_index": null
+     },
+     "start": {
+      "rel": "at",
+      "frame": 112
+     },
+     "targets": [
+      "caption_t0_c0_p0_hl5#1"
+     ],
+     "property": "opacity",
+     "from": 0,
+     "to": 0,
+     "ease": "linear",
+     "duration_frames": 1,
+     "immediate_render": false
+    },
+    {
+     "handle": "caption_t0_c1_p1_visible#1",
+     "kind": "tween",
+     "role": "caption.t0.c1.p1.visible",
+     "basis": {
+      "role": "caption.t0.c1.p1.visible",
+      "slot_key": null,
+      "list_index": null
+     },
+     "start": {
+      "rel": "at",
+      "frame": 114
+     },
+     "targets": [
+      "caption_t0_c1_p1#1"
+     ],
+     "property": "opacity",
+     "from": 1,
+     "to": 1,
+     "ease": "linear",
+     "duration_frames": 1,
+     "immediate_render": false
+    },
+    {
+     "handle": "caption_t0_c1_p1_visible#2",
+     "kind": "tween",
+     "role": "caption.t0.c1.p1.visible",
+     "basis": {
+      "role": "caption.t0.c1.p1.visible",
+      "slot_key": null,
+      "list_index": null
+     },
+     "start": {
+      "rel": "at",
+      "frame": 145
+     },
+     "targets": [
+      "caption_t0_c1_p1#1"
+     ],
+     "property": "opacity",
+     "from": 0,
+     "to": 0,
+     "ease": "linear",
+     "duration_frames": 1,
+     "immediate_render": false
+    },
+    {
+     "handle": "caption_t0_c1_p1_hl0_visible#1",
+     "kind": "tween",
+     "role": "caption.t0.c1.p1.hl0.visible",
+     "basis": {
+      "role": "caption.t0.c1.p1.hl0.visible",
+      "slot_key": null,
+      "list_index": null
+     },
+     "start": {
+      "rel": "at",
+      "frame": 114
+     },
+     "targets": [
+      "caption_t0_c1_p1_hl0#1"
+     ],
+     "property": "opacity",
+     "from": 1,
+     "to": 1,
+     "ease": "linear",
+     "duration_frames": 1,
+     "immediate_render": false
+    },
+    {
+     "handle": "caption_t0_c1_p1_hl0_visible#2",
+     "kind": "tween",
+     "role": "caption.t0.c1.p1.hl0.visible",
+     "basis": {
+      "role": "caption.t0.c1.p1.hl0.visible",
+      "slot_key": null,
+      "list_index": null
+     },
+     "start": {
+      "rel": "at",
+      "frame": 126
+     },
+     "targets": [
+      "caption_t0_c1_p1_hl0#1"
+     ],
+     "property": "opacity",
+     "from": 0,
+     "to": 0,
+     "ease": "linear",
+     "duration_frames": 1,
+     "immediate_render": false
+    },
+    {
+     "handle": "caption_t0_c1_p1_hl1_visible#1",
+     "kind": "tween",
+     "role": "caption.t0.c1.p1.hl1.visible",
+     "basis": {
+      "role": "caption.t0.c1.p1.hl1.visible",
+      "slot_key": null,
+      "list_index": null
+     },
+     "start": {
+      "rel": "at",
+      "frame": 126
+     },
+     "targets": [
+      "caption_t0_c1_p1_hl1#1"
+     ],
+     "property": "opacity",
+     "from": 1,
+     "to": 1,
+     "ease": "linear",
+     "duration_frames": 1,
+     "immediate_render": false
+    },
+    {
+     "handle": "caption_t0_c1_p1_hl1_visible#2",
+     "kind": "tween",
+     "role": "caption.t0.c1.p1.hl1.visible",
+     "basis": {
+      "role": "caption.t0.c1.p1.hl1.visible",
+      "slot_key": null,
+      "list_index": null
+     },
+     "start": {
+      "rel": "at",
+      "frame": 137
+     },
+     "targets": [
+      "caption_t0_c1_p1_hl1#1"
+     ],
+     "property": "opacity",
+     "from": 0,
+     "to": 0,
+     "ease": "linear",
+     "duration_frames": 1,
+     "immediate_render": false
+    },
+    {
+     "handle": "caption_t0_c1_p1_hl2_visible#1",
+     "kind": "tween",
+     "role": "caption.t0.c1.p1.hl2.visible",
+     "basis": {
+      "role": "caption.t0.c1.p1.hl2.visible",
+      "slot_key": null,
+      "list_index": null
+     },
+     "start": {
+      "rel": "at",
+      "frame": 137
+     },
+     "targets": [
+      "caption_t0_c1_p1_hl2#1"
+     ],
+     "property": "opacity",
+     "from": 1,
+     "to": 1,
+     "ease": "linear",
+     "duration_frames": 1,
+     "immediate_render": false
+    },
+    {
+     "handle": "caption_t0_c1_p1_hl2_visible#2",
+     "kind": "tween",
+     "role": "caption.t0.c1.p1.hl2.visible",
+     "basis": {
+      "role": "caption.t0.c1.p1.hl2.visible",
+      "slot_key": null,
+      "list_index": null
+     },
+     "start": {
+      "rel": "at",
+      "frame": 145
+     },
+     "targets": [
+      "caption_t0_c1_p1_hl2#1"
+     ],
+     "property": "opacity",
+     "from": 0,
+     "to": 0,
+     "ease": "linear",
+     "duration_frames": 1,
+     "immediate_render": false
+    }
+   ]
+  },
+  "assets": [],
+  "warnings": [],
+  "native_layers": []
+ }
+}

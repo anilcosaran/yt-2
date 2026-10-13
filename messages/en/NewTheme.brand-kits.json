@@ -1,0 +1,7 @@
+{
+  "brandLibrary": {
+    "kitCount": "{count} kits · pick one to edit",
+    "editKit": "Edit {name}",
+    "kitActions": "{name} actions"
+  }
+}

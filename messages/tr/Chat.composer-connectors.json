@@ -1,0 +1,10 @@
+{
+  "composerConnectors": {
+    "title": "Connector'lar",
+    "loading": "Yükleniyor…",
+    "failed": "Connector'lar yüklenemedi.",
+    "empty": "Henüz bağlı connector yok.",
+    "add": "Ekle",
+    "addTitle": "Connector sayfasını yeni sekmede aç"
+  }
+}

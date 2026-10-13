@@ -1,0 +1,21 @@
+{
+  "report": {
+    "reasons": {
+      "spam": "Spam or advertising",
+      "sexual_content": "Sexual content",
+      "violence": "Violence",
+      "hate_or_harassment": "Hate or harassment",
+      "copyright": "Copyright",
+      "privacy": "Privacy",
+      "other": "Something else"
+    },
+    "thanks": "Thanks for the report. We'll take a look.",
+    "alreadyReported": "You've already reported this post. We'll take a look.",
+    "limit": "You've sent a lot of reports. Try again in {seconds, plural, one {# second} other {# seconds}}.",
+    "own": "You can't report your own post.",
+    "changed": "This post was updated. Reload it and report the current version if you still need to.",
+    "unavailable": "This post is no longer available.",
+    "noteTooLong": "Keep the note under {max} characters.",
+    "failed": "The report couldn't be sent. Please try again."
+  }
+}

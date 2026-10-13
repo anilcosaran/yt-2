@@ -1,0 +1,20 @@
+{
+  "pillFree": "Free",
+  "pillCredits": "{count, plural, one {# credit} other {# credits}}",
+  "pillCreditsApprox": "≈{count, plural, one {# credit} other {# credits}}",
+  "pillPending": "Calculating…",
+  "pillUnavailable": "Price unavailable",
+  "statusFree": "Free · no credits used",
+  "statusFreeRemaining": "{remaining}/{limit} free left this month",
+  "statusCredits": "Paid from your credits · you have {available, number} credits",
+  "statusCreditsUnknownBalance": "Paid from your credits",
+  "statusInsufficient": "Not enough credits (needs {required, number}, you have {available, number})",
+  "statusReserve": "At least {required, number} credits needed (≈{price, number} will be charged)",
+  "statusPending": "Calculating the price…",
+  "statusUnavailable": "The price could not be calculated. Try again in a moment.",
+  "statusUpgrade": "Available on Starter and above",
+  "addCredits": "Add credits",
+  "upgradePlan": "Upgrade plan",
+  "upgradeWithCredits": "Upgrade plan (credits included every month)",
+  "busy": "Creating…"
+}

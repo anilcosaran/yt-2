@@ -1,0 +1,29 @@
+{
+  "connectorAccounts": {
+    "title": "Connected accounts",
+    "empty": "No connected accounts yet.",
+    "loadFailed": "Connected accounts could not be loaded. Refresh the page to try again.",
+    "connect": "Connect",
+    "reconnect": "Reconnect",
+    "revoke": "Disconnect",
+    "revokeTitle": "Disconnect {name}?",
+    "revokeDescription": "Youtorch stops using this account right away. Files already imported into your projects stay.",
+    "enabledLabel": "Use {name} in Youtorch",
+    "pickResource": "Choose what Youtorch can use",
+    "serverConnector": "Available to connect.",
+    "availableGroup": "Available",
+    "status": {
+      "active": "Connected",
+      "disabled": "Turned off",
+      "reauth": "Sign in again to keep using it",
+      "unhealthy": "The service is not responding; your connection is fine",
+      "inactive": "Not connected"
+    },
+    "flow": {
+      "popup_blocked": "The browser blocked the window. Allow pop-ups and try again.",
+      "closed": "The connection was not completed.",
+      "failed": "Something went wrong. Try again.",
+      "no_resources": "This account has nothing Youtorch can use."
+    }
+  }
+}

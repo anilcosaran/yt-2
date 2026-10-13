@@ -1,0 +1,35 @@
+{
+  "developer": {
+    "keys": {
+      "title": "API anahtarları",
+      "description": "Kendi betiklerin ve otomasyonların için kişisel anahtarlar. Her anahtar yalnız burada izin verdiğin işleri, kredi sınırları içinde yapar.",
+      "create": "Anahtar oluştur",
+      "empty": "Henüz API anahtarı yok.",
+      "loadFailed": "API anahtarları yüklenemedi. Sayfayı yenileyip tekrar dene.",
+      "createTitle": "API anahtarı oluştur",
+      "createDescription": "Anahtarın ne yapabileceğini, hangi öğeleri kullanabileceğini ve ne kadar kredi harcayabileceğini seç.",
+      "fieldName": "Anahtar adı",
+      "fieldTest": "Test anahtarı (yalnız örnek veri, kredi düşmez)",
+      "fieldPerJob": "İş başı kredi sınırı",
+      "fieldMonthly": "Aylık kredi sınırı",
+      "fieldIps": "İzin verilen IP adresleri (isteğe bağlı, her satıra bir tane)",
+      "submit": "Anahtar oluştur",
+      "failed": "Bu işlem olmadı. Alanları kontrol edip tekrar dene.",
+      "secretTitle": "API anahtarını şimdi kopyala",
+      "secretDescription": "Anahtarın tamamı yalnız bu kez gösterilir. Güvenli bir yere kaydet; istediğin zaman yenisini oluşturabilirsin.",
+      "secretLabel": "API anahtarı",
+      "caps": "İş başı en çok {perJob}, ayda en çok {monthly} kredi",
+      "lastUsed": "Son kullanım {date}, {ip}",
+      "neverUsed": "Henüz kullanılmadı",
+      "ipRestricted": "{count, plural, one {# izinli adres} other {# izinli adres}}",
+      "expires": "Bitiş {date}",
+      "endOldSecret": "Eski anahtarı şimdi kapat",
+      "rotate": "Yeni anahtar",
+      "revoke": "Anahtarı sil",
+      "revokeTitle": "{name} silinsin mi?",
+      "revokeDescription": "Bu anahtarı kullanan her şey hemen durur.",
+      "suspended": "Durduruldu: anahtar açığa çıktı",
+      "revoked": "Silindi"
+    }
+  }
+}

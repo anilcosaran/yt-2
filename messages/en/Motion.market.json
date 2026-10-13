@@ -1,0 +1,142 @@
+{
+  "market": {
+    "buy": {
+      "title": "Buy {name}",
+      "close": "Close",
+      "cancel": "Cancel",
+      "confirm": "Buy for {price, plural, one {# credit} other {# credits}}",
+      "price": "Price",
+      "priceValue": "{price, plural, one {# credit} other {# credits}}",
+      "paidFrom": "Paid from",
+      "funding": {
+        "top_up_only": "Your top-up credits. Plan credits aren't used for Community Motions, and neither are credits from offers or promotions.",
+        "standard": "Your credits: plan credits first, then your top-up credits."
+      },
+      "usedBy": "Used by",
+      "usedByValue": "Every project and member of this workspace",
+      "seller": "Sold by {seller}",
+      "licenceTitle": "What you get",
+      "licence": {
+        "once": "You buy it once for the whole workspace. Every project can use it with no further charge.",
+        "noResale": "It can't be resold, and it can't be published to Community. Neither can anything you make from it.",
+        "final": "Purchases are final: there are no refunds."
+      },
+      "buying": "Completing your purchase…",
+      "processing": "Your purchase is still being completed. It will appear in My Motions shortly.",
+      "doneTitle": "Purchased",
+      "doneBody": "{name} is in My Motions. Use it in any project of this workspace. You won't be charged again.",
+      "addCredits": "Add credits"
+    },
+    "errors": {
+      "unavailable": "The Motion marketplace isn't available right now.",
+      "listingNotAllowed": {
+        "price_out_of_range": "Choose a whole number of credits from 10 to 100,000.",
+        "revision_not_found": "Save this Motion first, then you can sell it.",
+        "not_owner": "Only the person who saved this Motion can sell it.",
+        "licensed_source": "This Motion was made from a Motion you bought, so it can't be sold.",
+        "premium_source": "This Motion was made from a premium Motion, so it can't be sold.",
+        "lineage_unverifiable": "We couldn't check where this Motion came from, so it can't be sold yet.",
+        "admin_delisted": "This listing was removed by Youtorch and can't be listed again."
+      },
+      "listingChanged": "This listing changed while you were editing it. Reload it and try again.",
+      "priceChanged": "The price changed to {price, plural, one {# credit} other {# credits}}. Check it and buy again if you'd like.",
+      "revisionChanged": "The seller updated this Motion. Reload the list to see the new version.",
+      "selfPurchase": "This is your own Motion, so there's nothing to buy.",
+      "notForSale": "This Motion isn't for sale right now.",
+      "insufficientTopUp": "You need {price, plural, one {# top-up credit} other {# top-up credits}} to buy this. Plan credits and credits from offers or promotions can't be used for Community Motions. Add credits and try again.",
+      "insufficientCredits": "You need {price, plural, one {# credit} other {# credits}} to buy this. Add credits and try again.",
+      "purchaseRequired": "Buy this Motion for {price, plural, one {# credit} other {# credits}} to use it in your projects.",
+      "approvalRequired": "Buying a Motion from another creator for {price, plural, one {# credit} other {# credits}} needs a workspace owner or admin (members can buy up to {limit} credits). Ask an owner or admin to buy it. Nothing was charged.",
+      "purchaseFailed": "The purchase didn't go through and nothing was charged. Try again in a moment.",
+      "generic": "Something went wrong. Nothing was charged. Try again in a moment."
+    },
+    "community": {
+      "title": "Community Motions",
+      "intro": "Motions made by the community. Buy one once and every project in this workspace can use it.",
+      "back": "Motion library",
+      "tabs": {
+        "browse": "Browse",
+        "sell": "Sell yours",
+        "bought": "Bought"
+      },
+      "search": "Search Motions",
+      "searchPlaceholder": "Search by name",
+      "loading": "Loading Motions…",
+      "loadFailed": "The Motions couldn't be loaded.",
+      "retry": "Try again",
+      "more": "Show more",
+      "unavailable": "The Motion marketplace isn't available right now.",
+      "card": {
+        "by": "by {seller}",
+        "member": "a Community member",
+        "price": "{price, plural, one {# credit} other {# credits}}",
+        "fields": "{count, plural, one {# field you can edit} other {# fields you can edit}}",
+        "owned": "In your library",
+        "yours": "Your Motion",
+        "buy": "Buy"
+      },
+      "empty": {
+        "browse": "No Motions are for sale yet.",
+        "search": "No Motion matches your search.",
+        "sell": "You haven't saved a Motion yet. Make one in the Motion library, then sell it here.",
+        "bought": "You haven't bought a Motion yet."
+      },
+      "sell": {
+        "heading": "Your saved Motions",
+        "action": "Sell in Community",
+        "edit": "Edit listing",
+        "revision": "Revision {n}",
+        "forSale": "For sale for {price, plural, one {# credit} other {# credits}}",
+        "notForSale": "Not for sale",
+        "removed": "Removed by Youtorch",
+        "listed": "Listed in Community.",
+        "stopped": "No longer for sale. Workspaces that bought it keep it."
+      },
+      "earnings": {
+        "title": "Your sales",
+        "empty": "You haven't sold a Motion yet.",
+        "count": "{count, plural, one {# sale} other {# sales}}",
+        "earned": "Earned {credits, number} credits",
+        "pending": "{credits, number} credits are on their way to your balance. They're added after the next settlement, which runs every 4 hours.",
+        "settled": "{credits, number} credits are in your balance.",
+        "note": "Earnings are credits you can spend in Youtorch. There's no cash payout yet.",
+        "sold": "Sold for {price, plural, one {# credit} other {# credits}}: you earned {share, number} credits",
+        "state": {
+          "pending": "On the way",
+          "settled": "In your balance"
+        }
+      },
+      "bought": {
+        "source": {
+          "community": "Community",
+          "platform": "Premium"
+        },
+        "paid": "Paid {price, plural, one {# credit} other {# credits}}",
+        "hint": "Find these under My Motions in the Spark editor's Motion tool."
+      }
+    },
+    "sellDialog": {
+      "title": "Sell “{name}” in Community",
+      "close": "Close",
+      "cancel": "Cancel",
+      "price": "Price in credits",
+      "priceHelp": "A whole number from {min} to {max, number}.",
+      "priceNotInteger": "Use a whole number of credits.",
+      "priceOutOfRange": "Choose a price from {min} to {max, number} credits.",
+      "youEarn": "You earn {seller, number} credits per sale (70%). Youtorch keeps {platform, number} (30%).",
+      "paidIn": "Buyers pay with their own top-up credits. You're paid in credits you can spend in Youtorch, after the next settlement (every 4 hours).",
+      "licenceTitle": "Before you list",
+      "licence": {
+        "workspace": "Each buyer's workspace buys it once, and every project there can use it.",
+        "noResale": "Buyers can't resell it or publish it to Community.",
+        "noRefund": "Sales are final: there are no refunds.",
+        "derived": "A Motion made from a premium Motion, or from one you bought, can't be sold."
+      },
+      "submit": "Sell for {price, plural, one {# credit} other {# credits}}",
+      "submitEmpty": "Sell in Community",
+      "update": "Save price",
+      "stop": "Stop selling",
+      "saving": "Saving…"
+    }
+  }
+}

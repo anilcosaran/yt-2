@@ -1,0 +1,42 @@
+{
+  "typedComposer": {
+    "groups": {
+      "avatar": "Avatars",
+      "voice": "Voices",
+      "brand_template": "Templates",
+      "brand_kit": "Brand Kits",
+      "asset": "Files",
+      "model": "Models",
+      "project": "Projects"
+    },
+    "resourceKinds": {
+      "avatar": "Avatar",
+      "voice": "Voice",
+      "brand_template": "Template",
+      "brand_kit": "Brand Kit",
+      "asset": "File",
+      "model": "Model",
+      "project": "Project"
+    },
+    "mediaKinds": {
+      "image": "Image",
+      "video": "Video",
+      "audio": "Audio",
+      "document": "Document",
+      "other": "File"
+    },
+    "origins": {
+      "human_clone": "Clone",
+      "digital_human": "Digital human",
+      "public_template": "Ready-made",
+      "stock": "Library",
+      "instant_clone": "Instant clone",
+      "professional_clone": "Professional clone",
+      "designed": "Designed",
+      "localized": "Localized"
+    },
+    "revision": "Revision {number}",
+    "updatedOn": "updated {date}",
+    "resourcesPartial": "Some resource types could not be loaded right now."
+  }
+}

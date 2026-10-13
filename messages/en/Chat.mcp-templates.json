@@ -1,0 +1,23 @@
+{
+  "typedComposer": {
+    "groups": {
+      "templates": "Templates"
+    }
+  },
+  "mcpTemplates": {
+    "argumentsTitle": "{name} template",
+    "argumentsTitleFallback": "Template",
+    "argumentsDescription": "A template of the {connector} connection. Fill in the values; the text is added to the message box, not sent.",
+    "required": "required",
+    "cancel": "Cancel",
+    "insert": "Insert",
+    "inserting": "Inserting…",
+    "errors": {
+      "template_unavailable": "The {name} template is no longer available.",
+      "argument_invalid": "The template values are not valid. Fill in the required fields and try again.",
+      "feature_unavailable": "MCP templates are turned off right now.",
+      "unavailable": "The template's server is not responding. Try again in a moment.",
+      "failed": "The {name} template could not be inserted. Try again."
+    }
+  }
+}

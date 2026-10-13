@@ -1,0 +1,8 @@
+{
+  "dock": {
+    "close": "Close",
+    "avatar": "Avatar",
+    "suggestions": "Suggestions",
+    "cost": "≈{count} credits"
+  }
+}

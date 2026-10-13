@@ -1,0 +1,31 @@
+{
+  "acquisition": {
+    "progress": {
+      "requested": "Hazırlanıyor…",
+      "reserving": "Depolamanda yer açılıyor…",
+      "projecting": "Projen oluşturuluyor…",
+      "copying": "Depolamana kopyalanıyor…",
+      "attaching": "Projene ekleniyor…",
+      "ready": "Projene eklendi.",
+      "failed": "Eklenemedi."
+    },
+    "reuseReasons": {
+      "license_unsupported": "Yayıncının bu medya için koşulları bir projede kullanıma uygun değil.",
+      "project_use_not_granted": "Yayıncı bu medyanın projelerde kullanılmasına izin vermemiş.",
+      "unsupported_media_type": "Bu tür medya henüz bir projede kullanılamıyor.",
+      "size_limit_exceeded": "Bu dosya bir projede kullanılamayacak kadar büyük."
+    },
+    "targetUnavailable": {
+      "project": "Bu proje kullanılamıyor. Düzenleyebildiğin bir projeyi aç ve yeniden dene.",
+      "channel": "Bu kanal kullanılamıyor. Başka bir kanal seç ve yeniden dene."
+    },
+    "sourceUnavailable": "Bu medya henüz kullanıma hazır değil. Birazdan yeniden dene.",
+    "unavailable": "Bu medya kaldırıldı, artık eklenemiyor.",
+    "changed": "Yayıncı bu gönderiyi güncelledi. Yenile ve yeniden dene.",
+    "limit": "Devam eden birkaç aktarımın var. {seconds, plural, other {# saniye}} sonra yeniden dene.",
+    "storageFull": "Depolaman dolu. Biraz yer aç ve yeniden dene.",
+    "purchaseRequired": "Projelerinde kullanmak için bu öğeyi {price, plural, one {# kredi} other {# kredi}} karşılığında satın al.",
+    "stillProcessing": "Hâlâ çalışıyor. Hazır olunca projende görünecek.",
+    "failed": "Eklenemedi. Lütfen yeniden dene."
+  }
+}

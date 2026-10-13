@@ -1,0 +1,13 @@
+{
+  "cards": {
+    "totalAtLeast": "{total}+",
+    "searchLoadedOnly": "Arama ve tür filtresi yüklenen kayıtlarda çalışır. Daha fazlasına bakmak için daha fazla yükleyin.",
+    "changedSinceStart": "Bu liste yüklendikten sonra Bellek değişti.",
+    "refresh": "Listeyi yenile",
+    "loadingDetail": "Kaydın tamamı yükleniyor…",
+    "detailError": "Kaydın tamamı yüklenemedi.",
+    "retry": "Tekrar dene",
+    "versionConflict": "Bu kayıt başka bir yerde değiştirildi. Güncel hali gösteriliyor; kontrol edip tekrar deneyin.",
+    "listPending": "Bellek listesi güncelleniyor. Tekrar deneniyor…"
+  }
+}

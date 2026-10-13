@@ -1,0 +1,40 @@
+{
+  "tabs": {
+    "explore": "Keşfet",
+    "mine": "Seslerim"
+  },
+  "count": "{count} ses",
+  "featured": "Öne çıkan",
+  "favorite": "Favorilere ekle",
+  "unfavorite": "Favorilerden çıkar",
+  "filters": {
+    "gender": {
+      "label": "Cinsiyet",
+      "all": "Tümü",
+      "female": "Kadın",
+      "male": "Erkek",
+      "nonbinary": "Nötr"
+    },
+    "age": {
+      "label": "Yaş",
+      "all": "Tümü",
+      "young": "Genç",
+      "adult": "Yetişkin",
+      "mature": "Olgun"
+    },
+    "allLanguages": "Tüm diller",
+    "allAccents": "Tüm aksanlar",
+    "tags": "Ton ve kullanım",
+    "clear": "Filtreleri temizle",
+    "moreTags": "+{count} daha",
+    "fewerTags": "Daha az"
+  },
+  "languageNames": {
+    "tr": "Türkçe",
+    "en": "İngilizce",
+    "es": "İspanyolca",
+    "de": "Almanca",
+    "fr": "Fransızca",
+    "ar": "Arapça"
+  }
+}

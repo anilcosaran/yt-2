@@ -1,0 +1,59 @@
+{
+  "customMcp": {
+    "title": "Custom MCP",
+    "add": "Custom MCP ekle",
+    "description": "Kendi uzak MCP sunucunu ekle. Araçları incelenmeden hiçbiri çalışmaz.",
+    "empty": "Henüz özel MCP sunucusu yok.",
+    "loadFailed": "Özel MCP sunucuları yüklenemedi. Sayfayı yenileyip tekrar dene.",
+    "status": {
+      "draft": "Taslak",
+      "private_test": "Özel test",
+      "active": "Etkin",
+      "disabled": "Kapalı"
+    },
+    "scan": "Tara",
+    "scanning": "Taranıyor…",
+    "disable": "Kapat",
+    "disableTitle": "{name} kapatılsın mı?",
+    "disableDescription": "Bu sunucu bir daha taranmaz ve araçları kullanılmaz. Kayıt listede Kapalı olarak kalır.",
+    "outcome": {
+      "none": "Henüz taranmadı.",
+      "complete": "{count, plural, one {# araç bulundu} other {# araç bulundu}}",
+      "partial": "Tarama yarım kaldı; {count} araç okundu. Tekrar tara.",
+      "auth_required": "Bu sunucu oturum açma istiyor; bu henüz desteklenmiyor.",
+      "unsupported": "Bu sunucunun MCP sürümü desteklenmiyor.",
+      "transient": "Sunucu şu an yanıt vermiyor. Biraz sonra tekrar tara.",
+      "blocked": "Bu adrese bağlanılamaz (özel ya da engelli ağ adresi)."
+    },
+    "toolsLabel": "{name} araçları",
+    "toolBlocked": "Engellendi",
+    "toolBlockedReason": "Sözleşmesiz üretim aracı; özel MCP'de kullanılamaz.",
+    "moreTools": "+{count} araç daha",
+    "excluded": "{count} araç geçersiz olduğu için alınmadı.",
+    "dialog": {
+      "title": "Custom MCP ekle",
+      "description": "Sunucunun genel https adresini gir. Kayıt ağ isteği yapmaz; araçlar Tara ile okunur ve incelenmeden çalışmaz.",
+      "urlLabel": "Sunucu adresi",
+      "urlPlaceholder": "https://mcp.ornek.com/mcp",
+      "labelLabel": "Ad (isteğe bağlı)",
+      "labelPlaceholder": "Acme CRM",
+      "cancel": "Vazgeç",
+      "submit": "Ekle",
+      "submitting": "Ekleniyor…",
+      "failedTitle": "Eklenemedi"
+    },
+    "errors": {
+      "endpoint_blocked": "Bu adres kullanılamaz. Yalnız genel, 443 portlu https adresleri eklenebilir.",
+      "invalid_endpoint": "Adres geçersiz. Sorgu (?…) ya da # içermeyen bir https adresi gir.",
+      "forbidden": "Custom MCP'yi yalnız çalışma alanı sahibi ekleyebilir.",
+      "feature_unavailable": "Custom MCP şu an kapalı.",
+      "already_registered": "Bu adres bu çalışma alanında başka biri tarafından eklenmiş.",
+      "limit_reached": "En çok {limit} özel MCP sunucusu ekleyebilirsin.",
+      "not_scannable": "Kapalı sunucu taranamaz.",
+      "cooldown": "Bu sunucu az önce tarandı. {seconds} sn sonra tekrar dene.",
+      "cooldownNoTime": "Bu sunucu az önce tarandı. Biraz sonra tekrar dene.",
+      "not_found": "Bu kayıt artık yok. Sayfayı yenile.",
+      "failed": "Bir şeyler ters gitti. Tekrar dene."
+    }
+  }
+}

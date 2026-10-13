@@ -1,0 +1,33 @@
+{
+  "typedComposer": {
+    "jobs": {
+      "focusLabel": "Job: {label}",
+      "newJob": "New job",
+      "unnamed": "Untitled job",
+      "menuLabel": "Message target",
+      "clearFocus": "Target new jobs only",
+      "followLive": "Follow the live job",
+      "focusHint": "Model and mode changes apply to this job's next steps and to new jobs; other jobs keep theirs.",
+      "newJobsHint": "Changes apply only to jobs started from now on; running jobs keep their settings.",
+      "choiceTitle": "Which job is this for?",
+      "choiceBody": "More than one job is waiting for an answer. Pick one; only that job continues.",
+      "choiceNewJob": "Send as a new job",
+      "choiceDismiss": "Cancel",
+      "states": {
+        "created": "Queued",
+        "running": "Running",
+        "waiting_for_user": "Waiting for your answer",
+        "waiting_for_approval": "Waiting for approval",
+        "waiting_for_payment": "Waiting for credits",
+        "waiting_on_workflow": "In production",
+        "waiting_on_agent": "In production",
+        "cancelling": "Stopping",
+        "draining": "Stopping",
+        "cancellation_attention_required": "Stop needs attention",
+        "completed": "Done",
+        "failed": "Failed",
+        "cancelled": "Stopped"
+      }
+    }
+  }
+}

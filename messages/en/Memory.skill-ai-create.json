@@ -1,0 +1,23 @@
+{
+  "skillsTab": {
+    "aiDialog": {
+      "title": "Create a skill with AI",
+      "description": "Describe how the assistant should do this kind of work. The AI writes a draft of your own skill; nothing is activated, installed or shared.",
+      "instruction": "What should the skill do?",
+      "instructionPlaceholder": "Plan 60-second product videos: a hook in the first 3 seconds, three benefits, one call to action.",
+      "questionsTitle": "A few questions first",
+      "generate": "Create draft",
+      "answer": "Answer and create draft",
+      "costHint": "Creating a draft uses credits for one AI request. Retrying the same request is not charged again.",
+      "created": "AI draft created. Review it under Mine, then test and activate it.",
+      "errors": {
+        "budget": "Creating a draft needs credits or a spending approval. Add credits or approve the spend, then try again.",
+        "provider": "The AI model is not available right now. Nothing was charged; try again later.",
+        "output": "The AI answer could not become a valid draft. Try describing the skill differently.",
+        "unknown": "We could not confirm the result. No second request was sent; check Mine in a moment.",
+        "stillRunning": "The draft is still being created. Check Mine in a moment.",
+        "generic": "The draft could not be created. Try again."
+      }
+    }
+  }
+}

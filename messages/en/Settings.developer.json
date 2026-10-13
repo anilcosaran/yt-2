@@ -1,0 +1,82 @@
+{
+  "developer": {
+    "title": "Developer",
+    "description": "Apps connected to this workspace and the OAuth apps you build.",
+    "connectedApps": {
+      "title": "Connected apps",
+      "empty": "No apps are connected to this workspace.",
+      "loadFailed": "Connected apps could not be loaded. Refresh the page to try again.",
+      "actsForYou": "Acts for you",
+      "actsForWorkspace": "Workspace automation",
+      "testEnvironment": "Test",
+      "unavailable": "Paused by Youtorch",
+      "permissions": "{count, plural, one {# permission} other {# permissions}}",
+      "items": "{count, plural, =0 {no items selected} one {# item selected} other {# items selected}}",
+      "revoke": "Disconnect",
+      "revokeTitle": "Disconnect {name}?",
+      "revokeDescription": "{name} stops working with this workspace right away. Work it already started only finishes with the narrowest access.",
+      "revokeFailed": "The app could not be disconnected. Try again."
+    },
+    "apps": {
+      "title": "My OAuth apps",
+      "empty": "You have not registered an app yet.",
+      "loadFailed": "Your apps could not be loaded. Refresh the page to try again.",
+      "register": "Register app",
+      "registerTitle": "Register an OAuth app",
+      "registerDescription": "Youtorch reviews every app before other workspaces can connect it.",
+      "fieldName": "App name",
+      "fieldPurpose": "What it does",
+      "fieldDomain": "Domain",
+      "fieldHomepage": "Homepage URL",
+      "fieldSupport": "Support URL",
+      "fieldPrivacy": "Privacy policy URL",
+      "fieldRedirects": "Redirect URIs (one per line)",
+      "fieldPermissions": "Permissions",
+      "fieldAccess": "Access type",
+      "accessDelegated": "Acts for the person who connects it",
+      "accessService": "Workspace automation",
+      "submit": "Register",
+      "cancel": "Cancel",
+      "failed": "That did not work. Check the fields and try again.",
+      "version": "Version {number}",
+      "enableTesting": "Test this version",
+      "activate": "Go live",
+      "rotateSecret": "New secret",
+      "clientTest": "Test client",
+      "clientLive": "Live client",
+      "secretHint": "Secret ends in {hint}",
+      "secretTitle": "Copy your client secret",
+      "secretDescription": "This is the only time it is shown. Store it safely; if it is lost, create a new one.",
+      "copy": "Copy",
+      "copied": "Copied",
+      "done": "Done",
+      "status": {
+        "draft": "Draft",
+        "test": "Testing",
+        "reviewed": "Approved",
+        "active": "Live",
+        "suspended": "Suspended"
+      },
+      "review": {
+        "unreviewed": "Waiting for review",
+        "approved": "Approved",
+        "rejected": "Not approved"
+      }
+    },
+    "scope": {
+      "channels_read": "See the channels you choose",
+      "templates_read": "Use the templates you choose",
+      "projects_read": "Read the projects you choose",
+      "projects_write": "Edit the projects you choose",
+      "assets_metadata_read": "See details of the files you choose",
+      "assets_content_read": "Download the files you choose",
+      "assets_upload": "Upload new files to the channels you choose",
+      "jobs_create": "Start allowed video jobs",
+      "jobs_read": "See the jobs it started",
+      "exports_create": "Export the projects you choose",
+      "exports_read": "Download its finished exports",
+      "usage_read": "See its own usage",
+      "webhooks_manage": "Manage its own notifications"
+    }
+  }
+}

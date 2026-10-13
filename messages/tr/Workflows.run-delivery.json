@@ -1,0 +1,17 @@
+{
+  "runDelivery": {
+    "billingLabel": "Faturalama",
+    "outputLabel": "Çıktı",
+    "finance": {
+      "pending": "Kesinleşiyor",
+      "settled": "Kesinleşti",
+      "attention": "İnceleme gerekiyor"
+    },
+    "delivery": {
+      "pending": "Hazırlanıyor",
+      "ready": "Hazır",
+      "held": "Ödeme incelemesi için bekletiliyor",
+      "none": "Çıktı yok"
+    }
+  }
+}

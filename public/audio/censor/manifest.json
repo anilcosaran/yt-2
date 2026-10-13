@@ -1,0 +1,20 @@
+{
+  "version": "sine-1",
+  "sounds": {
+    "classic": [
+      1000,
+      0.16
+    ],
+    "soft": [
+      660,
+      0.12
+    ],
+    "digital": [
+      1400,
+      0.12
+    ]
+  },
+  "sampleRate": 48000,
+  "durationSec": 0.4,
+  "rampSec": 0.005
+}

@@ -1,0 +1,21 @@
+{
+  "sparkCandidates": {
+    "title": "Spark'a aktar",
+    "selected": "{total} sonuçtan {count} seçili · bu sırayla eklenir",
+    "partial": "Bazı sonuçlar eklenemedi. Proje hazır.",
+    "failed": "Sonuçlar eklenemedi.",
+    "cancel": "Vazgeç",
+    "listLabel": "Spark'ta açılacak sonuçlar",
+    "untitled": "Sonuç {n}",
+    "itemSelected": "{name}, {n}. sırada",
+    "failedLabel": "Eklenemeyen sonuçlar",
+    "reasons": {
+      "gone": "Artık yok",
+      "notShared": "Aktarma izni yok",
+      "otherChannel": "Başka kanalda",
+      "notReady": "Henüz hazır değil",
+      "changed": "Dosya değişti",
+      "generic": "Eklenemedi"
+    }
+  }
+}

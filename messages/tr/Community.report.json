@@ -1,0 +1,21 @@
+{
+  "report": {
+    "reasons": {
+      "spam": "Spam veya reklam",
+      "sexual_content": "Cinsel içerik",
+      "violence": "Şiddet",
+      "hate_or_harassment": "Nefret veya taciz",
+      "copyright": "Telif hakkı",
+      "privacy": "Gizlilik",
+      "other": "Başka bir sebep"
+    },
+    "thanks": "Bildirdiğin için teşekkürler. İnceleyeceğiz.",
+    "alreadyReported": "Bu gönderiyi zaten bildirdin. İnceleyeceğiz.",
+    "limit": "Çok sayıda bildirim gönderdin. {seconds, plural, other {# saniye}} sonra yeniden dene.",
+    "own": "Kendi gönderini bildiremezsin.",
+    "changed": "Bu gönderi güncellendi. Yenile ve hâlâ gerekiyorsa güncel sürümü bildir.",
+    "unavailable": "Bu gönderi artık kullanılamıyor.",
+    "noteTooLong": "Notu {max} karakterin altında tut.",
+    "failed": "Bildirim gönderilemedi. Lütfen yeniden dene."
+  }
+}

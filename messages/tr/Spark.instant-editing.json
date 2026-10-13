@@ -1,0 +1,9 @@
+{
+  "editor": {
+    "notSaved": "Kaydedilmedi — tekrar dene",
+    "notSavedHint": "Değişiklikler gönderilemedi. Yeniden göndermek için dokun.",
+    "notices": {
+      "saveStalled": "Değişiklikler henüz kaydedilmedi. Bağlantını kontrol et; otomatik olarak yeniden gönderilecek."
+    }
+  }
+}

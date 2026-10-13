@@ -1,0 +1,6 @@
+{
+  "composer": {
+    "modelChangeDefaultsOwnerOnly": "Only the conversation owner can change the model for new jobs.",
+    "modelChangeJobOnly": "Only the model of the job you started changed. The conversation owner sets the model for new jobs."
+  }
+}

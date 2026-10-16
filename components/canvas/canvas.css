@@ -1,0 +1,269 @@
+/* Canvas (components/canvas): the board takes the app theme as it is (light, paper or dark); only the card accents and
+   React Flow's own parts are set here. Accent colours are one set per theme, read through `--cv-<name>`; a card picks
+   one with `data-cv-color`. */
+
+/* The tokens sit on the page, not on the board: the card popup, the add menu and the colour picker open in portals
+   outside it and take the same colours. This file only loads with the canvas. */
+:root {
+  --cv-slate: #64748b;
+  --cv-blue: #2563eb;
+  --cv-violet: #7c3aed;
+  --cv-green: #059669;
+  --cv-amber: #d97706;
+  --cv-rose: #e11d48;
+  --cv-dot: color-mix(in oklab, var(--foreground) 14%, transparent);
+  --cv-line: color-mix(in oklab, var(--foreground) 34%, transparent);
+  --cv-shadow: 0 1px 2px rgb(16 16 24 / 0.05), 0 6px 18px rgb(16 16 24 / 0.07);
+  --cv-shadow-lift: 0 2px 6px rgb(16 16 24 / 0.08), 0 18px 40px rgb(16 16 24 / 0.14);
+  --cv-note-mix: 18%;
+  /* Selection and focus: the app's primary; in dark (near-white primary) and paper (ink) the sidebar's blue. */
+  --cv-focus: var(--primary);
+}
+
+html.paper {
+  --cv-focus: #2563eb;
+}
+
+.dark {
+  --cv-slate: #94a3b8;
+  --cv-blue: #60a5fa;
+  --cv-violet: #a78bfa;
+  --cv-green: #34d399;
+  --cv-amber: #fbbf24;
+  --cv-rose: #fb7185;
+  --cv-dot: color-mix(in oklab, var(--foreground) 13%, transparent);
+  --cv-line: color-mix(in oklab, var(--foreground) 30%, transparent);
+  --cv-shadow: 0 1px 2px rgb(0 0 0 / 0.4), 0 8px 24px rgb(0 0 0 / 0.28);
+  --cv-shadow-lift: 0 2px 8px rgb(0 0 0 / 0.45), 0 22px 48px rgb(0 0 0 / 0.4);
+  --cv-note-mix: 15%;
+  --cv-focus: var(--sidebar-primary);
+}
+
+.cv-root {
+  --xy-background-color: transparent;
+  --xy-selection-background-color: color-mix(in oklab, var(--cv-focus) 9%, transparent);
+  --xy-selection-border: 1px solid color-mix(in oklab, var(--cv-focus) 50%, transparent);
+  position: relative;
+  background: var(--background);
+}
+
+[data-cv-color='slate'] { --cv-accent: var(--cv-slate); }
+[data-cv-color='blue'] { --cv-accent: var(--cv-blue); }
+[data-cv-color='violet'] { --cv-accent: var(--cv-violet); }
+[data-cv-color='green'] { --cv-accent: var(--cv-green); }
+[data-cv-color='amber'] { --cv-accent: var(--cv-amber); }
+[data-cv-color='rose'] { --cv-accent: var(--cv-rose); }
+
+.cv-tile {
+  background: color-mix(in oklab, var(--cv-accent) 14%, var(--card));
+  color: var(--cv-accent);
+}
+
+.cv-swatch {
+  background: var(--cv-accent);
+}
+
+/* ---- React Flow ---- */
+
+.cv-root .react-flow__pane {
+  cursor: default;
+}
+
+.cv-root.cv-hand .react-flow__pane,
+.cv-root .react-flow__pane.draggable {
+  cursor: grab;
+}
+
+.cv-root .react-flow__pane.dragging {
+  cursor: grabbing;
+}
+
+.cv-root .react-flow__node {
+  font-family: inherit;
+  color: var(--foreground);
+}
+
+.cv-root .react-flow__node:focus-visible {
+  outline: none;
+}
+
+.cv-root .react-flow__node:focus-visible > .cv-card,
+.cv-root .react-flow__node:focus-visible > .cv-note {
+  outline: 2px solid color-mix(in oklab, var(--cv-focus) 60%, transparent);
+  outline-offset: 2px;
+}
+
+/* Edges are marks between cards, not a flow: a quiet line, the selection colour when picked. */
+.cv-root .react-flow__edge-path,
+.cv-root .react-flow__connection-path {
+  stroke: var(--cv-line);
+  stroke-width: 1.5;
+  stroke-linecap: round;
+}
+
+.cv-root .react-flow__connection-path {
+  stroke-dasharray: 5 5;
+}
+
+.cv-root .react-flow__edge.selected .react-flow__edge-path,
+.cv-root .react-flow__edge:focus-visible .react-flow__edge-path {
+  stroke: var(--cv-focus);
+  stroke-width: 2;
+}
+
+/* Connection points: hidden until the card is hovered or picked; a wide invisible target around the dot. */
+.cv-root .cv-handle.react-flow__handle {
+  width: 10px;
+  height: 10px;
+  border: 2px solid var(--card);
+  background: var(--cv-line);
+  opacity: 0;
+  transition: opacity 120ms, background-color 120ms, transform 120ms;
+}
+
+.cv-root .cv-handle.react-flow__handle::before {
+  content: '';
+  position: absolute;
+  inset: -9px;
+  border-radius: 999px;
+}
+
+.cv-root .react-flow__node:hover .cv-handle,
+.cv-root .react-flow__node.selected .cv-handle,
+.cv-root.cv-connecting .cv-handle {
+  opacity: 1;
+}
+
+.cv-root .cv-handle.react-flow__handle:hover,
+.cv-root .cv-handle.connectingto {
+  background: var(--cv-focus);
+}
+
+/* React Flow centres each dot on its edge with a translate; the hover keeps it and grows the dot. */
+.cv-root .cv-handle.react-flow__handle-top:hover { transform: translate(-50%, -50%) scale(1.25); }
+.cv-root .cv-handle.react-flow__handle-bottom:hover { transform: translate(-50%, 50%) scale(1.25); }
+.cv-root .cv-handle.react-flow__handle-left:hover { transform: translate(-50%, -50%) scale(1.25); }
+.cv-root .cv-handle.react-flow__handle-right:hover { transform: translate(50%, -50%) scale(1.25); }
+
+/* The note's resize grips. */
+.cv-root .react-flow__resize-control.handle {
+  width: 9px;
+  height: 9px;
+  border: 1.5px solid var(--cv-focus);
+  border-radius: 3px;
+  background: var(--card);
+}
+
+.cv-root .react-flow__resize-control.line {
+  border-color: transparent;
+}
+
+.cv-root .react-flow__minimap {
+  overflow: hidden;
+  margin: 0;
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  background: color-mix(in oklab, var(--popover) 94%, transparent);
+  box-shadow: var(--cv-shadow-lift);
+}
+
+.cv-root .react-flow__minimap-mask {
+  fill: color-mix(in oklab, var(--background) 62%, transparent);
+}
+
+.cv-root .react-flow__attribution {
+  display: none;
+}
+
+/* ---- Cards ---- */
+
+.cv-card {
+  box-shadow: var(--cv-shadow);
+  transition: box-shadow 160ms, border-color 160ms;
+}
+
+.react-flow__node.selected > .cv-card {
+  border-color: color-mix(in oklab, var(--cv-focus) 70%, transparent);
+  box-shadow: 0 0 0 3px color-mix(in oklab, var(--cv-focus) 16%, transparent), var(--cv-shadow);
+}
+
+.react-flow__node.dragging > .cv-card,
+.react-flow__node.dragging > .cv-note {
+  box-shadow: var(--cv-shadow-lift);
+}
+
+.cv-card[data-status='running'] {
+  border-color: color-mix(in oklab, var(--cv-accent) 55%, var(--border));
+}
+
+.cv-card[data-status='error'] {
+  border-color: color-mix(in oklab, var(--destructive) 55%, var(--border));
+}
+
+.cv-note {
+  background: color-mix(in oklab, var(--cv-accent) var(--cv-note-mix), var(--card));
+  border: 1px solid color-mix(in oklab, var(--cv-accent) 30%, var(--border));
+  box-shadow: var(--cv-shadow);
+}
+
+.react-flow__node.selected > .cv-note {
+  border-color: color-mix(in oklab, var(--cv-focus) 70%, transparent);
+  box-shadow: 0 0 0 3px color-mix(in oklab, var(--cv-focus) 16%, transparent), var(--cv-shadow);
+}
+
+/* While a card works, its result area shimmers. */
+.cv-shimmer {
+  position: relative;
+  overflow: hidden;
+  background: color-mix(in oklab, var(--muted) 70%, var(--card));
+}
+
+.cv-shimmer::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  transform: translateX(-100%);
+  background: linear-gradient(90deg, transparent, color-mix(in oklab, var(--foreground) 6%, transparent), transparent);
+  animation: shimmer 1.4s infinite;
+}
+
+/* A voice result: bars that fill as it plays. */
+.cv-wave {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+}
+
+.cv-wave > span {
+  flex: 1;
+  min-width: 2px;
+  border-radius: 999px;
+  background: color-mix(in oklab, var(--foreground) 22%, transparent);
+  transition: background-color 120ms;
+}
+
+.cv-wave > span[data-on='true'] {
+  background: var(--cv-accent);
+}
+
+/* A video result plays as a slow move across its frame (there is no clip in yt-2). */
+@keyframes cv-ken-burns {
+  from { transform: scale(1) translate(0, 0); }
+  to { transform: scale(1.12) translate(-3%, -2%); }
+}
+
+.cv-playing {
+  animation: cv-ken-burns var(--cv-seconds, 5s) ease-in-out forwards;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cv-playing,
+  .cv-shimmer::after {
+    animation: none;
+  }
+}
+
+@keyframes cv-fill {
+  from { transform: scaleX(0); }
+  to { transform: scaleX(1); }
+}

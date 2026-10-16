@@ -1,0 +1,266 @@
+{
+  "untitled": "Untitled canvas",
+  "status": {
+    "idle": "Waiting",
+    "running": "Working",
+    "done": "Ready",
+    "error": "Failed"
+  },
+  "kinds": {
+    "text": {
+      "name": "Text",
+      "description": "Scripts, titles and descriptions, written by AI",
+      "placeholder": "What should it write?",
+      "inputLabel": "What to write",
+      "run": "Write",
+      "working": "Writing…",
+      "emptyHint": "Describe what you need: a script, title ideas, a video description. Pick the format below.",
+      "examples": "Five title ideas for a home coffee brewing guide\nA 60-second script about saving money on groceries\nA video description for a beginner yoga routine"
+    },
+    "image": {
+      "name": "Image",
+      "description": "Thumbnails and visuals from a prompt",
+      "placeholder": "Describe the image…",
+      "inputLabel": "Image prompt",
+      "run": "Generate",
+      "working": "Generating images…",
+      "emptyHint": "Describe what should be in the picture, the light and the mood. Choose the shape and how many below.",
+      "examples": "A bright thumbnail: a steaming coffee cup on a wooden table\nStudio portrait of a presenter, soft side light\nA minimal desk setup from above, morning light"
+    },
+    "video": {
+      "name": "Video",
+      "description": "A short clip from a prompt",
+      "placeholder": "Describe the shot…",
+      "inputLabel": "Video prompt",
+      "run": "Create",
+      "working": "Creating the clip…",
+      "emptyHint": "Describe one shot: what moves, where the camera goes. Pick the shape and length below.",
+      "examples": "Slow push-in on coffee being poured, warm kitchen light\nA presenter turns to the camera and smiles\nTop-down shot of hands typing on a laptop"
+    },
+    "voice": {
+      "name": "Voiceover",
+      "description": "Text read aloud in a voice you choose",
+      "placeholder": "Write the text to read…",
+      "inputLabel": "Text to read",
+      "run": "Read aloud",
+      "working": "Recording the voiceover…",
+      "emptyHint": "Write the text exactly as it should be read. Choose the voice and the pace below.",
+      "examples": "Welcome back! Today we brew the perfect cup at home.\nThree mistakes everyone makes with their morning routine."
+    },
+    "link": {
+      "name": "Link",
+      "description": "Reads a video or page and sums it up",
+      "placeholder": "Paste a link…",
+      "inputLabel": "Link",
+      "run": "Analyze",
+      "working": "Reading the page…",
+      "emptyHint": "Paste a YouTube video or any page: you get a summary and the points worth keeping.",
+      "examples": "youtube.com/watch?v=coffee-guide\nexample.com/blog/thumbnail-tips"
+    },
+    "note": {
+      "name": "Note",
+      "description": "A note to organize the board",
+      "placeholder": "Write a note…"
+    }
+  },
+  "options": {
+    "format": {
+      "label": "Format",
+      "values": {
+        "free": "Free text",
+        "script": "Script",
+        "titles": "Title ideas",
+        "description": "Description"
+      }
+    },
+    "length": {
+      "label": "Length",
+      "values": {
+        "short": "Short",
+        "medium": "Medium",
+        "long": "Long"
+      }
+    },
+    "ratio": {
+      "label": "Shape",
+      "values": {
+        "landscape": "16:9",
+        "square": "1:1",
+        "portrait": "9:16"
+      }
+    },
+    "count": {
+      "label": "How many",
+      "values": {
+        "1": "1 image",
+        "2": "2 images",
+        "4": "4 images"
+      }
+    },
+    "duration": {
+      "label": "Length",
+      "values": {
+        "5": "5 sec",
+        "10": "10 sec"
+      }
+    },
+    "voice": {
+      "label": "Voice",
+      "values": {
+        "deniz": "Deniz",
+        "ece": "Ece",
+        "mert": "Mert"
+      }
+    },
+    "speed": {
+      "label": "Pace",
+      "values": {
+        "slow": "Slow",
+        "normal": "Normal",
+        "fast": "Fast"
+      }
+    }
+  },
+  "errors": {
+    "invalidUrl": "This link could not be opened",
+    "invalidUrlHint": "Check the address (for example youtube.com/watch?v=…) and try again.",
+    "interrupted": "The run stopped when the page closed",
+    "interruptedHint": "Nothing was lost; run it again."
+  },
+  "card": {
+    "stop": "Stop",
+    "runAgain": "Again",
+    "notRun": "Not run yet",
+    "versions": "{count, plural, one {# version} other {# versions}}"
+  },
+  "note": {
+    "label": "Note",
+    "placeholder": "Write a note…"
+  },
+  "toolbar": {
+    "open": "Open",
+    "write": "Write",
+    "color": "Color",
+    "duplicate": "Duplicate",
+    "delete": "Delete",
+    "select": "Select",
+    "hand": "Move the board",
+    "undo": "Undo",
+    "redo": "Redo",
+    "addNote": "Note",
+    "add": "Add",
+    "zoomOut": "Zoom out",
+    "zoomIn": "Zoom in",
+    "zoomReset": "Back to 100%",
+    "fit": "Fit to screen",
+    "minimap": "Map"
+  },
+  "colors": {
+    "slate": "Gray",
+    "blue": "Blue",
+    "violet": "Violet",
+    "green": "Green",
+    "amber": "Amber",
+    "rose": "Rose"
+  },
+  "result": {
+    "copy": "Copy",
+    "copied": "Copied",
+    "copyFailed": "Could not copy",
+    "imageAlt": "Image {index}",
+    "play": "Play",
+    "pause": "Pause",
+    "keyPoints": "Worth keeping"
+  },
+  "dialog": {
+    "titleLabel": "Card name",
+    "close": "Close",
+    "retry": "Try again",
+    "emptyTitle": "The result will appear here",
+    "versions": "Versions",
+    "version": "v{number}",
+    "latest": "latest"
+  },
+  "palette": {
+    "search": "Search cards…",
+    "empty": "No card matches.",
+    "work": "Make",
+    "organize": "Organize",
+    "dragHint": "Pick one, or drag it onto the board."
+  },
+  "board": {
+    "nameLabel": "Canvas name",
+    "switch": "Your canvases",
+    "yours": "Your canvases",
+    "meta": "{count, plural, one {# card} other {# cards}} · {ago}",
+    "create": "New canvas",
+    "delete": "Delete this canvas",
+    "saving": "Saving…",
+    "saved": "Saved on this device",
+    "deleteTitle": "Delete this canvas?",
+    "deleteDescription": "{count, plural, =0 {The canvas is empty.} one {Its card and what it made will be gone.} other {Its # cards and what they made will be gone.}}",
+    "deleteConfirm": "Delete",
+    "cancel": "Cancel",
+    "ariaLabel": "Canvas board"
+  },
+  "shortcuts": {
+    "title": "Keyboard shortcuts",
+    "add": "Add a card",
+    "addHere": "Add here (double-click)",
+    "note": "Add a note",
+    "open": "Open the card",
+    "duplicate": "Duplicate",
+    "copy": "Copy",
+    "paste": "Paste",
+    "selectAll": "Select all",
+    "delete": "Delete",
+    "undo": "Undo",
+    "pan": "Hold to move the board",
+    "zoom": "Zoom"
+  },
+  "menu": {
+    "addHere": "Add here",
+    "paste": "Paste here",
+    "selectAll": "Select all",
+    "copy": "Copy",
+    "runEach": "Run {count, plural, one {# card} other {each of # cards}}",
+    "deleteMany": "Delete {count} cards",
+    "deleteLink": "Delete line"
+  },
+  "empty": {
+    "title": "An empty canvas",
+    "description": "Put cards on it. Each card works on its own: write what you want, run it, and the result stays on the card.",
+    "hint": "Or double-click anywhere, or press /.",
+    "example": "Start with an example"
+  },
+  "missing": {
+    "title": "This canvas is not here",
+    "description": "It may have been deleted, or it was made in another browser. Canvases are kept on the device they were made on.",
+    "back": "Go to my canvases"
+  },
+  "example": {
+    "boardTitle": "Coffee video ideas",
+    "note": "This week: a home coffee guide.\nTitles first, then the cover.",
+    "titlesTitle": "Title ideas",
+    "titlesInput": "A guide to brewing coffee at home",
+    "coverTitle": "Cover image",
+    "coverInput": "A bright thumbnail: a steaming coffee cup on a wooden table",
+    "openingTitle": "Opening shot",
+    "openingInput": "Slow push-in on coffee being poured, warm kitchen light",
+    "rivalTitle": "Rival video"
+  },
+  "mock": {
+    "text": {
+      "titles": "{topic}: what nobody tells you\nI tried {topic} for 30 days\n{topic} in 5 simple steps\nStop doing {topic} like this\nThe only {topic} video you need\n{topic}, explained in 8 minutes",
+      "script": "HOOK — \"You're getting {topic} wrong, and it takes ten seconds to fix.\"\nINTRO — Say who you are and what the viewer gets by the end: {topic}, without the guesswork.\nSTEP 1 — Show the most common mistake, then the fix, side by side.\nSTEP 2 — One detail that makes the biggest difference; slow it down on screen.\nSTEP 3 — A quick test the viewer can do at home today.\nCLOSE — Sum it up in one sentence and ask what they want to see next.",
+      "description": "In this video: {topic}. We go through it step by step, with the mistakes to avoid and the small changes that matter most.\nSave it for later, and tell us in the comments how it went for you.\nChapters: 0:00 Intro · 0:40 The basics · 3:10 Common mistakes · 6:20 Tips",
+      "hashtags": "#{tag} #howto #tips",
+      "free": "{topic} comes down to a few clear choices. Start with what the viewer already knows, then show the one thing they are missing.\nKeep each point short and visual: one idea per scene, one example per idea.\nFinish with a small action the viewer can take today, so the video stays with them."
+    },
+    "link": {
+      "title": "What {host} is about",
+      "summary": "The page walks through its subject in a clear order: a strong opening, three main points, and a short call to action at the end.",
+      "points": "The opening question pulls the viewer in within the first 10 seconds.\nEach section has a single on-screen example.\nThe thumbnail and the title promise the same thing.\nEnds with a question that brings comments."
+    }
+  }
+}

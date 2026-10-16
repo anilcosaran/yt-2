@@ -1,0 +1,266 @@
+{
+  "untitled": "Adsız canvas",
+  "status": {
+    "idle": "Bekliyor",
+    "running": "Çalışıyor",
+    "done": "Hazır",
+    "error": "Hata"
+  },
+  "kinds": {
+    "text": {
+      "name": "Metin",
+      "description": "Senaryo, başlık ve açıklamaları AI yazar",
+      "placeholder": "Ne yazılsın?",
+      "inputLabel": "Ne yazılacak",
+      "run": "Yaz",
+      "working": "Yazılıyor…",
+      "emptyHint": "Ne istediğini anlat: senaryo, başlık fikirleri, video açıklaması. Biçimi aşağıdan seç.",
+      "examples": "Evde kahve demleme rehberi için 5 başlık fikri\nMarkette tasarruf üzerine 60 saniyelik senaryo\nYeni başlayanlar için yoga videosuna açıklama"
+    },
+    "image": {
+      "name": "Görsel",
+      "description": "Bir tariften kapak ve görsel üretir",
+      "placeholder": "Görseli tarif et…",
+      "inputLabel": "Görsel tarifi",
+      "run": "Üret",
+      "working": "Görseller üretiliyor…",
+      "emptyHint": "Görselde ne olsun, ışık ve hava nasıl olsun anlat. Biçimi ve kaç tane olacağını aşağıdan seç.",
+      "examples": "Parlak bir kapak: ahşap masada dumanı tüten kahve fincanı\nSunucunun stüdyo portresi, yandan yumuşak ışık\nYukarıdan sade bir masa düzeni, sabah ışığı"
+    },
+    "video": {
+      "name": "Video",
+      "description": "Bir tariften kısa bir klip",
+      "placeholder": "Çekimi tarif et…",
+      "inputLabel": "Video tarifi",
+      "run": "Oluştur",
+      "working": "Klip oluşturuluyor…",
+      "emptyHint": "Tek bir çekim anlat: ne hareket ediyor, kamera nereye gidiyor. Biçimi ve süreyi aşağıdan seç.",
+      "examples": "Dökülen kahveye yavaş yaklaşan kamera, sıcak mutfak ışığı\nSunucu kameraya dönüp gülümsüyor\nYukarıdan, dizüstünde yazan eller"
+    },
+    "voice": {
+      "name": "Seslendirme",
+      "description": "Metni seçtiğin bir sesle okur",
+      "placeholder": "Okunacak metni yaz…",
+      "inputLabel": "Okunacak metin",
+      "run": "Seslendir",
+      "working": "Seslendirme kaydediliyor…",
+      "emptyHint": "Metni tam okunacağı gibi yaz. Sesi ve hızı aşağıdan seç.",
+      "examples": "Tekrar hoş geldin! Bugün evde mükemmel kahveyi demliyoruz.\nSabah rutininde herkesin yaptığı üç hata."
+    },
+    "link": {
+      "name": "Bağlantı",
+      "description": "Bir videoyu ya da sayfayı okuyup özetler",
+      "placeholder": "Bir bağlantı yapıştır…",
+      "inputLabel": "Bağlantı",
+      "run": "Analiz et",
+      "working": "Sayfa okunuyor…",
+      "emptyHint": "Bir YouTube videosu ya da herhangi bir sayfa yapıştır: özetini ve akılda tutulacak noktaları al.",
+      "examples": "youtube.com/watch?v=coffee-guide\nexample.com/blog/thumbnail-tips"
+    },
+    "note": {
+      "name": "Not",
+      "description": "Canvas'ı düzenlemek için bir not",
+      "placeholder": "Bir not yaz…"
+    }
+  },
+  "options": {
+    "format": {
+      "label": "Biçim",
+      "values": {
+        "free": "Serbest metin",
+        "script": "Senaryo",
+        "titles": "Başlık fikirleri",
+        "description": "Açıklama"
+      }
+    },
+    "length": {
+      "label": "Uzunluk",
+      "values": {
+        "short": "Kısa",
+        "medium": "Orta",
+        "long": "Uzun"
+      }
+    },
+    "ratio": {
+      "label": "Biçim",
+      "values": {
+        "landscape": "16:9",
+        "square": "1:1",
+        "portrait": "9:16"
+      }
+    },
+    "count": {
+      "label": "Adet",
+      "values": {
+        "1": "1 görsel",
+        "2": "2 görsel",
+        "4": "4 görsel"
+      }
+    },
+    "duration": {
+      "label": "Süre",
+      "values": {
+        "5": "5 sn",
+        "10": "10 sn"
+      }
+    },
+    "voice": {
+      "label": "Ses",
+      "values": {
+        "deniz": "Deniz",
+        "ece": "Ece",
+        "mert": "Mert"
+      }
+    },
+    "speed": {
+      "label": "Hız",
+      "values": {
+        "slow": "Yavaş",
+        "normal": "Normal",
+        "fast": "Hızlı"
+      }
+    }
+  },
+  "errors": {
+    "invalidUrl": "Bu bağlantı açılamadı",
+    "invalidUrlHint": "Adresi kontrol edip (ör. youtube.com/watch?v=…) tekrar dene.",
+    "interrupted": "Sayfa kapanınca çalışma yarıda kaldı",
+    "interruptedHint": "Hiçbir şey kaybolmadı; yeniden çalıştır."
+  },
+  "card": {
+    "stop": "Durdur",
+    "runAgain": "Tekrar",
+    "notRun": "Henüz çalışmadı",
+    "versions": "{count, plural, one {# sürüm} other {# sürüm}}"
+  },
+  "note": {
+    "label": "Not",
+    "placeholder": "Bir not yaz…"
+  },
+  "toolbar": {
+    "open": "Aç",
+    "write": "Yaz",
+    "color": "Renk",
+    "duplicate": "Çoğalt",
+    "delete": "Sil",
+    "select": "Seç",
+    "hand": "Canvas'ı kaydır",
+    "undo": "Geri al",
+    "redo": "Yinele",
+    "addNote": "Not",
+    "add": "Ekle",
+    "zoomOut": "Uzaklaştır",
+    "zoomIn": "Yakınlaştır",
+    "zoomReset": "%100'e dön",
+    "fit": "Ekrana sığdır",
+    "minimap": "Harita"
+  },
+  "colors": {
+    "slate": "Gri",
+    "blue": "Mavi",
+    "violet": "Mor",
+    "green": "Yeşil",
+    "amber": "Turuncu",
+    "rose": "Pembe"
+  },
+  "result": {
+    "copy": "Kopyala",
+    "copied": "Kopyalandı",
+    "copyFailed": "Kopyalanamadı",
+    "imageAlt": "Görsel {index}",
+    "play": "Oynat",
+    "pause": "Duraklat",
+    "keyPoints": "Akılda tutulacaklar"
+  },
+  "dialog": {
+    "titleLabel": "Kart adı",
+    "close": "Kapat",
+    "retry": "Tekrar dene",
+    "emptyTitle": "Sonuç burada görünecek",
+    "versions": "Sürümler",
+    "version": "v{number}",
+    "latest": "son"
+  },
+  "palette": {
+    "search": "Kart ara…",
+    "empty": "Eşleşen kart yok.",
+    "work": "Üret",
+    "organize": "Düzenle",
+    "dragHint": "Birini seç ya da canvas'a sürükle."
+  },
+  "board": {
+    "nameLabel": "Canvas adı",
+    "switch": "Canvas'ların",
+    "yours": "Canvas'ların",
+    "meta": "{count, plural, one {# kart} other {# kart}} · {ago}",
+    "create": "Yeni canvas",
+    "delete": "Bu canvas'ı sil",
+    "saving": "Kaydediliyor…",
+    "saved": "Bu cihazda kaydedildi",
+    "deleteTitle": "Bu canvas silinsin mi?",
+    "deleteDescription": "{count, plural, =0 {Canvas boş.} one {İçindeki kart ve ürettikleri silinecek.} other {İçindeki # kart ve ürettikleri silinecek.}}",
+    "deleteConfirm": "Sil",
+    "cancel": "Vazgeç",
+    "ariaLabel": "Canvas"
+  },
+  "shortcuts": {
+    "title": "Klavye kısayolları",
+    "add": "Kart ekle",
+    "addHere": "Buraya ekle (çift tık)",
+    "note": "Not ekle",
+    "open": "Kartı aç",
+    "duplicate": "Çoğalt",
+    "copy": "Kopyala",
+    "paste": "Yapıştır",
+    "selectAll": "Tümünü seç",
+    "delete": "Sil",
+    "undo": "Geri al",
+    "pan": "Basılı tut, canvas'ı kaydır",
+    "zoom": "Yakınlaştır"
+  },
+  "menu": {
+    "addHere": "Buraya ekle",
+    "paste": "Buraya yapıştır",
+    "selectAll": "Tümünü seç",
+    "copy": "Kopyala",
+    "runEach": "{count, plural, one {# kartı çalıştır} other {# kartın her birini çalıştır}}",
+    "deleteMany": "{count} kartı sil",
+    "deleteLink": "Çizgiyi sil"
+  },
+  "empty": {
+    "title": "Boş bir canvas",
+    "description": "Üstüne kartlar koy. Her kart kendi başına çalışır: ne istediğini yaz, çalıştır, sonuç kartın üstünde kalsın.",
+    "hint": "Ya da boş bir yere çift tıkla veya / tuşuna bas.",
+    "example": "Örnekle başla"
+  },
+  "missing": {
+    "title": "Bu canvas burada yok",
+    "description": "Silinmiş olabilir ya da başka bir tarayıcıda açılmış. Canvas'lar açıldıkları cihazda saklanır.",
+    "back": "Canvas'larıma dön"
+  },
+  "example": {
+    "boardTitle": "Kahve videosu fikirleri",
+    "note": "Bu hafta: evde kahve rehberi.\nÖnce başlıklar, sonra kapak.",
+    "titlesTitle": "Başlık fikirleri",
+    "titlesInput": "Evde kahve demleme rehberi",
+    "coverTitle": "Kapak görseli",
+    "coverInput": "Parlak bir kapak: ahşap masada dumanı tüten kahve fincanı",
+    "openingTitle": "Açılış çekimi",
+    "openingInput": "Dökülen kahveye yavaş yaklaşan kamera, sıcak mutfak ışığı",
+    "rivalTitle": "Rakip video"
+  },
+  "mock": {
+    "text": {
+      "titles": "{topic}: kimsenin söylemediği şeyler\n30 gün boyunca denedim: {topic}\n5 basit adımda {topic}\n{topic} konusunda bunu yapmayı bırak\nİhtiyacın olan tek video: {topic}\n8 dakikada {topic}",
+      "script": "GİRİŞ KANCASI — \"{topic} konusunda bir şeyi yanlış yapıyorsun ve düzeltmesi on saniye sürüyor.\"\nTANITIM — Kim olduğunu ve izleyicinin sonunda ne kazanacağını söyle: tahmin yürütmeden {topic}.\nADIM 1 — En sık yapılan hatayı göster, sonra düzeltilmiş halini yan yana koy.\nADIM 2 — En büyük farkı yaratan tek ayrıntı; ekranda yavaşlat.\nADIM 3 — İzleyicinin bugün evde yapabileceği kısa bir deneme.\nKAPANIŞ — Tek cümleyle özetle ve bir sonraki videoda ne görmek istediklerini sor.",
+      "description": "Bu videoda: {topic}. Kaçınılması gereken hatalar ve en çok fark yaratan küçük değişikliklerle adım adım ilerliyoruz.\nSonra izlemek için kaydet ve senin için nasıl geçtiğini yorumlarda anlat.\nBölümler: 0:00 Giriş · 0:40 Temeller · 3:10 Sık yapılan hatalar · 6:20 İpuçları",
+      "hashtags": "#{tag} #nasılyapılır #ipuçları",
+      "free": "{topic} birkaç net seçime dayanıyor. İzleyicinin zaten bildiğiyle başla, sonra eksik olan tek şeyi göster.\nHer noktayı kısa ve görsel tut: sahne başına bir fikir, fikir başına bir örnek.\nVideoyu izleyicinin bugün atabileceği küçük bir adımla bitir; video aklında kalsın."
+    },
+    "link": {
+      "title": "{host} ne anlatıyor",
+      "summary": "Sayfa konusunu net bir sırayla anlatıyor: güçlü bir açılış, üç ana nokta ve sonda kısa bir çağrı.",
+      "points": "Açılış sorusu izleyiciyi ilk 10 saniyede içine çekiyor.\nHer bölümde ekranda tek bir örnek var.\nKapak görseli ile başlık aynı şeyi vaat ediyor.\nYorum getiren bir soruyla bitiyor."
+    }
+  }
+}

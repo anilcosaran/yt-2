@@ -3101,6 +3101,18 @@ function remainingMsFromServer(validUntil: string | null, serverNow: string | nu
   return until - nowAtServer - (Date.now() - receivedAt);
 }
 
+function personalOfferCountdowns(
+  offerUntil: string | null,
+  checkoutUntil: string | null,
+  serverNow: string | null,
+  receivedAt: number,
+): { offer: number | null; checkout: number | null } {
+  return {
+    offer: remainingMsFromServer(offerUntil, serverNow, receivedAt),
+    checkout: remainingMsFromServer(checkoutUntil, serverNow, receivedAt),
+  };
+}
+
 function formatRemaining(ms: number, tPlan: OfferPlanTranslator): string {
   if (ms <= 0) return tPlan("windowClosed");
   const totalSeconds = Math.floor(ms / 1000);
@@ -3199,17 +3211,19 @@ function PersonalOfferPopup({
   onDismiss: () => void;
   onSelect: (plan: string) => void;
 }) {
-  const receivedAt = React.useRef(Date.now());
-  const [remaining, setRemaining] = React.useState(() => remainingMsFromServer(offer?.valid_until ?? null, serverNow, receivedAt.current));
+  const offerUntil = offer?.valid_until ?? null;
+  const checkoutUntil = checkoutExpiresAt ?? null;
+  const [remaining, setRemaining] = React.useState(() =>
+    personalOfferCountdowns(offerUntil, checkoutUntil, serverNow, Date.now()),
+  );
   React.useEffect(() => {
-    receivedAt.current = Date.now();
-    const tick = () => setRemaining(remainingMsFromServer(offer?.valid_until ?? null, serverNow, receivedAt.current));
+    const receivedAt = Date.now();
+    const tick = () => setRemaining(personalOfferCountdowns(offerUntil, checkoutUntil, serverNow, receivedAt));
     tick();
     const id = window.setInterval(tick, 1000);
     return () => window.clearInterval(id);
-  }, [offer?.valid_until, serverNow]);
+  }, [offerUntil, checkoutUntil, serverNow]);
   const matched = offer ? findPackageForOffer(packages, offer.offer_id) : null;
-  const checkoutRemaining = remainingMsFromServer(checkoutExpiresAt ?? null, serverNow, receivedAt.current);
   return (
     <Dialog.Root open={open && Boolean(offer)} onOpenChange={(next) => { if (!next) onDismiss(); }}>
       <Dialog.Portal>
@@ -3223,14 +3237,14 @@ function PersonalOfferPopup({
               ? tPlan("personalOfferBody", { plan: matched.pkg.name })
               : tPlan("personalOfferGeneric")}
           </Dialog.Description>
-          {remaining !== null ? (
+          {remaining.offer !== null ? (
             <p className="mt-3 text-sm font-semibold text-[#111111]">
-              {tPlan("personalWindowLabel")}: {formatRemaining(remaining, tPlan)}
+              {tPlan("personalWindowLabel")}: {formatRemaining(remaining.offer, tPlan)}
             </p>
           ) : null}
-          {checkoutRemaining !== null ? (
+          {remaining.checkout !== null ? (
             <p className="mt-1 text-xs font-medium text-[#706d68]">
-              {tPlan("checkoutLockLabel")}: {formatRemaining(checkoutRemaining, tPlan)}
+              {tPlan("checkoutLockLabel")}: {formatRemaining(remaining.checkout, tPlan)}
             </p>
           ) : null}
           <div className="mt-5 flex justify-end gap-2">

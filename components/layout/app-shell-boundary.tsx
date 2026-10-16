@@ -16,7 +16,6 @@ const ChatSidebar = dynamic(
 const workspaceShellPrefixes = [
   '/apps',
   '/brand',
-  '/canvas',
   '/channels',
   '/chat',
   '/customers',

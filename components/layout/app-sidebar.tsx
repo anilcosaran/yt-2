@@ -98,7 +98,6 @@ import {
   Folder,
   Lightbulb,
   ListChecks,
-  Shapes,
   SlidersHorizontal,
   Settings as SettingsLucide,
   ShieldCheck,
@@ -2288,7 +2287,6 @@ export function getIcon(iconName: string) {
     puzzle: Waypoints,
     video: Video,
     clapperboard: Clapperboard,
-    canvas: Shapes,
   }
   return icons[iconName] || null
 }

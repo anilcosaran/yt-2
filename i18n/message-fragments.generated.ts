@@ -28,13 +28,10 @@ import en_Chat_job_targets from '@/messages/en/Chat.job-targets.json'
 import en_Chat_mcp_templates from '@/messages/en/Chat.mcp-templates.json'
 import en_Chat_model_owner from '@/messages/en/Chat.model-owner.json'
 import en_Chat_model_selector from '@/messages/en/Chat.model-selector.json'
-import en_Chat_motion_result from '@/messages/en/Chat.motion-result.json'
 import en_Chat_output_count from '@/messages/en/Chat.output-count.json'
 import en_Chat_plan_canvas from '@/messages/en/Chat.plan-canvas.json'
-import en_Chat_plan_screens from '@/messages/en/Chat.plan-screens.json'
 import en_Chat_production_flow from '@/messages/en/Chat.production-flow.json'
 import en_Chat_production_g1 from '@/messages/en/Chat.production-g1.json'
-import en_Chat_publish_package from '@/messages/en/Chat.publish-package.json'
 import en_Chat_question_widget from '@/messages/en/Chat.question-widget.json'
 import en_Chat_run_cards from '@/messages/en/Chat.run-cards.json'
 import en_Chat_script_review from '@/messages/en/Chat.script-review.json'
@@ -60,15 +57,8 @@ import en_Memory_rules_sharing from '@/messages/en/Memory.rules-sharing.json'
 import en_Memory_skill_ai_create from '@/messages/en/Memory.skill-ai-create.json'
 import en_Memory_skill_history from '@/messages/en/Memory.skill-history.json'
 import en_MemoryPage from '@/messages/en/MemoryPage.json'
-import en_Motion_authoring from '@/messages/en/Motion.authoring.json'
-import en_Motion_catalog from '@/messages/en/Motion.catalog.json'
-import en_Motion_chat_edit from '@/messages/en/Motion.chat-edit.json'
-import en_Motion_market from '@/messages/en/Motion.market.json'
-import en_Motion_my_motions from '@/messages/en/Motion.my-motions.json'
-import en_Motion_runtime_preview from '@/messages/en/Motion.runtime-preview.json'
 import en_Navigation_approvals from '@/messages/en/Navigation.approvals.json'
 import en_Navigation_developer from '@/messages/en/Navigation.developer.json'
-import en_Navigation_motion from '@/messages/en/Navigation.motion.json'
 import en_Navigation_recent_chats from '@/messages/en/Navigation.recent-chats.json'
 import en_NewTheme_brand_kits from '@/messages/en/NewTheme.brand-kits.json'
 import en_NewTheme_brand_library from '@/messages/en/NewTheme.brand-library.json'
@@ -82,38 +72,6 @@ import en_Settings_developer_keys from '@/messages/en/Settings.developer-keys.js
 import en_Settings_developer_limits from '@/messages/en/Settings.developer-limits.json'
 import en_Settings_developer_webhooks from '@/messages/en/Settings.developer-webhooks.json'
 import en_Settings_developer from '@/messages/en/Settings.developer.json'
-import en_Spark_ask_ai from '@/messages/en/Spark.ask-ai.json'
-import en_Spark_avatar_tool from '@/messages/en/Spark.avatar-tool.json'
-import en_Spark_captions from '@/messages/en/Spark.captions.json'
-import en_Spark_context_meter from '@/messages/en/Spark.context-meter.json'
-import en_Spark_context_toolbar from '@/messages/en/Spark.context-toolbar.json'
-import en_Spark_effects from '@/messages/en/Spark.effects.json'
-import en_Spark_export_captions from '@/messages/en/Spark.export-captions.json'
-import en_Spark_export_motion from '@/messages/en/Spark.export-motion.json'
-import en_Spark_export from '@/messages/en/Spark.export.json'
-import en_Spark_history from '@/messages/en/Spark.history.json'
-import en_Spark_instant_editing from '@/messages/en/Spark.instant-editing.json'
-import en_Spark_instant_insert from '@/messages/en/Spark.instant-insert.json'
-import en_Spark_media from '@/messages/en/Spark.media.json'
-import en_Spark_motion_code from '@/messages/en/Spark.motion-code.json'
-import en_Spark_motion_section from '@/messages/en/Spark.motion-section.json'
-import en_Spark_motion_ui from '@/messages/en/Spark.motion-ui.json'
-import en_Spark_open_in_chat from '@/messages/en/Spark.open-in-chat.json'
-import en_Spark_outline from '@/messages/en/Spark.outline.json'
-import en_Spark_placement from '@/messages/en/Spark.placement.json'
-import en_Spark_quick_ai from '@/messages/en/Spark.quick-ai.json'
-import en_Spark_record from '@/messages/en/Spark.record.json'
-import en_Spark_scene_background from '@/messages/en/Spark.scene-background.json'
-import en_Spark_scene_status from '@/messages/en/Spark.scene-status.json'
-import en_Spark_scene_voice from '@/messages/en/Spark.scene-voice.json'
-import en_Spark_shapes from '@/messages/en/Spark.shapes.json'
-import en_Spark_side_chat from '@/messages/en/Spark.side-chat.json'
-import en_Spark_stage from '@/messages/en/Spark.stage.json'
-import en_Spark_stock from '@/messages/en/Spark.stock.json'
-import en_Spark_template from '@/messages/en/Spark.template.json'
-import en_Spark_timeline_tracks from '@/messages/en/Spark.timeline-tracks.json'
-import en_Spark_timeline_v3 from '@/messages/en/Spark.timeline-v3.json'
-import en_Spark_transitions from '@/messages/en/Spark.transitions.json'
 import en_Storage_memory_actions from '@/messages/en/Storage.memory-actions.json'
 import en_Workflows_assistant_draft from '@/messages/en/Workflows.assistant-draft.json'
 import en_Workflows_avatar_duration from '@/messages/en/Workflows.avatar-duration.json'
@@ -145,13 +103,10 @@ import tr_Chat_job_targets from '@/messages/tr/Chat.job-targets.json'
 import tr_Chat_mcp_templates from '@/messages/tr/Chat.mcp-templates.json'
 import tr_Chat_model_owner from '@/messages/tr/Chat.model-owner.json'
 import tr_Chat_model_selector from '@/messages/tr/Chat.model-selector.json'
-import tr_Chat_motion_result from '@/messages/tr/Chat.motion-result.json'
 import tr_Chat_output_count from '@/messages/tr/Chat.output-count.json'
 import tr_Chat_plan_canvas from '@/messages/tr/Chat.plan-canvas.json'
-import tr_Chat_plan_screens from '@/messages/tr/Chat.plan-screens.json'
 import tr_Chat_production_flow from '@/messages/tr/Chat.production-flow.json'
 import tr_Chat_production_g1 from '@/messages/tr/Chat.production-g1.json'
-import tr_Chat_publish_package from '@/messages/tr/Chat.publish-package.json'
 import tr_Chat_question_widget from '@/messages/tr/Chat.question-widget.json'
 import tr_Chat_run_cards from '@/messages/tr/Chat.run-cards.json'
 import tr_Chat_script_review from '@/messages/tr/Chat.script-review.json'
@@ -177,15 +132,8 @@ import tr_Memory_rules_sharing from '@/messages/tr/Memory.rules-sharing.json'
 import tr_Memory_skill_ai_create from '@/messages/tr/Memory.skill-ai-create.json'
 import tr_Memory_skill_history from '@/messages/tr/Memory.skill-history.json'
 import tr_MemoryPage from '@/messages/tr/MemoryPage.json'
-import tr_Motion_authoring from '@/messages/tr/Motion.authoring.json'
-import tr_Motion_catalog from '@/messages/tr/Motion.catalog.json'
-import tr_Motion_chat_edit from '@/messages/tr/Motion.chat-edit.json'
-import tr_Motion_market from '@/messages/tr/Motion.market.json'
-import tr_Motion_my_motions from '@/messages/tr/Motion.my-motions.json'
-import tr_Motion_runtime_preview from '@/messages/tr/Motion.runtime-preview.json'
 import tr_Navigation_approvals from '@/messages/tr/Navigation.approvals.json'
 import tr_Navigation_developer from '@/messages/tr/Navigation.developer.json'
-import tr_Navigation_motion from '@/messages/tr/Navigation.motion.json'
 import tr_Navigation_recent_chats from '@/messages/tr/Navigation.recent-chats.json'
 import tr_NewTheme_brand_kits from '@/messages/tr/NewTheme.brand-kits.json'
 import tr_NewTheme_brand_library from '@/messages/tr/NewTheme.brand-library.json'
@@ -199,38 +147,6 @@ import tr_Settings_developer_keys from '@/messages/tr/Settings.developer-keys.js
 import tr_Settings_developer_limits from '@/messages/tr/Settings.developer-limits.json'
 import tr_Settings_developer_webhooks from '@/messages/tr/Settings.developer-webhooks.json'
 import tr_Settings_developer from '@/messages/tr/Settings.developer.json'
-import tr_Spark_ask_ai from '@/messages/tr/Spark.ask-ai.json'
-import tr_Spark_avatar_tool from '@/messages/tr/Spark.avatar-tool.json'
-import tr_Spark_captions from '@/messages/tr/Spark.captions.json'
-import tr_Spark_context_meter from '@/messages/tr/Spark.context-meter.json'
-import tr_Spark_context_toolbar from '@/messages/tr/Spark.context-toolbar.json'
-import tr_Spark_effects from '@/messages/tr/Spark.effects.json'
-import tr_Spark_export_captions from '@/messages/tr/Spark.export-captions.json'
-import tr_Spark_export_motion from '@/messages/tr/Spark.export-motion.json'
-import tr_Spark_export from '@/messages/tr/Spark.export.json'
-import tr_Spark_history from '@/messages/tr/Spark.history.json'
-import tr_Spark_instant_editing from '@/messages/tr/Spark.instant-editing.json'
-import tr_Spark_instant_insert from '@/messages/tr/Spark.instant-insert.json'
-import tr_Spark_media from '@/messages/tr/Spark.media.json'
-import tr_Spark_motion_code from '@/messages/tr/Spark.motion-code.json'
-import tr_Spark_motion_section from '@/messages/tr/Spark.motion-section.json'
-import tr_Spark_motion_ui from '@/messages/tr/Spark.motion-ui.json'
-import tr_Spark_open_in_chat from '@/messages/tr/Spark.open-in-chat.json'
-import tr_Spark_outline from '@/messages/tr/Spark.outline.json'
-import tr_Spark_placement from '@/messages/tr/Spark.placement.json'
-import tr_Spark_quick_ai from '@/messages/tr/Spark.quick-ai.json'
-import tr_Spark_record from '@/messages/tr/Spark.record.json'
-import tr_Spark_scene_background from '@/messages/tr/Spark.scene-background.json'
-import tr_Spark_scene_status from '@/messages/tr/Spark.scene-status.json'
-import tr_Spark_scene_voice from '@/messages/tr/Spark.scene-voice.json'
-import tr_Spark_shapes from '@/messages/tr/Spark.shapes.json'
-import tr_Spark_side_chat from '@/messages/tr/Spark.side-chat.json'
-import tr_Spark_stage from '@/messages/tr/Spark.stage.json'
-import tr_Spark_stock from '@/messages/tr/Spark.stock.json'
-import tr_Spark_template from '@/messages/tr/Spark.template.json'
-import tr_Spark_timeline_tracks from '@/messages/tr/Spark.timeline-tracks.json'
-import tr_Spark_timeline_v3 from '@/messages/tr/Spark.timeline-v3.json'
-import tr_Spark_transitions from '@/messages/tr/Spark.transitions.json'
 import tr_Storage_memory_actions from '@/messages/tr/Storage.memory-actions.json'
 import tr_Workflows_assistant_draft from '@/messages/tr/Workflows.assistant-draft.json'
 import tr_Workflows_avatar_duration from '@/messages/tr/Workflows.avatar-duration.json'
@@ -271,13 +187,10 @@ export const messageFragments: Readonly<Record<string, readonly MessageFragment[
     { file: 'en/Chat.mcp-templates.json', namespace: 'Chat', messages: en_Chat_mcp_templates },
     { file: 'en/Chat.model-owner.json', namespace: 'Chat', messages: en_Chat_model_owner },
     { file: 'en/Chat.model-selector.json', namespace: 'Chat', messages: en_Chat_model_selector },
-    { file: 'en/Chat.motion-result.json', namespace: 'Chat', messages: en_Chat_motion_result },
     { file: 'en/Chat.output-count.json', namespace: 'Chat', messages: en_Chat_output_count },
     { file: 'en/Chat.plan-canvas.json', namespace: 'Chat', messages: en_Chat_plan_canvas },
-    { file: 'en/Chat.plan-screens.json', namespace: 'Chat', messages: en_Chat_plan_screens },
     { file: 'en/Chat.production-flow.json', namespace: 'Chat', messages: en_Chat_production_flow },
     { file: 'en/Chat.production-g1.json', namespace: 'Chat', messages: en_Chat_production_g1 },
-    { file: 'en/Chat.publish-package.json', namespace: 'Chat', messages: en_Chat_publish_package },
     { file: 'en/Chat.question-widget.json', namespace: 'Chat', messages: en_Chat_question_widget },
     { file: 'en/Chat.run-cards.json', namespace: 'Chat', messages: en_Chat_run_cards },
     { file: 'en/Chat.script-review.json', namespace: 'Chat', messages: en_Chat_script_review },
@@ -303,15 +216,8 @@ export const messageFragments: Readonly<Record<string, readonly MessageFragment[
     { file: 'en/Memory.skill-ai-create.json', namespace: 'Memory', messages: en_Memory_skill_ai_create },
     { file: 'en/Memory.skill-history.json', namespace: 'Memory', messages: en_Memory_skill_history },
     { file: 'en/MemoryPage.json', namespace: 'MemoryPage', messages: en_MemoryPage },
-    { file: 'en/Motion.authoring.json', namespace: 'Motion', messages: en_Motion_authoring },
-    { file: 'en/Motion.catalog.json', namespace: 'Motion', messages: en_Motion_catalog },
-    { file: 'en/Motion.chat-edit.json', namespace: 'Motion', messages: en_Motion_chat_edit },
-    { file: 'en/Motion.market.json', namespace: 'Motion', messages: en_Motion_market },
-    { file: 'en/Motion.my-motions.json', namespace: 'Motion', messages: en_Motion_my_motions },
-    { file: 'en/Motion.runtime-preview.json', namespace: 'Motion', messages: en_Motion_runtime_preview },
     { file: 'en/Navigation.approvals.json', namespace: 'Navigation', messages: en_Navigation_approvals },
     { file: 'en/Navigation.developer.json', namespace: 'Navigation', messages: en_Navigation_developer },
-    { file: 'en/Navigation.motion.json', namespace: 'Navigation', messages: en_Navigation_motion },
     { file: 'en/Navigation.recent-chats.json', namespace: 'Navigation', messages: en_Navigation_recent_chats },
     { file: 'en/NewTheme.brand-kits.json', namespace: 'NewTheme', messages: en_NewTheme_brand_kits },
     { file: 'en/NewTheme.brand-library.json', namespace: 'NewTheme', messages: en_NewTheme_brand_library },
@@ -325,38 +231,6 @@ export const messageFragments: Readonly<Record<string, readonly MessageFragment[
     { file: 'en/Settings.developer-limits.json', namespace: 'Settings', messages: en_Settings_developer_limits },
     { file: 'en/Settings.developer-webhooks.json', namespace: 'Settings', messages: en_Settings_developer_webhooks },
     { file: 'en/Settings.developer.json', namespace: 'Settings', messages: en_Settings_developer },
-    { file: 'en/Spark.ask-ai.json', namespace: 'Spark', messages: en_Spark_ask_ai },
-    { file: 'en/Spark.avatar-tool.json', namespace: 'Spark', messages: en_Spark_avatar_tool },
-    { file: 'en/Spark.captions.json', namespace: 'Spark', messages: en_Spark_captions },
-    { file: 'en/Spark.context-meter.json', namespace: 'Spark', messages: en_Spark_context_meter },
-    { file: 'en/Spark.context-toolbar.json', namespace: 'Spark', messages: en_Spark_context_toolbar },
-    { file: 'en/Spark.effects.json', namespace: 'Spark', messages: en_Spark_effects },
-    { file: 'en/Spark.export-captions.json', namespace: 'Spark', messages: en_Spark_export_captions },
-    { file: 'en/Spark.export-motion.json', namespace: 'Spark', messages: en_Spark_export_motion },
-    { file: 'en/Spark.export.json', namespace: 'Spark', messages: en_Spark_export },
-    { file: 'en/Spark.history.json', namespace: 'Spark', messages: en_Spark_history },
-    { file: 'en/Spark.instant-editing.json', namespace: 'Spark', messages: en_Spark_instant_editing },
-    { file: 'en/Spark.instant-insert.json', namespace: 'Spark', messages: en_Spark_instant_insert },
-    { file: 'en/Spark.media.json', namespace: 'Spark', messages: en_Spark_media },
-    { file: 'en/Spark.motion-code.json', namespace: 'Spark', messages: en_Spark_motion_code },
-    { file: 'en/Spark.motion-section.json', namespace: 'Spark', messages: en_Spark_motion_section },
-    { file: 'en/Spark.motion-ui.json', namespace: 'Spark', messages: en_Spark_motion_ui },
-    { file: 'en/Spark.open-in-chat.json', namespace: 'Spark', messages: en_Spark_open_in_chat },
-    { file: 'en/Spark.outline.json', namespace: 'Spark', messages: en_Spark_outline },
-    { file: 'en/Spark.placement.json', namespace: 'Spark', messages: en_Spark_placement },
-    { file: 'en/Spark.quick-ai.json', namespace: 'Spark', messages: en_Spark_quick_ai },
-    { file: 'en/Spark.record.json', namespace: 'Spark', messages: en_Spark_record },
-    { file: 'en/Spark.scene-background.json', namespace: 'Spark', messages: en_Spark_scene_background },
-    { file: 'en/Spark.scene-status.json', namespace: 'Spark', messages: en_Spark_scene_status },
-    { file: 'en/Spark.scene-voice.json', namespace: 'Spark', messages: en_Spark_scene_voice },
-    { file: 'en/Spark.shapes.json', namespace: 'Spark', messages: en_Spark_shapes },
-    { file: 'en/Spark.side-chat.json', namespace: 'Spark', messages: en_Spark_side_chat },
-    { file: 'en/Spark.stage.json', namespace: 'Spark', messages: en_Spark_stage },
-    { file: 'en/Spark.stock.json', namespace: 'Spark', messages: en_Spark_stock },
-    { file: 'en/Spark.template.json', namespace: 'Spark', messages: en_Spark_template },
-    { file: 'en/Spark.timeline-tracks.json', namespace: 'Spark', messages: en_Spark_timeline_tracks },
-    { file: 'en/Spark.timeline-v3.json', namespace: 'Spark', messages: en_Spark_timeline_v3 },
-    { file: 'en/Spark.transitions.json', namespace: 'Spark', messages: en_Spark_transitions },
     { file: 'en/Storage.memory-actions.json', namespace: 'Storage', messages: en_Storage_memory_actions },
     { file: 'en/Workflows.assistant-draft.json', namespace: 'Workflows', messages: en_Workflows_assistant_draft },
     { file: 'en/Workflows.avatar-duration.json', namespace: 'Workflows', messages: en_Workflows_avatar_duration },
@@ -390,13 +264,10 @@ export const messageFragments: Readonly<Record<string, readonly MessageFragment[
     { file: 'tr/Chat.mcp-templates.json', namespace: 'Chat', messages: tr_Chat_mcp_templates },
     { file: 'tr/Chat.model-owner.json', namespace: 'Chat', messages: tr_Chat_model_owner },
     { file: 'tr/Chat.model-selector.json', namespace: 'Chat', messages: tr_Chat_model_selector },
-    { file: 'tr/Chat.motion-result.json', namespace: 'Chat', messages: tr_Chat_motion_result },
     { file: 'tr/Chat.output-count.json', namespace: 'Chat', messages: tr_Chat_output_count },
     { file: 'tr/Chat.plan-canvas.json', namespace: 'Chat', messages: tr_Chat_plan_canvas },
-    { file: 'tr/Chat.plan-screens.json', namespace: 'Chat', messages: tr_Chat_plan_screens },
     { file: 'tr/Chat.production-flow.json', namespace: 'Chat', messages: tr_Chat_production_flow },
     { file: 'tr/Chat.production-g1.json', namespace: 'Chat', messages: tr_Chat_production_g1 },
-    { file: 'tr/Chat.publish-package.json', namespace: 'Chat', messages: tr_Chat_publish_package },
     { file: 'tr/Chat.question-widget.json', namespace: 'Chat', messages: tr_Chat_question_widget },
     { file: 'tr/Chat.run-cards.json', namespace: 'Chat', messages: tr_Chat_run_cards },
     { file: 'tr/Chat.script-review.json', namespace: 'Chat', messages: tr_Chat_script_review },
@@ -422,15 +293,8 @@ export const messageFragments: Readonly<Record<string, readonly MessageFragment[
     { file: 'tr/Memory.skill-ai-create.json', namespace: 'Memory', messages: tr_Memory_skill_ai_create },
     { file: 'tr/Memory.skill-history.json', namespace: 'Memory', messages: tr_Memory_skill_history },
     { file: 'tr/MemoryPage.json', namespace: 'MemoryPage', messages: tr_MemoryPage },
-    { file: 'tr/Motion.authoring.json', namespace: 'Motion', messages: tr_Motion_authoring },
-    { file: 'tr/Motion.catalog.json', namespace: 'Motion', messages: tr_Motion_catalog },
-    { file: 'tr/Motion.chat-edit.json', namespace: 'Motion', messages: tr_Motion_chat_edit },
-    { file: 'tr/Motion.market.json', namespace: 'Motion', messages: tr_Motion_market },
-    { file: 'tr/Motion.my-motions.json', namespace: 'Motion', messages: tr_Motion_my_motions },
-    { file: 'tr/Motion.runtime-preview.json', namespace: 'Motion', messages: tr_Motion_runtime_preview },
     { file: 'tr/Navigation.approvals.json', namespace: 'Navigation', messages: tr_Navigation_approvals },
     { file: 'tr/Navigation.developer.json', namespace: 'Navigation', messages: tr_Navigation_developer },
-    { file: 'tr/Navigation.motion.json', namespace: 'Navigation', messages: tr_Navigation_motion },
     { file: 'tr/Navigation.recent-chats.json', namespace: 'Navigation', messages: tr_Navigation_recent_chats },
     { file: 'tr/NewTheme.brand-kits.json', namespace: 'NewTheme', messages: tr_NewTheme_brand_kits },
     { file: 'tr/NewTheme.brand-library.json', namespace: 'NewTheme', messages: tr_NewTheme_brand_library },
@@ -444,38 +308,6 @@ export const messageFragments: Readonly<Record<string, readonly MessageFragment[
     { file: 'tr/Settings.developer-limits.json', namespace: 'Settings', messages: tr_Settings_developer_limits },
     { file: 'tr/Settings.developer-webhooks.json', namespace: 'Settings', messages: tr_Settings_developer_webhooks },
     { file: 'tr/Settings.developer.json', namespace: 'Settings', messages: tr_Settings_developer },
-    { file: 'tr/Spark.ask-ai.json', namespace: 'Spark', messages: tr_Spark_ask_ai },
-    { file: 'tr/Spark.avatar-tool.json', namespace: 'Spark', messages: tr_Spark_avatar_tool },
-    { file: 'tr/Spark.captions.json', namespace: 'Spark', messages: tr_Spark_captions },
-    { file: 'tr/Spark.context-meter.json', namespace: 'Spark', messages: tr_Spark_context_meter },
-    { file: 'tr/Spark.context-toolbar.json', namespace: 'Spark', messages: tr_Spark_context_toolbar },
-    { file: 'tr/Spark.effects.json', namespace: 'Spark', messages: tr_Spark_effects },
-    { file: 'tr/Spark.export-captions.json', namespace: 'Spark', messages: tr_Spark_export_captions },
-    { file: 'tr/Spark.export-motion.json', namespace: 'Spark', messages: tr_Spark_export_motion },
-    { file: 'tr/Spark.export.json', namespace: 'Spark', messages: tr_Spark_export },
-    { file: 'tr/Spark.history.json', namespace: 'Spark', messages: tr_Spark_history },
-    { file: 'tr/Spark.instant-editing.json', namespace: 'Spark', messages: tr_Spark_instant_editing },
-    { file: 'tr/Spark.instant-insert.json', namespace: 'Spark', messages: tr_Spark_instant_insert },
-    { file: 'tr/Spark.media.json', namespace: 'Spark', messages: tr_Spark_media },
-    { file: 'tr/Spark.motion-code.json', namespace: 'Spark', messages: tr_Spark_motion_code },
-    { file: 'tr/Spark.motion-section.json', namespace: 'Spark', messages: tr_Spark_motion_section },
-    { file: 'tr/Spark.motion-ui.json', namespace: 'Spark', messages: tr_Spark_motion_ui },
-    { file: 'tr/Spark.open-in-chat.json', namespace: 'Spark', messages: tr_Spark_open_in_chat },
-    { file: 'tr/Spark.outline.json', namespace: 'Spark', messages: tr_Spark_outline },
-    { file: 'tr/Spark.placement.json', namespace: 'Spark', messages: tr_Spark_placement },
-    { file: 'tr/Spark.quick-ai.json', namespace: 'Spark', messages: tr_Spark_quick_ai },
-    { file: 'tr/Spark.record.json', namespace: 'Spark', messages: tr_Spark_record },
-    { file: 'tr/Spark.scene-background.json', namespace: 'Spark', messages: tr_Spark_scene_background },
-    { file: 'tr/Spark.scene-status.json', namespace: 'Spark', messages: tr_Spark_scene_status },
-    { file: 'tr/Spark.scene-voice.json', namespace: 'Spark', messages: tr_Spark_scene_voice },
-    { file: 'tr/Spark.shapes.json', namespace: 'Spark', messages: tr_Spark_shapes },
-    { file: 'tr/Spark.side-chat.json', namespace: 'Spark', messages: tr_Spark_side_chat },
-    { file: 'tr/Spark.stage.json', namespace: 'Spark', messages: tr_Spark_stage },
-    { file: 'tr/Spark.stock.json', namespace: 'Spark', messages: tr_Spark_stock },
-    { file: 'tr/Spark.template.json', namespace: 'Spark', messages: tr_Spark_template },
-    { file: 'tr/Spark.timeline-tracks.json', namespace: 'Spark', messages: tr_Spark_timeline_tracks },
-    { file: 'tr/Spark.timeline-v3.json', namespace: 'Spark', messages: tr_Spark_timeline_v3 },
-    { file: 'tr/Spark.transitions.json', namespace: 'Spark', messages: tr_Spark_transitions },
     { file: 'tr/Storage.memory-actions.json', namespace: 'Storage', messages: tr_Storage_memory_actions },
     { file: 'tr/Workflows.assistant-draft.json', namespace: 'Workflows', messages: tr_Workflows_assistant_draft },
     { file: 'tr/Workflows.avatar-duration.json', namespace: 'Workflows', messages: tr_Workflows_avatar_duration },

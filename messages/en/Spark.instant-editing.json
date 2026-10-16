@@ -1,9 +1,0 @@
-{
-  "editor": {
-    "notSaved": "Not saved — retry",
-    "notSavedHint": "Your changes could not be sent. Press to send them again.",
-    "notices": {
-      "saveStalled": "Your changes are not saved yet. Check your connection; they will be sent again automatically."
-    }
-  }
-}

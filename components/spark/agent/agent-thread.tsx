@@ -329,11 +329,23 @@ export function AgentQuestion({
 
 export type AgentSuggestion = { id: string; label: string }
 
-/** Suggestion: short next steps as chips over the composer; one click hands it to the composer or sends it. */
-export function AgentSuggestions({ items, onPick, label }: { items: AgentSuggestion[]; onPick: (item: AgentSuggestion) => void; label?: string }) {
+/**
+ * Suggestion: short next steps as chips over the composer; one click hands it to the composer or sends it.
+ * `singleLine` keeps them on one row: what does not fit is scrolled into view sideways instead of wrapping.
+ */
+export function AgentSuggestions({ items, onPick, label, singleLine = false }: { items: AgentSuggestion[]; onPick: (item: AgentSuggestion) => void; label?: string; singleLine?: boolean }) {
   if (items.length === 0) return null
   return (
-    <div className="sugg lb-suggest" role="group" aria-label={label}>
+    <div
+      className={singleLine ? 'sugg lb-suggest sugg-line' : 'sugg lb-suggest'}
+      role="group"
+      aria-label={label}
+      // A mouse wheel has no sideways axis: let it move the row while there is more to reach.
+      onWheel={singleLine ? (event) => {
+        const row = event.currentTarget
+        if (event.deltaX === 0 && row.scrollWidth > row.clientWidth) row.scrollLeft += event.deltaY
+      } : undefined}
+    >
       {items.map((item) => (
         <button key={item.id} type="button" onClick={() => onPick(item)}>
           <Icon name="sparkles" size="sm" />

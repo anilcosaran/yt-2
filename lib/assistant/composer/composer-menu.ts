@@ -88,7 +88,7 @@ export function buildSlashMenuItems(input: {
   connections?: readonly SlashConnectionSource[]
   /** P03-25: connections switched off in this conversation. */
   disabledConnectionIds?: ReadonlySet<string>
-  /** E1-H: owner commands the server lists for this surface and tenant (`/motion`), shown in the tools group. */
+  /** E1-H: owner commands the server lists for this surface and tenant, shown in the tools group. */
   commands?: readonly ComposerServerCommand[]
   locale?: 'tr' | 'en'
 }): ComposerMenuItem[] {
@@ -102,7 +102,7 @@ export function buildSlashMenuItems(input: {
 
 /**
  * E1-H: the server-provided owner commands (`GET /api/v1/assistant-composer/commands`). The label and description are the
- * owner's, in the user's language; the chip carries the capability ref the owner named, so nothing here knows `/motion`.
+ * owner's, in the user's language; the chip carries the capability ref the owner named, so nothing here knows a command by name.
  * Choosing the item only returns the chip (the first leading command rule of the composer state still applies).
  */
 export function slashCommandItems(commands: readonly ComposerServerCommand[], locale: 'tr' | 'en'): ComposerMenuItem[] {

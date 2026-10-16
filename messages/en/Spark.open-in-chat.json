@@ -1,9 +1,0 @@
-{
-  "editor": {
-    "openInChat": {
-      "label": "Open in Chat",
-      "title": "Continue this project's conversation on the Chat page",
-      "none": "Send a message in the assistant first, then this project's chat can be opened in Chat."
-    }
-  }
-}

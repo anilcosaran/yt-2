@@ -2,6 +2,97 @@
   "brandLibrary": {
     "kitCount": "{count} kit · düzenlemek için birini seç",
     "editKit": "{name} kitini düzenle",
-    "kitActions": "{name} işlemleri"
+    "kitActions": "{name} işlemleri",
+    "builtinBadge": "Hazır kit"
+  },
+  "brandEditor": {
+    "back": "Tüm kitler",
+    "nameLabel": "Kit adı",
+    "unsaved": "Kaydedilmemiş değişiklikler",
+    "saved": "Tüm değişiklikler kaydedildi",
+    "save": "Kaydet",
+    "saveCopy": "Kopya olarak kaydet",
+    "builtinHint": "Hazır kit · değişiklikler kendi kopyana kaydedilir",
+    "sharedHint": "Paylaşılan kit · değişiklikler kendi kopyana kaydedilir",
+    "makeDefault": "Varsayılan yap",
+    "colors": {
+      "title": "Renkler",
+      "description": "Videolarındaki başlık kartlarında ve grafiklerde kullanılan dört renk. Değiştirmek için renk koduna tıkla.",
+      "hex": "{label} hex kodu",
+      "picker": {
+        "area": "Doygunluk ve parlaklık",
+        "hue": "Ton",
+        "r": "Kırmızı",
+        "g": "Yeşil",
+        "b": "Mavi",
+        "eyedropper": "Ekrandan renk seç",
+        "kitColors": "Kit renkleri",
+        "useColor": "{color} rengini kullan"
+      },
+      "roles": {
+        "graphics": "Grafikler ve vurgular",
+        "backgrounds": "Arka planlar",
+        "secondaryText": "İkincil yazı",
+        "highlights": "Vurgular"
+      }
+    },
+    "fonts": {
+      "title": "Fontlar",
+      "description": "Başlıklar için bir font, metinler için bir font.",
+      "titleRole": "Başlık fontu",
+      "bodyRole": "Metin fontu",
+      "titleSample": "Tanınan bir marka oluştur",
+      "bodySample": "Net tipografi videolarını kolay okunur kılar.",
+      "weight": "Kalınlık",
+      "weights": {
+        "light": "İnce",
+        "regular": "Normal",
+        "bold": "Kalın",
+        "extraBold": "Ekstra kalın"
+      }
+    },
+    "captions": {
+      "title": "Altyazılar",
+      "description": "Videolarındaki altyazıların nasıl görüneceğini seç.",
+      "style": "Stil",
+      "auto": "Otomatik",
+      "allStyles": "Tüm stiller ({count})",
+      "colors": "Renkler",
+      "resetColors": "Stilin renklerini kullan",
+      "text": "Yazı",
+      "highlight": "Vurgu",
+      "outline": "Kontur"
+    },
+    "logo": {
+      "title": "Logo",
+      "description": "Videolarında kullanılan logon. Filigran da bunu kullanır.",
+      "more": "Diğer logo sürümleri (isteğe bağlı)"
+    },
+    "watermark": {
+      "title": "Filigran",
+      "description": "Logonu her videonun üzerinde göster.",
+      "enable": "Filigranı göster",
+      "needsLogo": "Yukarıdan bir logo ekle veya özel bir görsel seç.",
+      "image": "Görsel",
+      "useLogo": "Kit logosu",
+      "useLogoMissing": "Henüz logo yok",
+      "customImage": "Özel görsel",
+      "customImageHint": "Ayrı bir görsel",
+      "position": "Konum",
+      "auto": "Otomatik",
+      "frameHint": "Logonun duracağı yeri videonun üzerine tıklayarak seç.",
+      "autoHint": "Otomatik, logoyu altyazılardan ve platform butonlarından uzak tutar. Sabitlemek için videonun üzerine tıkla.",
+      "movingHint": "Logo videonun köşeleri arasında yer değiştirir.",
+      "size": "Boyut",
+      "opacity": "Opaklık",
+      "advanced": "Gelişmiş",
+      "movement": "Hareket",
+      "margin": "Kenar boşluğu",
+      "changeEvery": "Değişim aralığı",
+      "fade": "Geçiş süresi",
+      "seconds": "sn",
+      "required": "İş akışlarında zorunlu",
+      "requiredHint": "Filigran olmadan iş akışları başlamaz."
+    }
   }
 }

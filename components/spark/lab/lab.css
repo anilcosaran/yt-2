@@ -272,13 +272,22 @@
 .yt-studio .lb-tr-pic{position:relative;height:96px;border-radius:4px;overflow:hidden;background:#111;box-shadow:0 0 0 1px var(--st-frame-ring)}
 .yt-studio .lb-tr-title{display:flex;align-items:center;gap:8px;margin-bottom:4px;font-size:13px;min-width:0}
 .yt-studio .lb-tr-title b{display:inline;font-weight:600;white-space:nowrap}
-.yt-studio .lb-tr-title span{font-size:12px;color:var(--st-text-2);font-variant-numeric:tabular-nums;white-space:nowrap}
+.yt-studio .lb-tr-title > span{font-size:12px;color:var(--st-text-2);font-variant-numeric:tabular-nums;white-space:nowrap}
 .yt-studio .lb-tr-title em{min-width:0;font-style:normal;font-size:12px;font-weight:500;color:var(--lb-agent-text);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .yt-studio .lb-tr.scene .lb-td p{font-size:14px;line-height:1.5}
 .yt-studio .lb-tr-screen{margin-top:6px;font-size:12px;color:var(--st-text-2)}
 .yt-studio .lb-tr-screen span{margin-right:6px;color:var(--st-text-3)}
 .yt-studio .lb-tr-tags{display:flex;flex-wrap:wrap;align-content:flex-start;gap:4px;min-width:0}
 .yt-studio .lb-script .stag{height:22px;padding:0 9px;border-radius:99px;border-color:var(--st-border-strong);font-size:11.5px;max-width:100%;white-space:nowrap;overflow:hidden}
+.yt-studio .lb-asked{display:flex;align-items:center;gap:6px;min-width:0;margin-top:8px;font-size:12px;color:var(--st-text-2)}
+.yt-studio .lb-asked > .i{flex:none;width:13px;height:13px;color:var(--st-ok)}
+.yt-studio .lb-asked > span:not(.spin){flex:none}
+.yt-studio .lb-asked q{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:var(--st-text)}
+.yt-studio .lb-asked .lb-act{flex:none;height:24px}
+.yt-studio .lb-draft-tag{position:absolute;left:4px;top:4px;z-index:2;padding:1px 5px;border-radius:4px;background:rgba(0,0,0,.66);font-size:10px;font-weight:600;line-height:1.5;white-space:nowrap;color:#fff}
+.yt-studio .lb-tr-pic.redrafting .lb-thumb{animation:lb-redraft 1s ease-in-out infinite}
+@keyframes lb-redraft{50%{opacity:.4}}
+@media (prefers-reduced-motion:reduce){.yt-studio .lb-tr-pic.redrafting .lb-thumb{animation:none;opacity:.6}}
 .yt-studio .lb-tr.scene.yours{box-shadow:inset 2px 0 0 var(--lb-you,var(--st-accent))}
 .yt-studio .lb-tr.lb-agent-on{background:var(--lb-agent-soft);box-shadow:inset 2px 0 0 var(--lb-agent)}
 /* the same sharper line for the rest of the Plan view */
@@ -391,10 +400,6 @@
 .yt-studio .lb-edit-btn .i{width:13px;height:13px}
 .yt-studio .lb-tr:hover .lb-edit-btn,.yt-studio .lb-card:hover .lb-edit-btn,.yt-studio .lb-edit-btn:focus-visible{opacity:1}
 .yt-studio .lb-edit-btn:hover{background:var(--st-active);color:var(--st-text)}
-.yt-studio .lb-field{display:grid;gap:5px;width:100%}
-.yt-studio .lb-field textarea{display:block;width:100%;min-height:36px;padding:7px 10px;border:1px solid var(--st-border-strong);border-radius:8px;background:var(--st-surface);font:inherit;line-height:1.5;color:var(--st-text);resize:none;field-sizing:content;outline:0;transition:border-color .12s,box-shadow .12s}
-.yt-studio .lb-field textarea:focus{border-color:var(--st-accent-border);box-shadow:0 0 0 3px var(--st-accent-soft)}
-.yt-studio .lb-field small{display:block;margin:0;font-size:11.5px;color:var(--st-text-3)}
 
 /* ---------- a choice (who, which voice, which kit…): what was chosen, and the things to choose from ---------- */
 .yt-studio .lb-token{display:inline-flex;align-items:center;gap:10px;max-width:100%;min-height:36px;margin:-4px 0 -4px -8px;padding:4px 10px 4px 8px;border-radius:8px;text-align:left;transition:background .12s}
@@ -435,9 +440,6 @@
 .yt-studio .lb-draft input{flex:1;min-width:0;height:34px;padding:0 11px;border:1px solid var(--st-border-strong);border-radius:8px;background:var(--st-surface);font-size:13.5px;color:var(--st-text);outline:0;transition:border-color .12s,box-shadow .12s}
 .yt-studio .lb-draft input:focus{border-color:var(--st-accent-border);box-shadow:0 0 0 3px var(--st-accent-soft)}
 .yt-studio .lb-draft input::placeholder{color:var(--st-text-3)}
-.yt-studio .lb-draft input.name{flex:0 1 230px}
-.yt-studio .lb-draft .secs{display:inline-flex;align-items:center;gap:6px;flex:none;font-size:12.5px;color:var(--st-text-2)}
-.yt-studio .lb-draft .secs input{flex:none;width:60px;padding:0 6px 0 10px}
 .yt-studio .lb-tr-pic.vacant{background:none;box-shadow:none;border:1px dashed var(--st-border-strong)}
 
 /* ---------- a question from Spark, on the composer ---------- */

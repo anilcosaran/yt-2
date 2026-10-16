@@ -5,8 +5,9 @@ import { createPortal } from 'react-dom'
 
 import { Icon } from '../tools/studio-parts'
 import { LOOK_OPTIONS, SCENES, STEPS, TOTAL_SECONDS, assetById, formatClock, sceneById, type AssetKind, type LabScene, type SceneLayer } from './lab-model'
+import { NoteToolbar, NotesBar } from './lab-notes'
 import { Splitter, useSplitSize } from './lab-split'
-import { agentDriving, currentStep, isAdded, pickOf, sayOf, shownSceneId, type LabRun } from './use-lab-run'
+import { agentDriving, applyingTo, currentStep, isAdded, notesOn, pickOf, sayOf, shownSceneId, type LabRun } from './use-lab-run'
 
 // The timeline of the workspace: a ruler, the scene strip, then one track per kind of thing. Pictures read as a
 // slim bar led by the scene's picture; text, shapes, sound and captions are solid bars, each kind in its own colour.
@@ -20,6 +21,10 @@ import { agentDriving, currentStep, isAdded, pickOf, sayOf, shownSceneId, type L
 // one closes the gap. Between two pictures there is the cut: its button opens the transitions. A picked clip
 // offers its entrance animation. The playhead is dragged by its handle or along the ruler. All of this is the
 // user's own layer over the agent's work, with its own undo.
+//
+// What the user wants Spark to change is a note: picking a clip opens a toolbar right above it, pointing at it (below
+// it when the clip is on the top rows), and Shift, ⌘ or Ctrl adds clips to the pick, for one note on all of them. "Düzelt" fixes the pick now; a note put on the list waits with the
+// plan's until "Hepsini düzelt" sends them to Spark together as one edit.
 //
 // State classes are prefixed (`lb-picked`, `lb-held`): bare `sel` is the stage's selection box in studio.css and hides the element.
 
@@ -85,6 +90,9 @@ type Hand =
   | { kind: 'music'; from: number; to: number }
 type Grab = { key: string; mode: 'move' | 'start' | 'end'; x: number; span: Span; moved: boolean }
 type Menu = { kind: 'transition' | 'animation'; id: string; left: number; top: number; shell: Element }
+type Popover = { left: number; top: number; shell: Element; width?: number; below?: boolean; caret?: number }
+/** What may be clicked while clips are picked without dropping the pick: the tracks and the tools. */
+const KEEPS_PICK = '.lb-tlw, .lb-transport, .lb-menu, .lb-menu-veil'
 
 const within = (value: number, low: number, high: number) => Math.min(Math.max(value, low), Math.max(low, high))
 const byStart = (a: Span, b: Span) => a.from - b.from
@@ -153,7 +161,18 @@ function layerPlaced(state: LabRun['state'], scene: LabScene, layer: SceneLayer)
   return STEPS.some((entry) => entry.adds === key) ? isAdded(state, key) : isAdded(state, `${scene.id}:media`)
 }
 
-export function LabDock({ run, compact, sizeKey }: { run: LabRun; compact?: boolean; sizeKey: string }) {
+export function LabDock({
+  run,
+  compact,
+  sizeKey,
+  notes = true,
+}: {
+  run: LabRun
+  compact?: boolean
+  sizeKey: string
+  /** Whether the dock shows what notes wait and what Spark makes of them (the Plan view has its own bar for it). */
+  notes?: boolean
+}) {
   const { state } = run
   const height = useSplitSize(sizeKey)
   const live = state.phase === 'building' || state.phase === 'done'
@@ -169,6 +188,10 @@ export function LabDock({ run, compact, sizeKey }: { run: LabRun; compact?: bool
   const [snap, setSnap] = React.useState(true)
   const [history, setHistory] = React.useState<EditHistory>({ past: [], now: UNTOUCHED, future: [] })
   const [picked, setPicked] = React.useState<string | null>(null)
+  /** The clips picked together for a note; the picked clip is one of them. */
+  const [marked, setMarked] = React.useState<string[]>([])
+  /** Where the toolbar of the picked clips opens: over the timeline, above the clip picked last. */
+  const [bar, setBar] = React.useState<Popover | null>(null)
   const [hand, setHand] = React.useState<Hand | null>(null)
   const [menu, setMenu] = React.useState<Menu | null>(null)
   // The playhead sits at the start of the scene on screen until it is put somewhere by hand in that scene.
@@ -271,6 +294,56 @@ export function LabDock({ run, compact, sizeKey }: { run: LabRun; compact?: bool
     // A picture leaves the main track and the ones after it close the gap; anything else just goes.
     change(picked === MUSIC ? { ...edits, noMusic: true } : { ...edits, items: pack(edits.items.filter((item) => item.id !== picked)) })
     setPicked(null)
+    setMarked([])
+  }
+
+  // ---- notes on the picked clips
+  /** A clip as the user knows it: its scene and its track. */
+  const clipName = (key: string) => {
+    if (key === MUSIC) return 'Müzik'
+    const scene = sceneById(edits.items.find((item) => item.id === key)?.scene ?? '')
+    const lane = LANES.find((entry) => key.startsWith(`${entry.id}:`))
+    return scene ? `${scene.role} · ${lane?.label ?? ''}` : (lane?.label ?? key)
+  }
+  const closePick = React.useCallback(() => {
+    setPicked(null)
+    setMarked([])
+    setBar(null)
+  }, [])
+  const pickFor = (key: string, add: boolean, clip: HTMLElement) => {
+    const shell = clip.closest('.st-shell')
+    const dock = clip.closest('.lb-dock')
+    if (shell && dock) {
+      const frame = shell.getBoundingClientRect()
+      const box = clip.getBoundingClientRect()
+      const area = dock.getBoundingClientRect()
+      // As wide as the timeline allows, centred on the clip but never past the timeline's own edges; the caret
+      // still points at the clip.
+      const width = Math.min(380, area.width - 16)
+      const from = area.left - frame.left + 8 + width / 2
+      const centre = box.left + box.width / 2 - frame.left
+      const left = within(centre, from, area.right - frame.left - 8 - width / 2)
+      // Right above the clip; on the top rows, where there is no room for it, right below.
+      const below = box.top - area.top < 52
+      setBar({
+        left,
+        top: below ? box.bottom - frame.top + 9 : box.top - frame.top - 9,
+        shell,
+        width,
+        below,
+        caret: within(centre - left, -width / 2 + 24, width / 2 - 24),
+      })
+    }
+    if (add) {
+      // Shift, ⌘ or Ctrl adds the clip to the picked ones (or takes it out of them), for one note on all of them.
+      const next = marked.includes(key) ? marked.filter((entry) => entry !== key) : [...marked, key]
+      setMarked(next)
+      setPicked(next.includes(key) ? key : (next[next.length - 1] ?? null))
+      return
+    }
+    const next = picked === key ? null : key
+    setPicked(next)
+    setMarked(next ? [next] : [])
   }
 
   // ---- a clip in the hand
@@ -330,7 +403,7 @@ export function LabDock({ run, compact, sizeKey }: { run: LabRun; compact?: bool
       event.stopPropagation()
       if (!held || held.key !== clip.key) return
       if (!held.moved) {
-        if (held.mode === 'move') setPicked(picked === clip.key ? null : clip.key)
+        if (held.mode === 'move') pickFor(clip.key, event.shiftKey || event.metaKey || event.ctrlKey, event.currentTarget)
       } else if (hand?.kind === 'clips') {
         // Put back where it was is not an edit.
         if (hand.items.some((item, index) => item.from !== edits.items[index]?.from || item.to !== edits.items[index]?.to)) change({ ...edits, items: hand.items })
@@ -397,6 +470,7 @@ export function LabDock({ run, compact, sizeKey }: { run: LabRun; compact?: bool
           </div>
         )}
         <span className="grow" />
+        {notes ? <NotesBar run={run} variant="inline" /> : null}
         <div className="lb-tools end">
           {compact ? null : (
             <button type="button" className={`ib sm${snap ? ' on' : ''}`} onClick={() => setSnap(!snap)} aria-pressed={snap} title="Yapışma: yarım saniyeye oturur" aria-label="Yapışma"><Icon name="magnet" /></button>
@@ -443,6 +517,8 @@ export function LabDock({ run, compact, sizeKey }: { run: LabRun; compact?: bool
                         return lane.id === 'video' ? <span key={clip.key} className="lb-tl lb-slot" style={place(clip)} {...(clip.target && { 'data-agent-target': clip.target })} /> : null
                       }
                       const chosen = picked === clip.key
+                      const inNote = !chosen && marked.includes(clip.key)
+                      const note = notesOn(state, clip.key)[0]
                       const held = clip.floating || (hand?.kind === 'music' && lane.id === 'audio')
                       const animated = edits.animations[clip.key] && edits.animations[clip.key] !== 'none'
                       const agent = clip.target ? on(clip.target) : clip.arriving ? ' lb-agent-on' : ''
@@ -450,15 +526,16 @@ export function LabDock({ run, compact, sizeKey }: { run: LabRun; compact?: bool
                         <button
                           key={clip.key}
                           type="button"
-                          className={`lb-tl on${lane.id === 'video' ? ' lb-film' : ''}${lane.id === 'audio' ? ' lb-wave' : ''}${chosen ? ' lb-picked' : ''}${held ? ' lb-held' : ''}${agent}`}
+                          className={`lb-tl on${lane.id === 'video' ? ' lb-film' : ''}${lane.id === 'audio' ? ' lb-wave' : ''}${chosen ? ' lb-picked' : ''}${inNote ? ' lb-marked' : ''}${note ? ' lb-has-note' : ''}${applyingTo(state, clip.key) ? ' lb-applying' : ''}${held ? ' lb-held' : ''}${agent}`}
                           style={place(clip)}
-                          title={`${clip.label} · ${formatClock(Math.floor(clip.from))}–${formatClock(Math.ceil(clip.to))}`}
-                          aria-pressed={chosen}
+                          title={`${clip.label} · ${formatClock(Math.floor(clip.from))}–${formatClock(Math.ceil(clip.to))}${note ? ` · Not: ${note.text}` : ''}`}
+                          aria-pressed={chosen || inNote}
                           {...hold(clip, 'move')}
                           {...(clip.target && { 'data-agent-target': clip.target })}
                         >
                           {lane.id === 'video' && clip.scene ? <b className="lb-film-pic" aria-hidden><i className={`lb-art ${clip.scene.art}`} /></b> : null}
                           <span className="lb-tl-tag"><Icon name={clip.icon} />{clip.label}</span>
+                          {note ? <i className="lb-tl-note" aria-hidden /> : null}
                           {chosen || animated ? (
                             <i
                               className={`lb-tl-fx${animated ? ' set' : ''}`}
@@ -527,6 +604,19 @@ export function LabDock({ run, compact, sizeKey }: { run: LabRun; compact?: bool
               </div>
             </>,
             menu.shell,
+          )
+        : null}
+      {bar && marked.length && !hand
+        ? createPortal(
+            <NoteToolbar
+              run={run}
+              selection={{ targets: marked, labels: marked.map(clipName), noun: 'parça' }}
+              onClose={closePick}
+              keep={KEEPS_PICK}
+              className={`float${bar.below ? ' below' : ''}`}
+              style={{ left: bar.left, top: bar.top, width: bar.width, '--lb-caret': `${bar.caret ?? 0}px` } as React.CSSProperties}
+            />,
+            bar.shell,
           )
         : null}
     </div>

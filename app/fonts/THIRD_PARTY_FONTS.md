@@ -9,7 +9,7 @@ Fonts `latin` + `latin-ext` subsets (English and Turkish, including ğ ş ı İ 
 | --- | --- | --- | --- | --- | --- |
 | Inter 4.001 | `Inter-Variable.woff2` | `ofl/inter/Inter[opsz,wght].ttf` | `wght` 100–900 (`opsz` pinned to its default 14) | `app/layout.tsx` (`--font-inter`) | SIL Open Font License 1.1, `Inter-OFL.txt` |
 | Space Grotesk 2.000 | `SpaceGrotesk-Variable.woff2` | `ofl/spacegrotesk/SpaceGrotesk[wght].ttf` | `wght` 300–700 (declared 500–700) | `app/layout.tsx` (`--font-space-grotesk`) | SIL Open Font License 1.1, `SpaceGrotesk-OFL.txt` |
-| Instrument Sans 1.000 | `InstrumentSans-Variable.woff2` | `ofl/instrumentsans/InstrumentSans[wdth,wght].ttf` | `wght` 400–700 (declared 400–600; `wdth` pinned to its default 100) | `components/spark/spark-editor-shell.tsx` (`--font-instrument-sans`) | SIL Open Font License 1.1, `InstrumentSans-OFL.txt` |
+| Instrument Sans 1.000 | `InstrumentSans-Variable.woff2` | `ofl/instrumentsans/InstrumentSans[wdth,wght].ttf` | `wght` 400–700 (declared 400–600; `wdth` pinned to its default 100) | `components/spark/lab/lab-frame.tsx` (`--font-instrument-sans`) | SIL Open Font License 1.1, `InstrumentSans-OFL.txt` |
 
 The files were produced with fontTools 4.64: `fontTools.varLib.instancer` pins the axes listed above
 (what Google Fonts serves when only `wght` is requested), then `fontTools.subset` keeps the code points

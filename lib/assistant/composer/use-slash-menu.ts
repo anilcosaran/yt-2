@@ -50,7 +50,7 @@ export function useSlashMenuGroups(input: {
 
   // P03-25: the "Connections" group — approved tools of the user's enabled connections minus this conversation's
   // switched-off ones (server data; the Connector applies the same switch at dispatch).
-  // E1-H: owner commands (`/motion`) the server offers this tenant on this surface; a failed read offers none.
+  // E1-H: owner commands the server offers this tenant on this surface; a failed read offers none.
   const commands = useQuery({
     queryKey: [...COMPOSER_COMMANDS_QUERY_KEY, input.surface],
     queryFn: ({ signal }) => getComposerCommands(input.surface, { signal }),

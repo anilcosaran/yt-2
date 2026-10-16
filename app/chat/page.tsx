@@ -51,13 +51,11 @@ import {
 
 import { ChatMarkdown } from '@/components/chat/chat-markdown'
 import { hasSparkOpenableResult, useOpenChatResultInSpark } from '@/components/chat/open-in-spark'
-import { MotionResultCard } from '@/components/chat/motion-result-card'
 import { SparkContinueCard } from '@/components/chat/spark-continue-card'
 import { SparkCandidateCard, sparkCandidateCount } from '@/components/chat/spark-candidate-card'
 import { ConnectionRequirementCard } from '@/components/chat/connection-requirement-card'
 import { readConnectionRequirementMessage } from '@/lib/connector/api'
 import { publishConnectionRequirementEvent } from '@/lib/connector/requirement-events'
-import { readMotionResult } from '@/lib/spark/motion-result'
 import { readSparkHandoff } from '@/lib/spark/spark-entry'
 import { SkillAuthoringCards } from '@/components/chat/skill-authoring-cards'
 import { useProductionG1Open, useProductionPlanShown } from '@/components/chat/production-g1-card'
@@ -3153,13 +3151,11 @@ function ChatMessageBubble({
   const skillCards = isUser ? [] : readSkillAuthoringCards(message.content_json)
   // P03-13: a result carrying the Chat → Spark handoff contract shows the "Continue in Spark" card.
   const sparkHandoff = isUser ? null : readSparkHandoff(message.content_json)
-  // E1-H: a `/motion` job's closing answer shows the "Motion draft ready - Open in Motion" card (the Dashboard has no project).
-  const motionResult = isUser ? null : readMotionResult(message.content_json)
   // P03-18: the job's connection question shows the small connection card.
   const connectionRequirement = isUser ? null : readConnectionRequirementMessage(message.content_json, message.id)
   const visibleContent = isUser ? message.content.trim() : getAssistantVisibleContent(message.content, attachments)
   const hasVisibleContent = visibleContent.length > 0
-  if (!hasVisibleContent && attachments.length === 0 && !workflowDraft && skillCards.length === 0 && !sparkHandoff && !motionResult && !connectionRequirement) return null
+  if (!hasVisibleContent && attachments.length === 0 && !workflowDraft && skillCards.length === 0 && !sparkHandoff && !connectionRequirement) return null
 
   function openPreview(asset: ChatAssetAttachment, group: ChatAssetAttachment[] = attachments) {
     const previewableGroup = group.filter(isVisualAttachment)
@@ -3212,7 +3208,6 @@ function ChatMessageBubble({
       )}
       {skillCards.length > 0 && <SkillAuthoringCards cards={skillCards} messageId={message.id} />}
       {sparkHandoff && <SparkContinueCard handoff={sparkHandoff} />}
-      {motionResult && <MotionResultCard result={motionResult} />}
       {sparkCandidatesOpen && (
         <SparkCandidateCard
           message={message}

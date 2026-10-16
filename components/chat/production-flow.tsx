@@ -220,7 +220,7 @@ function JobSuggestions({ jobId, projectId, onPick }: { jobId: string; projectId
   const items = [1, 2, 3].map((n) => ({ id: `${stage}-${n}`, label: t(`productionFlow.suggestions.${stage}.${n}`) }))
   return (
     <AgentScope>
-      <AgentSuggestions items={items} label={t('productionFlow.suggestions.label')} onPick={(item) => onPick(item.label)} />
+      <AgentSuggestions singleLine items={items} label={t('productionFlow.suggestions.label')} onPick={(item) => onPick(item.label)} />
     </AgentScope>
   )
 }

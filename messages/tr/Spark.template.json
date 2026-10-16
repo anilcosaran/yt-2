@@ -1,9 +1,0 @@
-{
-  "editor": {
-    "template": {
-      "addSceneLocked": "Bu şablonun sahne sırası kilitli",
-      "addSceneFromLibrary": "Sahneler şablonun sahne kütüphanesinden eklenir",
-      "addSceneFromTemplate": "Sahneler bu şablondan eklenir"
-    }
-  }
-}

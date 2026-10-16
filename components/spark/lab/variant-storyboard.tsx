@@ -117,7 +117,7 @@ export function PlanTimeline({ run, open = false, sizeKey = 'plan-dock' }: { run
   const [timelineOpen, setTimelineOpen] = React.useState(open)
   return (
     <footer className={`lb-b-foot${timelineOpen ? ' open' : ''}`} data-agent-target="board-foot">
-      {timelineOpen ? <LabDock run={run} compact sizeKey={sizeKey} /> : (
+      {timelineOpen ? <LabDock run={run} compact sizeKey={sizeKey} notes={false} /> : (
         <div className="lb-b-strip">
           <button type="button" className="play" aria-label="Oynat"><Icon name="play" /></button>
           <span className="time">0:00<span className="tt"> / {formatClock(TOTAL_SECONDS)}</span></span>

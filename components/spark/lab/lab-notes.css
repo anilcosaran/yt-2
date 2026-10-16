@@ -1,0 +1,165 @@
+/* Notes for Spark and in-place editing (lab-notes.tsx, lab-source.tsx, lab-edit.tsx): the toolbar of a pick, the pick
+   box on a scene's number, the fix button, kept notes, the source and model popup, the notes bar, notes on the timeline
+   and the text edited where it stands. Loaded by those components themselves, on top of lab.css. */
+/* Notes for Spark (lab-notes.tsx). A scene is picked by the box on its number or by "Düzelt"; the toolbar opens
+   under the row picked last. A kept note waits on its row as a chip; what a remake changed stays on the row. */
+.yt-studio.lb-root{--lb-note:var(--lb-amber);--lb-note-soft:color-mix(in srgb,var(--lb-amber) 12%,transparent);--lb-note-border:color-mix(in srgb,var(--lb-amber) 40%,transparent)}
+.yt-studio .lb-tr.scene{position:relative}
+.yt-studio .lb-tr.scene.lb-noted{box-shadow:inset 2px 0 0 var(--lb-note)}
+.yt-studio .lb-tr.scene.lb-selected{background:color-mix(in srgb,var(--st-accent) 7%,transparent);box-shadow:inset 2px 0 0 var(--st-accent)}
+/* the number turns into a box when the row is pointed at, picked, or while scenes are being picked */
+.yt-studio .lb-sel{position:relative;display:grid;place-items:center;width:20px;height:20px;margin-top:-1px;border-radius:5px;font-size:13px;font-weight:500;color:var(--st-text-2);font-variant-numeric:tabular-nums}
+.yt-studio .lb-sel .box{position:absolute;inset:2px;display:grid;place-items:center;border:1.5px solid var(--st-text-3);border-radius:4px;color:transparent;opacity:0;transition:opacity .1s,background .1s,border-color .1s}
+.yt-studio .lb-sel .box .i{width:11px;height:11px;stroke-width:3}
+.yt-studio .lb-tr:hover .lb-sel .n,.yt-studio .lb-sel:focus-visible .n,.yt-studio .lb-script.picking .lb-sel .n,.yt-studio .lb-sel[aria-checked=true] .n{opacity:0}
+.yt-studio .lb-tr:hover .lb-sel .box,.yt-studio .lb-sel:focus-visible .box,.yt-studio .lb-script.picking .lb-sel .box,.yt-studio .lb-sel[aria-checked=true] .box{opacity:1}
+.yt-studio .lb-sel:hover .box{border-color:var(--st-text)}
+.yt-studio .lb-sel[aria-checked=true] .box{background:var(--st-accent);border-color:var(--st-accent);color:#fff}
+/* the row's own actions: Düzelt over the take-over lock */
+.yt-studio .lb-row-acts{display:flex;flex-direction:column;align-items:center;gap:4px}
+.yt-studio .lb-fix{display:grid;place-items:center;width:26px;height:26px;border-radius:8px;color:var(--st-text-3);transition:background .12s,color .12s,box-shadow .12s}
+.yt-studio .lb-fix .i{width:15px;height:15px}
+.yt-studio .lb-tr:hover .lb-fix{color:var(--st-text-2)}
+.yt-studio .lb-fix:hover{background:var(--st-hover);color:var(--st-text)}
+.yt-studio .lb-fix.on{background:var(--st-accent-soft);color:var(--st-accent-text);box-shadow:inset 0 0 0 1px var(--st-accent-border)}
+.yt-studio .lb-fix:disabled{opacity:.4;pointer-events:none}
+/* a kept note: one line on the row, opened again by a click */
+.yt-studio .lb-note-chip{display:inline-flex;align-items:center;max-width:100%;height:26px;margin-top:8px;border:1px solid var(--lb-note-border);border-radius:99px;background:var(--lb-note-soft);animation:lb-in .18s ease-out}
+.yt-studio .lb-note-chip button:first-child{display:flex;align-items:center;gap:6px;min-width:0;height:100%;padding:0 4px 0 9px;font-size:12.5px;color:var(--st-text)}
+.yt-studio .lb-note-chip button:first-child span{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.yt-studio .lb-note-chip .i{flex:none;width:13px;height:13px;color:var(--lb-note)}
+.yt-studio .lb-note-chip button:last-child{flex:none;display:grid;place-items:center;width:22px;height:22px;margin-right:2px;border-radius:99px}
+.yt-studio .lb-note-chip button:last-child .i{width:11px;height:11px;color:var(--st-text-3)}
+.yt-studio .lb-note-chip button:last-child:hover{background:var(--st-hover)}
+.yt-studio .lb-note-chip button:last-child:hover .i{color:var(--st-text)}
+/* the toolbar of a pick: a near-black pill in every theme, one colour: the AI mark, the field, Listeye ekle, Düzelt and ✕ */
+.yt-studio .lb-ntb{display:flex;align-items:center;gap:2px;height:34px;padding:0 3px 0 12px;border:1px solid rgba(255,255,255,.09);border-radius:999px;background:rgba(14,14,16,.96);box-shadow:inset 0 1px 0 rgba(255,255,255,.05),0 10px 28px rgba(0,0,0,.38);backdrop-filter:blur(10px);font-size:12.5px;color:#f4f4f5}
+/* in the plan it opens inside its row, under the text, and pushes the next row down (it covers nothing) */
+.yt-studio .lb-ntb.inline{grid-column:4/-1;justify-self:start;width:100%;max-width:480px;margin-top:-4px;animation:lb-ntb-in .16s cubic-bezier(.2,.8,.2,1)}
+/* on the timeline it floats on its clip, with a caret pointing at it (below the clip on the top rows) */
+.yt-studio .lb-ntb.float{position:fixed;z-index:80;transform:translate(-50%,-100%);animation:lb-ntb-up .16s cubic-bezier(.2,.8,.2,1)}
+.yt-studio .lb-ntb.float::after{content:'';position:absolute;left:calc(50% + var(--lb-caret,0px));bottom:-5px;width:9px;height:9px;margin-left:-4.5px;background:rgb(14,14,16);border:solid rgba(255,255,255,.09);border-width:0 1px 1px 0;transform:rotate(45deg)}
+.yt-studio .lb-ntb.float.below{transform:translate(-50%,0);animation:lb-ntb-down .16s cubic-bezier(.2,.8,.2,1)}
+.yt-studio .lb-ntb.float.below::after{bottom:auto;top:-5px;border-width:1px 0 0 1px}
+@keyframes lb-ntb-in{from{opacity:0;transform:translateY(-4px)}}
+@keyframes lb-ntb-up{from{opacity:0;transform:translate(-50%,calc(-100% + 6px))}}
+@keyframes lb-ntb-down{from{opacity:0;transform:translate(-50%,-6px)}}
+.yt-studio .lb-ntb input{flex:1;min-width:60px;height:26px;padding:0 6px;border:0;background:none;font-size:12.5px;color:#f4f4f5;outline:0}
+.yt-studio .lb-ntb input::placeholder{color:rgba(255,255,255,.38)}
+.yt-studio .lb-ntb-mark{flex:none;display:inline-flex;align-items:center;gap:4px;color:rgba(255,255,255,.5)}
+.yt-studio .lb-ntb-mark .i{width:13px;height:13px}
+.yt-studio .lb-ntb-mark b{font-size:11px;font-weight:600;font-variant-numeric:tabular-nums;color:#f4f4f5}
+/* the quiet way on: keep the note on the list for "Hepsini düzelt" */
+.yt-studio .lb-ntb-list{flex:none;display:inline-flex;align-items:center;gap:4px;height:26px;margin-right:2px;padding:0 9px 0 7px;border-radius:999px;font-size:12px;font-weight:500;color:rgba(255,255,255,.72);white-space:nowrap;animation:lb-fade .12s ease-out;transition:background .12s,color .12s}
+.yt-studio .lb-ntb-list .i{width:12px;height:12px}
+.yt-studio .lb-ntb-list:hover{background:rgba(255,255,255,.08);color:#fff}
+.yt-studio .lb-ntb-go{flex:none;display:inline-flex;align-items:center;gap:5px;height:26px;padding:0 11px 0 9px;white-space:nowrap;border-radius:999px;background:#f4f4f5;font-size:12px;font-weight:600;color:#0b0b0c;transition:background .12s,opacity .12s}
+.yt-studio .lb-ntb-go:hover:not(:disabled){background:#fff}
+.yt-studio .lb-ntb-go:disabled{opacity:.5}
+.yt-studio .lb-ntb-go .i{width:12px;height:12px}
+/* its ✕: right after Üret, behind a thin rule */
+.yt-studio .lb-ntb-close{flex:none;position:relative;display:grid;place-items:center;width:28px;height:28px;margin-left:5px;border-radius:50%;color:rgba(255,255,255,.62);transition:background .12s,color .12s}
+.yt-studio .lb-ntb-close::before{content:'';position:absolute;left:-3px;top:7px;bottom:7px;width:1px;background:rgba(255,255,255,.12)}
+.yt-studio .lb-ntb-close .i{width:13px;height:13px}
+.yt-studio .lb-ntb-close:hover{background:rgba(255,255,255,.1);color:#fff}
+/* the source of a scene's picture: its tag opens a small popup for the source and the model */
+.yt-studio .lb-src{position:relative;display:inline-flex;min-width:0}
+.yt-studio .lb-tr-title .lb-src-btn{height:22px;padding:0 8px;font-weight:500;color:var(--st-text-2)}
+.yt-studio .lb-tr-title .lb-edit .lb-edit-btn{margin-left:4px}
+.yt-studio .lb-script .stag.lb-src-btn{display:inline-flex;align-items:center;gap:5px;cursor:pointer;transition:background .12s,border-color .12s}
+.yt-studio .lb-src-btn .i{width:12px;height:12px;flex:none}
+.yt-studio .lb-src-btn .i:last-child{width:10px;height:10px;margin-right:-3px;opacity:.6}
+.yt-studio .lb-src-btn:hover,.yt-studio .lb-src-btn.on{background:var(--st-hover);border-color:var(--st-text-3)}
+.yt-studio .lb-src-pop{position:absolute;z-index:9;top:calc(100% + 6px);left:0;width:300px;font-size:12.5px;font-weight:400;color:var(--st-text);display:grid;gap:8px;padding:8px;border:1px solid var(--st-border-strong);border-radius:12px;background:var(--st-surface);box-shadow:var(--st-shadow-lg);animation:lb-ntb-in .14s ease-out;white-space:normal}
+.yt-studio .lb-src-seg{display:grid;grid-template-columns:repeat(4,1fr);gap:2px;padding:2px;border-radius:8px;background:var(--st-hover)}
+.yt-studio .lb-src-seg button{height:26px;border-radius:6px;font-size:11.5px;font-weight:500;color:var(--st-text-2);white-space:nowrap}
+.yt-studio .lb-src-seg button:hover{color:var(--st-text)}
+.yt-studio .lb-src-seg button.on{background:var(--st-surface);color:var(--st-text);box-shadow:0 1px 2px rgba(0,0,0,.18)}
+.yt-studio .lb-src-hint{padding:2px 4px;font-size:12px;line-height:1.45;color:var(--st-text-2)}
+.yt-studio .lb-src-foot{padding:6px 4px 0;border-top:1px solid var(--st-border);font-size:11px;color:var(--st-text-3)}
+/* a source or model picked for a made frame: a dot on the tag until "Hepsini düzelt" makes the frame again */
+.yt-studio .lb-src-btn.changed{border-color:var(--lb-note-border)}
+.yt-studio .lb-src-btn.changed::after{content:'';flex:none;width:6px;height:6px;margin-left:1px;border-radius:50%;background:var(--lb-note)}
+/* the frame of a scene the user added: empty, a place to give it a picture; given, the picture */
+.yt-studio .lb-slot{position:relative;min-width:0}
+.yt-studio .lb-slot-pic{display:block;width:100%;padding:0;cursor:pointer;text-align:center}
+.yt-studio .lb-slot-pic.vacant{transition:border-color .12s,background .12s}
+.yt-studio .lb-slot-pic.vacant:hover,.yt-studio .lb-slot-pic.over,.yt-studio .lb-slot-pic[aria-expanded=true]{border-color:var(--st-text-3);background:var(--st-hover)}
+.yt-studio .lb-slot-pic.over{border-style:solid;border-color:var(--st-accent)}
+.yt-studio .lb-slot-add{display:grid;place-items:center;align-content:center;gap:4px;height:100%;font-size:10.5px;font-weight:500;color:var(--st-text-3)}
+.yt-studio .lb-slot-add .i{width:15px;height:15px}
+.yt-studio .lb-slot-pic:hover .lb-slot-add{color:var(--st-text)}
+.yt-studio .lb-slot-pic img,.yt-studio .lb-slot-pic video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.yt-studio .lb-slot-opt{display:flex;align-items:center;gap:9px;width:100%;padding:7px 8px;border-radius:7px;text-align:left}
+.yt-studio .lb-slot-opt:hover{background:var(--st-hover)}
+.yt-studio .lb-slot-opt.on{background:var(--st-accent-soft)}
+.yt-studio .lb-slot-opt > .i{flex:none;width:15px;height:15px;color:var(--st-text-2)}
+.yt-studio .lb-slot-opt span{display:grid;min-width:0}
+.yt-studio .lb-slot-opt b{font-size:12.5px;font-weight:600;color:var(--st-text)}
+.yt-studio .lb-slot-opt small{font-size:11px;color:var(--st-text-3)}
+/* the picture's source, one at a time: the user's own media, a model (searchable, with an optional reference), stock, kit */
+.yt-studio .lb-src-media{display:flex;align-items:center;gap:10px;padding:4px}
+.yt-studio .lb-src-thumb{position:relative;flex:none;width:34px;aspect-ratio:var(--lb-ar);border-radius:5px;overflow:hidden;background:#111;box-shadow:0 0 0 1px var(--st-frame-ring)}
+.yt-studio .lb-src-thumb img,.yt-studio .lb-src-thumb video,.yt-studio .lb-slot-pic .lb-thumb img,.yt-studio .lb-slot-pic .lb-thumb video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.yt-studio .lb-src-thumb .lb-art{container-type:size}
+.yt-studio .lb-src-text{display:grid;flex:1;min-width:0}
+.yt-studio .lb-src-text b{font-size:12.5px;font-weight:600;color:var(--st-text);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.yt-studio .lb-src-text small{font-size:11px;color:var(--st-text-3)}
+/* the searchable model list (the app's Command, as in Tools); the lab's reset takes its spacing, so it is given here */
+.yt-studio .lb-src-cmd{display:flex;flex-direction:column;height:auto;overflow:hidden;border:1px solid var(--st-border);border-radius:9px;background:transparent;color:var(--st-text)}
+.yt-studio .lb-src-cmd [data-slot=command-input-wrapper]{display:flex;align-items:center;gap:8px;height:34px;padding:0 10px;border-bottom:1px solid var(--st-border)}
+.yt-studio .lb-src-cmd [data-slot=command-input-wrapper] svg{width:14px;height:14px;flex:none;opacity:.5}
+.yt-studio .lb-src-cmd [cmdk-input]{flex:1;min-width:0;height:100%;border:0;background:none;font-size:12.5px;color:var(--st-text);outline:0}
+.yt-studio .lb-src-cmd [cmdk-input]::placeholder{color:var(--st-text-3)}
+.yt-studio .lb-src-cmd [cmdk-list]{max-height:216px;overflow:auto;padding:4px}
+.yt-studio .lb-src-cmd [cmdk-group]{padding:0}
+.yt-studio .lb-src-cmd [cmdk-group-heading]{padding:6px 8px 3px;font-size:10.5px;font-weight:600;letter-spacing:.04em;text-transform:uppercase;color:var(--st-text-3)}
+.yt-studio .lb-src-cmd [cmdk-item]{display:flex;align-items:center;gap:8px;padding:6px 8px;border-radius:6px;cursor:pointer}
+.yt-studio .lb-src-cmd [cmdk-item][data-selected=true]{background:var(--st-hover)}
+.yt-studio .lb-src-cmd [cmdk-item][data-disabled=true]{opacity:.45;cursor:default}
+.yt-studio .lb-src-cmd [cmdk-empty]{padding:14px 8px;text-align:center;font-size:12px;color:var(--st-text-3)}
+.yt-studio .lb-src-cmd [cmdk-item] > .i{flex:none;width:14px;height:14px;margin-left:auto;color:var(--st-accent-text)}
+.yt-studio .lb-src-model{display:grid;min-width:0}
+.yt-studio .lb-src-model b{font-size:12.5px;font-weight:600}
+.yt-studio .lb-src-model small{font-size:11px;opacity:.65}
+.yt-studio .lb-src-addref{display:flex;align-items:center;gap:6px;width:100%;height:30px;padding:0 8px;border:1px dashed var(--st-border-strong);border-radius:8px;font-size:12px;font-weight:500;color:var(--st-text-2);transition:background .12s,color .12s,border-color .12s}
+.yt-studio .lb-src-addref .i{width:13px;height:13px}
+.yt-studio .lb-src-addref small{margin-left:auto;font-size:11px;font-weight:400;color:var(--st-text-3)}
+.yt-studio .lb-src-addref:hover{border-color:var(--st-text-3);background:var(--st-hover);color:var(--st-text)}
+.yt-studio .lb-src-out{padding:0 4px;font-size:11px;color:var(--st-text-3)}
+/* media with no preview yet: what kind it is */
+.yt-studio .lb-media-none{position:absolute;inset:0;display:grid;place-items:center;background:var(--st-hover);color:var(--st-text-3)}
+.yt-studio .lb-media-none .i{width:14px;height:14px}
+/* a reference picture on a new scene's frame says it is one */
+.yt-studio .lb-slot-badge{position:absolute;left:4px;bottom:4px;z-index:2;padding:1px 5px;border-radius:4px;background:rgba(0,0,0,.66);font-size:10px;font-weight:600;line-height:1.5;color:#fff}
+/* what is waiting, Spark at work, the finished edit: over the bottom of the plan, or in the timeline's tool row */
+.yt-studio .lb-notes-bar{display:flex;align-items:center;gap:8px;min-width:0;font-size:12.5px;color:var(--st-text-2)}
+.yt-studio .lb-notes-bar.float{position:sticky;bottom:18px;z-index:6;width:max-content;max-width:calc(100% - 48px);margin:-58px auto 18px;padding:6px 6px 6px 14px;border:1px solid var(--st-border-strong);border-radius:14px;background:var(--st-surface);box-shadow:var(--st-shadow-lg);animation:lb-in .2s ease-out}
+.yt-studio .lb-notes-bar.float.working{padding-right:14px}
+.yt-studio .lb-notes-bar.inline{height:28px;padding:0 2px 0 10px;border-radius:8px;background:var(--lb-note-soft)}
+.yt-studio .lb-notes-bar.inline.working{padding-right:10px;background:var(--st-hover)}
+.yt-studio .lb-notes-msg{display:flex;align-items:center;gap:7px;min-width:0;white-space:nowrap}
+.yt-studio .lb-notes-msg > .i{flex:none;width:14px;height:14px;color:var(--lb-note)}
+.yt-studio .lb-notes-msg.done > .i{color:var(--st-ok)}
+.yt-studio .lb-notes-msg b{font-weight:600;color:var(--st-text)}
+.yt-studio .lb-notes-names{min-width:0;max-width:280px;overflow:hidden;text-overflow:ellipsis;color:var(--st-text-3)}
+.yt-studio .lb-notes-count{color:var(--st-text-3);font-variant-numeric:tabular-nums}
+.yt-studio .lb-notes-meter{display:block;width:64px;height:4px;border-radius:2px;background:var(--st-hover);overflow:hidden}
+.yt-studio .lb-notes-meter i{display:block;height:100%;background:var(--st-accent);transition:width .3s}
+.yt-studio .lb-notes-bar .btn{flex:none}
+.yt-studio .lb-notes-bar .btn .i{width:13px;height:13px}
+.yt-studio .lb-notes-bar.inline .btn{height:24px}
+.yt-studio .lb-notes-bar .lb-act{flex:none;height:26px}
+/* notes on the timeline: clips picked together (Shift, ⌘ or Ctrl), a note for all of them, the clips that wait on one */
+.yt-studio .lb-tl.lb-marked{box-shadow:0 0 0 2px var(--st-text);z-index:1}
+.yt-studio .lb-tl.lb-has-note{outline:1.5px solid var(--lb-note);outline-offset:-1.5px}
+.yt-studio .lb-tl-note{position:absolute;top:0;right:0;z-index:1;width:9px;height:9px;background:linear-gradient(225deg,var(--lb-note) 50%,transparent 50%);pointer-events:none}
+.yt-studio .lb-tl.lb-applying{animation:lb-redraft 1s ease-in-out infinite}
+@media (prefers-reduced-motion:reduce){.yt-studio .lb-tl.lb-applying{animation:none;opacity:.6}}
+/* the text edited where it stands: same size and lines, no box, only a thin accent line under it */
+.yt-studio .lb-edit-text{cursor:text;border-radius:4px;transition:background .12s}
+.yt-studio .lb-edit-text:hover{background:var(--st-hover)}
+.yt-studio .lb-edit-area{display:block;width:100%;margin:0;padding:0 0 2px;border:0;border-radius:0;background:none;box-shadow:inset 0 -1px 0 var(--st-accent);font:inherit;line-height:inherit;letter-spacing:inherit;color:inherit;resize:none;overflow:hidden;outline:0;caret-color:var(--st-accent)}
+.yt-studio .lb-edit-area::placeholder{color:var(--st-text-3)}
+/* a scene's name being typed takes the room of the title */
+.yt-studio .lb-tr-title b:has(.lb-edit-area){flex:1;min-width:140px}

@@ -2,14 +2,15 @@
 
 import * as React from 'react'
 import { useQuery } from '@tanstack/react-query'
-import { Loader2, MapPin, Mars, NonBinary, Pause, Play, Plus, Star, Venus, X } from 'lucide-react'
+import { Check, ChevronDown, Loader2, MapPin, Mars, NonBinary, Pause, Play, Plus, SlidersHorizontal, Star, Venus, X } from 'lucide-react'
 import Link from 'next/link'
 import { useTranslations } from 'next-intl'
 
 import { BrandSearch, BrandSegmented, BrandTabs } from '@/components/brand/brand-controls'
 import { LanguageFlagIcon } from '@/components/i18n/language-flag-icon'
 import { Button } from '@/components/ui/button'
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
+import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList, CommandSeparator } from '@/components/ui/command'
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
 import { useActiveChannel } from '@/lib/channel/active-channel'
 import { WorkspaceChannelRequired } from '@/components/channel/workspace-channel-required'
 import { WorkspaceRouteLoading } from '@/components/common/workspace-route-loading'
@@ -28,7 +29,6 @@ type Filters = { query: string; gender: string; ageBand: string; language: strin
 
 const GENDERS = ['all', 'female', 'male', 'nonbinary'] as const
 const AGES = ['all', 'young', 'adult', 'mature'] as const
-const TAGS_SHOWN = 10
 /** The sign beside each gender, in its colour, in the filter and on the cards. */
 const GENDER_SIGNS: Record<string, { icon: React.ComponentType<{ className?: string }>; color: string }> = {
   female: { icon: Venus, color: 'text-pink-500 dark:text-pink-400' },
@@ -46,8 +46,8 @@ const EMPTY_FILTERS: Filters = { query: '', gender: 'all', ageBand: 'all', langu
 
 /**
  * Marka > Sesler: the voice library as cards, two to a row. The catalog's voices and the channel's own clones in two
- * tabs; filters by gender (with its sign) and age, language (with its flag) and accent, and tone or use (chips); each
- * card plays its preview in place. One voice plays at a time.
+ * tabs; gender (with its sign) and age are filtered in the row, language (with its flag), accent, tone and use in one
+ * "Filters" menu, the chosen ones listed beside the count; each card plays its preview in place. One voice plays at a time.
  */
 export function BrandVoicePage() {
   const t = useTranslations('BrandVoice')
@@ -56,7 +56,6 @@ export function BrandVoicePage() {
   const [filters, setFilters] = React.useState<Filters>(EMPTY_FILTERS)
   const [playingId, setPlayingId] = React.useState<string | null>(null)
   const [favorites, setFavorites] = React.useState<ReadonlySet<string>>(() => new Set())
-  const [allTags, setAllTags] = React.useState(false)
 
   const mineQuery = useQuery({
     queryKey: voiceProfilesQueryKey({ channelId: activeChannelId ?? undefined, origin: 'instant_clone', limit: 100 }),
@@ -81,16 +80,46 @@ export function BrandVoicePage() {
   const source = tab === 'mine' ? mine : stock
   const languages = [...new Set(source.flatMap((profile) => profile.supported_languages))].sort()
   const accents = [...new Set(source.flatMap((profile) => (profile.catalog.accent ? [profile.catalog.accent] : [])))].sort((a, b) => a.localeCompare(b, 'tr'))
-  // Tone and use tags, the most common first; a few show, the rest open on demand (a chosen one always shows).
+  // Tone and use tags with the number of voices that carry each, the most common first; a tag used both ways is a tone.
   const tagCounts = new Map<string, number>()
-  for (const profile of source) for (const tag of [...profile.catalog.tone_tags, ...profile.catalog.use_case_tags]) tagCounts.set(tag, (tagCounts.get(tag) ?? 0) + 1)
+  const toneTags = new Set<string>()
+  for (const profile of source) {
+    for (const tag of profile.catalog.tone_tags) toneTags.add(tag)
+    for (const tag of new Set([...profile.catalog.tone_tags, ...profile.catalog.use_case_tags])) tagCounts.set(tag, (tagCounts.get(tag) ?? 0) + 1)
+  }
   const tags = [...tagCounts.keys()].sort((a, b) => (tagCounts.get(b)! - tagCounts.get(a)!) || a.localeCompare(b, 'tr'))
-  const shownTags = allTags ? tags : [...new Set([...tags.slice(0, TAGS_SHOWN), ...filters.tags])]
+  const toggleTag = (tag: string) => set({ tags: filters.tags.includes(tag) ? filters.tags.filter((item) => item !== tag) : [...filters.tags, tag] })
   const visible = filterVoices(source, filters)
   const activeQuery = tab === 'mine' ? mineQuery : stockQuery
   const filtered = filters.query !== '' || filters.gender !== 'all' || filters.ageBand !== 'all' || filters.language !== 'all' || filters.accent !== 'all' || filters.tags.length > 0
   const set = (patch: Partial<Filters>) => setFilters((current) => ({ ...current, ...patch }))
   const languageName = (code: string) => (t.has(`languageNames.${code}`) ? t(`languageNames.${code}`) : code.toUpperCase())
+  const pinIcon = <MapPin className="size-3.5 text-muted-foreground" />
+  const tagItems = (list: string[]) => list.map((tag) => ({ id: tag, label: capitalize(tag), count: tagCounts.get(tag) }))
+  // Everything beyond gender and age lives in one menu; language and accent take one choice (a second click clears it).
+  const filterGroups: FilterGroup[] = [
+    {
+      key: 'language',
+      label: t('filters.language'),
+      items: languages.length > 1 ? languages.map((code) => ({ id: code, label: languageName(code), icon: <LanguageFlagIcon region={getLanguageFlagRegion(code)} className="h-3 w-4 rounded-[2px]" /> })) : [],
+      selected: filters.language === 'all' ? [] : [filters.language],
+      onToggle: (language: string) => set({ language: filters.language === language ? 'all' : language }),
+    },
+    {
+      key: 'accent',
+      label: t('filters.accent'),
+      items: accents.length > 1 ? accents.map((accent) => ({ id: accent, label: accent, icon: pinIcon })) : [],
+      selected: filters.accent === 'all' ? [] : [filters.accent],
+      onToggle: (accent: string) => set({ accent: filters.accent === accent ? 'all' : accent }),
+    },
+    { key: 'tone', label: t('filters.tone'), items: tagItems(tags.filter((tag) => toneTags.has(tag))), selected: filters.tags, onToggle: toggleTag },
+    { key: 'use', label: t('filters.useCase'), items: tagItems(tags.filter((tag) => !toneTags.has(tag))), selected: filters.tags, onToggle: toggleTag },
+  ].filter((group) => group.items.length > 0)
+  const activeChips: Array<{ key: string; label: string; icon?: React.ReactNode; remove: () => void }> = [
+    ...(filters.language === 'all' ? [] : [{ key: 'language', label: languageName(filters.language), icon: <LanguageFlagIcon region={getLanguageFlagRegion(filters.language)} className="h-3 w-4 rounded-[2px]" />, remove: () => set({ language: 'all' }) }]),
+    ...(filters.accent === 'all' ? [] : [{ key: 'accent', label: filters.accent, icon: pinIcon, remove: () => set({ accent: 'all' }) }]),
+    ...filters.tags.map((tag) => ({ key: `tag:${tag}`, label: capitalize(tag), remove: () => toggleTag(tag) })),
+  ]
 
   if (channelLoading) return <WorkspaceRouteLoading />
   if (!activeChannelId) return <WorkspaceChannelRequired compact />
@@ -134,55 +163,30 @@ export function BrandVoicePage() {
             onChange={(gender) => set({ gender })}
           />
           <BrandSegmented label={t('filters.age.label')} value={filters.ageBand} options={AGES.map((id) => ({ id, label: t(`filters.age.${id}`) }))} onChange={(ageBand) => set({ ageBand })} />
-          {languages.length > 1 ? (
-            <FilterSelect
-              value={filters.language}
-              onChange={(language) => set({ language })}
-              allLabel={t('filters.allLanguages')}
-              allIcon={<LanguageFlagIcon region={null} />}
-              options={languages.map((code) => ({ id: code, label: languageName(code), icon: <LanguageFlagIcon region={getLanguageFlagRegion(code)} /> }))}
-            />
-          ) : null}
-          {accents.length > 1 ? (
-            <FilterSelect
-              value={filters.accent}
-              onChange={(accent) => set({ accent })}
-              allLabel={t('filters.allAccents')}
-              allIcon={<MapPin className="size-3.5 text-muted-foreground" />}
-              options={accents.map((accent) => ({ id: accent, label: accent, icon: <MapPin className="size-3.5 text-muted-foreground" /> }))}
+          {filterGroups.length > 0 ? (
+            <VoiceFilterMenu
+              groups={filterGroups}
+              activeCount={activeChips.length}
+              onClear={() => set({ language: 'all', accent: 'all', tags: [] })}
             />
           ) : null}
         </div>
 
-        {tags.length > 0 ? (
-          <div className="mt-3 flex flex-wrap gap-1.5" role="group" aria-label={t('filters.tags')}>
-            {shownTags.map((tag) => {
-              const on = filters.tags.includes(tag)
-              return (
-                <button
-                  key={tag}
-                  type="button"
-                  aria-pressed={on}
-                  onClick={() => set({ tags: on ? filters.tags.filter((item) => item !== tag) : [...filters.tags, tag] })}
-                  className={cn(
-                    'h-7 rounded-full border px-3 text-xs font-medium transition-colors',
-                    on ? 'border-foreground/20 bg-foreground text-background' : 'border-border text-muted-foreground hover:bg-muted/60 hover:text-foreground',
-                  )}
-                >
-                  {capitalize(tag)}
-                </button>
-              )
-            })}
-            {tags.length > TAGS_SHOWN ? (
-              <button type="button" onClick={() => setAllTags(!allTags)} className="h-7 rounded-full px-3 text-xs font-medium text-muted-foreground hover:text-foreground">
-                {allTags ? t('filters.fewerTags') : t('filters.moreTags', { count: tags.length - TAGS_SHOWN })}
-              </button>
-            ) : null}
-          </div>
-        ) : null}
-
-        <div className="mt-5 flex h-6 items-center gap-3 text-xs text-muted-foreground">
+        <div className="mt-5 flex min-h-6 flex-wrap items-center gap-x-3 gap-y-1.5 text-xs text-muted-foreground">
           <span className="tabular-nums">{t('count', { count: visible.length })}</span>
+          {activeChips.map((chip) => (
+            <button
+              key={chip.key}
+              type="button"
+              onClick={chip.remove}
+              aria-label={t('filters.removeTag', { tag: chip.label })}
+              className="inline-flex h-6 items-center gap-1.5 rounded-md bg-accent pl-2 pr-1.5 font-medium text-foreground transition-colors hover:bg-accent/70"
+            >
+              {chip.icon}
+              {chip.label}
+              <X className="size-3 text-muted-foreground" />
+            </button>
+          ))}
           {filtered ? (
             <button type="button" onClick={() => setFilters(EMPTY_FILTERS)} className="inline-flex items-center gap-1 font-medium hover:text-foreground">
               <X className="size-3" />
@@ -405,29 +409,75 @@ function waveformBars(seed: string) {
 }
 
 /** A filter menu; each option may show an icon before its name (a flag, a pin), in the menu and on the trigger. */
-function FilterSelect({ value, onChange, allLabel, allIcon, options }: {
-  value: string
-  onChange: (value: string) => void
-  allLabel: string
-  allIcon?: React.ReactNode
-  options: Array<{ id: string; label: string; icon?: React.ReactNode }>
-}) {
+type FilterGroup = {
+  key: string
+  label: string
+  items: Array<{ id: string; label: string; icon?: React.ReactNode; count?: number }>
+  selected: string[]
+  onToggle: (id: string) => void
+}
+
+/**
+ * Language, accent, tone and use as one filter menu (the chat model picker's look): a search line, a group per kind,
+ * the number of voices beside a tag, ✓ on the chosen ones. It stays open while filters are picked.
+ */
+function VoiceFilterMenu({ groups, activeCount, onClear }: { groups: FilterGroup[]; activeCount: number; onClear: () => void }) {
+  const t = useTranslations('BrandVoice')
+  const [open, setOpen] = React.useState(false)
   return (
-    <Select value={value} onValueChange={onChange}>
-      <SelectTrigger size="sm" className={cn('h-9 min-w-[132px] rounded-lg border-border bg-card/40 text-xs', value !== 'all' && 'text-foreground')}>
-        <SelectValue />
-      </SelectTrigger>
-      <SelectContent>
-        <SelectItem value="all">
-          <span className="flex items-center gap-2">{allIcon}{allLabel}</span>
-        </SelectItem>
-        {options.map((option) => (
-          <SelectItem key={option.id} value={option.id}>
-            <span className="flex items-center gap-2">{option.icon}{option.label}</span>
-          </SelectItem>
-        ))}
-      </SelectContent>
-    </Select>
+    <Popover open={open} onOpenChange={setOpen}>
+      <PopoverTrigger asChild>
+        <button
+          type="button"
+          className={cn(
+            'inline-flex h-9 items-center gap-2 rounded-lg border border-border bg-card/40 px-3 text-xs transition-colors hover:bg-card/70 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring',
+            activeCount > 0 ? 'text-foreground' : 'text-muted-foreground',
+          )}
+        >
+          <SlidersHorizontal className="size-3.5" />
+          {t('filters.title')}
+          {activeCount > 0 ? (
+            <span className="flex h-4 min-w-4 items-center justify-center rounded-full bg-foreground px-1 text-[10px] font-semibold tabular-nums text-background">{activeCount}</span>
+          ) : null}
+          <ChevronDown className={cn('size-3.5 opacity-60 transition-transform', open && 'rotate-180')} />
+        </button>
+      </PopoverTrigger>
+      <PopoverContent align="end" sideOffset={8} collisionPadding={12} aria-label={t('filters.title')} className="w-64 overflow-hidden rounded-xl border-border bg-popover p-0 shadow-xl shadow-black/40">
+        <Command className="bg-transparent **:data-[slot=command-input-wrapper]:h-11 **:data-[slot=command-input-wrapper]:gap-2.5 **:data-[slot=command-input-wrapper]:px-3.5">
+          <CommandInput placeholder={t('filters.searchTags')} />
+          <CommandList className="youtorch-thin-scrollbar max-h-[min(22rem,calc(var(--radix-popover-content-available-height,100vh)_-_6rem))]">
+            <CommandEmpty>{t('filters.noTags')}</CommandEmpty>
+            {groups.map((group, index) => (
+              <React.Fragment key={group.key}>
+                {index > 0 ? <CommandSeparator className="mx-0" /> : null}
+                <CommandGroup heading={group.label} className="p-1.5">
+                  {group.items.map((item) => {
+                    const on = group.selected.includes(item.id)
+                    return (
+                      <CommandItem key={item.id} value={`${group.label} ${item.label} ${item.id}`} onSelect={() => group.onToggle(item.id)} className="h-9 gap-2.5 rounded-lg px-2.5">
+                        {item.icon}
+                        <span className={cn('min-w-0 flex-1 truncate text-sm', on ? 'font-semibold text-foreground' : 'text-foreground/75')}>{item.label}</span>
+                        {on
+                          ? <Check strokeWidth={1.75} className="!size-4 text-foreground" />
+                          : item.count !== undefined ? <span className="text-xs tabular-nums text-muted-foreground">{item.count}</span> : null}
+                      </CommandItem>
+                    )
+                  })}
+                </CommandGroup>
+              </React.Fragment>
+            ))}
+          </CommandList>
+        </Command>
+        {activeCount > 0 ? (
+          <div className="border-t border-border p-1.5">
+            <button type="button" onClick={onClear} className="flex h-8 w-full items-center gap-2 rounded-lg px-2.5 text-xs font-medium text-muted-foreground transition-colors hover:bg-accent hover:text-foreground">
+              <X className="size-3.5" />
+              {t('filters.clearTags')}
+            </button>
+          </div>
+        ) : null}
+      </PopoverContent>
+    </Popover>
   )
 }
 

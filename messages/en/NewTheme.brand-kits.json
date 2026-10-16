@@ -2,6 +2,97 @@
   "brandLibrary": {
     "kitCount": "{count} kits · pick one to edit",
     "editKit": "Edit {name}",
-    "kitActions": "{name} actions"
+    "kitActions": "{name} actions",
+    "builtinBadge": "Built-in"
+  },
+  "brandEditor": {
+    "back": "All kits",
+    "nameLabel": "Kit name",
+    "unsaved": "Unsaved changes",
+    "saved": "All changes saved",
+    "save": "Save",
+    "saveCopy": "Save as copy",
+    "builtinHint": "Built-in kit · changes are saved as your own copy",
+    "sharedHint": "Shared kit · changes are saved as your own copy",
+    "makeDefault": "Make default",
+    "colors": {
+      "title": "Colors",
+      "description": "Four colors used in your videos' title cards and graphics. Click a color's code to change it.",
+      "hex": "{label} hex code",
+      "picker": {
+        "area": "Saturation and brightness",
+        "hue": "Hue",
+        "r": "Red",
+        "g": "Green",
+        "b": "Blue",
+        "eyedropper": "Pick a color from the screen",
+        "kitColors": "Kit colors",
+        "useColor": "Use {color}"
+      },
+      "roles": {
+        "graphics": "Graphics & accents",
+        "backgrounds": "Backgrounds",
+        "secondaryText": "Secondary text",
+        "highlights": "Highlights"
+      }
+    },
+    "fonts": {
+      "title": "Fonts",
+      "description": "One font for titles, one for body text.",
+      "titleRole": "Title font",
+      "bodyRole": "Body font",
+      "titleSample": "Build a recognizable brand",
+      "bodySample": "Clear typography keeps your videos easy to read.",
+      "weight": "Weight",
+      "weights": {
+        "light": "Light",
+        "regular": "Regular",
+        "bold": "Bold",
+        "extraBold": "Extra bold"
+      }
+    },
+    "captions": {
+      "title": "Captions",
+      "description": "Pick how captions look in your videos.",
+      "style": "Style",
+      "auto": "Auto",
+      "allStyles": "All {count} styles",
+      "colors": "Colors",
+      "resetColors": "Use style colors",
+      "text": "Text",
+      "highlight": "Highlight",
+      "outline": "Outline"
+    },
+    "logo": {
+      "title": "Logo",
+      "description": "Your logo for videos. The watermark uses it too.",
+      "more": "Other logo versions (optional)"
+    },
+    "watermark": {
+      "title": "Watermark",
+      "description": "Show your logo on top of every video.",
+      "enable": "Show watermark",
+      "needsLogo": "Add a logo above or choose a custom image.",
+      "image": "Image",
+      "useLogo": "Kit logo",
+      "useLogoMissing": "No logo yet",
+      "customImage": "Custom image",
+      "customImageHint": "A separate image",
+      "position": "Position",
+      "auto": "Auto",
+      "frameHint": "Click on the video to choose where the logo sits.",
+      "autoHint": "Auto keeps the logo away from captions and platform buttons. Click on the video to pin it to a spot.",
+      "movingHint": "The logo moves between the corners of the video.",
+      "size": "Size",
+      "opacity": "Opacity",
+      "advanced": "Advanced",
+      "movement": "Movement",
+      "margin": "Edge margin",
+      "changeEvery": "Change every",
+      "fade": "Fade time",
+      "seconds": "sec",
+      "required": "Required in workflows",
+      "requiredHint": "Workflows won't start without the watermark."
+    }
   }
 }

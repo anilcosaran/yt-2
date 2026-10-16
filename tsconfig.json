@@ -38,11 +38,6 @@
   "exclude": [
     "node_modules",
     "**/*.test.ts",
-    "**/*.test.tsx",
-    "components/spark/tools/tools-test-harness.tsx",
-    "lib/spark/optimistic/optimistic-test-kit.ts",
-    "lib/spark/recording/recording-test-kit.ts",
-    "lib/spark/stage/motion-test-backend.ts",
-    "lib/spark/stage/stage-test-harness.ts"
+    "**/*.test.tsx"
   ]
 }

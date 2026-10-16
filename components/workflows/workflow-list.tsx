@@ -111,12 +111,9 @@ export function WorkflowList({
       <div className="hg-glow pointer-events-none absolute inset-x-0 top-0 h-64" />
       <div className="relative mx-auto min-h-full w-full max-w-[1200px] px-4 py-6 md:px-8 md:py-8">
       <PageHeader
-        breadcrumbs={[
-          { label: tWorkflows('list.automation') },
-          { label: tWorkflows('list.flows'), icon: WorkflowIcon },
-        ]}
+        breadcrumbs={[{ label: tWorkflows('list.automation'), icon: WorkflowIcon }]}
         icon={WorkflowIcon}
-        title={tAuto('flows_12426551')}
+        title={tAuto('automation_a15fde51')}
         badge={<span className="rounded-full border border-border bg-panel px-2.5 py-1 text-xs font-medium text-muted-foreground">{tWorkflows('list.workflowCount', { count: workflows.length })}</span>}
         description={tAuto('manage_your_channel_automations_or_start_from_a__e81ef395')}
       />

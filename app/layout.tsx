@@ -16,7 +16,6 @@ import {
   SIDEBAR_WIDTH_STORAGE_KEY,
 } from '@/components/layout/layout-preferences'
 import type { AppLocale } from '@/i18n/config'
-import { motionUiEnabled } from '@/lib/motion-editor/motion-switch'
 import './globals.css'
 
 // Self-hosted variable fonts (latin + latin-ext, see app/fonts/THIRD_PARTY_FONTS.md) so that
@@ -99,11 +98,10 @@ export default async function RootLayout({
             disableTransitionOnChange
           >
             <QueryProvider>
-              {/* E1-D: the sidebar's Motion entry is the UI pod's `MOTION_UI_ENABLED` switch, read per request (default off). */}
               <Suspense fallback={null}>
                 <NavigationProgress />
               </Suspense>
-              <AppShellBoundary motionEnabled={motionUiEnabled()}>{children}</AppShellBoundary>
+              <AppShellBoundary>{children}</AppShellBoundary>
               <Toaster position="bottom-right" richColors closeButton />
             </QueryProvider>
           </ThemeProvider>

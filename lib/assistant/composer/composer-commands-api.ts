@@ -6,7 +6,7 @@ import { capabilityRefSchema, type CapabilityRef } from './owner-refs'
 
 /**
  * E1-H client of `GET /api/v1/assistant-composer/commands`: the slash commands the composer's `/` menu gets from the
- * SERVER (owner tools such as Brand's `/motion`, tenant gated by their owners), so the menu is data driven and the client
+ * SERVER (owner tools, tenant gated by their owners), so the menu is data driven and the client
  * names no command. Server data only; a malformed entry is dropped, never repaired. Listing executes nothing: a selected
  * command is only a `preferred_tools` capability chip, the server decides what the job may do.
  */

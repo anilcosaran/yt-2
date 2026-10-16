@@ -481,11 +481,11 @@ const brandSidebarSections = [
   {
     titleKey: 'identity',
     items: [
-      { id: 'logos', labelKey: 'logos', descriptionKey: 'marksAssets', icon: ImageIcon },
-      { id: 'watermark', labelKey: 'watermark', descriptionKey: 'assetPlacementOpacity', icon: Stamp },
       { id: 'colors', labelKey: 'colors', descriptionKey: 'interactiveColorPicker', icon: Droplets },
       { id: 'fonts', labelKey: 'fonts', descriptionKey: 'titleBodyType', icon: Type },
       { id: 'captions', labelKey: 'captions', descriptionKey: 'styleBrandColors', icon: Captions },
+      { id: 'logos', labelKey: 'logos', descriptionKey: 'marksAssets', icon: ImageIcon },
+      { id: 'watermark', labelKey: 'watermark', descriptionKey: 'assetPlacementOpacity', icon: Stamp },
     ],
   },
   // P06-01: the former local-only "Effects & transitions" item returns with the server Video style (P06-36).
@@ -2287,20 +2287,8 @@ export function getIcon(iconName: string) {
     puzzle: Waypoints,
     video: Video,
     clapperboard: Clapperboard,
-    motion: MotionNavIcon,
   }
   return icons[iconName] || null
-}
-
-/** The Spark design's `i-motion` symbol (speed lines and a play head), for the main sidebar's Motion entry. */
-function MotionNavIcon({ className }: { className?: string }) {
-  return (
-    <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-      <path d="M5 12h3M3 7h5M4 17h4" />
-      <path d="M13 5.5a6.5 6.5 0 1 1 0 13" />
-      <path d="M13 9v6l4-3z" />
-    </svg>
-  )
 }
 
 // Icon Components

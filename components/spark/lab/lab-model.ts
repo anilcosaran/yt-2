@@ -170,6 +170,25 @@ export const ASSET_LABEL: Record<AssetKind, string> = {
 
 export type LabAsset = { id: string; title: string; kind: AssetKind; meta: string; art: SceneArt; at: number }
 
+/**
+ * Where a scene's picture comes from, one at a time, as the source picker names them: the user's own media as it is,
+ * a picture an AI model makes, a stock clip, the Brand Kit.
+ */
+export const SOURCE_KINDS: AssetKind[] = ['library', 'generate', 'stock', 'kit']
+export const SOURCE_LABEL: Record<AssetKind, string> = { library: 'Görselim', generate: 'AI üretsin', stock: 'Stok', kit: 'Brand Kit' }
+
+/** The models a generated picture can be made with; `reference`: it can also make one from a picture given to it (demo values). */
+export type LabModel = { id: string; title: string; kind: 'video' | 'image'; meta: string; reference: boolean }
+export const MODELS: LabModel[] = [
+  { id: 'kling-2-5', title: 'Kling 2.5', kind: 'video', meta: 'Hızlı · ~12 kredi', reference: true },
+  { id: 'seedance-1-pro', title: 'Seedance 1 Pro', kind: 'video', meta: 'Akıcı kamera · ~18 kredi', reference: true },
+  { id: 'sora-2', title: 'Sora 2', kind: 'video', meta: 'En gerçekçi · ~30 kredi', reference: true },
+  { id: 'flux-2-pro', title: 'FLUX.2 Pro', kind: 'image', meta: 'Durağan kare · ~4 kredi', reference: true },
+  { id: 'flux-2-klein', title: 'FLUX.2 Klein 4B', kind: 'image', meta: 'Durağan kare · neredeyse anında · ~1 kredi', reference: false },
+]
+/** The model a generated picture uses until the user picks another. */
+export const DEFAULT_MODEL = 'kling-2-5'
+
 export const ASSETS: LabAsset[] = [
   { id: '1.1', title: knowledge('k6'), kind: 'library', meta: '0:42 · 0:04–0:13 kullanılacak', art: 'chef', at: 23 },
   { id: '1.2', title: 'Marka intro’su', kind: 'kit', meta: '0:02', art: 'intro', at: 24 },

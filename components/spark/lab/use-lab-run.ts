@@ -18,6 +18,7 @@ import {
   type LabQuestion,
   type LabRatio,
   type LabScene,
+  type SceneArt,
 } from './lab-model'
 
 // Spark lab: a scripted run of the agent. One sentence → the agent drafts the project (brief, context, plan,
@@ -27,6 +28,9 @@ import {
 const TICK_MS = 190
 const AUTO_START_MS = 2600
 const RENDER_MS = 3200
+/** How long Spark takes to make one scene or clip again: the first one, then each next one (they come in one by one). */
+const REMAKE_FIRST_MS = 1400
+const REMAKE_NEXT_MS = 700
 
 export type LabRunState = {
   phase: LabPhase
@@ -68,11 +72,41 @@ export type LabRunState = {
   picks: Record<string, string | null>
   /** Rules, knowledge and scenes the user wrote into the plan. */
   added: { rules: string[]; knowledge: string[]; scenes: AddedScene[] }
+  /** Notes the user left for Spark and has not sent yet, oldest first. They go to Spark together, as one edit. */
+  notes: LabNote[]
+  /** Names the next note. */
+  noteSerial: number
+  /** What Spark changed from the notes, by target (a scene id, or a clip as `<lane>:<sceneId>`), oldest first. */
+  asks: Record<string, LabAsk[]>
+  /**
+   * The user's own media for a scene ("Görselim") and the reference picture its AI model makes from, by scene id. Each
+   * is kept while the scene uses another source, so going back to it finds it where it was.
+   */
+  media: Record<string, LabMedia>
+  refs: Record<string, LabMedia>
+  /** How many batches of notes were sent; Spark is applying batch `applying` until it is `null`. */
+  batches: number
+  applying: number | null
+  /** The targets of the batch being applied that are not ready yet; they get ready one by one. */
+  applyingLeft: string[]
 }
 
-/** A scene the user added by hand: its name, its line and its length. Spark plans the rest of it. */
+/**
+ * A note for Spark: on a scene in the plan, or on clips picked together on the timeline (one note, several targets).
+ * `labels` name the targets for the user, in the same order. `source` is a new source or model picked for a scene's
+ * picture: it is shown on the scene's source tag, not as a note of its own.
+ */
+export type LabNote = { id: string; targets: string[]; labels: string[]; text: string; kind?: 'source' }
+/** One change Spark made from a note, on one target. Every sending of notes is one batch. */
+export type LabAsk = { text: string; batch: number }
+
+/** A scene the user added by hand: its name, its line and its length. Spark plans the rest. */
 export type AddedScene = { id: string; role: string; say: string; seconds: number }
+/** A picture or clip of the user's (from Storage, or uploaded there), given to a scene as it is or as a reference. */
+export type LabMedia = { title: string; url?: string; video?: boolean; objectId?: string; art?: SceneArt }
 type AddedKind = 'rules' | 'knowledge' | 'scenes'
+/** A note as it is written: without `id` it is a new note; with one, that note's new text (empty removes it). */
+export type NoteDraft = Omit<LabNote, 'id'> & { id?: string }
 
 type Action =
   | { type: 'submit'; prompt: string }
@@ -102,6 +136,15 @@ type Action =
   | { type: 'add'; kind: 'rules' | 'knowledge'; text: string }
   | { type: 'addScene'; scene: Omit<AddedScene, 'id'> }
   | { type: 'removeAdded'; kind: AddedKind; index: number }
+  | { type: 'setMedia'; id: string; media: LabMedia | null }
+  | { type: 'setRef'; id: string; media: LabMedia | null }
+  | { type: 'saveNote'; note: NoteDraft }
+  | { type: 'dropNote'; id: string }
+  | { type: 'clearNotes' }
+  | { type: 'sendNotes'; with?: NoteDraft; only?: boolean }
+  | { type: 'notesApplied' }
+  | { type: 'undoAsk'; target: string }
+  | { type: 'undoBatch'; batch: number }
 
 const FIRST_SCENE = SCENES[0]!.id
 
@@ -129,6 +172,14 @@ function base(prompt = ''): LabRunState {
     edits: {},
     picks: {},
     added: { rules: [], knowledge: [], scenes: [] },
+    media: {},
+    refs: {},
+    notes: [],
+    noteSerial: 1,
+    asks: {},
+    batches: 0,
+    applying: null,
+    applyingLeft: [],
   }
 }
 
@@ -137,6 +188,12 @@ function runnable(from: number, skipped: string[]) {
   let index = from
   while (index < STEPS.length && skipped.includes(STEPS[index]!.id)) index += 1
   return index
+}
+
+/** The id of the next scene the user adds: one past the highest so far, so a removed scene's id is never reused. */
+function nextOwnSceneId(scenes: AddedScene[]) {
+  const highest = Math.max(0, ...scenes.map((scene) => Number(/^own-(\d+)/.exec(scene.id)?.[1] ?? 0)))
+  return `own-${highest + 1}`
 }
 
 function toggle(list: string[], id: string) {
@@ -208,9 +265,64 @@ function reducer(state: LabRunState, action: Action): LabRunState {
     case 'add':
       return { ...state, added: { ...state.added, [action.kind]: [...state.added[action.kind], action.text] } }
     case 'addScene':
-      return { ...state, added: { ...state.added, scenes: [...state.added.scenes, { ...action.scene, id: `own-${state.added.scenes.length + 1}-${action.scene.role}` }] } }
+      return { ...state, added: { ...state.added, scenes: [...state.added.scenes, { ...action.scene, id: nextOwnSceneId(state.added.scenes) }] } }
+    case 'setMedia':
+    case 'setRef': {
+      const book = action.type === 'setMedia' ? 'media' : 'refs'
+      const next = { ...state[book] }
+      if (action.media) next[action.id] = action.media
+      else delete next[action.id]
+      return { ...state, [book]: next }
+    }
     case 'removeAdded':
       return { ...state, added: { ...state.added, [action.kind]: state.added[action.kind].filter((_, index) => index !== action.index) } }
+    case 'saveNote': {
+      const { id, ...note } = action.note
+      const text = note.text.trim()
+      if (id) {
+        const notes = text ? state.notes.map((entry) => (entry.id === id ? { ...entry, text } : entry)) : state.notes.filter((entry) => entry.id !== id)
+        return { ...state, notes }
+      }
+      if (!text || !note.targets.length) return state
+      return { ...state, notes: [...state.notes, { ...note, text, id: `note-${state.noteSerial}` }], noteSerial: state.noteSerial + 1 }
+    }
+    case 'dropNote':
+      return { ...state, notes: state.notes.filter((entry) => entry.id !== action.id) }
+    case 'clearNotes':
+      return { ...state, notes: [] }
+    case 'sendNotes': {
+      if (state.applying !== null) return state
+      // The note being written is kept first. `only` fixes just that pick and leaves the rest of the list waiting;
+      // otherwise the whole list goes. Picked targets without any note are made again as they are.
+      const listed = action.with ? reducer(state, { type: 'saveNote', note: action.with }).notes : state.notes
+      const pick = action.with?.targets.join('|')
+      const pending = action.only ? listed.filter((note) => note.targets.join('|') === pick) : listed
+      const waiting = action.only ? listed.filter((note) => !pending.includes(note)) : []
+      const bare = (action.with?.targets ?? []).filter((target) => !pending.some((note) => note.targets.includes(target)))
+      if (!pending.length && !bare.length) return state
+      const batch = state.batches + 1
+      const asks = { ...state.asks }
+      const sent: string[] = []
+      const send = (target: string, text: string) => {
+        asks[target] = [...(asks[target] ?? []), { text, batch }]
+        if (!sent.includes(target)) sent.push(target)
+      }
+      for (const note of pending) note.targets.forEach((target) => send(target, note.text))
+      bare.forEach((target) => send(target, ''))
+      return { ...state, asks, notes: waiting, batches: batch, applying: batch, applyingLeft: sent }
+    }
+    case 'notesApplied': {
+      if (state.applying === null) return state
+      const applyingLeft = state.applyingLeft.slice(1)
+      return applyingLeft.length ? { ...state, applyingLeft } : { ...state, applying: null, applyingLeft: [] }
+    }
+    case 'undoAsk':
+      return { ...state, asks: { ...state.asks, [action.target]: (state.asks[action.target] ?? []).slice(0, -1) } }
+    case 'undoBatch':
+      return {
+        ...state,
+        asks: Object.fromEntries(Object.entries(state.asks).map(([target, list]) => [target, list.filter((ask) => ask.batch !== action.batch)])),
+      }
     case 'toggleLock': {
       const locking = !state.locked.includes(action.sceneId)
       const locked = toggle(state.locked, action.sceneId)
@@ -264,6 +376,24 @@ export type LabRun = {
   add: (kind: 'rules' | 'knowledge', text: string) => void
   addScene: (scene: Omit<AddedScene, 'id'>) => void
   removeAdded: (kind: AddedKind, index: number) => void
+  /** Gives a scene the user's own media (`null` takes it back). */
+  setMedia: (id: string, media: LabMedia | null) => void
+  /** Gives a scene's AI model a reference picture to make from (`null` takes it back). */
+  setRef: (id: string, media: LabMedia | null) => void
+  /** Writes a note for Spark (or changes one); it waits with the others until they are sent. */
+  saveNote: (note: NoteDraft) => void
+  dropNote: (id: string) => void
+  clearNotes: () => void
+  /**
+   * Sends notes to Spark as one edit; only the targets they name are made again. `with` is the note being written
+   * (kept first); its targets are made again even with no note. `only` sends just that note and leaves the rest of the
+   * list waiting ("Düzelt"); without it the whole list goes ("Hepsini düzelt").
+   */
+  sendNotes: (with_?: NoteDraft, options?: { only?: boolean }) => void
+  /** Takes back the last change a note made on `target`. */
+  undoAsk: (target: string) => void
+  /** Takes back everything one sending of notes changed. */
+  undoBatch: (batch: number) => void
 }
 
 // ---- the run's store ---------------------------------------------------------------------------------------
@@ -283,6 +413,11 @@ type LabRunStore = {
 
 /** What runs next by itself, and when: the same rules for every view of the run. */
 function nextTimer(state: LabRunState): { action: Action; delay: number } | null {
+  // Notes are applied even while the run is held: the user is waiting on them.
+  if (state.applying !== null) {
+    const first = state.applyingLeft.length === lastBatchTargets(state).length
+    return { action: { type: 'notesApplied' }, delay: first ? REMAKE_FIRST_MS : REMAKE_NEXT_MS }
+  }
   if (state.paused || state.frozen) return null
   if (state.phase === 'drafting') return pendingQuestion(state) ? null : { action: { type: 'tick' }, delay: TICK_MS }
   if (state.phase === 'plan' && state.autonomy !== 'ask') return { action: { type: 'approve' }, delay: AUTO_START_MS }
@@ -294,7 +429,7 @@ function nextTimer(state: LabRunState): { action: Action; delay: number } | null
 
 /** The fields the timer depends on; any other change (an edit, a lock) leaves a running timer alone. */
 function timerKey(state: LabRunState) {
-  return [state.phase, state.tick, state.step, state.paused, state.frozen, state.driver, state.autonomy, state.render, pendingQuestion(state)?.id ?? ''].join('|')
+  return [state.phase, state.tick, state.step, state.paused, state.frozen, state.driver, state.autonomy, state.render, state.applying ?? '', state.applyingLeft.length, pendingQuestion(state)?.id ?? ''].join('|')
 }
 
 function createLabRunStore(init: LabRunInit): LabRunStore {
@@ -407,6 +542,14 @@ export function useLabRun(init: LabRunInit = {}, runKey?: string): LabRun {
       add: (kind, text) => dispatch({ type: 'add', kind, text }),
       addScene: (scene) => dispatch({ type: 'addScene', scene }),
       removeAdded: (kind, index) => dispatch({ type: 'removeAdded', kind, index }),
+      setMedia: (id, media) => dispatch({ type: 'setMedia', id, media }),
+      setRef: (id, media) => dispatch({ type: 'setRef', id, media }),
+      saveNote: (note) => dispatch({ type: 'saveNote', note }),
+      dropNote: (id) => dispatch({ type: 'dropNote', id }),
+      clearNotes: () => dispatch({ type: 'clearNotes' }),
+      sendNotes: (note, options) => dispatch({ type: 'sendNotes', with: note, only: options?.only }),
+      undoAsk: (target) => dispatch({ type: 'undoAsk', target }),
+      undoBatch: (batch) => dispatch({ type: 'undoBatch', batch }),
     }),
     [state, init.title, dispatch],
   )
@@ -449,6 +592,22 @@ export function closingChoices(state: LabRunState): { render: boolean; keep: boo
 /** What Spark decided without asking: an assumption the user answered a question about is no longer one. */
 export function assumptionsOf(state: LabRunState) {
   return ASSUMPTIONS.filter((item) => revealed(state, item.at) && !(item.question && typeof state.answers[item.question] === 'string'))
+}
+
+/** The waiting notes that name `target`. */
+export function notesOn(state: LabRunState, target: string) {
+  return state.notes.filter((note) => note.targets.includes(target))
+}
+
+/** Whether Spark is applying a note to `target` right now. */
+export function applyingTo(state: LabRunState, target: string) {
+  return state.applying !== null && state.applyingLeft.includes(target)
+}
+
+/** The targets the last sending of notes changed and that still carry that change. */
+export function lastBatchTargets(state: LabRunState) {
+  if (!state.batches) return []
+  return Object.entries(state.asks).filter(([, list]) => list.some((ask) => ask.batch === state.batches)).map(([target]) => target)
 }
 
 /** A scene's line as it stands: the user's own wording when they rewrote it. */

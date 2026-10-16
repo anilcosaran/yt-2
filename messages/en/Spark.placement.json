@@ -1,9 +1,0 @@
-{
-  "editor": {
-    "placement": {
-      "videoTrimmed": "The video is longer than this scene, so it was trimmed to {seconds} s. Press Ctrl+Z to undo.",
-      "audioTrimmed": "The music is longer than this scene, so it plays for {seconds} s. Press Ctrl+Z to undo.",
-      "sceneFollowsMedia": "This scene now follows the length of the video."
-    }
-  }
-}

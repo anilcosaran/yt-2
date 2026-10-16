@@ -25,7 +25,6 @@ const workspaceShellPrefixes = [
   '/library',
   '/memory',
   '/models',
-  '/motion',
   '/recent',
   '/settings',
   '/spark',
@@ -34,12 +33,12 @@ const workspaceShellPrefixes = [
   '/workflows',
 ]
 
-export function AppShellBoundary({ children, motionEnabled = false }: { children: React.ReactNode; motionEnabled?: boolean }) {
+export function AppShellBoundary({ children }: { children: React.ReactNode }) {
   const pathname = usePathname()
   const tNav = useTranslations('Navigation')
   const mainSidebarItems = React.useMemo(
-    () => createMainSidebarItems((key) => tNav(key), { motion: motionEnabled }),
-    [tNav, motionEnabled],
+    () => createMainSidebarItems((key) => tNav(key)),
+    [tNav],
   )
   // "Yeni video" from any page lands in the chat: its menu is loaded while the browser is idle, so the switch does
   // not show an empty menu for a moment.

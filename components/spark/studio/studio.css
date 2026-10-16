@@ -412,6 +412,10 @@
 .yt-studio .composer-wrap{padding:8px 12px 12px;flex:none}
 .yt-studio .sugg{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:8px}
 .yt-studio .sugg button{height:28px;padding:0 10px;border-radius:99px;border:1px solid var(--st-border);background:var(--st-surface);font-size:12px;font-weight:500;color:var(--st-text-2);display:inline-flex;align-items:center;gap:5px;transition:background .12s,color .12s,border-color .12s}
+/* One line: chips that do not fit stay on the row, fade out at the right edge and are reached by scrolling sideways. */
+.yt-studio .sugg.sugg-line{flex-wrap:nowrap;overflow-x:auto;overscroll-behavior-x:contain;scrollbar-width:none;padding-right:32px;-webkit-mask-image:linear-gradient(to right,#000 calc(100% - 32px),transparent);mask-image:linear-gradient(to right,#000 calc(100% - 32px),transparent)}
+.yt-studio .sugg.sugg-line::-webkit-scrollbar{display:none}
+.yt-studio .sugg.sugg-line button{flex:none;white-space:nowrap}
 .yt-studio .sugg button:hover{background:var(--st-hover);color:var(--st-text);border-color:var(--st-border-strong)}
 .yt-studio .sugg button .i{width:13px;height:13px;color:var(--st-accent)}
 .yt-studio .composer{border:1px solid var(--st-border-strong);border-radius:var(--st-r-xl);background:var(--st-surface);box-shadow:var(--st-shadow-sm);transition:border-color .12s,box-shadow .12s}

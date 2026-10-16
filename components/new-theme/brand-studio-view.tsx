@@ -1,10 +1,12 @@
 "use client";
 
 import Image from "next/image";
+import Link from "next/link";
 import * as React from "react";
 import { useRouter } from "next/navigation";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import {
+  ArrowLeft,
   BadgeCheck,
   Captions,
   Check,
@@ -12,8 +14,8 @@ import {
   Copy,
   Droplet,
   ImageIcon,
+  LayoutGrid,
   Loader2,
-  LockKeyhole,
   MoreHorizontal,
   Palette,
   Pencil,
@@ -25,6 +27,7 @@ import {
 } from "lucide-react";
 import { toast } from "sonner";
 
+import { BrandColorPicker } from "@/components/new-theme/brand-color-picker";
 import {
   StorageMediaInput,
   type StorageMediaSelection,
@@ -34,10 +37,17 @@ import { AvatarStudioView } from "@/components/brand/avatar/avatar-studio-view";
 import { BrandVoicePage } from "@/components/brand/voice/brand-voice-page";
 import {
   CAPTION_STYLE_NAMES,
+  CaptionStyleThumbnail,
   CaptionVideoPreview,
+  getCaptionPresetPalette,
 } from "@/components/tools/caption-style-preview-field";
 import { AppAlertDialog } from "@/components/ui/app-alert-dialog";
 import { Button } from "@/components/ui/button";
+import {
+  Collapsible,
+  CollapsibleContent,
+  CollapsibleTrigger,
+} from "@/components/ui/collapsible";
 import {
   Dialog,
   DialogContent,
@@ -56,6 +66,7 @@ import {
 import { Input } from "@/components/ui/input";
 import {
   Popover,
+  PopoverAnchor,
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
@@ -80,14 +91,19 @@ import {
   updateBrandKitDraft,
   type BrandKitDraftContent,
   type BrandKitListItem,
+  type BrandKitRevision,
 } from "@/lib/brand-kit/api";
 import { BrandWatermarkAssetRequiredError, saveBrandKit } from "@/lib/brand-kit/save-kit";
 import {
+  draftContentChanged,
+  draftContentFromEditor,
   editorFromDraft,
   fontFamilyOptions,
   nearestFontToken,
   normalizeHexColor,
+  overlayFromWatermark,
   resolveWatermarkAsset,
+  watermarkChanged,
   watermarkFromOverlay,
   type BrandAssetRef,
   type BrandColorKey,
@@ -110,6 +126,7 @@ import { useStorageThumbnailUrl } from "@/lib/storage/use-storage-thumbnail-url"
 import { cn } from "@/lib/utils";
 import { UiText } from "@/components/i18n/ui-text";
 import { useTranslations } from "next-intl";
+import { useToolCopy } from "@/lib/i18n/use-tool-copy";
 
 type CreateMode = "blank" | "duplicate";
 
@@ -121,22 +138,22 @@ const COLOR_META: Array<{
   {
     key: "primary",
     labelKey: "brand.colors.primary",
-    roleKey: "brand.colors.buttonsAccents",
+    roleKey: "brandEditor.colors.roles.graphics",
   },
   {
     key: "secondary",
     labelKey: "brand.colors.secondary",
-    roleKey: "brand.colors.surfaces",
+    roleKey: "brandEditor.colors.roles.backgrounds",
   },
   {
     key: "tertiary",
     labelKey: "brand.colors.tertiary",
-    roleKey: "brand.colors.mutedText",
+    roleKey: "brandEditor.colors.roles.secondaryText",
   },
   {
     key: "accent",
     labelKey: "brand.colors.accent",
-    roleKey: "brand.colors.highlights",
+    roleKey: "brandEditor.colors.roles.highlights",
   },
 ];
 
@@ -164,10 +181,11 @@ const CAPTION_OPTIONS = ["auto", ...CAPTION_STYLE_NAMES].map((value) => ({
 }));
 
 /**
- * P06-01: the Kit editor sections. The former local-only "Effects & transitions" section has no
- * server field (the typed Video style section is P06-36), so it is not offered until that lands.
+ * P06-01: the Kit editor sections, in page order (the editor is one page; `?section=` scrolls to
+ * one). The former local-only "Effects & transitions" section has no server field (the typed Video
+ * style section is P06-36), so it is not offered until that lands.
  */
-const EDITOR_SECTIONS = ["logos", "watermark", "colors", "fonts", "captions"] as const;
+const EDITOR_SECTIONS = ["colors", "fonts", "captions", "logos", "watermark"] as const;
 
 const WATERMARK_ANCHORS: Array<{
   value: BrandOverlayAnchor;
@@ -206,41 +224,55 @@ const WATERMARK_BEHAVIORS: Array<{
   },
 ];
 
-function SectionHeading({
+/** The caption styles offered up front; every other style is one click away in the gallery. */
+const QUICK_CAPTION_STYLES = [
+  "auto",
+  "tiktok_bold",
+  "youtube_clean",
+  "karaoke_white_to_yellow",
+  "candy_depth",
+  "box_black",
+  "minimal_shadow",
+];
+
+/** The style "Auto" is previewed with until a video picks its own. */
+const AUTO_CAPTION_PREVIEW_STYLE = "tiktok_bold";
+
+/** One block of the Kit editor: what it is, a line on what it does, then its controls. */
+function EditorSection({
+  id,
   icon: Icon,
   title,
   description,
   action,
+  children,
 }: {
+  id: string;
   icon: React.ComponentType<{ className?: string }>;
   title: string;
   description: string;
   action?: React.ReactNode;
+  children?: React.ReactNode;
 }) {
   return (
-    <div className="mb-4 flex items-start justify-between gap-3">
-      <div className="flex min-w-0 items-start gap-3">
-        <span className="flex size-9 shrink-0 items-center justify-center rounded-xl border border-border bg-panel">
-          <Icon className="size-[18px] text-primary" />
-        </span>
-        <div className="min-w-0">
-          <h2 className="font-display text-lg text-foreground">{title}</h2>
-          <p className="text-sm text-muted-foreground">{description}</p>
+    <section
+      id={id}
+      className="scroll-mt-24 rounded-2xl border border-border bg-card/30 p-4 sm:p-5"
+    >
+      <div className="flex items-center justify-between gap-3">
+        <div className="flex min-w-0 items-center gap-3">
+          <span className="flex size-9 shrink-0 items-center justify-center rounded-xl border border-border bg-panel">
+            <Icon className="size-[18px] text-primary" />
+          </span>
+          <div className="min-w-0">
+            <h2 className="text-base font-semibold text-foreground">{title}</h2>
+            <p className="text-sm text-muted-foreground">{description}</p>
+          </div>
         </div>
+        {action}
       </div>
-      {action}
-    </div>
-  );
-}
-
-function GroupLabel({ children }: { children: React.ReactNode }) {
-  return (
-    <div className="mb-4 flex items-center gap-3">
-      <span className="text-xs font-semibold uppercase tracking-[0.14em] text-muted-foreground">
-        {children}
-      </span>
-      <span className="h-px flex-1 bg-border" />
-    </div>
+      {children ? <div className="mt-4">{children}</div> : null}
+    </section>
   );
 }
 
@@ -254,6 +286,20 @@ export function BrandStudioView({
   if (section === "avatars") return <AvatarStudioView />;
   if (section === "voices") return <BrandVoicePage />;
   return <BrandKitStudioView section={section} kitId={kitId} />;
+}
+
+/** A published revision as a draft body (a draft's logos only carry the storage object id). */
+function revisionDraftContent(revision: BrandKitRevision): BrandKitDraftContent {
+  const logo = (value: { storage_object_id: string } | null) =>
+    value ? { storage_object_id: value.storage_object_id } : null;
+  return {
+    ...revision.content,
+    logos: {
+      primary: logo(revision.content.logos.primary),
+      horizontal: logo(revision.content.logos.horizontal),
+      mark: logo(revision.content.logos.mark),
+    },
+  };
 }
 
 /** A gateway error code (`BRAND_KIT_DRAFT_VERSION_CONFLICT`, ...) or null. */
@@ -273,9 +319,6 @@ function BrandKitStudioView({
   const router = useRouter();
   const queryClient = useQueryClient();
   const isListView = !kitId || !section || section === "kits";
-  const editorSection = (EDITOR_SECTIONS as readonly string[]).includes(section ?? "")
-    ? section
-    : "logos";
   const { activeChannel, isLoading: channelLoading, refreshChannels } =
     useActiveChannel();
   const channelId = activeChannel?.id ?? "";
@@ -312,22 +355,39 @@ function BrandKitStudioView({
   const detail = detailQuery.data ?? null;
   const channelOverlay = activeChannel?.settings.brandOverlay ?? null;
 
-  // Form state of the owner's draft; re-seeded only when another Kit or draft version loads, so a
+  // A shared or built-in Kit has no draft for this actor: it opens with its published look, and
+  // "Save" keeps the changes as a new Kit of the actor's own.
+  const readOnlyRevisionId = detail && !detail.draft ? detail.head_revision?.revision_id ?? null : null;
+  const revisionQuery = useQuery({
+    queryKey: [...brandKitQueryKey(editingKitId ?? ""), "revision", readOnlyRevisionId],
+    queryFn: ({ signal }) =>
+      getBrandKitRevision(editingKitId ?? "", readOnlyRevisionId ?? "", { signal }),
+    enabled: Boolean(editingKitId && readOnlyRevisionId),
+  });
+  const editorSource = React.useMemo(() => {
+    if (!detail) return null;
+    if (detail.draft) return detail;
+    if (!revisionQuery.data) return null;
+    return { ...detail, draft: { version: 0, content: revisionDraftContent(revisionQuery.data) } };
+  }, [detail, revisionQuery.data]);
+  const ownsKit = Boolean(detail?.draft);
+
+  // Form state of the Kit; re-seeded only when another Kit or draft version loads, so a
   // background refetch never overwrites unsaved edits. It is never written to browser storage.
   const [editor, setEditor] = React.useState<BrandKitEditor | null>(null);
   const [watermark, setWatermark] = React.useState<BrandWatermarkEditor | null>(null);
   const seededRef = React.useRef<string | null>(null);
   React.useEffect(() => {
-    if (!detail?.draft) return;
-    const seed = `${detail.kit_id}:${detail.draft.version}`;
+    if (!editorSource?.draft) return;
+    const seed = `${editorSource.kit_id}:${editorSource.draft.version}`;
     if (seededRef.current === seed) return;
     seededRef.current = seed;
-    const next = editorFromDraft(detail);
+    const next = editorFromDraft(editorSource);
     setEditor(next);
     setWatermark(
       watermarkFromOverlay(channelOverlay, next.logos.primary?.storageObjectId ?? null),
     );
-  }, [detail, channelOverlay]);
+  }, [editorSource, channelOverlay]);
 
   const [createDialogOpen, setCreateDialogOpen] = React.useState(false);
   const [createMode, setCreateMode] = React.useState<CreateMode>("blank");
@@ -335,6 +395,7 @@ function BrandKitStudioView({
   const [shareTarget, setShareTarget] = React.useState<BrandKitListItem | null>(null);
   const [privateDefault, setPrivateDefault] = React.useState<BrandKitListItem | null>(null);
 
+  const editorReady = Boolean(editor && editor.kitId === kitId);
   React.useEffect(() => {
     if (!section) return;
     const targetSection =
@@ -344,7 +405,7 @@ function BrandKitStudioView({
         .getElementById(targetSection)
         ?.scrollIntoView({ behavior: "smooth", block: "start" });
     });
-  }, [section]);
+  }, [section, editorReady]);
 
   const refreshBrand = React.useCallback(async () => {
     await Promise.all([
@@ -355,20 +416,43 @@ function BrandKitStudioView({
 
   const openKitEditor = React.useCallback(
     (nextKitId: string) => {
-      router.push(`/brand?section=logos&kit=${encodeURIComponent(nextKitId)}`);
+      router.push(`/brand?section=${EDITOR_SECTIONS[0]}&kit=${encodeURIComponent(nextKitId)}`);
     },
     [router],
   );
 
   const saveMutation = useMutation({
     mutationFn: async () => {
-      if (!activeChannel || !detail?.draft || !editor || !watermark) {
+      if (!activeChannel || !detail || !editorSource?.draft || !editor || !watermark) {
         throw new Error("Brand Kit is not loaded yet.");
+      }
+      if (!detail.draft) {
+        // Not the actor's Kit: the edited look becomes a Kit of their own; the watermark is the channel's.
+        if (watermark.enabled && !resolveWatermarkAsset(watermark, editor.logos)) {
+          throw new BrandWatermarkAssetRequiredError();
+        }
+        const name = editor.name.trim();
+        const created = await createBrandKit({
+          channelId: activeChannel.id,
+          name: (name && name !== detail.name ? name : tTheme("brand.copyName", { name: detail.name })).slice(0, 80),
+          clientRequestId: newBrandKitClientRequestId(),
+          content: draftContentFromEditor(editor, editorSource.draft.content),
+        });
+        if (watermarkChanged(watermark, editor.logos, channelOverlay)) {
+          await updateChannelSettings({
+            channelId: activeChannel.id,
+            expectedBrandOverlayVersion: activeChannel.settings.brandOverlayVersion,
+            brandOverlay: overlayFromWatermark(watermark, editor.logos),
+          });
+          await refreshChannels();
+        }
+        return created.kit_id;
       }
       const saved = await saveBrandKit(
         {
           editor,
           baseContent: detail.draft.content,
+          baseName: detail.name,
           watermark,
           channelId: activeChannel.id,
           overlay: channelOverlay,
@@ -377,8 +461,15 @@ function BrandKitStudioView({
         { updateBrandKitDraft, publishBrandKitRevision, updateChannelSettings },
       );
       if (saved.overlaySaved) await refreshChannels();
+      return null;
     },
-    onSuccess: async () => {
+    onSuccess: async (copyKitId) => {
+      if (copyKitId) {
+        await refreshBrand();
+        openKitEditor(copyKitId);
+        toast.success(tTheme("brand.toast.duplicated"));
+        return;
+      }
       await Promise.all([
         refreshBrand(),
         queryClient.invalidateQueries({ queryKey: brandKitQueryKey(editingKitId ?? "") }),
@@ -489,22 +580,18 @@ function BrandKitStudioView({
     });
     if (sourceDetail.draft) return sourceDetail.draft.content;
     if (!source.head_revision) return undefined;
-    const revision = await getBrandKitRevision(source.kit_id, source.head_revision.revision_id);
-    const logo = (value: { storage_object_id: string } | null) =>
-      value ? { storage_object_id: value.storage_object_id } : null;
-    return {
-      ...revision.content,
-      logos: {
-        primary: logo(revision.content.logos.primary),
-        horizontal: logo(revision.content.logos.horizontal),
-        mark: logo(revision.content.logos.mark),
-      },
-    };
+    return revisionDraftContent(await getBrandKitRevision(source.kit_id, source.head_revision.revision_id));
   }
 
   const selectedListItem =
     kits.find((kit) => kit.kit_id === editingKitId) ?? null;
-  const duplicateSource = selectedListItem ?? kits.find((kit) => kit.kit_id === effectiveKitId) ?? kits[0] ?? null;
+  const duplicateSource = kits.find((kit) => kit.kit_id === effectiveKitId) ?? kits[0] ?? null;
+
+  const openCreateDialog = () => {
+    setNewKitName("");
+    setCreateMode("blank");
+    setCreateDialogOpen(true);
+  };
 
   const updateEditor = React.useCallback(
     (updater: (current: BrandKitEditor) => BrandKitEditor) => {
@@ -553,7 +640,8 @@ function BrandKitStudioView({
         />
       );
     }
-    if (!detail.draft) {
+    if (!editorSource) {
+      if (readOnlyRevisionId && revisionQuery.isPending) return <WorkspaceRouteLoading />;
       return (
         <BrandStateMessage
           title={detail.name}
@@ -568,7 +656,305 @@ function BrandKitStudioView({
 
   const editorKit = !isListView ? editor : null;
   const editorIsDefault = editorKit !== null && editorKit.kitId === effectiveKitId;
-  const defaultKit = kits.find((kit) => kit.kit_id === effectiveKitId) ?? null;
+  const baseContent = editorSource?.draft?.content ?? null;
+  const dirty = Boolean(
+    editorKit &&
+      detail &&
+      baseContent &&
+      watermark &&
+      ((editorKit.name.trim() || detail.name) !== detail.name ||
+        draftContentChanged(draftContentFromEditor(editorKit, baseContent), baseContent) ||
+        watermarkChanged(watermark, editorKit.logos, channelOverlay)),
+  );
+
+  const dialogs = (
+    <>
+      <CreateBrandKitDialog
+        open={createDialogOpen}
+        mode={createMode}
+        name={newKitName}
+        selectedKitName={duplicateSource?.name ?? ""}
+        busy={createMutation.isPending}
+        onOpenChange={setCreateDialogOpen}
+        onModeChange={setCreateMode}
+        onNameChange={setNewKitName}
+        onCreate={() => {
+          const name = newKitName.trim();
+          if (!name || createMutation.isPending) return;
+          createMutation.mutate({
+            name,
+            source: createMode === "duplicate" ? duplicateSource : null,
+          });
+        }}
+      />
+
+      <AppAlertDialog
+        open={Boolean(shareTarget)}
+        title={tTheme(
+          shareTarget?.sharing?.shared_with_channel_members
+            ? "brandLibrary.unshareTitle"
+            : "brandLibrary.shareTitle",
+        )}
+        description={tTheme(
+          shareTarget?.sharing?.shared_with_channel_members
+            ? "brandLibrary.unshareDescription"
+            : "brandLibrary.shareDescription",
+          { channel: activeChannel.name },
+        )}
+        confirmLabel={tTheme(
+          shareTarget?.sharing?.shared_with_channel_members
+            ? "brandLibrary.unshareConfirm"
+            : "brandLibrary.shareConfirm",
+        )}
+        cancelLabel={tAuto("cancel_77dfd213")}
+        tone="warning"
+        busy={sharingMutation.isPending}
+        showCancel
+        showClose
+        onOpenChange={(open) => {
+          if (!open) setShareTarget(null);
+        }}
+        onCancel={() => setShareTarget(null)}
+        onConfirm={() => {
+          if (shareTarget && !sharingMutation.isPending) sharingMutation.mutate(shareTarget);
+        }}
+      />
+
+      <AppAlertDialog
+        open={Boolean(privateDefault)}
+        title={tTheme("brandLibrary.privateDefaultTitle")}
+        description={tTheme("brandLibrary.privateDefaultDescription", {
+          kit: privateDefault?.name ?? "",
+          channel: activeChannel.name,
+        })}
+        confirmLabel={tTheme("brandLibrary.share")}
+        cancelLabel={tTheme("brandLibrary.privateDefaultKeep")}
+        tone="warning"
+        busy={sharingMutation.isPending}
+        showCancel
+        showClose
+        onOpenChange={(open) => {
+          if (!open) setPrivateDefault(null);
+        }}
+        onCancel={() => setPrivateDefault(null)}
+        onConfirm={() => {
+          if (privateDefault && !sharingMutation.isPending) sharingMutation.mutate(privateDefault);
+        }}
+      />
+    </>
+  );
+
+  if (editorKit && watermark) {
+    return (
+      <div className="hg-scrollbar relative h-full flex-1 overflow-y-auto bg-background">
+        <header className="sticky top-0 z-20 border-b border-border bg-background/90 backdrop-blur">
+          <div className="mx-auto flex w-full max-w-[920px] items-center gap-2 px-4 py-3 md:px-8">
+            <Link
+              href="/brand?section=kits"
+              aria-label={tTheme("brandEditor.back")}
+              title={tTheme("brandEditor.back")}
+              className="flex size-9 shrink-0 items-center justify-center rounded-full border border-border text-muted-foreground transition hover:bg-accent hover:text-foreground"
+            >
+              <ArrowLeft className="size-4" />
+            </Link>
+            <Input
+              value={editorKit.name}
+              maxLength={80}
+              aria-label={tTheme("brandEditor.nameLabel")}
+              onChange={(event) =>
+                updateEditor((kit) => ({ ...kit, name: event.target.value }))
+              }
+              onBlur={() => {
+                if (!editorKit.name.trim() && detail) {
+                  updateEditor((kit) => ({ ...kit, name: detail.name }));
+                }
+              }}
+              onKeyDown={(event) => {
+                if (event.key === "Enter") event.currentTarget.blur();
+              }}
+              style={{ width: `${Math.max(8, editorKit.name.length + 3)}ch` }}
+              className="h-9 min-w-0 max-w-xs shrink rounded-lg border-transparent bg-transparent px-2 text-lg font-semibold shadow-none hover:border-border focus-visible:border-border md:text-lg"
+            />
+            {editorIsDefault ? <DefaultBadge /> : null}
+            <span
+              className={cn(
+                "ml-auto hidden items-center gap-1.5 text-xs sm:flex",
+                ownsKit && dirty ? "text-amber-300" : "text-muted-foreground",
+              )}
+              role="status"
+            >
+              {!ownsKit ? null : dirty ? (
+                <span className="size-1.5 rounded-full bg-amber-400" />
+              ) : (
+                <Check className="size-3.5" />
+              )}
+              {tTheme(
+                !ownsKit
+                  ? selectedListItem?.origin === "builtin"
+                    ? "brandEditor.builtinHint"
+                    : "brandEditor.sharedHint"
+                  : dirty
+                    ? "brandEditor.unsaved"
+                    : "brandEditor.saved",
+              )}
+            </span>
+            {!editorIsDefault && selectedListItem?.head_revision ? (
+              <Button
+                type="button"
+                variant="outline"
+                disabled={defaultMutation.isPending}
+                onClick={() => defaultMutation.mutate(selectedListItem)}
+                className="ml-auto h-9 shrink-0 rounded-full px-4 sm:ml-0"
+              >
+                {tTheme("brandEditor.makeDefault")}
+              </Button>
+            ) : null}
+            <Button
+              type="button"
+              disabled={(ownsKit && !dirty) || saveMutation.isPending}
+              onClick={() => saveMutation.mutate()}
+              className={cn(
+                "h-9 shrink-0 rounded-full px-4",
+                (editorIsDefault || !selectedListItem?.head_revision) && "ml-auto sm:ml-0",
+              )}
+            >
+              {saveMutation.isPending ? (
+                <Loader2 className="size-4 animate-spin" />
+              ) : ownsKit ? (
+                <Save className="size-4" />
+              ) : (
+                <Copy className="size-4" />
+              )}
+              {tTheme(ownsKit ? "brandEditor.save" : "brandEditor.saveCopy")}
+            </Button>
+          </div>
+        </header>
+
+        <div className="mx-auto flex w-full max-w-[920px] flex-col gap-4 px-4 py-6 md:px-8">
+          <EditorSection
+            id="brand-colors"
+            icon={Palette}
+            title={tTheme("brandEditor.colors.title")}
+            description={tTheme("brandEditor.colors.description")}
+          >
+            <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
+              {COLOR_META.map((color) => (
+                <ColorTile
+                  key={color.key}
+                  label={tTheme(color.labelKey)}
+                  description={tTheme(color.roleKey)}
+                  value={editorKit.colors[color.key]}
+                  swatches={Object.values(editorKit.colors)}
+                  onChange={(value) =>
+                    updateEditor((kit) => ({
+                      ...kit,
+                      colors: { ...kit.colors, [color.key]: value },
+                    }))
+                  }
+                />
+              ))}
+            </div>
+          </EditorSection>
+
+          <EditorSection
+            id="brand-fonts"
+            icon={Type}
+            title={tTheme("brandEditor.fonts.title")}
+            description={tTheme("brandEditor.fonts.description")}
+          >
+            <div className="grid gap-3 sm:grid-cols-2">
+              <FontCard
+                label={tTheme("brandEditor.fonts.titleRole")}
+                sample={tTheme("brandEditor.fonts.titleSample")}
+                font={editorKit.fonts.title}
+                options={fontOptions}
+                loading={fontsQuery.isPending}
+                onChange={(title) =>
+                  updateEditor((kit) => ({
+                    ...kit,
+                    fonts: { ...kit.fonts, title },
+                  }))
+                }
+              />
+              <FontCard
+                label={tTheme("brandEditor.fonts.bodyRole")}
+                sample={tTheme("brandEditor.fonts.bodySample")}
+                font={editorKit.fonts.body}
+                options={fontOptions}
+                loading={fontsQuery.isPending}
+                onChange={(body) =>
+                  updateEditor((kit) => ({
+                    ...kit,
+                    fonts: { ...kit.fonts, body },
+                  }))
+                }
+              />
+            </div>
+          </EditorSection>
+
+          <EditorSection
+            id="brand-captions"
+            icon={Captions}
+            title={tTheme("brandEditor.captions.title")}
+            description={tTheme("brandEditor.captions.description")}
+          >
+            <CaptionsEditor
+              captions={editorKit.captions}
+              onChange={(captions) => updateEditor((kit) => ({ ...kit, captions }))}
+            />
+          </EditorSection>
+
+          <EditorSection
+            id="brand-logos"
+            icon={ImageIcon}
+            title={tTheme("brandEditor.logo.title")}
+            description={tTheme("brandEditor.logo.description")}
+          >
+            <LogosEditor
+              channelId={activeChannel.id}
+              logos={editorKit.logos}
+              onChange={(slot, asset) =>
+                updateEditor((kit) => ({
+                  ...kit,
+                  logos: { ...kit.logos, [slot]: asset },
+                }))
+              }
+            />
+          </EditorSection>
+
+          <EditorSection
+            id="brand-watermark"
+            icon={Droplet}
+            title={tTheme("brandEditor.watermark.title")}
+            description={tTheme("brandEditor.watermark.description")}
+            action={
+              <Switch
+                checked={watermark.enabled}
+                aria-label={tTheme("brandEditor.watermark.enable")}
+                onCheckedChange={(enabled) =>
+                  setWatermark((current) => (current ? { ...current, enabled } : current))
+                }
+              />
+            }
+          >
+            <div
+              inert={!watermark.enabled}
+              className={cn("transition-opacity", !watermark.enabled && "opacity-45")}
+            >
+              <WatermarkEditor
+                channelId={activeChannel.id}
+                kit={editorKit}
+                watermark={watermark}
+                onChange={setWatermark}
+              />
+            </div>
+          </EditorSection>
+        </div>
+
+        {dialogs}
+      </div>
+    );
+  }
 
   return (
     <div className="hg-scrollbar relative h-full flex-1 overflow-y-auto bg-background">
@@ -581,71 +967,30 @@ function BrandKitStudioView({
           <span>
             <UiText id="brand_kits_f149e70b" />
           </span>
-          {editorKit ? (
-            <>
-              <span className="text-muted-foreground/50">/</span>
-              <span className="truncate text-foreground">
-                {editorKit.name}
-              </span>
-            </>
-          ) : null}
         </nav>
 
         <div className="mt-3 flex flex-wrap items-end gap-3">
           <div className="min-w-0">
-            <div className="flex flex-wrap items-center gap-2">
-              <h1 className="truncate text-2xl font-semibold tracking-tight text-foreground">
-                {editorKit ? editorKit.name : tAuto("brand_kits_f149e70b")}
-              </h1>
-              {editorIsDefault ? <DefaultBadge /> : null}
-            </div>
+            <h1 className="truncate text-2xl font-semibold tracking-tight text-foreground">
+              {tAuto("brand_kits_f149e70b")}
+            </h1>
             <p className="mt-0.5 text-sm text-muted-foreground">
-              {editorKit
-                ? tAuto("one_source_of_truth_for_every_generated_video_59da14b5")
-                : tTheme("brand.channelDescription", {
-                    channel: activeChannel.name,
-                  })}
+              {tTheme("brand.channelDescription", {
+                channel: activeChannel.name,
+              })}
             </p>
           </div>
           <Button
             type="button"
-            onClick={() => {
-              if (!editorKit) {
-                setNewKitName("");
-                setCreateMode("blank");
-                setCreateDialogOpen(true);
-                return;
-              }
-              saveMutation.mutate();
-            }}
-            disabled={
-              Boolean(editorKit) &&
-              (saveMutation.isPending ||
-                Boolean(
-                  watermark?.enabled &&
-                    editorKit &&
-                    !resolveWatermarkAsset(watermark, editorKit.logos),
-                ))
-            }
+            onClick={openCreateDialog}
             className="ml-auto h-9 rounded-full px-4"
           >
-            {!editorKit ? (
-              <Plus className="size-4" />
-            ) : saveMutation.isPending ? (
-              <Loader2 className="size-4 animate-spin" />
-            ) : (
-              <Save className="size-4" />
-            )}
-            {!editorKit
-              ? tAuto("new_kit_62d16f19")
-              : tAuto("save_changes_179359b3")}
+            <Plus className="size-4" />
+            {tAuto("new_kit_62d16f19")}
           </Button>
         </div>
 
-        <section
-          id="brand-kits"
-          className={cn("mt-9 scroll-mt-4", !isListView && "hidden")}
-        >
+        <section id="brand-kits" className="mt-9 scroll-mt-4">
           <div className="mb-3 flex items-baseline gap-2">
             <h2 className="text-sm font-medium text-foreground">{tAuto("your_kits_1c65bbbc")}</h2>
             <span className="text-xs text-muted-foreground">{tTheme("brandLibrary.kitCount", { count: kits.length })}</span>
@@ -658,7 +1003,7 @@ function BrandKitStudioView({
                 isDefault={kit.kit_id === effectiveKitId}
                 selected={kit.kit_id === kitId}
                 busy={defaultMutation.isPending || sharingMutation.isPending || createMutation.isPending}
-                onSelect={kit.access_role === "owner" ? () => openKitEditor(kit.kit_id) : undefined}
+                onSelect={() => openKitEditor(kit.kit_id)}
                 onMakeDefault={() => defaultMutation.mutate(kit)}
                 onDuplicate={() =>
                   createMutation.mutate({
@@ -676,7 +1021,7 @@ function BrandKitStudioView({
             ))}
             <button
               type="button"
-              onClick={() => setCreateDialogOpen(true)}
+              onClick={openCreateDialog}
               className="flex min-h-[212px] flex-col items-center justify-center rounded-2xl border border-dashed border-border p-5 text-center text-muted-foreground transition hover:border-foreground/25 hover:bg-muted/30 hover:text-foreground"
             >
               <span className="flex size-10 items-center justify-center rounded-full border border-border">
@@ -692,341 +1037,7 @@ function BrandKitStudioView({
           </div>
         </section>
 
-        {editorKit && watermark ? (
-          <>
-            <div
-              className={cn(
-                "mt-10",
-                !["logos", "watermark"].includes(editorSection ?? "") &&
-                  "hidden",
-              )}
-            >
-              <GroupLabel>
-                <UiText id="identity_7e5a975b" />
-              </GroupLabel>
-              <section
-                id="brand-logos"
-                className={cn("scroll-mt-4", editorSection !== "logos" && "hidden")}
-              >
-                <SectionHeading
-                  icon={ImageIcon}
-                  title={tAuto("logos_3089591a")}
-                  description={tAuto(
-                    "choose_existing_image_assets_or_upload_a_mark_wi_367b7950",
-                  )}
-                />
-                <div className="grid gap-3 lg:grid-cols-3">
-                  {LOGO_META.map((logo) => (
-                    <LogoAssetCard
-                      key={logo.key}
-                      channelId={activeChannel.id}
-                      slot={logo.key}
-                      label={tTheme(logo.labelKey)}
-                      note={tTheme(logo.noteKey)}
-                      asset={editorKit.logos[logo.key]}
-                      onChange={(asset) =>
-                        updateEditor((kit) => ({
-                          ...kit,
-                          logos: { ...kit.logos, [logo.key]: asset },
-                        }))
-                      }
-                    />
-                  ))}
-                </div>
-              </section>
-
-              <section
-                id="brand-watermark"
-                className={cn(
-                  "scroll-mt-4",
-                  editorSection !== "watermark" && "hidden",
-                )}
-              >
-                <SectionHeading
-                  icon={Droplet}
-                  title={tAuto("watermark_d67f8b55")}
-                  description={tAuto(
-                    "use_a_logo_asset_then_control_safe_placement_mov_d284e5bc",
-                  )}
-                  action={
-                    <label className="flex shrink-0 items-center gap-2.5 rounded-xl border border-border bg-panel/50 px-3 py-2">
-                      <span className="hidden text-xs font-semibold text-foreground sm:inline">
-                        {watermark.enabled
-                          ? tAuto("enabled_df174a3f")
-                          : tAuto("disabled_f4f4473d")}
-                      </span>
-                      <Switch
-                        checked={watermark.enabled}
-                        aria-label={tAuto("enable_watermark_6d09f0ed")}
-                        onCheckedChange={(enabled) =>
-                          setWatermark((current) => (current ? { ...current, enabled } : current))
-                        }
-                      />
-                    </label>
-                  }
-                />
-                <WatermarkEditor
-                  channelId={activeChannel.id}
-                  kit={editorKit}
-                  watermark={watermark}
-                  onChange={setWatermark}
-                />
-              </section>
-            </div>
-
-            <div
-              className={cn(
-                "mt-10 pb-4",
-                !["colors", "fonts", "captions"].includes(editorSection ?? "") &&
-                  "hidden",
-              )}
-            >
-              <GroupLabel>
-                <UiText id="style_99a0efc6" />
-              </GroupLabel>
-              <section
-                id="brand-colors"
-                className={cn(
-                  "scroll-mt-4",
-                  editorSection !== "colors" && "hidden",
-                )}
-              >
-                <SectionHeading
-                  icon={Palette}
-                  title={tAuto("colors_88d5e4ca")}
-                  description={tAuto(
-                    "click_any_color_to_open_the_picker_or_enter_an_e_5e801841",
-                  )}
-                />
-                <div className="grid gap-3 sm:grid-cols-2">
-                  {COLOR_META.map((color) => (
-                    <ColorPickerField
-                      key={`${editorKit.kitId}:${color.key}:${editorKit.colors[color.key]}`}
-                      label={tTheme(color.labelKey)}
-                      description={tTheme(color.roleKey)}
-                      value={editorKit.colors[color.key]}
-                      onChange={(value) =>
-                        updateEditor((kit) => ({
-                          ...kit,
-                          colors: { ...kit.colors, [color.key]: value },
-                        }))
-                      }
-                    />
-                  ))}
-                </div>
-              </section>
-
-              <section
-                id="brand-fonts"
-                className={cn("scroll-mt-4", editorSection !== "fonts" && "hidden")}
-              >
-                <SectionHeading
-                  icon={Type}
-                  title={tAuto("typography_f4beb9af")}
-                  description={tAuto(
-                    "choose_title_and_body_fonts_from_visual_previews_484a4505",
-                  )}
-                />
-                <div className="grid gap-3 lg:grid-cols-2">
-                  <TypographyCard
-                    role="Title"
-                    sample="Build a recognizable brand"
-                    font={editorKit.fonts.title}
-                    options={fontOptions}
-                    loading={fontsQuery.isPending}
-                    onChange={(title) =>
-                      updateEditor((kit) => ({
-                        ...kit,
-                        fonts: { ...kit.fonts, title },
-                      }))
-                    }
-                  />
-                  <TypographyCard
-                    role="Body"
-                    sample="Clear typography keeps captions and cards easy to read."
-                    font={editorKit.fonts.body}
-                    options={fontOptions}
-                    loading={fontsQuery.isPending}
-                    onChange={(body) =>
-                      updateEditor((kit) => ({
-                        ...kit,
-                        fonts: { ...kit.fonts, body },
-                      }))
-                    }
-                  />
-                </div>
-              </section>
-
-              <section
-                id="brand-captions"
-                className={cn(
-                  "scroll-mt-4",
-                  editorSection !== "captions" && "hidden",
-                )}
-              >
-                <SectionHeading
-                  icon={Captions}
-                  title={tAuto("captions_1201f5be")}
-                  description={tAuto(
-                    "reuse_the_production_caption_gallery_from_tools__471201af",
-                  )}
-                />
-                <div className="grid overflow-hidden rounded-2xl border border-border bg-panel/35 lg:grid-cols-[minmax(0,0.9fr)_minmax(360px,1.1fr)]">
-                  <div className="space-y-4 border-b border-border p-4 lg:border-b-0 lg:border-r">
-                    <CaptionStylePicker
-                      value={editorKit.captions.styleName}
-                      options={CAPTION_OPTIONS}
-                      resolvedStyleName="tiktok_bold"
-                      onValueChange={(styleName) =>
-                        updateEditor((kit) => ({
-                          ...kit,
-                          captions: { ...kit.captions, styleName },
-                        }))
-                      }
-                    />
-                    <div className="grid gap-3 sm:grid-cols-3 lg:grid-cols-1 xl:grid-cols-3">
-                      <CompactColorField
-                        label={tAuto("text_c3328c39")}
-                        value={editorKit.captions.fontColor}
-                        onChange={(fontColor) =>
-                          updateEditor((kit) => ({
-                            ...kit,
-                            captions: { ...kit.captions, fontColor },
-                          }))
-                        }
-                      />
-                      <CompactColorField
-                        label={tAuto("highlight_e1da9275")}
-                        value={editorKit.captions.highlightColor}
-                        onChange={(highlightColor) =>
-                          updateEditor((kit) => ({
-                            ...kit,
-                            captions: { ...kit.captions, highlightColor },
-                          }))
-                        }
-                      />
-                      <CompactColorField
-                        label={tAuto("outline_depth_6c0df2c4")}
-                        value={editorKit.captions.effectColor}
-                        onChange={(effectColor) =>
-                          updateEditor((kit) => ({
-                            ...kit,
-                            captions: { ...kit.captions, effectColor },
-                          }))
-                        }
-                      />
-                    </div>
-                  </div>
-                  <div className="h-[300px] min-h-0 p-3 sm:h-[340px]">
-                    <CaptionVideoPreview
-                      media={{
-                        name: tTheme("brand.captionSample"),
-                        previewUrl: null,
-                        width: 1080,
-                        height: 1920,
-                        durationSeconds: 12,
-                      }}
-                      styleName={editorKit.captions.styleName}
-                      fontSize={48}
-                      captionPosition="auto"
-                      showDetails={false}
-                      visibilityOverrides={{
-                        visibility_enabled: true,
-                        font_color: editorKit.captions.fontColor,
-                        highlight_color: editorKit.captions.highlightColor,
-                        effect_color: editorKit.captions.effectColor,
-                        shadow_strength: "strong",
-                      }}
-                    />
-                  </div>
-                </div>
-              </section>
-            </div>
-          </>
-        ) : null}
-
-        <CreateBrandKitDialog
-          open={createDialogOpen}
-          mode={createMode}
-          name={newKitName}
-          selectedKitName={duplicateSource?.name ?? ""}
-          busy={createMutation.isPending}
-          onOpenChange={setCreateDialogOpen}
-          onModeChange={setCreateMode}
-          onNameChange={setNewKitName}
-          onCreate={() => {
-            const name = newKitName.trim();
-            if (!name || createMutation.isPending) return;
-            createMutation.mutate({
-              name,
-              source: createMode === "duplicate" ? duplicateSource : null,
-            });
-          }}
-        />
-
-        <AppAlertDialog
-          open={Boolean(shareTarget)}
-          title={tTheme(
-            shareTarget?.sharing?.shared_with_channel_members
-              ? "brandLibrary.unshareTitle"
-              : "brandLibrary.shareTitle",
-          )}
-          description={tTheme(
-            shareTarget?.sharing?.shared_with_channel_members
-              ? "brandLibrary.unshareDescription"
-              : "brandLibrary.shareDescription",
-            { channel: activeChannel.name },
-          )}
-          confirmLabel={tTheme(
-            shareTarget?.sharing?.shared_with_channel_members
-              ? "brandLibrary.unshareConfirm"
-              : "brandLibrary.shareConfirm",
-          )}
-          cancelLabel={tAuto("cancel_77dfd213")}
-          tone="warning"
-          busy={sharingMutation.isPending}
-          showCancel
-          showClose
-          onOpenChange={(open) => {
-            if (!open) setShareTarget(null);
-          }}
-          onCancel={() => setShareTarget(null)}
-          onConfirm={() => {
-            if (shareTarget && !sharingMutation.isPending) sharingMutation.mutate(shareTarget);
-          }}
-        />
-
-        <AppAlertDialog
-          open={Boolean(privateDefault)}
-          title={tTheme("brandLibrary.privateDefaultTitle")}
-          description={tTheme("brandLibrary.privateDefaultDescription", {
-            kit: privateDefault?.name ?? "",
-            channel: activeChannel.name,
-          })}
-          confirmLabel={tTheme("brandLibrary.share")}
-          cancelLabel={tTheme("brandLibrary.privateDefaultKeep")}
-          tone="warning"
-          busy={sharingMutation.isPending}
-          showCancel
-          showClose
-          onOpenChange={(open) => {
-            if (!open) setPrivateDefault(null);
-          }}
-          onCancel={() => setPrivateDefault(null)}
-          onConfirm={() => {
-            if (privateDefault && !sharingMutation.isPending) sharingMutation.mutate(privateDefault);
-          }}
-        />
-
-        {defaultKit && editorKit && defaultKit.kit_id !== editorKit.kitId ? (
-          <div className="pointer-events-none fixed bottom-5 left-1/2 z-20 hidden -translate-x-1/2 rounded-full border border-border bg-popover/90 px-3.5 py-2 text-xs text-muted-foreground shadow-xl backdrop-blur md:block">
-            <UiText id="editing_3b9ba1a2" />{" "}
-            <span className="font-semibold text-foreground">
-              {editorKit.name}
-            </span>{" "}
-            <UiText id="default_is_480efdec" /> {defaultKit.name}
-          </div>
-        ) : null}
+        {dialogs}
       </div>
     </div>
   );
@@ -1067,8 +1078,8 @@ function BrandKitCard({
   isDefault: boolean;
   selected: boolean;
   busy: boolean;
-  /** Owner Kits open the editor; a shared or built-in Kit is not edited here. */
-  onSelect?: () => void;
+  /** Opens the Kit in the editor; a shared or built-in Kit is saved from there as a copy. */
+  onSelect: () => void;
   onMakeDefault: () => void;
   onDuplicate: () => void;
   /** Owner only (S28 "share with channel members"). */
@@ -1087,14 +1098,12 @@ function BrandKitCard({
         selected ? "border-primary/60 ring-1 ring-primary/30" : "border-border hover:border-foreground/20",
       )}
     >
-      {onSelect ? (
-        <button
-          type="button"
-          onClick={onSelect}
-          className="absolute inset-0 z-0"
-          aria-label={tTheme("brandLibrary.editKit", { name: kit.name })}
-        />
-      ) : null}
+      <button
+        type="button"
+        onClick={onSelect}
+        className="absolute inset-0 z-0"
+        aria-label={tTheme("brandLibrary.editKit", { name: kit.name })}
+      />
       {/* The kit at a glance: its lead colour with the title face on it, the other colours beside it. */}
       <div className="pointer-events-none relative z-10 flex h-28 overflow-hidden" aria-hidden="true">
         <div className="relative flex flex-1 items-end p-3" style={{ backgroundColor: lead }}>
@@ -1120,9 +1129,9 @@ function BrandKitCard({
         <div className="min-w-0 flex-1">
           <div className="flex items-center gap-2">
             <p className="truncate text-sm font-medium text-foreground">{kit.name}</p>
-            {shared || kit.access_role === "shared_reader" ? (
+            {shared || kit.access_role !== "owner" ? (
               <span className="inline-flex h-5 shrink-0 items-center rounded-full border border-border px-2 text-[10.5px] font-medium text-muted-foreground">
-                {tTheme("brandLibrary.sharedBadge")}
+                {tTheme(kit.origin === "builtin" ? "brandLibrary.builtinBadge" : "brandLibrary.sharedBadge")}
               </span>
             ) : null}
           </div>
@@ -1161,14 +1170,10 @@ function BrandKitCard({
                 {tTheme(shared ? "brandLibrary.unshare" : "brandLibrary.share")}
               </DropdownMenuItem>
             ) : null}
-            {onSelect ? (
-              <>
-                <DropdownMenuSeparator />
-                <DropdownMenuItem onClick={onSelect}>
-                  <Pencil className="size-4" /> <UiText id="edit_kit_a3cbc2c9" />
-                </DropdownMenuItem>
-              </>
-            ) : null}
+            <DropdownMenuSeparator />
+            <DropdownMenuItem onClick={onSelect}>
+              <Pencil className="size-4" /> <UiText id="edit_kit_a3cbc2c9" />
+            </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
       </div>
@@ -1184,12 +1189,59 @@ function readableOn(color: string) {
   return 0.2126 * r! + 0.7152 * g! + 0.0722 * b! > 0.6 ? "#111" : "#fff";
 }
 
+/** The Kit's logo, with the two optional versions folded away until they are needed. */
+function LogosEditor({
+  channelId,
+  logos,
+  onChange,
+}: {
+  channelId: string;
+  logos: BrandKitEditor["logos"];
+  onChange: (slot: BrandLogoSlot, asset: BrandAssetRef | null) => void;
+}) {
+  const tTheme = useTranslations("NewTheme");
+  const [primary, ...others] = LOGO_META;
+  return (
+    <>
+      <LogoAssetCard
+        wide
+        channelId={channelId}
+        slot={primary!.key}
+        label={tTheme(primary!.labelKey)}
+        note={tTheme(primary!.noteKey)}
+        asset={logos[primary!.key]}
+        onChange={(asset) => onChange(primary!.key, asset)}
+      />
+      <Collapsible defaultOpen={others.some((logo) => logos[logo.key])}>
+        <CollapsibleTrigger className="group mt-3 flex items-center gap-1.5 rounded-lg py-1 text-sm font-medium text-muted-foreground transition hover:text-foreground">
+          <ChevronDown className="size-4 transition group-data-[state=open]:rotate-180" />
+          {tTheme("brandEditor.logo.more")}
+        </CollapsibleTrigger>
+        <CollapsibleContent className="grid gap-3 pt-3 sm:grid-cols-2">
+          {others.map((logo) => (
+            <LogoAssetCard
+              key={logo.key}
+              channelId={channelId}
+              slot={logo.key}
+              label={tTheme(logo.labelKey)}
+              note={tTheme(logo.noteKey)}
+              asset={logos[logo.key]}
+              onChange={(asset) => onChange(logo.key, asset)}
+            />
+          ))}
+        </CollapsibleContent>
+      </Collapsible>
+    </>
+  );
+}
+
 function LogoAssetCard({
   channelId,
   slot,
   label,
   note,
   asset,
+  wide = false,
   onChange,
 }: {
   channelId: string;
@@ -1197,25 +1249,34 @@ function LogoAssetCard({
   label: string;
   note: string;
   asset: BrandAssetRef | null;
+  /** Preview beside the picker instead of above it. */
+  wide?: boolean;
   onChange: (asset: BrandAssetRef | null) => void;
 }) {
   return (
-    <div className="overflow-hidden rounded-2xl border border-border bg-panel/40 p-3">
-      <AssetPreview channelId={channelId} asset={asset} label={label} />
-      <div className="mb-3 mt-3">
-        <p className="text-sm font-semibold text-foreground">{label}</p>
-        <p className="text-xs text-muted-foreground">{note}</p>
+    <div
+      className={cn(
+        "rounded-xl border border-border bg-panel/40 p-3",
+        wide && "sm:flex sm:items-center sm:gap-4",
+      )}
+    >
+      <div className={cn(wide && "sm:w-56 sm:shrink-0")}>
+        <AssetPreview channelId={channelId} asset={asset} label={label} />
       </div>
-      <StorageMediaInput
-        channelId={channelId}
-        value={asset?.storageObjectId ?? ""}
-        selectedName={asset?.name ?? undefined}
-        mediaKind="image"
-        uploadMetadata={{ asset_role: `brand_logo_${slot}` }}
-        onChange={(selection) =>
-          onChange(selection ? assetFromSelection(selection) : null)
-        }
-      />
+      <div className={cn("min-w-0 flex-1", wide ? "mt-3 sm:mt-0" : "mt-3")}>
+        <p className="text-sm font-semibold text-foreground">{label}</p>
+        <p className="mb-3 text-xs text-muted-foreground">{note}</p>
+        <StorageMediaInput
+          channelId={channelId}
+          value={asset?.storageObjectId ?? ""}
+          selectedName={asset?.name ?? undefined}
+          mediaKind="image"
+          uploadMetadata={{ asset_role: `brand_logo_${slot}` }}
+          onChange={(selection) =>
+            onChange(selection ? assetFromSelection(selection) : null)
+          }
+        />
+      </div>
     </div>
   );
 }
@@ -1263,6 +1324,30 @@ function AssetPreview({
   );
 }
 
+/** Where a watermark anchored at `anchor` sits in the preview frame (left/top, so a move animates). */
+function watermarkAnchorStyle(
+  anchor: Exclude<BrandOverlayAnchor, "auto_safe">,
+  marginRatio: number,
+): React.CSSProperties {
+  const margin = `${Math.max(2, marginRatio * 100)}%`;
+  const [vertical, horizontal] = anchor === "center" ? ["middle", "center"] : anchor.split("_");
+  const place = (edge: string | undefined, start: string, end: string) =>
+    edge === start
+      ? ([margin, "0"] as const)
+      : edge === end
+        ? ([`calc(100% - ${margin})`, "-100%"] as const)
+        : (["50%", "-50%"] as const);
+  const [left, shiftX] = place(horizontal, "left", "right");
+  const [top, shiftY] = place(vertical, "top", "bottom");
+  return { left, top, transform: `translate(${shiftX}, ${shiftY})` };
+}
+
+const WATERMARK_CORNERS = ["top_right", "bottom_right", "bottom_left", "top_left"] as const;
+
+/**
+ * The watermark on a sample video frame: the logo is drawn where it will sit, at its size and
+ * opacity, and a click on the frame moves it. The rarely changed settings are under "Advanced".
+ */
 function WatermarkEditor({
   channelId,
   kit,
@@ -1274,96 +1359,210 @@ function WatermarkEditor({
   watermark: BrandWatermarkEditor;
   onChange: (watermark: BrandWatermarkEditor) => void;
 }) {
-  const tAuto = useTranslations("Auto");
   const tTheme = useTranslations("NewTheme");
   const resolvedAsset = resolveWatermarkAsset(watermark, kit.logos);
-  const disabled = !watermark.enabled;
+  const image = useStorageThumbnailUrl({
+    channelId,
+    objectId: resolvedAsset?.storageObjectId ?? "",
+    enabled: Boolean(resolvedAsset),
+  });
+  const moving = watermark.animationMode !== "static";
+  const auto = watermark.anchor === "auto_safe";
+  // "Auto" and a moving watermark start top right, away from the caption area.
+  const shownAnchor = moving || watermark.anchor === "auto_safe" ? "top_right" : watermark.anchor;
   const patch = (value: Partial<BrandWatermarkEditor>) =>
     onChange({ ...watermark, ...value });
-  const primaryLogoLabel = kit.logos.primary
-    ? kit.logos.primary.name ?? tTheme("brand.logos.primary")
-    : null;
+  const mark = (anchor: Exclude<BrandOverlayAnchor, "auto_safe">, ghost: boolean) => (
+    <span
+      key={ghost ? anchor : "mark"}
+      className="pointer-events-none absolute aspect-square transition-all duration-200"
+      style={{
+        ...watermarkAnchorStyle(anchor, watermark.marginRatio),
+        width: `${watermark.widthRatio * 100}%`,
+        opacity: ghost ? watermark.opacity * 0.3 : watermark.opacity,
+      }}
+    >
+      {image.data?.url ? (
+        <Image
+          src={image.data.url}
+          alt=""
+          fill
+          unoptimized
+          sizes="128px"
+          className="object-contain"
+        />
+      ) : (
+        <span className="flex size-full items-center justify-center rounded-md border border-dashed border-white/60 text-white/80">
+          <ImageIcon className="size-1/2" />
+        </span>
+      )}
+    </span>
+  );
 
   return (
-    <div
-      className={cn(
-        "rounded-2xl border border-border bg-panel/35 p-4 transition-opacity",
-        disabled && "opacity-55",
-      )}
-    >
-      <div className="grid gap-5 xl:grid-cols-[minmax(280px,0.8fr)_minmax(0,1.2fr)]">
-        <div className="space-y-4">
+    <div className="space-y-5">
+      <div className="grid gap-5 sm:grid-cols-[minmax(0,1.15fr)_minmax(0,1fr)]">
+        <div>
+          <div className="relative aspect-video overflow-hidden rounded-xl border border-border bg-[radial-gradient(circle_at_30%_25%,#475569,transparent_55%),linear-gradient(135deg,#1e293b,#0b1120)]">
+            {/* Where captions usually sit, so the logo's distance from them can be judged. */}
+            <span className="absolute bottom-[14%] left-1/2 h-[5%] w-[44%] -translate-x-1/2 rounded-full bg-white/25" />
+            <span className="absolute bottom-[7%] left-1/2 h-[5%] w-[30%] -translate-x-1/2 rounded-full bg-white/15" />
+            <div className="absolute inset-0 grid grid-cols-3 grid-rows-3">
+              {WATERMARK_ANCHORS.map((anchor) => {
+                const active = !moving && !auto && watermark.anchor === anchor.value;
+                return (
+                  <button
+                    key={anchor.value}
+                    type="button"
+                    disabled={moving}
+                    aria-pressed={active}
+                    aria-label={tTheme(anchor.labelKey)}
+                    title={moving ? undefined : tTheme(anchor.labelKey)}
+                    onClick={() => patch({ anchor: anchor.value })}
+                    className={cn(
+                      "border border-white/[0.05] transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-ring disabled:cursor-not-allowed",
+                      active ? "bg-white/[0.08]" : "enabled:hover:bg-white/[0.08]",
+                    )}
+                  />
+                );
+              })}
+            </div>
+            {moving
+              ? WATERMARK_CORNERS.filter((corner) => corner !== shownAnchor).map((corner) =>
+                  mark(corner, true),
+                )
+              : null}
+            {mark(shownAnchor, false)}
+          </div>
+          <p className="mt-2 text-xs leading-4 text-muted-foreground">
+            {tTheme(
+              moving
+                ? "brandEditor.watermark.movingHint"
+                : auto
+                  ? "brandEditor.watermark.autoHint"
+                  : "brandEditor.watermark.frameHint",
+            )}
+          </p>
+        </div>
+
+        <div className="min-w-0 space-y-4">
           <div>
-            <FieldLabel>
-              <UiText id="watermark_source_cd29e120" />
-            </FieldLabel>
+            <FieldLabel>{tTheme("brandEditor.watermark.position")}</FieldLabel>
+            <div className="flex items-center justify-between gap-2 rounded-lg border border-border bg-background/35 py-1.5 pl-3 pr-1.5">
+              <span className="truncate text-sm text-foreground">
+                {moving
+                  ? tTheme(
+                      WATERMARK_BEHAVIORS.find((behavior) => behavior.value === watermark.animationMode)
+                        ?.labelKey ?? "brand.behaviors.move",
+                    )
+                  : auto
+                    ? tTheme("brandEditor.watermark.auto")
+                    : tTheme(
+                        WATERMARK_ANCHORS.find((anchor) => anchor.value === watermark.anchor)?.labelKey ??
+                          "brand.anchors.topRight",
+                      )}
+              </span>
+              <button
+                type="button"
+                disabled={moving}
+                aria-pressed={auto}
+                onClick={() => patch({ anchor: "auto_safe" })}
+                className={cn(
+                  "shrink-0 rounded-md px-2.5 py-1 text-xs font-medium transition-colors disabled:opacity-50",
+                  auto && !moving
+                    ? "bg-accent text-foreground"
+                    : "text-muted-foreground enabled:hover:bg-accent/60 enabled:hover:text-foreground",
+                )}
+              >
+                <Sparkles className="mr-1 inline size-3" />
+                {tTheme("brandEditor.watermark.auto")}
+              </button>
+            </div>
+          </div>
+          <RangeControl
+            label={tTheme("brandEditor.watermark.size")}
+            value={watermark.widthRatio * 100}
+            min={3}
+            max={30}
+            step={1}
+            disabled={false}
+            onChange={(value) => patch({ widthRatio: value / 100 })}
+          />
+          <RangeControl
+            label={tTheme("brandEditor.watermark.opacity")}
+            value={watermark.opacity * 100}
+            min={10}
+            max={100}
+            step={5}
+            disabled={false}
+            onChange={(value) => patch({ opacity: value / 100 })}
+          />
+          <div>
+            <FieldLabel>{tTheme("brandEditor.watermark.image")}</FieldLabel>
             <div className="grid grid-cols-2 gap-2">
               <ChoiceTile
                 active={watermark.source === "primary_logo"}
-                disabled={disabled}
-                title={tAuto("primary_logo_43722ba1")}
+                disabled={false}
+                title={tTheme("brandEditor.watermark.useLogo")}
                 description={
-                  primaryLogoLabel ?? tAuto("choose_it_in_logos_87f1717c")
+                  kit.logos.primary
+                    ? kit.logos.primary.name ?? tTheme("brand.logos.primary")
+                    : tTheme("brandEditor.watermark.useLogoMissing")
                 }
                 onClick={() => patch({ source: "primary_logo" })}
               />
               <ChoiceTile
                 active={watermark.source === "custom_asset"}
-                disabled={disabled}
-                title={tAuto("custom_asset_27c40180")}
+                disabled={false}
+                title={tTheme("brandEditor.watermark.customImage")}
                 description={
-                  watermark.asset
-                    ? watermark.asset.name ?? tAuto("custom_asset_27c40180")
-                    : tAuto("independent_image_bfe42537")
+                  watermark.asset?.name ?? tTheme("brandEditor.watermark.customImageHint")
                 }
                 onClick={() => patch({ source: "custom_asset" })}
               />
             </div>
-          </div>
-
-          {watermark.source === "custom_asset" ? (
-            <StorageMediaInput
-              channelId={channelId}
-              value={watermark.asset?.storageObjectId ?? ""}
-              selectedName={watermark.asset?.name ?? undefined}
-              mediaKind="image"
-              disabled={disabled}
-              uploadMetadata={{ asset_role: "brand_overlay_logo" }}
-              onChange={(selection) =>
-                patch({
-                  asset: selection ? assetFromSelection(selection) : null,
-                })
-              }
-            />
-          ) : (
-            <div className="rounded-xl border border-border bg-background/25 p-3">
-              <div className="flex items-center gap-3">
-                <span className="flex size-10 items-center justify-center rounded-lg bg-accent">
-                  <ImageIcon className="size-4 text-muted-foreground" />
-                </span>
-                <div className="min-w-0">
-                  <p className="truncate text-sm font-semibold text-foreground">
-                    {primaryLogoLabel ??
-                      tAuto("primary_logo_not_selected_3287ca29")}
-                  </p>
-                  <p className="text-xs text-muted-foreground">
-                    <UiText id="shared_with_the_logos_section_b29e27b2" />
-                  </p>
-                </div>
+            {watermark.source === "custom_asset" ? (
+              <div className="mt-2">
+                <StorageMediaInput
+                  channelId={channelId}
+                  value={watermark.asset?.storageObjectId ?? ""}
+                  selectedName={watermark.asset?.name ?? undefined}
+                  mediaKind="image"
+                  uploadMetadata={{ asset_role: "brand_overlay_logo" }}
+                  onChange={(selection) =>
+                    patch({
+                      asset: selection ? assetFromSelection(selection) : null,
+                    })
+                  }
+                />
               </div>
-            </div>
-          )}
+            ) : null}
+            {!resolvedAsset ? (
+              <p className="mt-2 rounded-lg border border-amber-500/25 bg-amber-500/[0.06] px-3 py-2 text-xs text-amber-200">
+                {tTheme("brandEditor.watermark.needsLogo")}
+              </p>
+            ) : null}
+          </div>
+        </div>
+      </div>
 
+      <Collapsible
+        defaultOpen={moving || watermark.enforce}
+        className="border-t border-border pt-3"
+      >
+        <CollapsibleTrigger className="group flex items-center gap-1.5 rounded-lg py-1 text-sm font-medium text-muted-foreground transition hover:text-foreground">
+          <ChevronDown className="size-4 transition group-data-[state=open]:rotate-180" />
+          {tTheme("brandEditor.watermark.advanced")}
+        </CollapsibleTrigger>
+        <CollapsibleContent className="space-y-4 pt-3">
           <div>
-            <FieldLabel>
-              <UiText id="behavior_70cb647a" />
-            </FieldLabel>
-            <div className="grid gap-2 sm:grid-cols-3 xl:grid-cols-1 2xl:grid-cols-3">
+            <FieldLabel>{tTheme("brandEditor.watermark.movement")}</FieldLabel>
+            <div className="grid gap-2 sm:grid-cols-3">
               {WATERMARK_BEHAVIORS.map((behavior) => (
                 <ChoiceTile
                   key={behavior.value}
                   active={watermark.animationMode === behavior.value}
-                  disabled={disabled}
+                  disabled={false}
                   title={tTheme(behavior.labelKey)}
                   description={tTheme(behavior.descriptionKey)}
                   onClick={() => patch({ animationMode: behavior.value })}
@@ -1372,15 +1571,15 @@ function WatermarkEditor({
             </div>
           </div>
 
-          {watermark.animationMode !== "static" ? (
+          {moving ? (
             <div className="grid grid-cols-2 gap-3">
               <NumberControl
-                label={tAuto("change_every_3e43c06c")}
-                suffix="sec"
+                label={tTheme("brandEditor.watermark.changeEvery")}
+                suffix={tTheme("brandEditor.watermark.seconds")}
                 value={watermark.intervalSeconds}
                 min={2}
                 max={60}
-                disabled={disabled}
+                disabled={false}
                 onChange={(intervalSeconds) =>
                   patch({
                     intervalSeconds,
@@ -1393,198 +1592,304 @@ function WatermarkEditor({
               />
               {watermark.animationMode === "fade_corner_cycle" ? (
                 <NumberControl
-                  label={tAuto("fade_time_b0a6128a")}
-                  suffix="sec"
+                  label={tTheme("brandEditor.watermark.fade")}
+                  suffix={tTheme("brandEditor.watermark.seconds")}
                   value={watermark.fadeSeconds}
                   min={0}
                   max={Math.min(1, watermark.intervalSeconds / 2)}
                   step={0.1}
-                  disabled={disabled}
+                  disabled={false}
                   onChange={(fadeSeconds) => patch({ fadeSeconds })}
                 />
-              ) : (
-                <div />
-              )}
+              ) : null}
             </div>
           ) : null}
-        </div>
 
-        <div className="space-y-5 rounded-2xl border border-border bg-background/20 p-4">
-          <div className="flex flex-wrap items-center justify-between gap-2">
-            <div>
-              <p className="text-sm font-semibold text-foreground">
-                <UiText id="placement_ab89d05c" />
-              </p>
-              <p className="text-xs text-muted-foreground">
-                <UiText id="auto_safe_avoids_common_ui_and_caption_zones_a32754db" />
-              </p>
-            </div>
-            <button
-              type="button"
-              disabled={disabled}
-              onClick={() => patch({ anchor: "auto_safe" })}
-              className={cn(
-                "rounded-lg border px-3 py-1.5 text-xs font-semibold transition disabled:pointer-events-none",
-                watermark.anchor === "auto_safe"
-                  ? "border-primary/50 bg-primary/10 text-primary"
-                  : "border-border bg-panel/40 text-muted-foreground hover:text-foreground",
-              )}
-            >
-              <Sparkles className="mr-1.5 inline size-3.5" />{" "}
-              <UiText id="auto_safe_1c01f14a" />
-            </button>
-          </div>
+          <RangeControl
+            label={tTheme("brandEditor.watermark.margin")}
+            value={watermark.marginRatio * 100}
+            min={0}
+            max={15}
+            step={1}
+            disabled={false}
+            onChange={(value) => patch({ marginRatio: value / 100 })}
+          />
 
-          <div className="grid gap-4 sm:grid-cols-[220px_minmax(0,1fr)]">
-            <div className="grid aspect-video grid-cols-3 gap-1.5 rounded-xl border border-border bg-[radial-gradient(circle_at_50%_30%,rgb(var(--accent)/0.55),transparent_70%)] p-2.5">
-              {WATERMARK_ANCHORS.map((anchor) => (
-                <button
-                  key={anchor.value}
-                  type="button"
-                  disabled={disabled || watermark.animationMode !== "static"}
-                  aria-label={tTheme(anchor.labelKey)}
-                  title={
-                    watermark.animationMode !== "static"
-                      ? tAuto(
-                          "moving_watermarks_rotate_through_safe_corners_au_4e44e118",
-                        )
-                      : tTheme(anchor.labelKey)
-                  }
-                  onClick={() => patch({ anchor: anchor.value })}
-                  className={cn(
-                    "relative rounded-md border transition disabled:cursor-not-allowed",
-                    watermark.anchor === anchor.value &&
-                      watermark.animationMode === "static"
-                      ? "border-primary/55 bg-primary/15"
-                      : "border-white/[0.06] bg-white/[0.025] hover:bg-white/[0.06]",
-                  )}
-                >
-                  {watermark.anchor === anchor.value &&
-                  watermark.animationMode === "static" ? (
-                    <span
-                      className="absolute inset-x-[22%] top-1/2 h-1.5 -translate-y-1/2 rounded-full"
-                      style={{
-                        backgroundColor: kit.colors.primary,
-                        opacity: watermark.opacity,
-                      }}
-                    />
-                  ) : null}
-                </button>
-              ))}
-            </div>
-            <div className="space-y-4">
-              <RangeControl
-                label={tAuto("size_b7152342")}
-                value={watermark.widthRatio * 100}
-                min={3}
-                max={30}
-                step={1}
-                disabled={disabled}
-                onChange={(value) => patch({ widthRatio: value / 100 })}
-              />
-              <RangeControl
-                label={tAuto("opacity_f0fa69f3")}
-                value={watermark.opacity * 100}
-                min={10}
-                max={100}
-                step={5}
-                disabled={disabled}
-                onChange={(value) => patch({ opacity: value / 100 })}
-              />
-              <RangeControl
-                label={tAuto("safe_margin_cba4eff0")}
-                value={watermark.marginRatio * 100}
-                min={0}
-                max={15}
-                step={1}
-                disabled={disabled}
-                onChange={(value) => patch({ marginRatio: value / 100 })}
-              />
-            </div>
-          </div>
-
-          <label className="flex items-start justify-between gap-3 rounded-xl border border-border bg-panel/35 p-3">
-            <span className="flex min-w-0 gap-2.5">
-              <LockKeyhole className="mt-0.5 size-4 shrink-0 text-muted-foreground" />
-              <span>
-                <span className="block text-sm font-semibold text-foreground">
-                  <UiText id="require_in_workflows_b1577736" />
-                </span>
-                <span className="mt-0.5 block text-xs leading-4 text-muted-foreground">
-                  <UiText id="block_workflow_launch_when_the_production_overla_0474cd95" />
-                </span>
+          <label className="flex items-center justify-between gap-3 rounded-xl border border-border bg-panel/35 p-3">
+            <span className="min-w-0">
+              <span className="block text-sm font-medium text-foreground">
+                {tTheme("brandEditor.watermark.required")}
+              </span>
+              <span className="mt-0.5 block text-xs leading-4 text-muted-foreground">
+                {tTheme("brandEditor.watermark.requiredHint")}
               </span>
             </span>
             <Switch
               checked={watermark.enforce}
-              disabled={disabled}
               onCheckedChange={(enforce) => patch({ enforce })}
-              aria-label={tAuto("require_watermark_in_workflows_4759b6f9")}
+              aria-label={tTheme("brandEditor.watermark.required")}
             />
           </label>
-
-          {watermark.enabled && !resolvedAsset ? (
-            <p className="rounded-xl border border-amber-500/25 bg-amber-500/[0.06] px-3 py-2 text-xs text-amber-200">
-              <UiText id="select_a_primary_logo_or_switch_to_a_custom_wate_756a5144" />
-            </p>
-          ) : null}
-        </div>
-      </div>
+        </CollapsibleContent>
+      </Collapsible>
     </div>
   );
 }
 
-function ColorPickerField({
+function ColorTile({
   label,
   description,
   value,
+  swatches,
   onChange,
 }: {
   label: string;
   description: string;
   value: string;
+  /** The Kit's colours, offered as shortcuts in the picker. */
+  swatches: string[];
   onChange: (value: string) => void;
 }) {
-  const [draft, setDraft] = React.useState(value);
+  const tTheme = useTranslations("NewTheme");
+  // The typed HEX while the field has focus; outside of that the field shows the Kit's colour.
+  const [draft, setDraft] = React.useState<string | null>(null);
+  // The picker opens from the HEX field, not from the swatch.
+  const [pickerOpen, setPickerOpen] = React.useState(false);
+  const anchorRef = React.useRef<HTMLDivElement>(null);
+  const pickerRef = React.useRef<HTMLDivElement>(null);
   return (
-    <div className="group flex min-w-0 items-center gap-3 rounded-xl border border-border bg-panel/50 p-3 transition hover:border-primary/35">
-      <label
-        className="relative size-11 shrink-0 cursor-pointer overflow-hidden rounded-full ring-1 ring-inset ring-white/15 focus-within:ring-2 focus-within:ring-primary/60"
-        style={{ backgroundColor: value }}
-      >
-        <input
-          type="color"
-          value={value}
-          aria-label={`Choose ${label} color`}
-          onChange={(event) => {
-            const nextValue = event.target.value.toUpperCase();
-            setDraft(nextValue);
-            onChange(nextValue);
+    <div className="min-w-0 rounded-xl border border-border bg-panel/40 p-2.5 transition hover:border-primary/35">
+      <div className="h-16 rounded-lg ring-1 ring-inset ring-white/10" style={{ backgroundColor: value }} aria-hidden />
+      <p className="mt-2.5 truncate text-sm font-semibold text-foreground">{label}</p>
+      <p className="truncate text-xs text-muted-foreground">{description}</p>
+      <Popover open={pickerOpen} onOpenChange={setPickerOpen}>
+        <PopoverAnchor asChild>
+          <div ref={anchorRef} className="mt-2">
+            <Input
+              value={draft ?? value}
+              aria-label={tTheme("brandEditor.colors.hex", { label })}
+              aria-haspopup="dialog"
+              aria-expanded={pickerOpen}
+              maxLength={7}
+              onFocus={() => setPickerOpen(true)}
+              onClick={() => setPickerOpen(true)}
+              onChange={(event) => {
+                const typed = event.target.value.toUpperCase();
+                setDraft(typed);
+                const hex = normalizeHexColor(typed, "");
+                if (hex) onChange(hex);
+              }}
+              onBlur={() => setDraft(null)}
+              onKeyDown={(event) => {
+                if (event.key === "Enter") {
+                  setPickerOpen(false);
+                  event.currentTarget.blur();
+                } else if (event.key === "ArrowDown" && pickerOpen) {
+                  event.preventDefault();
+                  pickerRef.current?.querySelector<HTMLElement>("[data-color-area]")?.focus();
+                }
+              }}
+              className="h-8 rounded-lg bg-background/35 font-mono text-xs uppercase"
+            />
+          </div>
+        </PopoverAnchor>
+        <PopoverContent
+          ref={pickerRef}
+          align="start"
+          className="w-64 rounded-xl p-3"
+          onOpenAutoFocus={(event) => event.preventDefault()}
+          onCloseAutoFocus={(event) => event.preventDefault()}
+          onInteractOutside={(event) => {
+            if (anchorRef.current?.contains(event.target as Node)) event.preventDefault();
           }}
-          className="absolute -inset-3 size-16 cursor-pointer opacity-0"
-        />
-      </label>
-      <div className="min-w-0 flex-1">
-        <p className="font-semibold text-foreground">{label}</p>
-        <p className="text-xs text-muted-foreground">{description}</p>
+        >
+          <BrandColorPicker value={value} swatches={swatches} onChange={onChange} />
+        </PopoverContent>
+      </Popover>
+    </div>
+  );
+}
+
+/**
+ * Caption look of the Kit: a few styles up front, the whole gallery behind the last tile, and the
+ * style's own colours until one is changed here.
+ */
+function CaptionsEditor({
+  captions,
+  onChange,
+}: {
+  captions: BrandKitEditor["captions"];
+  onChange: (captions: BrandKitEditor["captions"]) => void;
+}) {
+  const tTheme = useTranslations("NewTheme");
+  const toolCopy = useToolCopy();
+  const styleLabel = (styleName: string) =>
+    styleName === "auto"
+      ? tTheme("brandEditor.captions.auto")
+      : toolCopy(formatLabel(styleName)) ?? formatLabel(styleName);
+  const previewStyle = (styleName: string) =>
+    styleName === "auto" ? AUTO_CAPTION_PREVIEW_STYLE : styleName;
+  const palette = getCaptionPresetPalette(previewStyle(captions.styleName));
+  const pickStyle = (styleName: string) => {
+    const next = getCaptionPresetPalette(previewStyle(styleName));
+    onChange({
+      styleName,
+      fontColor: next.fontColor,
+      highlightColor: next.highlightColor,
+      effectColor: next.effectColor,
+    });
+  };
+  const customColors =
+    captions.fontColor.toUpperCase() !== palette.fontColor ||
+    (palette.supportsHighlight && captions.highlightColor.toUpperCase() !== palette.highlightColor) ||
+    (palette.supportsEffect && captions.effectColor.toUpperCase() !== palette.effectColor);
+  const otherStyle = QUICK_CAPTION_STYLES.includes(captions.styleName)
+    ? null
+    : captions.styleName;
+
+  return (
+    <div className="grid gap-5 lg:grid-cols-[minmax(0,1fr)_240px]">
+      <div className="min-w-0 space-y-4">
+        <div>
+          <FieldLabel>{tTheme("brandEditor.captions.style")}</FieldLabel>
+          <div className="grid grid-cols-2 gap-2 sm:grid-cols-4">
+            {QUICK_CAPTION_STYLES.map((styleName) => {
+              const selected = captions.styleName === styleName;
+              return (
+                <button
+                  key={styleName}
+                  type="button"
+                  aria-pressed={selected}
+                  onClick={() => pickStyle(styleName)}
+                  className={cn(
+                    "caption-style-card min-w-0 overflow-hidden rounded-xl border p-1.5 text-left transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
+                    selected
+                      ? "border-primary/60 bg-primary/[0.08]"
+                      : "border-border bg-panel/35 hover:border-primary/35 hover:bg-accent/35",
+                  )}
+                >
+                  <div className="relative h-16 overflow-hidden rounded-lg">
+                    <CaptionStyleThumbnail
+                      styleName={previewStyle(styleName)}
+                      compact
+                      active={selected}
+                    />
+                    {selected ? (
+                      <span className="absolute right-1.5 top-1.5">
+                        <SelectedMark />
+                      </span>
+                    ) : null}
+                  </div>
+                  <span className="flex items-center gap-1 px-1 pb-0.5 pt-1.5 text-xs font-medium text-foreground">
+                    {styleName === "auto" ? (
+                      <Sparkles className="size-3 shrink-0 text-primary" />
+                    ) : null}
+                    <span className="truncate">{styleLabel(styleName)}</span>
+                  </span>
+                </button>
+              );
+            })}
+            <CaptionStylePicker
+              value={captions.styleName}
+              options={CAPTION_OPTIONS}
+              resolvedStyleName={AUTO_CAPTION_PREVIEW_STYLE}
+              onValueChange={pickStyle}
+              trigger={
+                <button
+                  type="button"
+                  className={cn(
+                    "caption-style-card min-w-0 overflow-hidden rounded-xl border p-1.5 text-left transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
+                    otherStyle
+                      ? "border-primary/60 bg-primary/[0.08]"
+                      : "border-dashed border-border hover:border-primary/35 hover:bg-accent/35",
+                  )}
+                >
+                  <div className="relative flex h-16 items-center justify-center overflow-hidden rounded-lg text-muted-foreground">
+                    {otherStyle ? (
+                      <>
+                        <CaptionStyleThumbnail styleName={otherStyle} compact active />
+                        <span className="absolute right-1.5 top-1.5">
+                          <SelectedMark />
+                        </span>
+                      </>
+                    ) : (
+                      <LayoutGrid className="size-5" />
+                    )}
+                  </div>
+                  <span className="flex items-center gap-1 px-1 pb-0.5 pt-1.5 text-xs font-medium text-foreground">
+                    <span className="truncate">
+                      {otherStyle
+                        ? styleLabel(otherStyle)
+                        : tTheme("brandEditor.captions.allStyles", {
+                            count: CAPTION_STYLE_NAMES.length,
+                          })}
+                    </span>
+                    <ChevronDown className="ml-auto size-3.5 shrink-0 text-muted-foreground" />
+                  </span>
+                </button>
+              }
+            />
+          </div>
+        </div>
+
+        <div>
+          <div className="flex items-center justify-between gap-2">
+            <FieldLabel>{tTheme("brandEditor.captions.colors")}</FieldLabel>
+            {customColors ? (
+              <button
+                type="button"
+                onClick={() => pickStyle(captions.styleName)}
+                className="mb-1.5 text-xs font-medium text-primary hover:underline"
+              >
+                {tTheme("brandEditor.captions.resetColors")}
+              </button>
+            ) : null}
+          </div>
+          <div className="grid grid-cols-3 gap-2">
+            <CompactColorField
+              label={tTheme("brandEditor.captions.text")}
+              value={captions.fontColor}
+              onChange={(fontColor) => onChange({ ...captions, fontColor })}
+            />
+            {palette.supportsHighlight ? (
+              <CompactColorField
+                label={tTheme("brandEditor.captions.highlight")}
+                value={captions.highlightColor}
+                onChange={(highlightColor) => onChange({ ...captions, highlightColor })}
+              />
+            ) : null}
+            {palette.supportsEffect ? (
+              <CompactColorField
+                label={tTheme("brandEditor.captions.outline")}
+                value={captions.effectColor}
+                onChange={(effectColor) => onChange({ ...captions, effectColor })}
+              />
+            ) : null}
+          </div>
+        </div>
       </div>
-      <div className="relative w-28 shrink-0">
-        <Input
-          value={draft}
-          aria-label={`${label} HEX color`}
-          maxLength={7}
-          onChange={(event) => setDraft(event.target.value.toUpperCase())}
-          onBlur={() => {
-            const normalized = normalizeHexColor(draft, value);
-            setDraft(normalized);
-            onChange(normalized);
+
+      <div className="h-[320px] min-h-0">
+        <CaptionVideoPreview
+          media={{
+            name: tTheme("brand.captionSample"),
+            previewUrl: null,
+            width: 1080,
+            height: 1920,
+            durationSeconds: 12,
           }}
-          onKeyDown={(event) => {
-            if (event.key === "Enter") event.currentTarget.blur();
+          styleName={captions.styleName}
+          fontSize={48}
+          captionPosition="auto"
+          showDetails={false}
+          visibilityOverrides={{
+            visibility_enabled: true,
+            font_color: captions.fontColor,
+            highlight_color: captions.highlightColor,
+            effect_color: captions.effectColor,
+            shadow_strength: "strong",
           }}
-          className="h-9 rounded-lg bg-background/35 pr-8 font-mono text-xs uppercase"
         />
-        <Pencil className="pointer-events-none absolute right-2.5 top-1/2 size-3.5 -translate-y-1/2 text-muted-foreground" />
       </div>
     </div>
   );
@@ -1629,136 +1934,119 @@ function CompactColorField({
  * pinned as `font_ref` (the publish checks it against the catalogue). Previews use the same font
  * files the browser already ships (`"<Family> Caption"` faces in globals.css).
  */
-function TypographyCard({
-  role,
+function FontCard({
+  label,
   sample,
   font,
   options,
   loading,
   onChange,
 }: {
-  role: string;
+  label: string;
   sample: string;
   font: BrandFontToken;
   options: BrandFontFamilyOption[];
   loading: boolean;
   onChange: (font: BrandFontToken) => void;
 }) {
+  const tTheme = useTranslations("NewTheme");
   const [open, setOpen] = React.useState(false);
   const option = options.find((entry) => entry.family === font.family) ?? null;
-  const cssFamily = option?.cssFamily ?? `"${font.family}", sans-serif`;
+  const faceStyle: React.CSSProperties = {
+    fontFamily: option?.cssFamily ?? `"${font.family}", sans-serif`,
+    fontWeight: font.weight,
+    fontStyle: option?.italic ? "italic" : undefined,
+  };
+  const weightLabel = (weight: number) =>
+    tTheme(
+      `brandEditor.fonts.weights.${
+        weight <= 300 ? "light" : weight <= 500 ? "regular" : weight <= 700 ? "bold" : "extraBold"
+      }`,
+    );
   return (
-    <div className="rounded-2xl border border-border bg-panel/40 p-4">
-      <div className="flex items-center justify-between gap-3">
-        <div>
-          <p className="text-xs font-semibold uppercase tracking-[0.12em] text-muted-foreground">
-            {role}
-          </p>
-          <p className="mt-1 text-sm text-foreground">
-            {font.family} · {font.weight}
-          </p>
-        </div>
-        <Popover open={open} onOpenChange={setOpen}>
-          <PopoverTrigger asChild>
-            <Button
-              type="button"
-              variant="outline"
-              className="h-9 rounded-lg"
-              disabled={loading || options.length === 0}
-            >
-              <UiText id="change_64fbd995" />{" "}
-              <ChevronDown
-                className={cn("size-3.5 transition", open && "rotate-180")}
-              />
-            </Button>
-          </PopoverTrigger>
-          <PopoverContent
-            align="end"
-            sideOffset={8}
-            className="w-[min(420px,calc(100vw-2rem))] rounded-2xl border-border bg-popover/95 p-2 shadow-2xl backdrop-blur-xl"
+    <div className="min-w-0 rounded-xl border border-border bg-panel/40 p-3.5">
+      <FieldLabel>{label}</FieldLabel>
+      <Popover open={open} onOpenChange={setOpen}>
+        <PopoverTrigger asChild>
+          <button
+            type="button"
+            disabled={loading || options.length === 0}
+            className="flex h-11 w-full items-center gap-3 rounded-lg border border-border bg-background/35 px-3 text-left transition hover:border-primary/35 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:opacity-50"
           >
-            <p className="px-2 pb-2 pt-1 text-xs font-semibold text-muted-foreground">
-              <UiText id="choose_78b7c9f6" /> {role.toLowerCase()} font
-            </p>
-            <div className="space-y-1">
-              {options.map((fontOptionItem) => {
-                const active = fontOptionItem.family === font.family;
-                return (
-                  <button
-                    key={fontOptionItem.family}
-                    type="button"
-                    onClick={() => {
-                      onChange(nearestFontToken(fontOptionItem, font.weight));
-                      setOpen(false);
-                    }}
-                    className={cn(
-                      "flex w-full items-center gap-3 rounded-xl border px-3 py-2.5 text-left transition",
-                      active
-                        ? "border-primary/45 bg-primary/[0.08]"
-                        : "border-transparent hover:border-border hover:bg-accent/50",
-                    )}
-                  >
-                    <span
-                      className="w-14 shrink-0 text-2xl leading-none text-foreground"
-                      style={{
-                        fontFamily: fontOptionItem.cssFamily,
-                        fontWeight: fontOptionItem.faces.at(-1)?.weight,
-                        fontStyle: fontOptionItem.italic ? "italic" : undefined,
-                      }}
-                    >
-                      <UiText id="aa_2c419ecc" />
-                    </span>
-                    <span className="min-w-0 flex-1">
-                      <span className="block text-sm font-semibold text-foreground">
-                        {fontOptionItem.family}
-                      </span>
-                      <span className="block text-xs text-muted-foreground">
-                        {fontOptionItem.faces.map((face) => face.weight).join(" · ")}
-                      </span>
-                    </span>
-                    {active ? <SelectedMark /> : null}
-                  </button>
-                );
-              })}
-            </div>
-          </PopoverContent>
-        </Popover>
-      </div>
-      <div
-        className="my-5 min-h-20 border-y border-border/70 py-4 text-2xl leading-tight text-foreground"
-        style={{
-          fontFamily: cssFamily,
-          fontWeight: font.weight,
-          fontStyle: option?.italic ? "italic" : undefined,
-        }}
-      >
+            <span className="min-w-0 flex-1 truncate text-base text-foreground" style={faceStyle}>
+              {font.family}
+            </span>
+            <ChevronDown
+              className={cn("size-4 shrink-0 text-muted-foreground transition", open && "rotate-180")}
+            />
+          </button>
+        </PopoverTrigger>
+        <PopoverContent
+          align="start"
+          sideOffset={6}
+          className="w-[var(--radix-popover-trigger-width)] min-w-64 rounded-xl border-border bg-popover/95 p-1.5 shadow-2xl backdrop-blur-xl"
+        >
+          {options.map((fontOptionItem) => {
+            const active = fontOptionItem.family === font.family;
+            return (
+              <button
+                key={fontOptionItem.family}
+                type="button"
+                onClick={() => {
+                  onChange(nearestFontToken(fontOptionItem, font.weight));
+                  setOpen(false);
+                }}
+                className={cn(
+                  "flex w-full items-center gap-3 rounded-lg px-3 py-2 text-left transition",
+                  active ? "bg-primary/[0.08]" : "hover:bg-accent/60",
+                )}
+              >
+                <span
+                  className="min-w-0 flex-1 truncate text-lg text-foreground"
+                  style={{
+                    fontFamily: fontOptionItem.cssFamily,
+                    fontWeight: fontOptionItem.faces.at(-1)?.weight,
+                    fontStyle: fontOptionItem.italic ? "italic" : undefined,
+                  }}
+                >
+                  {fontOptionItem.family}
+                </span>
+                {active ? <Check className="size-4 shrink-0 text-primary" /> : null}
+              </button>
+            );
+          })}
+        </PopoverContent>
+      </Popover>
+      <p className="mt-3 min-h-14 text-xl leading-snug text-foreground" style={faceStyle}>
         {sample}
-      </div>
-      <div className="flex items-center justify-between gap-3">
-        <span className="text-xs font-medium text-muted-foreground">
-          <UiText id="weight_69c0b815" />
-        </span>
-        <div className="flex gap-1.5">
-          {(option?.faces ?? [{ weight: font.weight, fontRef: font.fontRef }]).map((face) => (
-            <button
-              key={face.weight}
-              type="button"
-              disabled={!option}
-              onClick={() =>
-                option && onChange({ family: option.family, weight: face.weight, fontRef: face.fontRef })
-              }
-              className={cn(
-                "min-w-11 rounded-lg border px-2 py-1.5 text-xs transition",
-                face.weight === font.weight
-                  ? "border-primary/50 bg-primary/10 text-foreground"
-                  : "border-border text-muted-foreground hover:text-foreground",
-              )}
-            >
-              {face.weight}
-            </button>
-          ))}
+      </p>
+      {option && option.faces.length > 1 ? (
+        <div className="mt-3 flex items-center justify-between gap-3">
+          <span className="text-xs font-medium text-muted-foreground">
+            {tTheme("brandEditor.fonts.weight")}
+          </span>
+          <div className="flex gap-1.5">
+            {option.faces.map((face) => (
+              <button
+                key={face.weight}
+                type="button"
+                aria-pressed={face.weight === font.weight}
+                onClick={() =>
+                  onChange({ family: option.family, weight: face.weight, fontRef: face.fontRef })
+                }
+                className={cn(
+                  "rounded-lg border px-2.5 py-1.5 text-xs transition",
+                  face.weight === font.weight
+                    ? "border-primary/50 bg-primary/10 text-foreground"
+                    : "border-border text-muted-foreground hover:text-foreground",
+                )}
+              >
+                {weightLabel(face.weight)}
+              </button>
+            ))}
+          </div>
         </div>
-      </div>
+      ) : null}
     </div>
   );
 }

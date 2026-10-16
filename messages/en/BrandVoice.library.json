@@ -22,12 +22,16 @@
       "adult": "Adult",
       "mature": "Mature"
     },
-    "allLanguages": "All languages",
-    "allAccents": "All accents",
-    "tags": "Tone and use",
     "clear": "Clear filters",
-    "moreTags": "+{count} more",
-    "fewerTags": "Fewer"
+    "tone": "Tone",
+    "useCase": "Use",
+    "searchTags": "Search filters…",
+    "noTags": "No filter by that name.",
+    "clearTags": "Clear selection",
+    "removeTag": "Remove {tag}",
+    "title": "Filters",
+    "language": "Language",
+    "accent": "Accent"
   },
   "languageNames": {
     "tr": "Turkish",

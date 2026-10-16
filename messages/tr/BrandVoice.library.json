@@ -22,12 +22,16 @@
       "adult": "Yetişkin",
       "mature": "Olgun"
     },
-    "allLanguages": "Tüm diller",
-    "allAccents": "Tüm aksanlar",
-    "tags": "Ton ve kullanım",
     "clear": "Filtreleri temizle",
-    "moreTags": "+{count} daha",
-    "fewerTags": "Daha az"
+    "tone": "Ton",
+    "useCase": "Kullanım",
+    "searchTags": "Filtre ara…",
+    "noTags": "Bu adda filtre yok.",
+    "clearTags": "Seçimi temizle",
+    "removeTag": "{tag} filtresini kaldır",
+    "title": "Filtreler",
+    "language": "Dil",
+    "accent": "Aksan"
   },
   "languageNames": {
     "tr": "Türkçe",

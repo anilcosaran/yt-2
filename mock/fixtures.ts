@@ -19,7 +19,9 @@ import type {
   ScriptReviewShot,
 } from '@/lib/assistant/script-review/script-review-api'
 import { AuthClientError } from '@/lib/auth/errors'
+import type { BrandKitDetail, BrandKitDraftContent } from '@/lib/brand-kit/api'
 import { quotaUsageDataSchema } from '@/lib/billing/api'
+import type { ChannelBrandOverlayPreset } from '@/lib/channel/api'
 import { publicMetadataRecord } from '@/lib/public-model-display'
 
 import toolsCatalog from './data/tools-catalog.json'
@@ -2263,6 +2265,412 @@ fixtures.push(
     }),
   },
 )
+
+// --- Brand Kits (Marka > Brand Kit'ler) -----------------------------------------------------------------------------
+// Every channel has the built-in neutral Kit and a few Kits the demo account owns, so a card opens the editor and
+// "Kaydet" keeps the change. Kits, the channel default and the watermark (the channel's overlay) are kept in
+// sessionStorage for this tab, like the Spark projects.
+type MockBrandState = {
+  kits: BrandKitDetail[]
+  defaults: Record<string, { kit_id: string | null; version: number }>
+  overlays: Record<string, { overlay: ChannelBrandOverlayPreset | null; version: number }>
+}
+
+const BRAND_STATE_KEY = 'yt2_mock_brand_kits'
+const BRAND_BUILTIN_KIT_ID = 'kit-builtin-neutral'
+
+/** The platform font catalogue: the faces the browser ships as "<Family> Caption" (app/globals.css). */
+const BRAND_FONT_FACES: Array<[family: string, weight: number, style: 'normal' | 'italic']> = [
+  ['Poppins', 800, 'normal'],
+  ['Montserrat', 700, 'normal'],
+  ['Anton', 400, 'normal'],
+  ['Bebas Neue', 400, 'normal'],
+  ['Oswald', 400, 'normal'],
+  ['Oswald', 700, 'normal'],
+  ['Archivo Black', 400, 'normal'],
+  ['Playfair Display', 400, 'italic'],
+  ['Playfair Display', 700, 'italic'],
+]
+
+const BRAND_LOGO_IMAGES: Array<[objectId: string, image: string]> = [
+  ['a1b00000-0000-4000-8000-0000000010a0', '/youtorch-logo.png'],
+  ['a1b00000-0000-4000-8000-0000000010a1', '/placeholder-logo.svg'],
+]
+for (const [objectId, image] of BRAND_LOGO_IMAGES) MOCK_OBJECT_IMAGES.set(objectId, image)
+
+type BrandKitSample = {
+  slug: string
+  name: string
+  colors: [primary: string, secondary: string, tertiary: string, accent: string]
+  title: [family: string, weight: number]
+  body: [family: string, weight: number]
+  captions: [style: string, font: string, highlight: string, effect: string]
+  logo: string | null
+  shared: boolean
+}
+
+const BRAND_KIT_SAMPLES: BrandKitSample[] = [
+  { slug: 'yt2-studio', name: 'Yt-2 Studio', colors: ['#FF5A1F', '#15110E', '#B9B1A6', '#FFD166'], title: ['Poppins', 800], body: ['Montserrat', 700], captions: ['tiktok_bold', '#FFFFFF', '#FFD166', '#000000'], logo: BRAND_LOGO_IMAGES[0]![0], shared: true },
+  { slug: 'shorts-koyu', name: 'Shorts Koyu', colors: ['#22D3EE', '#0B1220', '#94A3B8', '#A78BFA'], title: ['Anton', 400], body: ['Montserrat', 700], captions: ['3d_pop', '#FFFFFF', '#FFFFFF', '#000000'], logo: null, shared: false },
+  { slug: 'kampanya-canli', name: 'Kampanya Canlı', colors: ['#F43F5E', '#FFF7ED', '#9A3412', '#FACC15'], title: ['Bebas Neue', 400], body: ['Poppins', 800], captions: ['karaoke_white_to_yellow', '#FFFFFF', '#FFE600', '#000000'], logo: BRAND_LOGO_IMAGES[1]![0], shared: false },
+  { slug: 'minimal-acik', name: 'Minimal Açık', colors: ['#111827', '#F9FAFB', '#6B7280', '#2563EB'], title: ['Playfair Display', 700], body: ['Montserrat', 700], captions: ['youtube_clean', '#FFFFFF', '#FFFFFF', '#000000'], logo: null, shared: false },
+]
+
+function brandFontToken([family, weight]: [string, number]) {
+  const id = `${family.toLowerCase().replace(/[^a-z0-9]+/g, '_')}_${weight}`
+  return { family, weight, font_ref: { font_id: `font_${id}`, font_revision: `fontrev_${id}_1`, sha256: demoDigest(`font:${id}`) } }
+}
+
+function brandKitContent(sample: BrandKitSample): BrandKitDraftContent {
+  const [primary, secondary, tertiary, accent] = sample.colors
+  const [style_name, font_color, highlight_color, effect_color] = sample.captions
+  return {
+    schema_version: 1,
+    colors: { primary, secondary, tertiary, accent },
+    fonts: { title: brandFontToken(sample.title), body: brandFontToken(sample.body) },
+    captions: { style_name, font_color, highlight_color, effect_color },
+    logos: { primary: sample.logo ? { storage_object_id: sample.logo } : null, horizontal: null, mark: null },
+    video_style: {},
+  }
+}
+
+function brandKitHead(kitId: string, revisionNumber: number) {
+  const revisionId = `${kitId}-rev-${revisionNumber}`
+  return {
+    revision_id: revisionId,
+    revision_number: revisionNumber,
+    ref: {
+      ref_type: 'brand_revision' as const,
+      brand_asset_kind: 'kit',
+      brand_asset_id: kitId,
+      brand_revision_id: revisionId,
+      brand_revision_digest_sha256: demoDigest(revisionId),
+    },
+  }
+}
+
+function brandKitPreview(content: BrandKitDraftContent) {
+  return {
+    colors: { ...content.colors },
+    title_font: { family: content.fonts.title.family, weight: content.fonts.title.weight },
+    caption_style_name: content.captions.style_name,
+  }
+}
+
+function brandSampleKits(channelId: string): BrandKitDetail[] {
+  const suffix = channelId === MOCK_CHANNELS[0]!.id ? '' : `-${channelId.slice(0, 8)}`
+  return BRAND_KIT_SAMPLES.map((sample, index) => {
+    const kitId = `kit-${sample.slug}${suffix}`
+    const content = brandKitContent(sample)
+    const at = new Date(Date.UTC(2026, 9, 12 - index * 4, 10, 0)).toISOString()
+    return {
+      kit_id: kitId,
+      origin: 'user',
+      name: sample.name,
+      lifecycle_state: 'active',
+      draft_version: 1,
+      head_revision: brandKitHead(kitId, 1),
+      updated_at: at,
+      access_role: 'owner',
+      sharing: { acl_version: 1, shared_with_channel_members: sample.shared },
+      preview: brandKitPreview(content),
+      channel_id: channelId,
+      visibility: 'private',
+      draft: { version: 1, content },
+      created_at: at,
+    }
+  })
+}
+
+const BRAND_BUILTIN_CONTENT = brandKitContent({
+  slug: 'neutral',
+  name: 'Youtorch Nötr',
+  colors: ['#2563EB', '#FFFFFF', '#6B7280', '#111827'],
+  title: ['Montserrat', 700],
+  body: ['Montserrat', 700],
+  captions: ['auto', '#FFFFFF', '#FFE600', '#000000'],
+  logo: null,
+  shared: false,
+})
+
+const BRAND_BUILTIN_KIT: BrandKitDetail = {
+  kit_id: BRAND_BUILTIN_KIT_ID,
+  origin: 'builtin',
+  name: 'Youtorch Nötr',
+  lifecycle_state: 'active',
+  draft_version: null,
+  head_revision: brandKitHead(BRAND_BUILTIN_KIT_ID, 1),
+  updated_at: '2026-06-01T09:00:00.000Z',
+  access_role: 'platform',
+  sharing: null,
+  preview: brandKitPreview(BRAND_BUILTIN_CONTENT),
+  channel_id: null,
+  visibility: 'platform',
+  draft: null,
+  created_at: '2026-06-01T09:00:00.000Z',
+}
+
+let brandState: MockBrandState | null = null
+
+function brandStore(): MockBrandState {
+  if (brandState) return brandState
+  let state: MockBrandState = { kits: [], defaults: {}, overlays: {} }
+  if (typeof window !== 'undefined') {
+    try {
+      const stored = JSON.parse(window.sessionStorage.getItem(BRAND_STATE_KEY) ?? 'null') as MockBrandState | null
+      if (stored && Array.isArray(stored.kits) && stored.defaults && stored.overlays) state = stored
+    } catch {
+      // A broken entry starts the sample Kits again.
+    }
+  }
+  for (const channel of MOCK_CHANNELS) {
+    if (!state.defaults[channel.id]) {
+      const kits = brandSampleKits(channel.id)
+      state.kits.push(...kits)
+      state.defaults[channel.id] = { kit_id: kits[0]!.kit_id, version: 1 }
+    }
+    const saved = state.overlays[channel.id]
+    if (saved) Object.assign(channel.settings, { brandOverlay: saved.overlay, brandOverlayVersion: saved.version })
+  }
+  brandState = state
+  return state
+}
+
+function saveBrandStore() {
+  try {
+    window.sessionStorage.setItem(BRAND_STATE_KEY, JSON.stringify(brandStore()))
+  } catch {
+    // Without sessionStorage the change still lasts until the page is reloaded.
+  }
+}
+
+function findBrandKit(kitId: string): BrandKitDetail {
+  if (kitId === BRAND_BUILTIN_KIT_ID) return BRAND_BUILTIN_KIT
+  const kit = brandStore().kits.find((entry) => entry.kit_id === kitId)
+  if (!kit) throw mockError(404, 'BRAND_KIT_NOT_FOUND', 'Brand Kit bulunamadı.')
+  return kit
+}
+
+/** The owner's Kit with its draft; a draft version other than the one the screen loaded is a conflict. */
+function ownedBrandKit(kitId: string, expectedDraftVersion: unknown) {
+  const kit = findBrandKit(kitId)
+  if (!kit.draft) throw mockError(403, 'BRAND_KIT_FORBIDDEN', 'Bu Brand Kit yalnızca sahibi tarafından düzenlenir.')
+  if (kit.draft.version !== expectedDraftVersion) {
+    throw mockError(409, 'BRAND_KIT_DRAFT_VERSION_CONFLICT', 'Brand Kit başka bir pencerede değişti.')
+  }
+  return { kit, draft: kit.draft }
+}
+
+function brandRevision(kit: BrandKitDetail) {
+  const head = kit.head_revision ?? brandKitHead(kit.kit_id, 1)
+  return {
+    kit_id: kit.kit_id,
+    revision_id: head.revision_id,
+    revision_number: head.revision_number,
+    ref: head.ref,
+    content: kit.draft?.content ?? BRAND_BUILTIN_CONTENT,
+    created_at: kit.updated_at,
+  }
+}
+
+function brandMemberAccess(kit: BrandKitDetail) {
+  if (kit.origin === 'builtin') return 'builtin' as const
+  return kit.sharing?.shared_with_channel_members ? ('channel_members' as const) : ('owner_only' as const)
+}
+
+function brandChannelDefault(channelId: string) {
+  const entry = brandStore().defaults[channelId] ?? { kit_id: null, version: 0 }
+  const kit = entry.kit_id ? findBrandKit(entry.kit_id) : BRAND_BUILTIN_KIT
+  return {
+    kit,
+    binding: {
+      binding_scope: 'channel_default' as const,
+      kit_id: entry.kit_id,
+      restricted: false,
+      binding_version: entry.version,
+      updated_at: kit.updated_at,
+      member_access: brandMemberAccess(kit),
+    },
+  }
+}
+
+fixtures.push(
+  {
+    method: 'GET',
+    path: /^\/api\/v1\/brand\/kits$/,
+    handler: (request) => {
+      const channelId = request.query.get('channel_id') ?? ''
+      const kits = [BRAND_BUILTIN_KIT, ...brandStore().kits.filter((kit) => kit.channel_id === channelId)]
+      return { data: kits, meta: { limit: Number(request.query.get('limit')) || kits.length, next_cursor: null } }
+    },
+  },
+  {
+    method: 'POST',
+    path: /^\/api\/v1\/brand\/kits$/,
+    handler: (request) => {
+      const body = (request.body ?? {}) as { channel_id?: string; name?: string; content?: BrandKitDraftContent }
+      const kitId = `kit-${crypto.randomUUID()}`
+      const content = structuredClone(body.content ?? BRAND_BUILTIN_CONTENT)
+      const now = new Date().toISOString()
+      const kit: BrandKitDetail = {
+        kit_id: kitId,
+        origin: 'user',
+        name: body.name?.trim() || 'Yeni kit',
+        lifecycle_state: 'active',
+        draft_version: 1,
+        head_revision: brandKitHead(kitId, 1),
+        updated_at: now,
+        access_role: 'owner',
+        sharing: { acl_version: 1, shared_with_channel_members: false },
+        preview: brandKitPreview(content),
+        channel_id: body.channel_id ?? MOCK_CHANNELS[0]!.id,
+        visibility: 'private',
+        draft: { version: 1, content },
+        created_at: now,
+      }
+      brandStore().kits.unshift(kit)
+      saveBrandStore()
+      return { data: kit }
+    },
+  },
+  {
+    method: 'GET',
+    path: /^\/api\/v1\/brand\/kits\/([^/]+)$/,
+    handler: (_request, match) => ({ data: findBrandKit(decodeURIComponent(match[1] ?? '')) }),
+  },
+  {
+    method: 'PUT',
+    path: /^\/api\/v1\/brand\/kits\/([^/]+)\/draft$/,
+    handler: (request, match) => {
+      const body = (request.body ?? {}) as { expected_draft_version?: number; name?: string; content?: BrandKitDraftContent }
+      const { kit, draft } = ownedBrandKit(decodeURIComponent(match[1] ?? ''), body.expected_draft_version)
+      if (body.name?.trim()) kit.name = body.name.trim()
+      if (body.content) draft.content = body.content
+      draft.version += 1
+      kit.draft_version = draft.version
+      kit.preview = brandKitPreview(draft.content)
+      kit.updated_at = new Date().toISOString()
+      saveBrandStore()
+      return { data: kit }
+    },
+  },
+  {
+    method: 'POST',
+    path: /^\/api\/v1\/brand\/kits\/([^/]+)\/revisions$/,
+    handler: (request, match) => {
+      const body = (request.body ?? {}) as { expected_draft_version?: number }
+      const { kit } = ownedBrandKit(decodeURIComponent(match[1] ?? ''), body.expected_draft_version)
+      kit.head_revision = brandKitHead(kit.kit_id, (kit.head_revision?.revision_number ?? 0) + 1)
+      kit.updated_at = new Date().toISOString()
+      saveBrandStore()
+      return { data: brandRevision(kit) }
+    },
+  },
+  {
+    method: 'GET',
+    path: /^\/api\/v1\/brand\/kits\/([^/]+)\/revisions\/[^/]+$/,
+    handler: (_request, match) => ({ data: brandRevision(findBrandKit(decodeURIComponent(match[1] ?? ''))) }),
+  },
+  {
+    method: 'PUT',
+    path: /^\/api\/v1\/brand\/kits\/([^/]+)\/sharing$/,
+    handler: (request, match) => {
+      const body = (request.body ?? {}) as { shared_with_channel_members?: boolean }
+      const kit = findBrandKit(decodeURIComponent(match[1] ?? ''))
+      if (!kit.sharing) throw mockError(403, 'BRAND_KIT_FORBIDDEN', 'Bu Brand Kit yalnızca sahibi tarafından paylaşılır.')
+      const shared = Boolean(body.shared_with_channel_members)
+      const changed = kit.sharing.shared_with_channel_members !== shared
+      kit.sharing = { acl_version: kit.sharing.acl_version + (changed ? 1 : 0), shared_with_channel_members: shared }
+      saveBrandStore()
+      return {
+        data: { kit_id: kit.kit_id, channel_id: kit.channel_id ?? '', acl_version: kit.sharing.acl_version, shared_with_channel_members: shared, changed },
+      }
+    },
+  },
+  {
+    method: 'GET',
+    path: /^\/api\/v1\/brand\/channels\/([^/]+)\/kit-binding$/,
+    handler: (_request, match) => {
+      const channelId = decodeURIComponent(match[1] ?? '')
+      const { kit, binding } = brandChannelDefault(channelId)
+      return {
+        data: {
+          channel_id: channelId,
+          channel_default: binding,
+          actor_selection: { binding_scope: 'actor_selection', kit_id: null, restricted: false, binding_version: 0, updated_at: null, member_access: null },
+          effective: {
+            source: binding.kit_id ? 'channel_default' : 'builtin_default',
+            kit_id: kit.kit_id,
+            kit_name: kit.name,
+            builtin: kit.origin === 'builtin',
+            revision_number: kit.head_revision?.revision_number ?? 1,
+          },
+          actor_capabilities: { set_channel_default: true, select_own: true, share_own_kits: true },
+        },
+      }
+    },
+  },
+  {
+    method: 'PUT',
+    path: /^\/api\/v1\/brand\/channels\/([^/]+)\/kit-binding$/,
+    handler: (request, match) => {
+      const channelId = decodeURIComponent(match[1] ?? '')
+      const body = (request.body ?? {}) as { kit_id?: string | null }
+      const store = brandStore()
+      store.defaults[channelId] = { kit_id: body.kit_id ?? null, version: (store.defaults[channelId]?.version ?? 0) + 1 }
+      saveBrandStore()
+      return { data: brandChannelDefault(channelId).binding }
+    },
+  },
+  {
+    method: 'GET',
+    path: /^\/api\/v1\/brand\/fonts$/,
+    handler: () => ({
+      data: {
+        faces: BRAND_FONT_FACES.map(([family, weight, style]) => ({ font: brandFontToken([family, weight]).font_ref, family, weight, style, status: 'active' })),
+      },
+    }),
+  },
+  {
+    // The watermark of the Brand Kit screen is the channel's overlay; name and logo changes are kept the same way.
+    method: 'PUT',
+    path: /^\/api\/v1\/channels\/([^/]+)\/settings$/,
+    handler: (request, match) => {
+      const channel = MOCK_CHANNELS.find((entry) => entry.id === decodeURIComponent(match[1] ?? ''))
+      if (!channel) throw mockError(404, 'CHANNEL_NOT_FOUND', 'Kanal bulunamadı.')
+      const body = (request.body ?? {}) as { name?: string; logo_url?: string | null; brand_overlay?: Record<string, unknown> | null }
+      if (body.name?.trim()) channel.name = body.name.trim()
+      if (body.logo_url !== undefined) Object.assign(channel.settings, { logoUrl: body.logo_url })
+      if (body.brand_overlay !== undefined) {
+        const overlay = body.brand_overlay
+        const next = {
+          overlay: overlay
+            ? ({
+                applyPolicy: overlay.apply_policy,
+                assetStorageObjectId: overlay.asset_storage_object_id,
+                anchor: overlay.anchor,
+                widthRatio: overlay.width_ratio,
+                opacity: overlay.opacity,
+                marginRatio: overlay.margin_ratio,
+                animationMode: overlay.animation_mode,
+                intervalSeconds: overlay.interval_seconds,
+                fadeSeconds: overlay.fade_seconds,
+              } as ChannelBrandOverlayPreset)
+            : null,
+          version: channel.settings.brandOverlayVersion + 1,
+        }
+        Object.assign(channel.settings, { brandOverlay: next.overlay, brandOverlayVersion: next.version })
+        brandStore().overlays[channel.id] = next
+        saveBrandStore()
+      }
+      channel.updated_at = new Date().toISOString()
+      return { data: channel }
+    },
+  },
+)
+
+// The saved watermark has to be on the channel before the first channel list is read.
+if (typeof window !== 'undefined') brandStore()
 
 /** Throw this from a fixture to preview an error state, e.g. `throw mockError(404, 'NOT_FOUND', 'Bulunamadı')`. */
 export function mockError(status: number, code: string, message: string) {

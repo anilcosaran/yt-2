@@ -8,7 +8,6 @@ import {
   CaptionStyleThumbnail,
 } from '@/components/tools/caption-style-preview-field'
 import { ToolField, type ToolChoice } from '@/components/tools/tool-primitives'
-import { Input } from '@/components/ui/input'
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
 import { ScrollArea } from '@/components/ui/scroll-area'
 import { cn } from '@/lib/utils'
@@ -113,6 +112,7 @@ export function CaptionStylePicker({
   options,
   resolvedStyleName = 'tiktok_bold',
   disabled = false,
+  trigger,
   onValueChange,
 }: {
   label?: string
@@ -121,6 +121,8 @@ export function CaptionStylePicker({
   options: ToolChoice[]
   resolvedStyleName?: string
   disabled?: boolean
+  /** A custom button that opens the gallery instead of the default field (rendered without the label). */
+  trigger?: React.ReactElement
   onValueChange: (value: string) => void
 }) {
   const toolCopy = useToolCopy()
@@ -162,11 +164,11 @@ export function CaptionStylePicker({
     return searchable.includes(normalizedQuery)
   }), [filter, normalizedQuery, resolvedAutoStyle, uniqueOptions])
 
-  return (
-    <ToolField label={label} hint={hint ?? tAuto('caption_styles_plus_auto', { count: Math.max(0, uniqueOptions.length - 1) })}>
+  const gallery = (
+    <>
       <Popover open={open} onOpenChange={setOpen}>
         <PopoverTrigger asChild>
-          <button
+          {trigger ?? <button
             type="button"
             disabled={disabled}
             aria-expanded={open}
@@ -186,7 +188,7 @@ export function CaptionStylePicker({
               </span>
             </span>
             <ChevronDown className={cn('mr-1 size-4 shrink-0 text-muted-foreground transition-transform', open && 'rotate-180')} />
-          </button>
+          </button>}
         </PopoverTrigger>
 
         <PopoverContent
@@ -199,22 +201,23 @@ export function CaptionStylePicker({
             event.preventDefault()
             window.requestAnimationFrame(() => inputRef.current?.focus())
           }}
-          className="flex max-h-[var(--radix-popover-content-available-height)] min-h-0 w-[min(580px,calc(100vw-2rem))] flex-col overflow-hidden rounded-2xl border-border bg-popover/95 p-0 shadow-2xl backdrop-blur-xl"
+          className="flex max-h-[var(--radix-popover-content-available-height)] min-h-0 w-[min(580px,calc(100vw-2rem))] flex-col overflow-hidden rounded-xl border-border bg-popover p-0 shadow-xl shadow-black/40"
           data-caption-style-picker="gallery"
         >
-          <div className="shrink-0 border-b border-border/80 p-3">
-            <div className="relative">
-              <Search className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
-              <Input
+          {/* The chat model picker's look: a plain search line, quiet rows, the neutral accent for the active one. */}
+          <div className="shrink-0 border-b border-border">
+            <label className="flex h-11 items-center gap-2.5 border-b border-border px-3.5">
+              <Search className="size-4 shrink-0 text-muted-foreground" />
+              <input
                 ref={inputRef}
                 value={query}
                 onChange={(event) => setQuery(event.target.value)}
                 placeholder={tAuto('search_caption_style_count', { count: uniqueOptions.length })}
                 aria-label={tAuto('search_caption_styles_40251b51')}
-                className="h-10 rounded-xl border-border bg-panel/50 pl-9 shadow-none"
+                className="h-full min-w-0 flex-1 bg-transparent text-sm text-foreground outline-none placeholder:text-muted-foreground"
               />
-            </div>
-            <div className="mt-2.5 flex gap-1.5 overflow-x-auto pb-0.5" role="group" aria-label={tAuto('filter_caption_styles_ef2ac27d')}>
+            </label>
+            <div className="flex gap-0.5 overflow-x-auto p-1.5" role="group" aria-label={tAuto('filter_caption_styles_ef2ac27d')}>
               {FILTERS.map((item) => (
                 <button
                   key={item.value}
@@ -222,10 +225,10 @@ export function CaptionStylePicker({
                   aria-pressed={filter === item.value}
                   onClick={() => setFilter(item.value)}
                   className={cn(
-                    'shrink-0 rounded-full border px-3 py-1 text-[11px] font-semibold transition',
+                    'h-7 shrink-0 rounded-lg px-2.5 text-xs transition-colors',
                     filter === item.value
-                      ? 'border-primary/35 bg-primary/15 text-primary'
-                      : 'border-border bg-panel/40 text-muted-foreground hover:border-primary/25 hover:text-foreground',
+                      ? 'bg-accent font-semibold text-foreground'
+                      : 'text-foreground/75 hover:bg-accent/60 hover:text-foreground',
                   )}
                 >
                   {toolCopy(item.label)}
@@ -235,7 +238,7 @@ export function CaptionStylePicker({
           </div>
 
           <ScrollArea className="h-[min(380px,48vh)] min-h-0 shrink">
-            <div className="grid grid-cols-1 gap-2.5 p-3 sm:grid-cols-2">
+            <div className="grid grid-cols-1 gap-1 p-1.5 sm:grid-cols-2">
               {visibleOptions.map((option) => {
                 const selected = option.value === value
                 const previewStyle = option.value === 'auto' ? resolvedAutoStyle : option.value
@@ -250,30 +253,21 @@ export function CaptionStylePicker({
                       setOpen(false)
                     }}
                     className={cn(
-                      'caption-style-card group overflow-hidden rounded-xl border p-1.5 text-left transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring',
-                      selected
-                        ? 'border-primary/55 bg-primary/[0.08] shadow-[0_0_0_1px_rgb(var(--primary)/0.08)]'
-                        : 'border-border/80 bg-panel/35 hover:border-primary/35 hover:bg-accent/35',
+                      'caption-style-card group overflow-hidden rounded-lg p-1.5 text-left transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring',
+                      selected ? 'bg-accent' : 'hover:bg-accent/60',
                     )}
                   >
-                    <div className="relative h-[92px] overflow-hidden rounded-lg">
+                    <div className="h-[92px] overflow-hidden rounded-md border border-border">
                       <CaptionStyleThumbnail styleName={previewStyle} active={selected} />
-                      {selected ? (
-                        <span className="absolute right-2 top-2 flex size-6 items-center justify-center rounded-full bg-primary text-primary-foreground shadow">
-                          <Check className="size-3.5" />
-                        </span>
-                      ) : null}
                     </div>
-                    <span className="flex items-start gap-2 px-1.5 pb-1 pt-2">
+                    <span className="flex items-center gap-2 px-1 pb-0.5 pt-2">
                       <span className="min-w-0 flex-1">
-                        <span className="block truncate text-xs font-semibold text-foreground">{toolCopy(option.label)}</span>
-                        <span className="mt-0.5 block truncate text-[10px] text-muted-foreground">
-                          {localizedStyleDescription(option.value)}
+                        <span className={cn('block truncate text-sm', selected ? 'font-semibold text-foreground' : 'text-foreground/75')}>{toolCopy(option.label)}</span>
+                        <span className="mt-0.5 block truncate text-xs text-muted-foreground">
+                          {toolCopy(styleFamily(option.value))} · {localizedStyleDescription(option.value)}
                         </span>
                       </span>
-                      <span className="shrink-0 rounded-full bg-muted px-2 py-0.5 text-[9px] font-semibold uppercase tracking-wide text-muted-foreground">
-                        {toolCopy(styleFamily(option.value))}
-                      </span>
+                      {selected ? <Check strokeWidth={1.75} className="size-4 shrink-0 text-foreground" /> : null}
                     </span>
                   </button>
                 )
@@ -287,12 +281,19 @@ export function CaptionStylePicker({
               </div>
             ) : null}
           </ScrollArea>
-          <p className="shrink-0 border-t border-border/80 px-3 py-2 text-[10px] leading-4 text-muted-foreground">
+          <p className="shrink-0 border-t border-border px-3.5 py-2 text-xs leading-4 text-muted-foreground">
             <UiText id="font_color_outline_box_and_depth_match_the_rende_f156274e" /></p>
         </PopoverContent>
       </Popover>
 
       <style>{"[data-caption-style-thumbnail] [data-caption-style-word] { display: inline-block; animation: caption-style-word 2.65s ease-in-out infinite; animation-play-state: paused; will-change: color, opacity, transform; } [data-caption-style-thumbnail][data-caption-style-mode='karaoke'] [data-caption-style-word] { animation-name: caption-style-karaoke; animation-duration: 3s; } [data-caption-style-thumbnail][data-caption-style-mode='focus_fade'] [data-caption-style-word] { animation-name: caption-style-focus; } [data-caption-style-word-by-word] { animation: caption-style-word-by-word 3.2s cubic-bezier(.2,.8,.2,1) infinite; animation-play-state: paused; will-change: opacity, transform; } [data-caption-style-thumbnail][data-caption-style-mode='kinetic_slide'] [data-caption-style-copy] { animation: caption-style-slide 2.8s cubic-bezier(.2,.8,.2,1) infinite; animation-delay: -.8s; animation-play-state: paused; will-change: opacity, transform; } [data-caption-style-thumbnail][data-caption-style-mode='sentence'] [data-caption-style-copy] { animation: caption-style-sentence 2.8s ease-in-out infinite; animation-play-state: paused; } [data-caption-style-typewriter-text] { display: inline-block; overflow: hidden; animation: caption-style-typewriter 3s steps(13, end) infinite; animation-delay: -1.25s; animation-play-state: paused; clip-path: inset(0 100% 0 0); } [data-caption-style-cursor] { animation: caption-style-cursor .72s step-end infinite; animation-play-state: paused; } .caption-style-card:hover [data-caption-style-word], .caption-style-card:focus-visible [data-caption-style-word], .caption-style-card:hover [data-caption-style-copy], .caption-style-card:focus-visible [data-caption-style-copy], .caption-style-card:hover [data-caption-style-typewriter-text], .caption-style-card:focus-visible [data-caption-style-typewriter-text], .caption-style-card:hover [data-caption-style-cursor], .caption-style-card:focus-visible [data-caption-style-cursor], .caption-style-card:hover [data-caption-style-word-by-word], .caption-style-card:focus-visible [data-caption-style-word-by-word], [data-caption-style-active='true'] [data-caption-style-word], [data-caption-style-active='true'] [data-caption-style-copy], [data-caption-style-active='true'] [data-caption-style-typewriter-text], [data-caption-style-active='true'] [data-caption-style-cursor], [data-caption-style-active='true'] [data-caption-style-word-by-word] { animation-play-state: running; } @keyframes caption-style-word { 0%, 18% { color: var(--caption-style-accent); opacity: 1; transform: scale(1.10); } 30%, 100% { color: var(--caption-style-base); opacity: .88; transform: scale(1); } } @keyframes caption-style-focus { 0%, 18% { color: var(--caption-style-accent); opacity: 1; transform: scale(1.04); } 30%, 100% { color: var(--caption-style-base); opacity: .34; transform: scale(1); } } @keyframes caption-style-karaoke { 0%, 78% { color: var(--caption-style-accent); opacity: 1; transform: scale(1); } 88%, 100% { color: var(--caption-style-base); opacity: .88; transform: scale(1); } } @keyframes caption-style-word-by-word { 0% { opacity: 0; transform: scale(.76); } 5%, 21% { opacity: 1; transform: scale(1.08); } 24%, 100% { opacity: 0; transform: scale(1); } } @keyframes caption-style-slide { 0%, 6% { opacity: 0; transform: translateY(13px); } 18%, 78% { opacity: 1; transform: translateY(0); } 92%, 100% { opacity: 0; transform: translateY(-4px); } } @keyframes caption-style-sentence { 0%, 8%, 90%, 100% { opacity: .46; transform: translateY(2px); } 18%, 80% { opacity: 1; transform: translateY(0); } } @keyframes caption-style-typewriter { 0%, 10% { clip-path: inset(0 100% 0 0); } 62%, 86% { clip-path: inset(0 0 0 0); } 100% { clip-path: inset(0 100% 0 0); } } @keyframes caption-style-cursor { 0%, 48% { opacity: 1; } 49%, 100% { opacity: 0; } } @media (prefers-reduced-motion: reduce) { [data-caption-style-thumbnail] * { animation: none !important; } [data-caption-style-typewriter-text] { clip-path: none !important; } }"}</style>
+    </>
+  )
+
+  if (trigger) return gallery
+  return (
+    <ToolField label={label} hint={hint ?? tAuto('caption_styles_plus_auto', { count: Math.max(0, uniqueOptions.length - 1) })}>
+      {gallery}
     </ToolField>
   )
 }

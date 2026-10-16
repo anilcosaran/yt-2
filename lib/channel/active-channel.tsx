@@ -33,6 +33,11 @@ export function ActiveChannelProvider({
   )
 }
 
+/** The active channel inside MainLayout; `null` outside it (the full-screen Spark editor has no workspace shell). */
+export function useOptionalActiveChannel() {
+  return React.useContext(ActiveChannelContext)
+}
+
 export function useActiveChannel() {
   const context = React.useContext(ActiveChannelContext)
   if (!context) {

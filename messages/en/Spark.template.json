@@ -1,9 +1,0 @@
-{
-  "editor": {
-    "template": {
-      "addSceneLocked": "This template's scene order is locked",
-      "addSceneFromLibrary": "Scenes come from the template's scene library",
-      "addSceneFromTemplate": "Scenes come from this template"
-    }
-  }
-}

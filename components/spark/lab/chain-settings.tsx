@@ -31,6 +31,12 @@ export const NODE_SETTINGS: Partial<Record<StageKind, SettingRow[]>> = {
     { id: 'camera', label: 'Kamera', options: ['Sabit', 'Yaklaş', 'Kaydır'], def: 'Yaklaş' },
     { id: 'sound', label: 'Ortam sesi', options: [OFF, ON], def: OFF },
   ],
+  avatar: [
+    { id: 'aspect', label: 'Boyut', options: SIZES, def: '9:16' },
+    { id: 'framing', label: 'Kadraj', options: ['Yakın', 'Bel', 'Boy'], def: 'Bel' },
+    { id: 'resolution', label: 'Çözünürlük', options: ['720p', '1080p'], def: '1080p' },
+    { id: 'gesture', label: 'Jest ve mimik', options: ['Sakin', 'Doğal', 'Canlı'], def: 'Doğal' },
+  ],
   voice: [
     { id: 'speed', label: 'Hız', options: ['Yavaş', 'Normal', 'Hızlı'], def: 'Normal' },
     { id: 'mood', label: 'Duygu', options: ['Sakin', 'Sıcak', 'Enerjik'], def: 'Sıcak' },

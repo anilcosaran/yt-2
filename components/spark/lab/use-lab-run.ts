@@ -145,8 +145,11 @@ export type LabAsk = { text: string; batch: number }
 
 /** A node the user put on the canvas: its kind (`STAGE_KIND` in `lab-chain.ts`) and where. */
 export type CanvasOwnNode = { id: string; kind: string; x: number; y: number }
-/** A link the user drew from one node's output to an input of another node (`handle`: which input, as `lab-chain.ts` names them). */
-export type CanvasLink = { id: string; source: string; target: string; handle?: string }
+/**
+ * A link the user drew from one node's output to an input of another node (`handle`: which input, as `lab-chain.ts`
+ * names them; `from`: which output, when a node has more than one, as a clip's first and last frame).
+ */
+export type CanvasLink = { id: string; source: string; target: string; handle?: string; from?: string }
 /** A node waiting to be made, how long making it takes, and when it started (once it is the one being made). */
 export type CanvasJob = { id: string; ms: number; startedAt?: number }
 /**
@@ -213,7 +216,7 @@ type Action =
   | { type: 'canvasAdd'; kind: string; x: number; y: number; from?: string; size?: { w: number; h: number } }
   | { type: 'canvasResize'; id: string; w: number; h: number }
   | { type: 'canvasRemove'; ids: string[] }
-  | { type: 'canvasLink'; source: string; target: string; handle?: string }
+  | { type: 'canvasLink'; source: string; target: string; handle?: string; from?: string }
   | { type: 'canvasUnlink'; ids: string[] }
   | { type: 'canvasRun'; jobs: CanvasJob[]; at: number }
   | { type: 'canvasMade'; at?: number }
@@ -396,11 +399,12 @@ function reducer(state: LabRunState, action: Action): LabRunState {
     }
     case 'canvasLink': {
       const { canvas } = state
-      const id = `${action.source}→${action.target}${action.handle ? `:${action.handle}` : ''}`
+      const from = action.from && action.from !== 'out' ? action.from : undefined
+      const id = `${action.source}${from ? `:${from}` : ''}→${action.target}${action.handle ? `:${action.handle}` : ''}`
       if (action.source === action.target || canvas.links.some((link) => link.id === id)) return state
       // A planned link the user removed comes back as it was.
       if (canvas.removed.includes(id)) return { ...state, canvas: { ...canvas, removed: canvas.removed.filter((entry) => entry !== id) } }
-      return { ...state, canvas: { ...canvas, links: [...canvas.links, { id, source: action.source, target: action.target, handle: action.handle }] } }
+      return { ...state, canvas: { ...canvas, links: [...canvas.links, { id, source: action.source, target: action.target, handle: action.handle, ...(from && { from }) }] } }
     }
     case 'canvasUnlink': {
       const { canvas } = state
@@ -575,7 +579,8 @@ export type LabRun = {
     add: (kind: string, x: number, y: number, from?: string, size?: { w: number; h: number }) => void
     resize: (id: string, w: number, h: number) => void
     remove: (ids: string[]) => void
-    link: (source: string, target: string, handle?: string) => void
+    /** Links `source`'s output (`from`, else its only one) into `target`'s input `handle`. */
+    link: (source: string, target: string, handle?: string, from?: string) => void
     unlink: (ids: string[]) => void
     /** Makes these nodes, one after another, after the ones already waiting. */
     run: (jobs: CanvasJob[]) => void
@@ -770,7 +775,7 @@ export function useLabRun(init: LabRunInit = {}, runKey?: string): LabRun {
         add: (kind, x, y, from, size) => dispatch({ type: 'canvasAdd', kind, x, y, from, size }),
         resize: (id, w, h) => dispatch({ type: 'canvasResize', id, w, h }),
         remove: (ids) => dispatch({ type: 'canvasRemove', ids }),
-        link: (source, target, handle) => dispatch({ type: 'canvasLink', source, target, handle }),
+        link: (source, target, handle, from) => dispatch({ type: 'canvasLink', source, target, handle, from }),
         unlink: (ids) => dispatch({ type: 'canvasUnlink', ids }),
         run: (jobs) => dispatch({ type: 'canvasRun', jobs, at: Date.now() }),
         stop: () => dispatch({ type: 'canvasStop' }),

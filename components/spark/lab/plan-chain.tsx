@@ -25,10 +25,22 @@ import {
   type OnConnectEnd,
 } from '@xyflow/react'
 import '@xyflow/react/dist/base.css'
-import { Copy, Frame as FrameIcon, Hand, MousePointer2, Plus, SlidersHorizontal, Sparkles, StickyNote, Trash2, Type } from 'lucide-react'
+import { Check, ChevronDown, Copy, Frame as FrameIcon, Hand, MousePointer2, Plus, SlidersHorizontal, Sparkles, StickyNote, Trash2, Type } from 'lucide-react'
 
 import { PromptBox, PromptBoxChip, PromptBoxInput, PromptBoxSpacer } from '../agent/prompt-box'
-import { FRAME_HANDLE, FrameNodeView, LabelNodeView, NoteNodeView, type FrameColor, type FrameNode, type LabelNode, type NoteNode } from './chain-annotations'
+import {
+  FRAME_HANDLE,
+  FRAME_TITLE_STYLE,
+  FrameNodeView,
+  LabelNodeView,
+  NoteNodeView,
+  TITLE_TEXT_STYLE,
+  readTextStyle,
+  writeTextStyle,
+  type FrameNode,
+  type LabelNode,
+  type NoteNode,
+} from './chain-annotations'
 import { ProgressRing, QueuePill, ZoomPill, type QueueItem } from './chain-chrome'
 import { GenerationGallery, GenerationStrip, type Generation } from './chain-generations'
 import { MODEL_METERS, ModelMenu, type ModelOption } from './chain-model-menu'
@@ -54,6 +66,7 @@ import './lab-chain.css'
 const SIZE: Record<StageKind | 'cut', { w: number; h: number }> = {
   image: { w: 280, h: 350 },
   video: { w: 280, h: 350 },
+  avatar: { w: 280, h: 350 },
   frame: { w: 280, h: 350 },
   media: { w: 280, h: 310 },
   text: { w: 280, h: 250 },
@@ -68,12 +81,18 @@ const PAD = { x: 40, top: 60, bottom: 72 }
 const COL = 340
 const WORDS_GAP = 40
 const FRAME_GAP = 80
-/** The first look: the start of the plan, past the tools, at a size the nodes can be read at; the rest is a pan away. */
-const FIRST_VIEW = { x: 84, y: 64, zoom: 0.85 }
+/** The first look: the start of the plan, at a size the nodes can be read at; the rest is a pan away. */
+const FIRST_VIEW = { x: 48, y: 64, zoom: 0.85 }
 /** A canvas of its own opens at its middle, a little closer. */
 const FREE_VIEW = { x: 260, y: 140, zoom: 0.9 }
 /** How long making a node from the canvas takes (demo). */
-const MAKE_MS: Record<StageKind, number> = { text: 1100, image: 1800, frame: 700, video: 2800, voice: 1300, music: 1300, media: 500 }
+const MAKE_MS: Record<StageKind, number> = { text: 1100, image: 1800, frame: 700, video: 2800, avatar: 2600, voice: 1300, music: 1300, media: 500 }
+/** The models a talking avatar is made with (demo), and what each costs. */
+const AVATAR_MODELS: (ModelOption & { credits: number })[] = [
+  { id: 'omnihuman-1-5', label: 'OmniHuman 1.5', sub: 'Dudak senkronu · 1080p', credits: 24 },
+  { id: 'kling-avatar', label: 'Kling Avatar', sub: 'Hızlı · 720p', credits: 14 },
+  { id: 'avatar-iv', label: 'Avatar IV', sub: 'Doğal mimik ve jest', credits: 30 },
+]
 /** The pictures the user's own nodes make (demo), in turn. */
 const DEMO_ARTS: SceneArt[] = ['hook', 'dish', 'chef', 'outro', 'intro']
 /**
@@ -104,10 +123,10 @@ const TEXT_SAMPLES: Record<string, [string, string][]> = {
 }
 /** What a text node is asked, by what it writes: the placeholder of its İstem face. */
 const ASK_HINT: Record<string, string> = {
-  'Görsel istemi': 'Neyin görselini yazalım? “Masada buharı tüten risotto”',
-  'Video istemi': 'Klipte ne olsun? “Kamera tabağa yavaşça yaklaşsın”',
-  Seslendirme: 'Ne söylensin? “Kanca için kısa, merak uyandıran bir cümle”',
-  Başlık: 'Neyin başlığı? “Sonbahar menüsünün ilk videosu”',
+  'Görsel istemi': 'Görselin konusu ve ayrıntıları',
+  'Video istemi': 'Sahne, hareket ve kamera',
+  Seslendirme: 'Seslendirilecek metnin konusu',
+  Başlık: 'Başlığın konusu',
 }
 
 type NodeStatus = StageStatus | 'new'
@@ -121,7 +140,9 @@ type StepData = {
   /** How many outputs it has (each making adds as many as its count), and the one picked to go on. */
   variants: number
   active: number
-  /** 0–1 while the queue makes it; undefined while Spark makes it (no measure). */
+  /** While the queue makes it: when that started and how long it takes (the node ticks its own progress from it). */
+  job?: { startedAt: number; ms: number }
+  /** 0–1 while the queue makes it (the node fills it in); undefined while Spark makes it (no measure). */
   progress?: number
   own: boolean
   /** What it shows: its own picture, else the one handed to it. */
@@ -171,7 +192,7 @@ function ownStage(state: LabRunState, node: CanvasOwnNode): ChainStage {
     id: node.id,
     kind,
     title: STAGE_KIND[kind].name,
-    how: kind === 'text' ? 'Spark yazar' : kind === 'voice' ? voiceName(state) : '',
+    how: kind === 'text' ? 'Spark' : kind === 'voice' ? voiceName(state) : '',
     brief: '',
     briefKey: `brief:${node.id}`,
     credits: kind === 'voice' ? 2 : 0,
@@ -223,6 +244,11 @@ function choiceOf(state: LabRunState, stage: ChainStage, own: boolean) {
     const options = (LOOK_OPTIONS.voice ?? []).map((entry) => ({ id: entry.id, label: entry.title, sub: [entry.sub, ...(entry.tags ?? [])].filter(Boolean).join(' · ') }))
     return { pick: 'voice', value, label: voiceName(state), credits: stage.credits, options, auto: false }
   }
+  if (stage.kind === 'avatar') {
+    const value = state.picks[`model:${stage.id}`] ?? AVATAR_MODELS[0]!.id
+    const model = AVATAR_MODELS.find((entry) => entry.id === value) ?? AVATAR_MODELS[0]!
+    return { pick: `model:${stage.id}`, value: model.id, label: model.label, credits: model.credits, options: AVATAR_MODELS, auto: false }
+  }
   if (stage.kind === 'music') {
     const value = pickOf(state, 'music') ?? 'acoustic'
     const options = (LOOK_OPTIONS.music ?? []).filter((entry) => entry.id !== 'none').map((entry) => ({ id: entry.id, label: entry.title, sub: entry.sub ?? '' }))
@@ -234,11 +260,16 @@ function choiceOf(state: LabRunState, stage: ChainStage, own: boolean) {
 /** What flows along a link: words, a picture, a clip or a sound. */
 type PortType = 'text' | 'image' | 'video' | 'audio'
 type Port = { id: string; type: PortType; label: string }
+/** A clip's outputs past the clip itself: its first and last frames, as pictures (no node of their own). */
+const FRAME_OUTPUTS: Port[] = [
+  { id: 'first', type: 'image', label: 'İlk kare' },
+  { id: 'last', type: 'image', label: 'Son kare' },
+]
 const PORT_ICON: Record<PortType, string> = { text: 'type', image: 'image', video: 'video', audio: 'music' }
 /** The video models that can end on a given frame as well as start on one (demo capabilities). */
 const END_FRAMES = new Set(['kling-2-5', 'seedance-1-pro'])
 /** The settings shown on what a node shows, a press away (the rest are in its settings panel). */
-const QUICK_ROWS = ['mode', 'aspect', 'secs', 'quality', 'count', 'length', 'tone', 'speed', 'mood', 'level']
+const QUICK_ROWS = ['mode', 'aspect', 'secs', 'quality', 'resolution', 'count', 'length', 'tone', 'speed', 'mood', 'level']
 
 /**
  * A node's inputs, by what its model can take: a picture's prompt and reference pictures; a clip's prompt, its start
@@ -261,6 +292,8 @@ function inputsOf(state: LabRunState, stage: ChainStage, own: boolean): Port[] {
         ...(choice.value === 'auto' || END_FRAMES.has(choice.value) ? [{ id: 'end', type: 'image', label: 'Bitiş karesi' } as Port] : []),
         ...(references ? [{ id: 'ref', type: 'image', label: 'Referans görseller' } as Port] : []),
       ]
+    case 'avatar':
+      return [{ id: 'face', type: 'image', label: 'Yüz görseli' }, { id: 'audio', type: 'audio', label: 'Ses' }, { id: 'script', type: 'text', label: 'Metin' }]
     case 'frame':
       return [{ id: 'clip', type: 'video', label: 'Klip' }]
     case 'voice':
@@ -274,19 +307,27 @@ function inputsOf(state: LabRunState, stage: ChainStage, own: boolean): Port[] {
   }
 }
 
-/** What a node hands on. */
-function outputOf(state: LabRunState, stage: ChainStage): PortType {
+/** What a node hands on from an output (`out`, its own; a clip's `first` and `last` are pictures). */
+function outputOf(state: LabRunState, stage: ChainStage, handle?: string | null): PortType {
+  if (handle === 'first' || handle === 'last') return 'image'
   if (stage.kind === 'text') return 'text'
   if (stage.kind === 'voice' || stage.kind === 'music') return 'audio'
-  if (stage.kind === 'video') return 'video'
+  if (stage.kind === 'video' || stage.kind === 'avatar') return 'video'
   if (stage.kind === 'media') return state.media[stage.id]?.video || stage.seconds ? 'video' : 'image'
   return 'image'
 }
 
+/** A node's outputs: what it makes, and for a clip (not the final cut) its first and last frames. */
+function outputsOf(state: LabRunState, stage: ChainStage): Port[] {
+  const type = outputOf(state, stage)
+  const own: Port = { id: 'out', type, label: STAGE_KIND[stage.kind].name }
+  return type === 'video' && stage.id !== 'all/cut' ? [own, ...FRAME_OUTPUTS] : [own]
+}
+
 /** The input a link goes into when it was not drawn to one: the first that takes what the source hands on. */
-function portFor(state: LabRunState, target: ChainStage, targetOwn: boolean, source: ChainStage) {
+function portFor(state: LabRunState, target: ChainStage, targetOwn: boolean, source: ChainStage, from?: string) {
   const ports = inputsOf(state, target, targetOwn)
-  return (ports.find((port) => port.type === outputOf(state, source)) ?? ports[0])?.id
+  return (ports.find((port) => port.type === outputOf(state, source, from)) ?? ports[0])?.id
 }
 
 /** A node's settings as they stand, by row id. */
@@ -309,7 +350,7 @@ function costOf(state: LabRunState, stage: ChainStage, own: boolean) {
 }
 
 /** The canvas as React Flow nodes and edges: Spark's plan, under what the user did on it. */
-function graphOf(run: LabRun, lanes: ChainLane[], statuses: Map<string, StageStatus>, now: number) {
+function graphOf(run: LabRun, lanes: ChainLane[], statuses: Map<string, StageStatus>) {
   const { state } = run
   const { canvas } = state
   const removed = new Set(canvas.removed)
@@ -327,9 +368,11 @@ function graphOf(run: LabRun, lanes: ChainLane[], statuses: Map<string, StageSta
     connectable: false,
     data: {
       title: state.edits[`title:${id}`] ?? title,
-      color: (state.picks[`color:${id}`] ?? 'none') as FrameColor,
+      color: state.picks[`color:${id}`] ?? 'none',
+      titleStyle: readTextStyle(state.picks[`tstyle:${id}`], FRAME_TITLE_STYLE),
       onTitle: (text) => run.edit(`title:${id}`, text),
       onColor: (color) => run.pick(`color:${id}`, color),
+      onTitleStyle: (style) => run.pick(`tstyle:${id}`, writeTextStyle(style)),
       onRemove: () => run.canvas.remove([id]),
     },
   })
@@ -349,9 +392,10 @@ function graphOf(run: LabRun, lanes: ChainLane[], statuses: Map<string, StageSta
         connectable: false,
         data: {
           text: state.edits[`label:${own.id}`] ?? '',
-          size: state.picks[`size:${own.id}`] === 'title' ? 'title' : 'body',
+          // A text kept as a title before it had a style of its own keeps that look.
+          style: readTextStyle(state.picks[`style:${own.id}`], state.picks[`size:${own.id}`] === 'title' ? TITLE_TEXT_STYLE : undefined),
           onText: (text) => run.edit(`label:${own.id}`, text),
-          onSize: (size) => run.pick(`size:${own.id}`, size),
+          onStyle: (style) => run.pick(`style:${own.id}`, writeTextStyle(style)),
           onRemove: () => run.canvas.remove([own.id]),
         },
       })
@@ -379,13 +423,14 @@ function graphOf(run: LabRun, lanes: ChainLane[], statuses: Map<string, StageSta
     if (!ANNOTATIONS.has(own.kind)) steps.set(own.id, { stage: ownStage(state, own), lane: null, position: canvas.moved[own.id] ?? { x: own.x, y: own.y } })
   }
 
-  const pairs: { id: string; source: string; target: string; handle?: string }[] = [...lanes.flatMap((lane) => lane.links.map(([source, target]) => ({ id: `${source}→${target}`, source, target }))), ...canvas.links]
+  const planned = lanes.flatMap((lane) => lane.links.map(([source, target, from, handle]) => ({ id: `${source}→${target}`, source, target, from, handle })))
+  const pairs: { id: string; source: string; target: string; handle?: string; from?: string }[] = [...planned, ...canvas.links]
   // Each link goes into one of its target's inputs: the one it was drawn to, else the first that takes what it carries.
   const links = pairs
     .filter((link) => !removed.has(link.id) && steps.has(link.source) && steps.has(link.target))
     .map((link) => {
       const target = steps.get(link.target)!
-      return { ...link, handle: link.handle ?? portFor(state, target.stage, !target.lane, steps.get(link.source)!.stage) }
+      return { ...link, handle: link.handle ?? portFor(state, target.stage, !target.lane, steps.get(link.source)!.stage, link.from) }
     })
     .filter((link) => link.handle)
   const into = (id: string) => links.filter((link) => link.target === id).map((link) => steps.get(link.source)!.stage)
@@ -394,7 +439,7 @@ function graphOf(run: LabRun, lanes: ChainLane[], statuses: Map<string, StageSta
   const artOf = (stage: ChainStage, depth = 0): SceneArt | undefined =>
     stage.art
     ?? (depth < 3 ? into(stage.id).map((source) => artOf(source, depth + 1)).find(Boolean) : undefined)
-    ?? (steps.get(stage.id)?.lane ? undefined : DEMO_ARTS[Number(stage.id.split('/')[1] ?? 0) % DEMO_ARTS.length])
+    ?? (steps.get(stage.id)?.lane ? undefined : stage.kind === 'avatar' ? 'chef' : DEMO_ARTS[Number(stage.id.split('/')[1] ?? 0) % DEMO_ARTS.length])
   const madeOf = (id: string) => (canvas.made[id] ?? 0) + (state.asks[id]?.length ?? 0)
 
   const statusOf = new Map<string, NodeStatus>()
@@ -439,7 +484,7 @@ function graphOf(run: LabRun, lanes: ChainLane[], statuses: Map<string, StageSta
         shows: !generated(stage) || variants > 0,
         variants,
         active: pickedAt === variants && picked! < variants ? picked! : Math.max(0, variants - 1),
-        progress: head?.id === id && head.startedAt ? Math.min(1, Math.max(0, (now - head.startedAt) / head.ms)) : undefined,
+        job: head?.id === id && head.startedAt ? { startedAt: head.startedAt, ms: head.ms } : undefined,
         own: !lane,
         art: artOf(stage),
         said: into(id).find((source) => source.kind === 'text')?.text?.value,
@@ -455,10 +500,10 @@ function graphOf(run: LabRun, lanes: ChainLane[], statuses: Map<string, StageSta
     id: link.id,
     source: link.source,
     target: link.target,
-    sourceHandle: 'out',
+    sourceHandle: link.from ?? 'out',
     targetHandle: link.handle,
     type: 'chain',
-    data: { passing: statusOf.get(link.target) === 'running' && made(statusOf.get(link.source)), type: outputOf(state, steps.get(link.source)!.stage) },
+    data: { passing: statusOf.get(link.target) === 'running' && made(statusOf.get(link.source)), type: outputOf(state, steps.get(link.source)!.stage, link.from) },
   }))
   const agentNode = nodes.find((node) => node.type === 'step' && node.data.agent)?.id ?? null
   nodes.push(...annotations.filter((node) => node.type !== 'frame'))
@@ -491,12 +536,14 @@ function useNow(active: boolean) {
   return now
 }
 
-/** Closes a popup on a press outside `box` or on Escape. */
-function useDismiss(open: boolean, box: React.RefObject<HTMLElement | null>, close: () => void) {
+/** Closes a popup on a press outside `box` or on Escape; a press on an element matching `opener` is left to it (it toggles the popup itself). */
+function useDismiss(open: boolean, box: React.RefObject<HTMLElement | null>, close: () => void, opener?: string) {
   React.useEffect(() => {
     if (!open) return
     const away = (event: PointerEvent) => {
-      if (!box.current?.contains(event.target as globalThis.Node)) close()
+      const target = event.target as Element
+      if (box.current?.contains(target) || (opener && target.closest?.(opener))) return
+      close()
     }
     const esc = (event: KeyboardEvent) => event.key === 'Escape' && close()
     document.addEventListener('pointerdown', away)
@@ -505,7 +552,14 @@ function useDismiss(open: boolean, box: React.RefObject<HTMLElement | null>, clo
       document.removeEventListener('pointerdown', away)
       document.removeEventListener('keydown', esc)
     }
-  }, [open, box, close])
+  }, [open, box, close, opener])
+}
+
+/** How far the queue is into making a node (0–1), ticking in the node itself while it is made. */
+function useJobProgress(job: StepData['job']) {
+  const now = useNow(job !== undefined)
+  if (!job || !now) return undefined
+  return Math.min(1, Math.max(0, (now - job.startedAt) / job.ms))
 }
 
 /**
@@ -522,10 +576,12 @@ type CanvasApi = {
   run: LabRun
   /** Puts nodes in the queue, in the order given. */
   make: (ids: string[]) => void
+  /** Hands the selected nodes to Spark's chat as what a request is about. */
+  pick: (ids: string[]) => void
   /** Hands nodes to Spark's chat (the composer's chip) and opens its panel. */
   ask: (ids: string[]) => void
-  /** Opens the node menu to add a node linked from `from`, beside it. */
-  addAfter: (from: string) => void
+  /** Opens the node menu to add a node linked from `from`'s output `handle` (its own by default), beside it. */
+  addAfter: (from: string, handle?: string) => void
   /** Opens the node menu to add a node that hands `node` what its input `port` takes, before it. */
   addBefore: (node: string, port: Port) => void
   duplicate: (id: string) => void
@@ -534,8 +590,20 @@ type CanvasApi = {
 const CanvasContext = React.createContext<CanvasApi | null>(null)
 const useCanvas = () => React.useContext(CanvasContext)!
 
-const nodeTypes = { step: StepNodeView, frame: FrameNodeView, note: NoteNodeView, label: LabelNodeView }
-const edgeTypes = { chain: ChainEdgeView }
+/**
+ * A node's view draws from its data, selection and size, never from where it is (React Flow places it): so it draws
+ * again only when one of those changes, not while it or another node is dragged.
+ */
+function sameNode<P extends { id: string; data: unknown; selected?: boolean; width?: number; height?: number }>(a: P, b: P) {
+  return a.id === b.id && a.data === b.data && a.selected === b.selected && a.width === b.width && a.height === b.height
+}
+const nodeTypes = {
+  step: React.memo(StepNodeView, sameNode),
+  frame: React.memo(FrameNodeView, sameNode),
+  note: React.memo(NoteNodeView, sameNode),
+  label: React.memo(LabelNodeView, sameNode),
+}
+const edgeTypes = { chain: React.memo(ChainEdgeView) }
 
 /**
  * What a canvas is doing, for a page around it (the Canvas editor's top bar): the node being made, how many wait, and what
@@ -571,7 +639,18 @@ export function ChainBoard(props: { run: LabRun; scenes: LabScene[]; onAsk?: () 
  * Where the node menu is open and what the new node is for: linked from a node's output (`from`), or into a node's input
  * (`into`), each taking what flows there (`type`); or nothing, a node of its own.
  */
-type Adding = { from?: string; into?: { node: string; port: string; label: string }; type?: PortType; left: number; top: number; at: { x: number; y: number } }
+type Adding = {
+  from?: string
+  /** Which of `from`'s outputs (a clip's first or last frame); its own when not given. */
+  fromHandle?: string
+  into?: { node: string; port: string; label: string }
+  type?: PortType
+  /** Opened from the "+" of the tools at the bottom: the menu rises from there. */
+  dock?: boolean
+  left: number
+  top: number
+  at: { x: number; y: number }
+}
 /** A link being drawn: from which end (an output, or an input back to an output), of which node and port, carrying what. */
 type Wiring = { dir: 'out' | 'in'; node: string; port: string; type: PortType; over: string | null }
 type Box = { x: number; y: number; w: number; h: number }
@@ -590,7 +669,6 @@ function ChainCanvas({ run, scenes, onAsk, free = false }: { run: LabRun; scenes
   const [tool, setTool] = React.useState<'hand' | 'select'>('hand')
   const [adding, setAdding] = React.useState<Adding | null>(null)
   const [mapOpen, setMapOpen] = React.useState(false)
-  const [zoom, setZoom] = React.useState(state.canvas.view?.zoom ?? FIRST_VIEW.zoom)
   // A link being drawn: the end it is drawn from and the node under the pointer, as one string, so the canvas draws
   // again only when either changes, not on every move.
   const wire = useStore((store) => {
@@ -608,15 +686,19 @@ function ChainCanvas({ run, scenes, onAsk, free = false }: { run: LabRun; scenes
   })
 
   const fraction = useStepFraction(state)
-  const now = useNow(state.canvas.queue.length > 0)
-  const lanes = free ? [] : chainLanes(state, scenes)
-  const statuses = stageStatuses(state, lanes, fraction)
-  const graph = graphOf(run, lanes, statuses, now)
-  /** Whether a link being drawn can end on a node: an output into one of its inputs, or an input from its output. */
+  // The graph changes with the run (and Spark's way through it) only: not while something is dragged or the view moves,
+  // so the nodes keep their data and only the ones that moved draw again.
+  const { lanes, graph } = React.useMemo(() => {
+    const lanes = free ? [] : chainLanes(run.state, scenes)
+    return { lanes, graph: graphOf(run, lanes, stageStatuses(run.state, lanes, fraction)) }
+  }, [run, scenes, free, fraction])
+  /** Whether a link being drawn can end on a node: an output into one of its inputs, or an input from one of its outputs. */
   const fits = (wiring: Wiring, id: string) => {
     const step = graph.steps.get(id)
     if (!step || id === wiring.node) return false
-    return wiring.dir === 'out' ? inputsOf(state, step.stage, !step.lane).some((port) => port.type === wiring.type) : outputOf(state, step.stage) === wiring.type
+    return wiring.dir === 'out'
+      ? inputsOf(state, step.stage, !step.lane).some((port) => port.type === wiring.type)
+      : outputsOf(state, step.stage).some((port) => port.type === wiring.type)
   }
   const wiring = ((): Wiring | null => {
     if (!wire) return null
@@ -624,7 +706,7 @@ function ChainCanvas({ run, scenes, onAsk, free = false }: { run: LabRun; scenes
     const step = graph.steps.get(node)
     if (!step) return null
     const dir = end === 'source' ? 'out' : 'in'
-    const type = dir === 'out' ? outputOf(state, step.stage) : inputsOf(state, step.stage, !step.lane).find((entry) => entry.id === port)?.type
+    const type = dir === 'out' ? outputOf(state, step.stage, port) : inputsOf(state, step.stage, !step.lane).find((entry) => entry.id === port)?.type
     if (!type) return null
     const drawn: Wiring = { dir, node, port, type, over: null }
     return { ...drawn, over: over && fits(drawn, over) ? over : null }
@@ -635,12 +717,13 @@ function ChainCanvas({ run, scenes, onAsk, free = false }: { run: LabRun; scenes
     const className = wiring && node.type === 'step' && node.id !== wiring.node ? (fits(wiring, node.id) ? `fits${wiring.over === node.id ? ' drop' : ''}` : 'unfit') : undefined
     return { ...node, className, position: drag[node.id] ?? node.position, selected: selected.includes(node.id), measured: measured[node.id], ...(size && { width: size.w, height: size.h }) } as CanvasNode
   })
-  const edges = graph.edges.map((edge) => ({ ...edge, selected: selectedEdges.includes(edge.id) }))
+  const edges = React.useMemo(() => graph.edges.map((edge) => ({ ...edge, selected: selectedEdges.includes(edge.id) })), [graph.edges, selectedEdges])
   const picked = selected.filter((id) => graph.steps.has(id))
-  const nameOf = (id: string) => graph.steps.get(id)?.stage.title ?? id
   const boxOf = (node: CanvasNode): Box => ({ x: node.position.x, y: node.position.y, w: node.width ?? node.measured?.width ?? 0, h: node.height ?? node.measured?.height ?? 0 })
 
   // Spark's cursor measures again on a scroll; the canvas moves without one, so it says so (once a frame at most).
+  const viewSave = React.useRef(0)
+  React.useEffect(() => () => window.clearTimeout(viewSave.current), [])
   const nudge = React.useRef(0)
   const remeasure = React.useCallback(() => {
     if (nudge.current) return
@@ -658,67 +741,72 @@ function ChainCanvas({ run, scenes, onAsk, free = false }: { run: LabRun; scenes
     flow.setCenter(node.position.x + (node.width ?? 280) / 2, node.position.y + (node.height ?? 300) / 2, { zoom: flow.getZoom(), duration: 500 })
   }, [graph.agentNode, state.follow, flow])
 
-  const make = (ids: string[]) => {
-    // A text is rewritten by Spark: its new words take the field (the progress covers them until it is done).
-    for (const id of ids) {
-      const step = graph.steps.get(id)
-      const node = graph.nodes.find((entry) => entry.id === id)
-      if (step?.stage.text && node?.type === 'step') {
-        const words = textVersion(state, step.stage, !step.lane, node.data.variants)
-        run.edit(step.stage.text.key, words)
-        run.edit(`${step.stage.text.key}@${node.data.variants}`, words)
-      }
-    }
-    run.canvas.run(ids.flatMap((id) => {
-      const step = graph.steps.get(id)
-      return step ? [{ id, ms: MAKE_MS[step.stage.kind] }] : []
-    }))
-  }
-  const pick = (ids: string[]) => {
-    const steps = ids.filter((id) => graph.steps.has(id))
-    if (steps.length) run.select({ targets: steps, labels: steps.map(nameOf), noun: 'düğüm', from: 'chain' })
-    else if (state.selection?.from === 'chain') run.select(null)
-  }
   const center = () => {
     const box = wrap.current?.getBoundingClientRect()
     return flow.screenToFlowPosition({ x: (box?.left ?? 0) + (box?.width ?? 800) / 2, y: (box?.top ?? 0) + (box?.height ?? 600) / 2 })
   }
-  const api: CanvasApi = {
-    run,
-    make,
-    ask: (ids) => {
-      setSelected(ids)
-      pick(ids)
-      run.ask()
-      onAsk?.()
-    },
-    addAfter: (from) => {
-      const node = flow.getNode(from)
-      const step = graph.steps.get(from)
-      const box = wrap.current?.getBoundingClientRect()
-      if (!node || !step || !box) return
-      const at = { x: node.position.x + (node.width ?? 280) + 80, y: node.position.y }
-      const screen = flow.flowToScreenPosition({ x: node.position.x + (node.width ?? 280) + 24, y: node.position.y + (node.height ?? 300) / 2 })
-      setAdding({ from, type: outputOf(state, step.stage), left: screen.x - box.left, top: screen.y - box.top, at })
-    },
-    addBefore: (target, port) => {
-      const node = flow.getNode(target)
-      const box = wrap.current?.getBoundingClientRect()
-      if (!node || !box) return
-      const at = { x: node.position.x - 280 - 80, y: node.position.y }
-      const screen = flow.flowToScreenPosition({ x: node.position.x - 24, y: node.position.y + (node.height ?? 300) / 2 })
-      setAdding({ into: { node: target, port: port.id, label: port.label }, type: port.type, left: screen.x - box.left - ADD_MENU_W - 20, top: screen.y - box.top, at })
-    },
-    duplicate: (id) => {
-      const step = graph.steps.get(id)
-      const node = flow.getNode(id)
-      if (step && node) run.canvas.add(step.stage.kind, node.position.x + 40, node.position.y + 40)
-    },
-    remove: (id) => {
-      run.canvas.remove([id])
-      setSelected((list) => list.filter((entry) => entry !== id))
-    },
-  }
+  // What the nodes ask of the canvas: the same object while the run stays the same, so a node does not draw again on
+  // every drag or pan (it reads the canvas through this).
+  const api = React.useMemo<CanvasApi>(() => {
+    const { state } = run
+    const pick = (ids: string[]) => {
+      const steps = ids.filter((id) => graph.steps.has(id))
+      if (steps.length) run.select({ targets: steps, labels: steps.map((id) => graph.steps.get(id)!.stage.title), noun: 'düğüm', from: 'chain' })
+      else if (state.selection?.from === 'chain') run.select(null)
+    }
+    return {
+      run,
+      pick,
+      make: (ids) => {
+        // A text is rewritten by Spark: its new words take the field (the progress covers them until it is done).
+        for (const id of ids) {
+          const step = graph.steps.get(id)
+          const node = graph.nodes.find((entry) => entry.id === id)
+          if (step?.stage.text && node?.type === 'step') {
+            const words = textVersion(state, step.stage, !step.lane, node.data.variants)
+            run.edit(step.stage.text.key, words)
+            run.edit(`${step.stage.text.key}@${node.data.variants}`, words)
+          }
+        }
+        run.canvas.run(ids.flatMap((id) => {
+          const step = graph.steps.get(id)
+          return step ? [{ id, ms: MAKE_MS[step.stage.kind] }] : []
+        }))
+      },
+      ask: (ids) => {
+        setSelected(ids)
+        pick(ids)
+        run.ask()
+        onAsk?.()
+      },
+      addAfter: (from, handle = 'out') => {
+        const node = flow.getNode(from)
+        const step = graph.steps.get(from)
+        const box = wrap.current?.getBoundingClientRect()
+        if (!node || !step || !box) return
+        const at = { x: node.position.x + (node.width ?? 280) + 80, y: node.position.y }
+        const screen = flow.flowToScreenPosition({ x: node.position.x + (node.width ?? 280) + 24, y: node.position.y + (node.height ?? 300) / 2 })
+        setAdding({ from, fromHandle: handle, type: outputOf(state, step.stage, handle), left: screen.x - box.left, top: screen.y - box.top, at })
+      },
+      addBefore: (target, port) => {
+        const node = flow.getNode(target)
+        const box = wrap.current?.getBoundingClientRect()
+        if (!node || !box) return
+        const at = { x: node.position.x - 280 - 80, y: node.position.y }
+        const screen = flow.flowToScreenPosition({ x: node.position.x - 24, y: node.position.y + (node.height ?? 300) / 2 })
+        setAdding({ into: { node: target, port: port.id, label: port.label }, type: port.type, left: screen.x - box.left - ADD_MENU_W - 20, top: screen.y - box.top, at })
+      },
+      duplicate: (id) => {
+        const step = graph.steps.get(id)
+        const node = flow.getNode(id)
+        if (step && node) run.canvas.add(step.stage.kind, node.position.x + 40, node.position.y + 40)
+      },
+      remove: (id) => {
+        run.canvas.remove([id])
+        setSelected((list) => list.filter((entry) => entry !== id))
+      },
+    }
+  }, [run, graph, flow, onAsk])
 
   /** The nodes (and notes) whose middle is inside a frame, besides the ones already moving with the selection. */
   const insideOf = (frameId: string, moving: Set<string>) => {
@@ -797,7 +885,7 @@ function ChainCanvas({ run, scenes, onAsk, free = false }: { run: LabRun; scenes
     if (Object.keys(seen).length) setMeasured((current) => ({ ...current, ...seen }))
     if (nextSelected) {
       setSelected(nextSelected)
-      pick(nextSelected)
+      api.pick(nextSelected)
     }
     if (removing.length) run.canvas.remove(removing)
   }
@@ -815,13 +903,13 @@ function ChainCanvas({ run, scenes, onAsk, free = false }: { run: LabRun; scenes
     if (next) setSelectedEdges(next)
     if (removing.length) run.canvas.unlink(removing)
   }
-  const onConnect = (connection: Connection) => run.canvas.link(connection.source, connection.target, connection.targetHandle ?? undefined)
-  /** The input of `target` a link from `source` goes into: the first free one that takes what it carries, else the first that takes it. */
-  const fitOf = (source: string, target: string) => {
+  const onConnect = (connection: Connection) => run.canvas.link(connection.source, connection.target, connection.targetHandle ?? undefined, connection.sourceHandle ?? undefined)
+  /** The input of `target` a link from `source`'s output `handle` goes into: the first free one that takes what it carries, else the first that takes it. */
+  const fitOf = (source: string, target: string, handle?: string) => {
     const from = graph.steps.get(source)
     const to = graph.steps.get(target)
     if (!from || !to || source === target) return undefined
-    const ports = inputsOf(state, to.stage, !to.lane).filter((port) => port.type === outputOf(state, from.stage))
+    const ports = inputsOf(state, to.stage, !to.lane).filter((port) => port.type === outputOf(state, from.stage, handle))
     const taken = new Set(graph.edges.filter((edge) => edge.target === target).map((edge) => edge.targetHandle))
     return (ports.find((port) => !taken.has(port.id)) ?? ports[0])?.id
   }
@@ -831,7 +919,7 @@ function ChainCanvas({ run, scenes, onAsk, free = false }: { run: LabRun; scenes
     const target = graph.steps.get(connection.target)
     if (!source || !target || connection.source === connection.target) return false
     const port = inputsOf(state, target.stage, !target.lane).find((entry) => entry.id === connection.targetHandle)
-    return port?.type === outputOf(state, source.stage)
+    return port?.type === outputOf(state, source.stage, connection.sourceHandle)
   }
   /**
    * A link let go of away from a port. On a node, it goes into the input there that takes it (or, drawn back from an
@@ -850,15 +938,18 @@ function ChainCanvas({ run, scenes, onAsk, free = false }: { run: LabRun; scenes
     const left = point.clientX - box.left
     const top = point.clientY - box.top
     if (connection.fromHandle.type === 'source') {
-      const port = over ? fitOf(from, over.id) : undefined
-      if (over && port) run.canvas.link(from, over.id, port)
-      else if (!over) setAdding({ from, type: outputOf(state, step.stage), left, top, at: { x: at.x, y: at.y - 160 } })
+      const handle = connection.fromHandle.id ?? 'out'
+      const port = over ? fitOf(from, over.id, handle) : undefined
+      if (over && port) run.canvas.link(from, over.id, port, handle)
+      else if (!over) setAdding({ from, fromHandle: handle, type: outputOf(state, step.stage, handle), left, top, at: { x: at.x, y: at.y - 160 } })
       return
     }
     const port = inputsOf(state, step.stage, !step.lane).find((entry) => entry.id === connection.fromHandle?.id)
     if (!port) return
     const source = over ? graph.steps.get(over.id) : undefined
-    if (over && source && outputOf(state, source.stage) === port.type) run.canvas.link(over.id, from, port.id)
+    // Into a picture input, a clip hands on its last frame; anything else its own output of that type.
+    const out = source ? outputsOf(state, source.stage).filter((entry) => entry.type === port.type).at(-1) : undefined
+    if (over && out) run.canvas.link(over.id, from, port.id, out.id)
     else if (!over) setAdding({ into: { node: from, port: port.id, label: port.label }, type: port.type, left: left - ADD_MENU_W - 20, top, at: { x: at.x - 280, y: at.y - 160 } })
   }
   const addHere = (left: number, top: number) => {
@@ -869,23 +960,24 @@ function ChainCanvas({ run, scenes, onAsk, free = false }: { run: LabRun; scenes
   }
   const add = (kind: StageKind) => {
     if (!adding) return
-    const x = Math.round(adding.at.x)
-    const y = Math.round(adding.at.y)
-    if (adding.into) {
-      // The new node takes the next id the canvas gives (`own/<serial>`), so the link into the input goes in with it.
-      run.canvas.add(kind, x, y)
-      run.canvas.link(`own/${state.canvas.serial}`, adding.into.node, adding.into.port)
-    } else {
-      run.canvas.add(kind, x, y, adding.from)
-    }
+    // The new node takes the next id the canvas gives (`own/<serial>`), so its link goes in with it.
+    const id = `own/${state.canvas.serial}`
+    run.canvas.add(kind, Math.round(adding.at.x), Math.round(adding.at.y))
+    if (adding.into) run.canvas.link(id, adding.into.node, adding.into.port)
+    else if (adding.from) run.canvas.link(adding.from, id, undefined, adding.fromHandle)
     setAdding(null)
+  }
+  /** The node menu from the "+" at the bottom; the new node goes in the middle of the view. */
+  const addFromDock = () => {
+    const at = center()
+    setAdding(adding?.dock ? null : { dock: true, left: 0, top: 0, at: { x: at.x - 140, y: at.y - 175 } })
   }
   /** The kinds of node the menu offers: those that take (or hand on) what the link carries, else every kind. */
   const kindsFor = (entry: Adding) => {
     if (!entry.type) return STAGE_KINDS
     const fit = STAGE_KINDS.filter((kind) => {
       const stage = ownStage(state, { id: `own/${state.canvas.serial}`, kind, x: 0, y: 0 })
-      return entry.into ? outputOf(state, stage) === entry.type : inputsOf(state, stage, true).some((port) => port.type === entry.type)
+      return entry.into ? outputsOf(state, stage).some((port) => port.type === entry.type) : inputsOf(state, stage, true).some((port) => port.type === entry.type)
     })
     return fit.length ? fit : STAGE_KINDS
   }
@@ -913,26 +1005,6 @@ function ChainCanvas({ run, scenes, onAsk, free = false }: { run: LabRun; scenes
     run.canvas.add('frame', Math.round(left - PAD.x), Math.round(top - PAD.top), undefined, { w: Math.round(right - left + PAD.x * 2), h: Math.round(bottom - top + PAD.top + PAD.bottom) })
   }
 
-  // The queue: what the canvas makes (the first one with its progress), then what Spark remakes for a request.
-  const queueItems: QueueItem[] = [
-    ...state.canvas.queue.map((job, index) => {
-      const step = graph.steps.get(job.id)
-      const progress = index === 0 && job.startedAt ? Math.min(1, Math.max(0, (now - job.startedAt) / job.ms)) : undefined
-      return { id: job.id, title: step?.stage.title ?? job.id, kind: step?.stage.kind ?? 'image', status: index === 0 ? ('running' as const) : ('queued' as const), progress }
-    }),
-    ...(state.applying === null ? [] : state.applyingLeft.filter((id) => graph.steps.has(id))).map((id, index) => ({
-      id,
-      title: nameOf(id),
-      kind: graph.steps.get(id)!.stage.kind,
-      status: index === 0 ? ('running' as const) : ('queued' as const),
-    })),
-  ]
-  const sparkStep = state.phase === 'building' && agentDriving(state) ? currentStep(state) : null
-  const focus = (id: string) => {
-    const node = flow.getNode(id)
-    if (node) flow.setCenter(node.position.x + (node.width ?? 280) / 2, node.position.y + (node.height ?? 300) / 2, { zoom: Math.max(flow.getZoom(), 0.8), duration: 500 })
-  }
-
   return (
     <CanvasContext.Provider value={api}>
       <div className={`lb-b-board lb-cv tool-${tool}${wiring ? ` wiring w-${wiring.dir} t-${wiring.type}` : ''}`} ref={wrap}>
@@ -946,16 +1018,27 @@ function ChainCanvas({ run, scenes, onAsk, free = false }: { run: LabRun; scenes
           onConnect={onConnect}
           onConnectEnd={onConnectEnd}
           isValidConnection={isValidConnection}
-          onMove={(_, view) => {
-            remeasure()
-            setZoom(view.zoom)
+          onMove={remeasure}
+          onMoveEnd={(_, view) => {
+            // Kept once the view rests, not at every pause of a pan (keeping it is a change to the run, which draws the nodes again).
+            window.clearTimeout(viewSave.current)
+            viewSave.current = window.setTimeout(() => run.canvas.view(view), 700)
           }}
-          onMoveEnd={(_, view) => run.canvas.view(view)}
           onPaneClick={(event) => {
+            const box = wrap.current?.getBoundingClientRect()
+            if (!box) return
             if (event.detail === 2) {
-              const box = wrap.current?.getBoundingClientRect()
-              if (box) addHere(event.clientX - box.left, event.clientY - box.top)
+              addHere(event.clientX - box.left, event.clientY - box.top)
+              return
             }
+            // A frame's box lets presses through to the canvas (a drag there pans), so a click inside it picks the
+            // innermost frame there, for its toolbar; after the canvas has cleared the selection a click clears.
+            const at = flow.screenToFlowPosition({ x: event.clientX, y: event.clientY })
+            const frame = flow
+              .getIntersectingNodes({ x: at.x, y: at.y, width: 1, height: 1 })
+              .filter((node) => node.type === 'frame')
+              .sort((a, b) => (a.width ?? 0) * (a.height ?? 0) - (b.width ?? 0) * (b.height ?? 0))[0]
+            if (frame) window.setTimeout(() => setSelected([frame.id]))
           }}
           defaultViewport={state.canvas.view ?? (free ? FREE_VIEW : FIRST_VIEW)}
           minZoom={0.15}
@@ -985,10 +1068,10 @@ function ChainCanvas({ run, scenes, onAsk, free = false }: { run: LabRun; scenes
             />
           ) : null}
           {selected.length > 1 ? (
-            <NodeToolbar nodeId={selected} isVisible position={Position.Top} offset={40} className="lb-cv-bar">
+            <NodeToolbar nodeId={selected} isVisible position={Position.Top} offset={40} className="lb-cv-bar" style={{ zIndex: 1001 }}>
               <span className="lb-cv-bar-t">{selected.length} öğe</span>
               {picked.length ? (
-                <button type="button" onClick={() => make([...picked].sort((a, b) => (flow.getNode(a)?.position.x ?? 0) - (flow.getNode(b)?.position.x ?? 0)))}>
+                <button type="button" onClick={() => api.make([...picked].sort((a, b) => (flow.getNode(a)?.position.x ?? 0) - (flow.getNode(b)?.position.x ?? 0)))}>
                   <Icon name="play" size="sm" />
                   Hepsini üret
                 </button>
@@ -1014,45 +1097,35 @@ function ChainCanvas({ run, scenes, onAsk, free = false }: { run: LabRun; scenes
         </ReactFlow>
 
         {free ? (
-          nodes.length ? null : <p className="lb-cv-hint empty">Boş tuval · <b>+</b> ile ya da çift tıklayarak düğüm ekle</p>
+          nodes.length ? null : <p className="lb-cv-hint empty">Düğüm eklemek için alttaki <b>+</b> düğmesini kullanın ya da tuvale çift tıklayın</p>
         ) : lanes.length ? null : (
-          <p className="lb-cv-hint"><span className="spin" />Spark planı yazıyor; sahneler yazıldıkça burada belirir.</p>
+          <p className="lb-cv-hint"><span className="spin" />Plan hazırlanıyor; sahneler eklendikçe burada görünür.</p>
         )}
 
-        <nav className="lb-cv-tools" aria-label="Tuval araçları">
-          <button type="button" className="primary" onClick={() => addHere((wrap.current?.clientWidth ?? 800) / 2, (wrap.current?.clientHeight ?? 600) / 2)} title="Düğüm ekle" aria-label="Düğüm ekle">
-            <Plus aria-hidden />
-          </button>
-          <button type="button" onClick={addNote} title="Not ekle" aria-label="Not ekle"><StickyNote aria-hidden /></button>
-          <button type="button" onClick={addText} title="Yazı ekle: başlık ya da açıklama" aria-label="Yazı ekle"><Type aria-hidden /></button>
-          <button type="button" onClick={addFrame} title="Çerçeve ekle" aria-label="Çerçeve ekle"><FrameIcon aria-hidden /></button>
-          <i />
-          <button type="button" className={tool === 'select' ? 'on' : ''} onClick={() => setTool('select')} title="Seç: sürükleyerek birden çok öğe seç" aria-pressed={tool === 'select'}>
+        {/* The tools, at the bottom like Flow's: how a drag acts, what to put down, following Spark, and adding a node. */}
+        <nav className="lb-cv-dock" aria-label="Tuval araçları">
+          <button type="button" className={tool === 'select' ? 'on' : ''} onClick={() => setTool('select')} title="Seç" aria-label="Seç" aria-pressed={tool === 'select'}>
             <MousePointer2 aria-hidden />
           </button>
-          <button type="button" className={tool === 'hand' ? 'on' : ''} onClick={() => setTool('hand')} title="El: sürükleyerek tuvalde gez" aria-pressed={tool === 'hand'}>
+          <button type="button" className={tool === 'hand' ? 'on' : ''} onClick={() => setTool('hand')} title="Kaydır" aria-label="Kaydır" aria-pressed={tool === 'hand'}>
             <Hand aria-hidden />
           </button>
           <i />
-          <button type="button" className={state.follow ? 'on spark' : ''} onClick={run.toggleFollow} title={state.follow ? 'Spark’ı izliyorsun' : 'Spark’ı izle'} aria-pressed={state.follow}>
+          <button type="button" onClick={addNote} title="Not" aria-label="Not ekle"><StickyNote aria-hidden /></button>
+          <button type="button" onClick={addText} title="Yazı" aria-label="Yazı ekle"><Type aria-hidden /></button>
+          <button type="button" onClick={addFrame} title="Çerçeve" aria-label="Çerçeve ekle"><FrameIcon aria-hidden /></button>
+          <i />
+          <button type="button" className={state.follow ? 'on spark' : ''} onClick={run.toggleFollow} title={state.follow ? 'Spark izleniyor' : 'Spark’ı izle'} aria-pressed={state.follow}>
             <Sparkles aria-hidden />
+          </button>
+          <i />
+          <button type="button" className={`primary${adding?.dock ? ' on' : ''}`} onClick={addFromDock} title="Düğüm ekle" aria-label="Düğüm ekle" aria-expanded={!!adding?.dock} data-lb-add-toggle="">
+            <Plus aria-hidden />
           </button>
         </nav>
 
-        <div className="lb-cv-queue">
-          <QueuePill items={queueItems} spark={sparkStep ? { doing: sparkStep.doing } : null} onFocus={focus} onStop={state.canvas.queue.length ? run.canvas.stop : undefined} />
-        </div>
-        <div className="lb-cv-zoom">
-          <ZoomPill
-            zoom={zoom}
-            onZoomOut={() => flow.zoomOut({ duration: 200 })}
-            onZoomIn={() => flow.zoomIn({ duration: 200 })}
-            onReset={() => flow.zoomTo(1, { duration: 200 })}
-            onFit={() => flow.fitView({ padding: 0.08, duration: 400 })}
-            mapOpen={mapOpen}
-            onToggleMap={() => setMapOpen(!mapOpen)}
-          />
-        </div>
+        <CanvasQueue run={run} steps={graph.steps} />
+        <CanvasZoom mapOpen={mapOpen} onToggleMap={() => setMapOpen(!mapOpen)} />
 
         {adding ? <AddMenu adding={adding} kinds={kindsFor(adding)} onAdd={add} onClose={closeAdding} /> : null}
       </div>
@@ -1062,20 +1135,78 @@ function ChainCanvas({ run, scenes, onAsk, free = false }: { run: LabRun; scenes
 
 const ADD_MENU_W = 264
 
+/**
+ * The queue at the top right: what the canvas makes (the first one with its progress), then what Spark remakes for a
+ * request. It ticks on its own while something is made, so the canvas does not draw again with it.
+ */
+function CanvasQueue({ run, steps }: { run: LabRun; steps: ReturnType<typeof graphOf>['steps'] }) {
+  const flow = useReactFlow()
+  const { state } = run
+  const now = useNow(state.canvas.queue.length > 0)
+  const items: QueueItem[] = [
+    ...state.canvas.queue.map((job, index) => {
+      const step = steps.get(job.id)
+      const progress = index === 0 && job.startedAt && now ? Math.min(1, Math.max(0, (now - job.startedAt) / job.ms)) : undefined
+      return { id: job.id, title: step?.stage.title ?? job.id, kind: step?.stage.kind ?? 'image', status: index === 0 ? ('running' as const) : ('queued' as const), progress }
+    }),
+    ...(state.applying === null ? [] : state.applyingLeft.filter((id) => steps.has(id))).map((id, index) => ({
+      id,
+      title: steps.get(id)!.stage.title,
+      kind: steps.get(id)!.stage.kind,
+      status: index === 0 ? ('running' as const) : ('queued' as const),
+    })),
+  ]
+  const sparkStep = state.phase === 'building' && agentDriving(state) ? currentStep(state) : null
+  const focus = (id: string) => {
+    const node = flow.getNode(id)
+    if (node) flow.setCenter(node.position.x + (node.width ?? 280) / 2, node.position.y + (node.height ?? 300) / 2, { zoom: Math.max(flow.getZoom(), 0.8), duration: 500 })
+  }
+  return (
+    <div className="lb-cv-queue">
+      <QueuePill items={items} spark={sparkStep ? { doing: sparkStep.doing } : null} onFocus={focus} onStop={state.canvas.queue.length ? run.canvas.stop : undefined} />
+    </div>
+  )
+}
+
+/** The zoom at the bottom left, read from the view itself, so the canvas does not draw again while the view moves. */
+function CanvasZoom({ mapOpen, onToggleMap }: { mapOpen: boolean; onToggleMap: () => void }) {
+  const flow = useReactFlow()
+  const zoom = useStore((store) => store.transform[2])
+  return (
+    <div className="lb-cv-zoom">
+      <ZoomPill
+        zoom={zoom}
+        onZoomOut={() => flow.zoomOut({ duration: 200 })}
+        onZoomIn={() => flow.zoomIn({ duration: 200 })}
+        onReset={() => flow.zoomTo(1, { duration: 200 })}
+        onFit={() => flow.fitView({ padding: 0.08, duration: 400 })}
+        mapOpen={mapOpen}
+        onToggleMap={onToggleMap}
+      />
+    </div>
+  )
+}
+
 /** The node menu, at the point it was opened: every kind of node, or the kinds that fit the link it was opened for. */
 function AddMenu({ adding, kinds, onAdd, onClose }: { adding: Adding; kinds: readonly StageKind[]; onAdd: (kind: StageKind) => void; onClose: () => void }) {
   const box = React.useRef<HTMLDivElement>(null)
-  useDismiss(true, box, onClose)
+  useDismiss(true, box, onClose, '[data-lb-add-toggle]')
   // Kept inside the canvas: opened near its bottom edge, the menu rises from the point instead.
   React.useLayoutEffect(() => {
     const menu = box.current
     const canvas = menu?.offsetParent
-    if (!menu || !(canvas instanceof HTMLElement)) return
+    if (adding.dock || !menu || !(canvas instanceof HTMLElement)) return
     const over = menu.offsetTop - 24 + menu.offsetHeight - (canvas.clientHeight - 12)
     if (over > 0) menu.style.top = `${Math.max(36, adding.top - over)}px`
   }, [adding])
   return (
-    <div className="lb-cv-menu add" ref={box} style={{ left: adding.left, top: adding.top, width: ADD_MENU_W }} role="menu" aria-label="Düğüm ekle">
+    <div
+      className={`lb-cv-menu add${adding.dock ? ' dock' : ''}`}
+      ref={box}
+      style={adding.dock ? { width: ADD_MENU_W } : { left: adding.left, top: adding.top, width: ADD_MENU_W }}
+      role="menu"
+      aria-label="Düğüm ekle"
+    >
       <small>{adding.into ? `${adding.into.label} için düğüm ekle` : adding.from ? 'Bağlı düğüm ekle' : 'Düğüm ekle'}</small>
       {kinds.map((kind) => (
         <button key={kind} type="button" role="menuitem" onClick={() => onAdd(kind)}>
@@ -1093,9 +1224,12 @@ function AddMenu({ adding, kinds, onAdd, onClose }: { adding: Adding; kinds: rea
 const PORT_GAP = 30
 const portTop = (index: number, count: number, height: number) => (height - 96) / 2 - ((count - 1) * PORT_GAP) / 2 + index * PORT_GAP
 
-function StepNodeView({ id, data, selected }: NodeProps<StepNode>) {
+function StepNodeView({ id, data: given, selected }: NodeProps<StepNode>) {
   const api = useCanvas()
   const { state } = api.run
+  // The queue's progress is ticked here, in the node being made, not by the canvas.
+  const progress = useJobProgress(given.job)
+  const data = progress === undefined ? given : { ...given, progress }
   const { stage, status } = data
   const kind = STAGE_KIND[stage.kind]
   // One panel beside the node at a time: its generations, or its settings.
@@ -1104,7 +1238,7 @@ function StepNodeView({ id, data, selected }: NodeProps<StepNode>) {
   const { rows, values } = settingsOf(state, stage)
   const settable = rows.length > 0 && (stage.kind === 'text' || choiceOf(state, stage, data.own) !== null)
   const ports = inputsOf(state, stage, data.own)
-  const output = outputOf(state, stage)
+  const outputs = outputsOf(state, stage)
   const height = data.height
   const generations = generationsOf(state, id, data)
   const ratio = values.aspect ?? state.ratio
@@ -1143,22 +1277,26 @@ function StepNodeView({ id, data, selected }: NodeProps<StepNode>) {
           <PromptBuilder id={id} data={data} quick={settable ? <QuickChips id={id} stage={stage} onMore={() => setSide(side === 'settings' ? null : 'settings')} more={side === 'settings'} inline /> : null} />
         ) : (
           <>
-            <Output id={id} data={data} ratio={ratio} quick={settable ? <QuickChips id={id} stage={stage} onMore={() => setSide(side === 'settings' ? null : 'settings')} more={side === 'settings'} /> : null} />
+            <Output id={id} data={data} quick={settable ? <QuickChips id={id} stage={stage} onMore={() => setSide(side === 'settings' ? null : 'settings')} more={side === 'settings'} /> : null} />
             <Composer id={id} data={data} />
           </>
         )}
       </div>
-      <Handle
-        id="out"
-        type="source"
-        position={Position.Right}
-        className={`lb-cv-port out t-${output}`}
-        style={{ top: Math.max(24, (height - 96) / 2) }}
-        onClick={() => api.addAfter(id)}
-        title="Bağlı düğüm ekle (ya da sürükleyip bir düğüme bağla)"
-      >
-        <Icon name={PORT_ICON[output]} size="sm" />
-      </Handle>
+      {outputs.map((port, index) => (
+        <Handle
+          key={port.id}
+          id={port.id}
+          type="source"
+          position={Position.Right}
+          className={`lb-cv-port out t-${port.type}${port.id === 'out' ? '' : ' frame-out'}`}
+          style={{ top: portTop(index, outputs.length, height) }}
+          data-label={port.label}
+          aria-label={port.label}
+          onClick={() => api.addAfter(id, port.id)}
+        >
+          {port.id === 'out' ? <Icon name={PORT_ICON[port.type]} size="sm" /> : <FrameEnd end={port.id} />}
+        </Handle>
+      ))}
       {generations.length >= (generated(stage) ? 1 : 2) ? (
         <div className="lb-cv-gens">
           <GenerationStrip kind={stage.kind} items={generations} active={data.active} ratio={ratio} onPick={pickVersion} onOpenGallery={() => setSide(side === 'gallery' ? null : 'gallery')} />
@@ -1183,6 +1321,16 @@ function StepNodeView({ id, data, selected }: NodeProps<StepNode>) {
         <button type="button" onClick={() => api.remove(id)} title="Sil" aria-label="Sil"><Trash2 aria-hidden /></button>
       </NodeToolbar>
     </div>
+  )
+}
+
+/** A clip's first or last frame, as a port's mark: a frame with a bar at its start or its end. */
+function FrameEnd({ end }: { end: string }) {
+  return (
+    <svg viewBox="0 0 12 12" className="lb-cv-frame-end" aria-hidden>
+      <rect x="1.5" y="2.5" width="9" height="7" rx="1.5" fill="none" stroke="currentColor" strokeWidth="1.2" />
+      <rect x={end === 'first' ? 1.5 : 7.5} y="2.5" width="3" height="7" rx="1" fill="currentColor" />
+    </svg>
   )
 }
 
@@ -1220,21 +1368,46 @@ function generationsOf(state: LabRunState, id: string, data: StepData): Generati
   return done
 }
 
-/** The settings at hand on what a node shows (its size, its length or how many), each a press away from the next value. */
+/** The settings at hand on what a node shows (its size, its length, how many): each opens its choices as a short list. */
 function QuickChips({ id, stage, onMore, more, inline }: { id: string; stage: ChainStage; onMore: () => void; more: boolean; inline?: boolean }) {
   const { run } = useCanvas()
   const { rows, values } = settingsOf(run.state, stage)
   const quick = rows.filter((row) => QUICK_ROWS.includes(row.id))
-  const next = (rowId: string) => {
-    const row = rows.find((entry) => entry.id === rowId)!
-    run.pick(settingKey(id, rowId), row.options[(row.options.indexOf(values[rowId]!) + 1) % row.options.length]!)
-  }
+  const [open, setOpen] = React.useState<string | null>(null)
+  const box = React.useRef<HTMLSpanElement>(null)
+  const close = React.useCallback(() => setOpen(null), [])
+  useDismiss(open !== null, box, close)
+  const shown = (rowId: string, value: string) => (rowId === 'count' ? `${value}×` : value)
   return (
-    <span className={`lb-cv-chips${inline ? ' inline' : ''}`}>
+    <span className={`lb-cv-chips${inline ? ' inline' : ''}`} ref={box}>
       {quick.map((row) => (
-        <button key={row.id} type="button" onClick={() => next(row.id)} title={`${row.label}: ${values[row.id]}`}>
-          {row.id === 'count' ? `${values[row.id]}×` : values[row.id]}
-        </button>
+        <span key={row.id} className="lb-cv-chip">
+          <button type="button" className={open === row.id ? 'on' : ''} onClick={() => setOpen(open === row.id ? null : row.id)} aria-haspopup="listbox" aria-expanded={open === row.id} title={row.label}>
+            {shown(row.id, values[row.id]!)}
+            <ChevronDown aria-hidden />
+          </button>
+          {open === row.id ? (
+            <span className="lb-cv-chipmenu nodrag nowheel" role="listbox" aria-label={row.label}>
+              <small>{row.label}</small>
+              {row.options.map((option) => (
+                <button
+                  key={option}
+                  type="button"
+                  role="option"
+                  aria-selected={option === values[row.id]}
+                  className={option === values[row.id] ? 'on' : ''}
+                  onClick={() => {
+                    run.pick(settingKey(id, row.id), option)
+                    setOpen(null)
+                  }}
+                >
+                  {shown(row.id, option)}
+                  {option === values[row.id] ? <Check aria-hidden /> : null}
+                </button>
+              ))}
+            </span>
+          ) : null}
+        </span>
       ))}
       <button type="button" className={`more${more ? ' on' : ''}`} onClick={onMore} aria-expanded={more} title="Tüm ayarlar" aria-label="Tüm ayarlar" data-lb-ns-toggle="">
         <SlidersHorizontal aria-hidden />
@@ -1244,14 +1417,13 @@ function QuickChips({ id, stage, onMore, more, inline }: { id: string; stage: Ch
 }
 
 /**
- * What a node made, in place: the picture or clip, the frame, the sound, the cut, on a dark screen like a viewer's. A
+ * What a node made, in place, filling the node to its edges: the picture or clip, the frame, the sound, the cut. A
  * model's node shows nothing until it is made; while it is made, its progress over what it showed before.
  */
-function Output({ id, data, ratio, quick }: { id: string; data: StepData; ratio: string; quick: React.ReactNode }) {
+function Output({ id, data, quick }: { id: string; data: StepData; quick: React.ReactNode }) {
   const { run } = useCanvas()
   const { stage, status } = data
   const working = status === 'running'
-  const aspect = { aspectRatio: ratio.replace(':', ' / ') }
   const progress = working ? (
     <span className="lb-cv-progress">
       <ProgressRing value={data.progress} size={30} stroke={2} />
@@ -1274,9 +1446,9 @@ function Output({ id, data, ratio, quick }: { id: string; data: StepData; ratio:
   return (
     <div className={`lb-cv-out${data.shows && art ? '' : ' empty'}`}>
       {data.shows && art ? (
-        <span className="lb-cv-pic" style={aspect}>
+        <span className="lb-cv-pic">
           <span className="lb-thumb"><span className={`lb-art ${art}`} style={variantStyle(data.active)} /></span>
-          {stage.kind === 'video' ? <span className="lb-cv-play"><Icon name="play" size="sm" /></span> : null}
+          {stage.kind === 'video' || stage.kind === 'avatar' ? <span className="lb-cv-play"><Icon name="play" size="sm" /></span> : null}
           {stage.kind === 'frame' ? <span className="lb-cv-tag">{(run.state.picks[`end:${id}`] ?? 'last') === 'first' ? 'ilk kare' : 'son kare'}</span> : null}
         </span>
       ) : working ? null : (
@@ -1330,19 +1502,11 @@ function SoundOutput({ data, quick, progress }: { data: StepData; quick: React.R
   )
 }
 
-/** A model's node before it is made: what it will take, quietly. */
+/** A node before it is made: its kind's mark, faint, in the middle of where its output will be. */
 function Empty({ data }: { data: StepData }) {
-  const { stage, input } = data
-  const line =
-    data.status === 'writing' ? 'Spark yazıyor…'
-    : stage.kind === 'frame' ? (input ? 'Bağlı klipten alınır' : 'Bir klibe bağla')
-    : stage.kind === 'video' ? (input === 'frame' ? 'Bağlı kareden başlar' : input ? 'Bağlı görselden başlar' : 'Bir görsele bağla ya da anlat')
-    : stage.kind === 'voice' ? (data.said ? 'Bağlı metni seslendirir' : 'Bir metne bağla')
-    : 'Henüz üretilmedi'
   return (
     <span className="lb-cv-empty">
-      <span className="lb-cv-empty-glyph"><Icon name={STAGE_KIND[stage.kind].icon} /></span>
-      {line}
+      <Icon name={STAGE_KIND[data.stage.kind].icon} />
     </span>
   )
 }
@@ -1400,7 +1564,7 @@ function PromptBuilder({ id, data, quick }: { id: string; data: StepData; quick:
           <textarea
             className={held.className}
             value={draft ?? value}
-            placeholder={tab === 'prompt' ? (ASK_HINT[mode] ?? 'Spark’a ne yazdıralım?') : 'Spark’ın yazdığı burada görünür; kendin de yazabilirsin'}
+            placeholder={tab === 'prompt' ? (ASK_HINT[mode] ?? 'İstem') : 'Sonuç metni'}
             aria-label={`${stage.title}: ${tab === 'prompt' ? 'istem' : 'sonuç'}`}
             onFocus={held.onFocus}
             onChange={(event) => setDraft(event.target.value)}
@@ -1445,25 +1609,14 @@ function PromptBuilder({ id, data, quick }: { id: string; data: StepData; quick:
   )
 }
 
-/**
- * Under a writer's text: what it writes from (the kinds of the nodes linked into it), else that Spark writes it alone;
- * a line to be said also tells about how long it takes to say.
- */
+/** Under a writer's text: the kinds of the nodes linked into it, and for a line to be said, about how long it takes. */
 function WriterContext({ data, mode }: { data: StepData; mode: string }) {
   const words = data.stage.text?.value.trim() ?? ''
   return (
     <span className="lb-cv-who">
-      <Icon name="sparkles" size="sm" />
-      {data.from.length ? (
-        <>
-          <span>Bağlamdan</span>
-          {data.from.map((kind, index) => (
-            <span key={index} className={`lb-cv-from k-${kind}`} title={STAGE_KIND[kind].name}><Icon name={STAGE_KIND[kind].icon} size="sm" /></span>
-          ))}
-        </>
-      ) : (
-        <span>Spark yazar</span>
-      )}
+      {data.from.map((kind, index) => (
+        <span key={index} className={`lb-cv-from k-${kind}`} title={STAGE_KIND[kind].name}><Icon name={STAGE_KIND[kind].icon} size="sm" /></span>
+      ))}
       {mode === 'Seslendirme' && words ? <small>≈ {sayingSeconds(words)} sn</small> : null}
     </span>
   )
@@ -1501,8 +1654,8 @@ function MediaOutput({ data }: { data: StepData }) {
       ) : (
         <button type="button" className="lb-cv-drop" onClick={picker.open}>
           <Icon name="upload" />
-          <b>Görsel ya da klip bırak</b>
-          <small>ya da depodan seç</small>
+          <b>Dosya bırakın</b>
+          <small>veya depodan seçin</small>
         </button>
       )}
       {picker.element}
@@ -1581,7 +1734,7 @@ function Composer({ id, data }: { id: string; data: StepData }) {
           <PromptBoxInput
             className={held.className}
             value={draft ?? brief}
-            placeholder={stage.id === 'all/cut' ? 'Kurguda ne olsun?' : 'Ne üretilsin? Anlat…'}
+            placeholder={stage.id === 'all/cut' ? 'Kurgu notu…' : 'Tanımlayın…'}
             aria-label={`${stage.title}: ne üretilsin`}
             onFocus={held.onFocus}
             onChange={(event) => setDraft(event.target.value)}

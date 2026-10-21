@@ -1,0 +1,71 @@
+/* The colour picker of the canvas toolbars (`chain-color.tsx`). In a toolbar (`.lb-cv-bar`) it is a small round swatch,
+   or an icon with the colour as a bar under it; "no colour" is a hairline ring crossed by a diagonal. Its popover is one
+   soft surface like the toolbar's (and the canvas's menus): a colour wheel (hue around, white toward the centre, darkened
+   by the brightness), a brightness slider, the colours used lately and a hex field. The text menus of the toolbars share
+   the surface (`.lb-cc-pop`). Buttons in here are given three classes' weight, over the toolbar's own button rule. */
+
+.yt-studio .lb-cc{position:relative;display:inline-flex;flex:none}
+
+/* ---------- in the toolbar ---------- */
+.yt-studio .lb-cc .lb-cc-btn{justify-content:center;width:28px;padding:0}
+.yt-studio .lb-cc .lb-cc-btn.icon{flex-direction:column;gap:2px}
+.yt-studio .lb-cc .lb-cc-btn.icon svg{width:13px;height:13px}
+.yt-studio .lb-cc-dot{display:block;width:18px;height:18px;border-radius:50%;box-shadow:inset 0 0 0 1px rgba(0,0,0,.14)}
+.yt-studio .lb-cc-bar{display:block;width:14px;height:3px;border-radius:1.5px;box-shadow:inset 0 0 0 .5px rgba(0,0,0,.18)}
+.yt-studio .lb-cc-bar.none{box-shadow:inset 0 0 0 1px var(--cv-line-strong)}
+.dark .yt-studio .lb-cc-dot:not(.none),
+.dark .yt-studio .lb-cc-pop .lb-cc-chip:not(.on):not(:focus-visible),
+.dark .yt-studio .lb-cc-hex > i:not(.none){box-shadow:inset 0 0 0 1px rgba(255,255,255,.16)}
+
+/* no colour: a hairline ring, crossed */
+.yt-studio .lb-cc-dot.none,.yt-studio .lb-cc-hex > i.none,.yt-studio .lb-cc-none > i{
+  background:linear-gradient(to bottom right,transparent calc(50% - .7px),var(--st-text-3) calc(50% - .7px) calc(50% + .7px),transparent calc(50% + .7px));
+  box-shadow:inset 0 0 0 1.25px var(--cv-line-strong)}
+
+/* ---------- the popover: under its button, over the canvas ---------- */
+.yt-studio .lb-cc-pop{position:absolute;top:calc(100% + 7px);left:-3px;z-index:20;padding:5px;border-radius:10px;background:var(--cv-node);
+  box-shadow:0 0 0 1px var(--cv-line-strong),var(--cv-shadow);color:var(--st-text);font-size:12px;line-height:1.4;cursor:default;animation:lb-in .14s ease-out}
+.yt-studio .lb-cc-panel{display:grid;gap:12px;width:220px;padding:12px}
+
+/* the wheel: hue around the circle (from the top, clockwise), white toward the centre, dimmed by the brightness */
+.yt-studio .lb-cc-wheel{position:relative;justify-self:center;width:180px;height:180px;border-radius:50%;outline:none;touch-action:none;cursor:crosshair;
+  background:radial-gradient(circle closest-side,#fff,rgb(255 255 255 / 0)),conic-gradient(#f00,#ff0,#0f0,#0ff,#00f,#f0f,#f00)}
+.yt-studio .lb-cc-wheel::after{content:'';position:absolute;inset:0;border-radius:inherit;background:#000;opacity:var(--cc-dim,0);
+  box-shadow:inset 0 0 0 1px rgba(0,0,0,.08);pointer-events:none}
+
+/* the brightness: from black to the colour at its brightest */
+.yt-studio .lb-cc-value{position:relative;height:12px;margin:0 7px;border-radius:6px;outline:none;touch-action:none;cursor:pointer;
+  background:linear-gradient(to right,#000,var(--cc-full,#fff));box-shadow:inset 0 0 0 1px rgba(0,0,0,.08)}
+
+/* the thumb on either: the colour itself in a white ring; faint while there is no colour yet */
+.yt-studio .lb-cc-thumb{position:absolute;z-index:1;width:16px;height:16px;border-radius:50%;transform:translate(-50%,-50%);pointer-events:none;
+  box-shadow:0 0 0 2px #fff,0 0 0 3px rgba(0,0,0,.16),0 2px 6px rgba(0,0,0,.24);transition:box-shadow .12s}
+.yt-studio .lb-cc-value .lb-cc-thumb{top:50%}
+.yt-studio .lb-cc-thumb.idle{opacity:.6}
+.yt-studio :is(.lb-cc-wheel,.lb-cc-value):focus-visible .lb-cc-thumb{box-shadow:0 0 0 2px #fff,0 0 0 4px var(--cv-on),0 2px 6px rgba(0,0,0,.24)}
+
+/* the colours used lately */
+.yt-studio .lb-cc-recent{display:grid;grid-template-columns:repeat(8,1fr);justify-items:center;gap:4px}
+.yt-studio .lb-cc-pop .lb-cc-chip{display:block;width:18px;height:18px;padding:0;border-radius:50%;box-shadow:inset 0 0 0 1px rgba(0,0,0,.14);transition:transform .12s,box-shadow .12s}
+.yt-studio .lb-cc-pop .lb-cc-chip:hover{transform:scale(1.12)}
+.yt-studio .lb-cc-pop .lb-cc-chip.on{box-shadow:0 0 0 2px var(--cv-node),0 0 0 3.5px var(--cv-on)}
+.yt-studio .lb-cc-pop .lb-cc-chip:focus-visible{outline:none;box-shadow:0 0 0 2px var(--cv-node),0 0 0 3.5px var(--cv-on)}
+
+/* the hex field and "no colour" */
+.yt-studio .lb-cc-foot{display:flex;align-items:center;gap:6px}
+.yt-studio .lb-cc-hex{flex:1 1 auto;display:flex;align-items:center;gap:5px;min-width:0;height:28px;padding:0 8px;border-radius:7px;background:var(--cv-fill);
+  box-shadow:inset 0 0 0 1px var(--cv-line);color:var(--st-text-3);cursor:text;transition:box-shadow .12s}
+.yt-studio .lb-cc-hex:focus-within{box-shadow:inset 0 0 0 1px var(--cv-on)}
+.yt-studio .lb-cc-hex > i{flex:none;width:12px;height:12px;margin-right:2px;border-radius:3px;box-shadow:inset 0 0 0 1px rgba(0,0,0,.14)}
+.yt-studio .lb-cc-hex > span{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}
+.yt-studio .lb-cc-hex input{flex:1 1 auto;width:100%;min-width:0;height:100%;padding:0;border:0;outline:0;background:none;color:var(--st-text);
+  font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:12px;letter-spacing:.02em}
+.yt-studio .lb-cc-hex input::placeholder{color:var(--st-text-3);font-family:var(--st-font-ui),system-ui,sans-serif;letter-spacing:0;opacity:1}
+.yt-studio .lb-cc-pop .lb-cc-none{flex:none;display:inline-flex;align-items:center;gap:6px;height:28px;padding:0 9px;border-radius:7px;font-size:12px;color:var(--st-text-2)}
+.yt-studio .lb-cc-none > i{flex:none;width:12px;height:12px;border-radius:50%}
+.yt-studio .lb-cc-pop .lb-cc-none.on{background:var(--cv-fill);color:var(--st-text);box-shadow:inset 0 0 0 1px var(--cv-line-strong)}
+
+@media (prefers-reduced-motion:reduce){
+  .yt-studio .lb-cc-pop{animation:none}
+  .yt-studio .lb-cc-pop .lb-cc-chip,.yt-studio .lb-cc-thumb{transition:none}
+}

@@ -6,8 +6,8 @@
    the app's theme. */
 
 /* The canvas has a ground of its own, a shade apart from the page around it, with a dot grid that reads at a glance;
-   in the dark theme a cool charcoal (not the page's black), nodes a step lighter with a faint top light, and what they
-   made on a recessed screen darker than the node. */
+   in the dark theme a cool charcoal (not the page's black), nodes a step lighter with a faint top light. What a node
+   made fills it to its edges. Ports and links keep one quiet colour: the icon on a port says what it takes. */
 .yt-studio .lb-cv{
   --cv-bg:color-mix(in srgb,var(--st-stage),#1f1e1d 4%);
   --cv-glow:rgba(255,255,255,.45);
@@ -15,8 +15,8 @@
   --cv-node:var(--st-surface);
   --cv-node-top:var(--st-surface);
   --cv-lift:0 1px 2px rgba(31,30,29,.06),0 4px 14px rgba(31,30,29,.05);
-  --cv-screen:linear-gradient(180deg,#efeee9,#e7e5de);
-  --cv-screen-line:rgba(31,30,29,.05);
+  --cv-port:#efeee9;
+  --cv-port-on:#e4e2da;
   --cv-fill:color-mix(in srgb,var(--st-text) 4.5%,transparent);
   --cv-line:rgba(31,30,29,.11);
   --cv-line-strong:rgba(31,30,29,.2);
@@ -35,8 +35,8 @@
   --cv-node:#1a1b1f;
   --cv-node-top:#202126;
   --cv-lift:inset 0 1px 0 rgba(255,255,255,.045),0 10px 28px rgba(0,0,0,.38);
-  --cv-screen:#0c0d10;
-  --cv-screen-line:rgba(255,255,255,.05);
+  --cv-port:#26272c;
+  --cv-port-on:#33343a;
   --cv-fill:rgba(255,255,255,.055);
   --cv-line:rgba(255,255,255,.09);
   --cv-line-strong:rgba(255,255,255,.18);
@@ -48,15 +48,6 @@
   --cv-shadow:0 1px 2px rgba(0,0,0,.5),0 14px 38px rgba(0,0,0,.5)
 }
 
-/* what flows along a link, by colour: words, a picture, a clip, a sound (its ports, its links, a link being drawn) */
-.yt-studio .lb-cv.t-text,.yt-studio .lb-cv .t-text{--pt:#7a7a83}
-.yt-studio .lb-cv.t-image,.yt-studio .lb-cv .t-image{--pt:#3f7fe8}
-.yt-studio .lb-cv.t-video,.yt-studio .lb-cv .t-video{--pt:#d9467d}
-.yt-studio .lb-cv.t-audio,.yt-studio .lb-cv .t-audio{--pt:#dc7a26}
-.dark .yt-studio .lb-cv.t-text,.dark .yt-studio .lb-cv .t-text{--pt:#a3a3ad}
-.dark .yt-studio .lb-cv.t-image,.dark .yt-studio .lb-cv .t-image{--pt:#6aa1ff}
-.dark .yt-studio .lb-cv.t-video,.dark .yt-studio .lb-cv .t-video{--pt:#f0679a}
-.dark .yt-studio .lb-cv.t-audio,.dark .yt-studio .lb-cv .t-audio{--pt:#f59a4c}
 
 /* ---------- React Flow, themed through its own variables ---------- */
 .yt-studio .lb-cv .react-flow{
@@ -91,6 +82,7 @@
 .yt-studio .k-music{--k:#c99a06}
 .yt-studio .k-text{--k:var(--st-text-2)}
 .yt-studio .k-media{--k:var(--st-text-2)}
+.yt-studio .k-avatar{--k:#8b6cf0}
 
 /* ---------- a node: its name above, one surface below ---------- */
 .yt-studio .lb-cv-node{position:relative;width:100%;height:100%}
@@ -113,45 +105,54 @@
 .yt-studio .lb-cv-node.running .lb-cv-box{box-shadow:0 0 0 1.5px var(--lb-agent),0 0 0 5px var(--lb-agent-soft),var(--cv-lift)}
 /* drawing a link: the nodes it cannot go to step back; the one under the pointer that takes it is lit */
 .yt-studio .lb-cv .react-flow__node.unfit{opacity:.36;transition:opacity .15s}
-.yt-studio .lb-cv .react-flow__node.drop .lb-cv-box{box-shadow:0 0 0 1.5px var(--pt,var(--cv-on)),0 0 0 6px color-mix(in srgb,var(--pt,var(--cv-on)) 18%,transparent),var(--cv-lift)}
+.yt-studio .lb-cv .react-flow__node.drop .lb-cv-box{box-shadow:0 0 0 1.5px var(--cv-on),0 0 0 6px var(--cv-fill),var(--cv-lift)}
 .yt-studio .lb-cv-node.queued .lb-cv-box,.yt-studio .lb-cv-node.writing .lb-cv-box{box-shadow:none;outline:1px dashed var(--cv-line-strong);outline-offset:-1px}
 .yt-studio .lb-cv-node.writing .lb-cv-box{opacity:.7}
 /* resizing a selected node: small light squares at its corners, its edges held unseen */
 .yt-studio .lb-cv-node.selected .react-flow__resize-control.lb-an-handle{width:8px;height:8px;background:#fff;box-shadow:0 0 0 1px var(--cv-line-strong),0 1px 2px rgba(31,30,29,.12)}
 .dark .yt-studio .lb-cv-node.selected .react-flow__resize-control.lb-an-handle{background:#f1f1f0;box-shadow:0 0 0 1px rgba(0,0,0,.55)}
 
-/* what it made, on a viewer: a dark screen (paper in the light theme) with small corners */
-.yt-studio .lb-cv-out{position:relative;flex:1 1 0;min-height:0;display:flex;align-items:center;justify-content:center;margin:6px 6px 0;border-radius:7px;background:var(--cv-screen);
-  box-shadow:inset 0 0 0 1px var(--cv-screen-line);overflow:hidden}
-.yt-studio .lb-cv-pic{position:relative;height:100%;max-width:100%;aspect-ratio:var(--lb-ar);overflow:hidden;flex:none}
+/* what it made: filling the node to its edges above the composer (the picture covers it, centred) */
+.yt-studio .lb-cv-out{position:relative;flex:1 1 0;min-height:0;display:flex;align-items:center;justify-content:center;border-radius:10px 10px 0 0;overflow:hidden}
+.yt-studio .lb-cv-pic{position:relative;width:100%;height:100%;overflow:hidden;flex:none}
 .yt-studio .lb-cv-play{position:absolute;inset:0;display:grid;place-items:center;pointer-events:none}
 .yt-studio .lb-cv-play .i{width:26px;height:26px;padding:7px 6px 7px 8px;border-radius:50%;background:rgba(0,0,0,.45);color:#fff;fill:#fff}
 .yt-studio .lb-cv-tag{position:absolute;left:6px;top:6px;height:18px;padding:0 6px;border-radius:4px;background:rgba(0,0,0,.55);color:#fff;font-size:10.5px;font-weight:600;line-height:18px;font-variant-numeric:tabular-nums}
-.yt-studio .lb-cv-empty{display:grid;justify-items:center;gap:10px;max-width:190px;font-size:12px;line-height:1.45;text-align:center;color:var(--st-text-3)}
-.yt-studio .lb-cv-empty-glyph{display:grid;place-items:center;width:36px;height:36px;border-radius:9px;background:color-mix(in srgb,var(--k) 13%,transparent);color:var(--k);
-  box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--k) 22%,transparent)}
-.yt-studio .lb-cv-empty-glyph .i{width:17px;height:17px}
+.yt-studio .lb-cv-empty{display:grid;place-items:center;color:var(--st-text-3);opacity:.45}
+.yt-studio .lb-cv-empty .i{width:30px;height:30px;stroke-width:1.2}
 
 /* the settings at hand, on the viewer's bottom left: a press steps to the next value; the last opens them all */
-.yt-studio .lb-cv-chips{position:absolute;left:6px;right:6px;bottom:6px;z-index:2;display:flex;align-items:center;gap:4px;pointer-events:none}
-.yt-studio .lb-cv-chips button{height:20px;padding:0 6px;border-radius:5px;background:var(--cv-chip);color:var(--cv-chip-text);font-size:11px;font-weight:600;line-height:20px;font-variant-numeric:tabular-nums;
-  backdrop-filter:blur(6px);pointer-events:auto;transition:background .12s}
-.yt-studio .lb-cv-chips button:hover{background:color-mix(in srgb,var(--cv-chip),var(--cv-chip-text) 14%)}
-.yt-studio .lb-cv-chips button.more{display:grid;place-items:center;width:20px;padding:0;margin-left:auto;opacity:0;transition:opacity .12s,background .12s}
+.yt-studio .lb-cv-chips{position:absolute;left:8px;right:8px;bottom:8px;z-index:4;display:flex;align-items:center;gap:4px;pointer-events:none}
+.yt-studio .lb-cv-chip{position:relative;display:flex}
+.yt-studio .lb-cv-chips button{display:inline-flex;align-items:center;gap:3px;height:22px;padding:0 5px 0 7px;border-radius:6px;background:var(--cv-chip);color:var(--cv-chip-text);font-size:11px;font-weight:600;
+  line-height:22px;font-variant-numeric:tabular-nums;pointer-events:auto;transition:background .12s}
+.yt-studio .lb-cv-chips button svg{width:11px;height:11px;opacity:.6}
+.yt-studio .lb-cv-chips button:hover,.yt-studio .lb-cv-chips button.on{background:color-mix(in srgb,var(--cv-chip),var(--cv-chip-text) 16%)}
+.yt-studio .lb-cv-chips button.more{display:grid;place-items:center;width:22px;padding:0;margin-left:auto;opacity:0;transition:opacity .12s,background .12s}
 .yt-studio .lb-cv-node:is(:hover,.selected) .lb-cv-chips button.more,.yt-studio .lb-cv-chips button.more.on{opacity:1}
-.yt-studio .lb-cv-chips button.more svg{width:12px;height:12px}
+.yt-studio .lb-cv-chips button.more svg{width:12px;height:12px;opacity:1}
+/* a chip's choices: a short list over the picture, rising from the chip (falling, in a writer) */
+.yt-studio .lb-cv-chipmenu{position:absolute;left:0;bottom:calc(100% + 6px);z-index:6;display:grid;gap:1px;min-width:132px;padding:4px;border-radius:9px;background:var(--cv-node);
+  box-shadow:0 0 0 1px var(--cv-line-strong),var(--cv-shadow);pointer-events:auto;cursor:default;animation:lb-in .12s ease-out}
+.yt-studio .lb-cv-chipmenu > small{padding:4px 8px 3px;font-size:11px;font-weight:500;color:var(--st-text-3)}
+.yt-studio .lb-cv-chips .lb-cv-chipmenu button{display:flex;justify-content:space-between;gap:12px;width:100%;height:28px;padding:0 8px;border-radius:6px;background:none;color:var(--st-text-2);
+  font-size:12px;font-weight:500;text-align:left}
+.yt-studio .lb-cv-chips .lb-cv-chipmenu button:hover{background:var(--cv-fill);color:var(--st-text)}
+.yt-studio .lb-cv-chips .lb-cv-chipmenu button.on{color:var(--st-text)}
+.yt-studio .lb-cv-chips .lb-cv-chipmenu button svg{width:13px;height:13px;opacity:1}
 /* in a writer: a row at the top of its text, the first chip (what it writes) a little stronger */
 .yt-studio .lb-cv-chips.inline{position:static;flex:none;margin:0 -4px 8px;pointer-events:auto}
-.yt-studio .lb-cv-chips.inline button{background:var(--cv-fill);color:var(--st-text-2);font-weight:500;backdrop-filter:none}
-.yt-studio .lb-cv-chips.inline button:hover{background:color-mix(in srgb,var(--cv-fill),var(--st-text) 8%);color:var(--st-text)}
-.yt-studio .lb-cv-chips.inline button:first-child{color:var(--st-text);font-weight:600}
+.yt-studio .lb-cv-chips.inline > .lb-cv-chip > button,.yt-studio .lb-cv-chips.inline > button.more{background:var(--cv-fill);color:var(--st-text-2);font-weight:500}
+.yt-studio .lb-cv-chips.inline > .lb-cv-chip > button:hover,.yt-studio .lb-cv-chips.inline > .lb-cv-chip > button.on{background:color-mix(in srgb,var(--cv-fill),var(--st-text) 8%);color:var(--st-text)}
+.yt-studio .lb-cv-chips.inline > .lb-cv-chip:first-child > button{color:var(--st-text);font-weight:600}
+.yt-studio .lb-cv-chips.inline .lb-cv-chipmenu{top:calc(100% + 6px);bottom:auto}
 
 /* while it is made: its progress over what it showed before */
 .yt-studio .lb-cv-progress{position:absolute;inset:0;z-index:3;display:grid;place-content:center;justify-items:center;gap:8px;font-size:11.5px;font-variant-numeric:tabular-nums;color:var(--lb-agent-text);
-  background:color-mix(in srgb,var(--cv-node) 50%,transparent);backdrop-filter:blur(3px)}
+  background:color-mix(in srgb,var(--cv-node) 62%,transparent)}
 
 .yt-studio .lb-cv-out.cut{gap:4px;padding:10px}
-.yt-studio .lb-cv-out.cut .lb-cv-pic{flex:1 1 0;height:auto;max-height:100%;border-radius:4px}
+.yt-studio .lb-cv-out.cut .lb-cv-pic{flex:1 1 0;width:auto;border-radius:4px}
 
 /* a sound: a small player (▶, who says it and the line, the length) over its wave; the played part lights as it plays */
 .yt-studio .lb-cv-out.wave{flex-direction:column;align-items:stretch;justify-content:flex-start;gap:8px;padding:10px 10px 32px}
@@ -176,7 +177,7 @@
 @keyframes lb-cv-play{from{clip-path:inset(0 100% 0 0)}to{clip-path:inset(0 0 0 0)}}
 
 /* a writer's text, on the same recessed screen, its chips (what to write, how long, the tone) over it */
-.yt-studio .lb-cv-out.text{flex-direction:column;align-items:stretch;justify-content:flex-start;padding:8px 12px 10px}
+.yt-studio .lb-cv-out.text{flex-direction:column;align-items:stretch;justify-content:flex-start;padding:8px 12px 10px;overflow:visible}
 .yt-studio .lb-cv-out.text textarea{display:block;flex:1 1 auto;width:100%;min-height:0;margin:0;padding:0;border:0;outline:0;resize:none;background:none;
   font:inherit;font-size:13.5px;line-height:1.5;color:var(--st-text);scrollbar-width:none;cursor:text}
 .yt-studio .lb-cv-out.text textarea::placeholder{color:var(--st-text-3)}
@@ -185,14 +186,14 @@
 .yt-studio .lb-cv-lines i:nth-child(2){width:82%}
 .yt-studio .lb-cv-lines i:nth-child(3){width:56%}
 
-.yt-studio .lb-cv-out.media{margin:6px}
+.yt-studio .lb-cv-out.media{border-radius:10px}
 .yt-studio .lb-cv-drop{display:grid;justify-items:center;align-content:center;gap:6px;width:100%;height:100%;color:var(--st-text-3);font-size:12px;cursor:pointer;transition:background .12s,color .12s}
 .yt-studio .lb-cv-drop b{font-size:13px;font-weight:500;color:var(--st-text-2)}
 .yt-studio .lb-cv-drop .i{width:20px;height:20px;margin-bottom:4px}
 .yt-studio .lb-cv-drop:hover,.yt-studio .lb-cv-out.media.over .lb-cv-drop{background:var(--cv-fill);color:var(--st-text-2)}
 
 /* its composer: the shared prompt box, as a soft fill inside the node, "Üret" at its bottom right */
-.yt-studio .lb-cv-compose{position:relative;flex:none;padding:6px;cursor:default}
+.yt-studio .lb-cv-compose{position:relative;flex:none;padding:8px;cursor:default}
 .yt-studio .lb-cv-compose .pb.lb-cv-pb{border:0;border-radius:8px;background:var(--cv-fill);box-shadow:none}
 .yt-studio .lb-cv-compose .pb.lb-cv-pb:focus-within{box-shadow:0 0 0 1px var(--cv-line-strong)}
 .yt-studio .lb-cv-compose .pb.lb-cv-pb .pb-input{min-height:32px;max-height:66px;padding:8px 10px 0;font-size:12.5px}
@@ -213,7 +214,7 @@
 .yt-studio .lb-cv-tabs button.on{background:var(--cv-node);color:var(--st-text);box-shadow:0 0 0 1px var(--cv-line)}
 .yt-studio .lb-cv-tabs + em{margin-left:6px}
 .yt-studio .lb-cv-writer{display:flex;flex-direction:column;height:100%}
-.yt-studio .lb-cv-writer .lb-cv-out.text{margin:6px 6px 0;border-radius:7px}
+.yt-studio .lb-cv-writer .lb-cv-out.text{padding:10px 12px}
 .yt-studio .lb-cv-writer-bar{display:flex;align-items:center;gap:4px;height:38px;flex:none;padding:0 6px 0 10px}
 .yt-studio .lb-cv-who{display:inline-flex;align-items:center;gap:5px;min-width:0;margin-right:auto;font-size:11.5px;color:var(--st-text-3);white-space:nowrap}
 .yt-studio .lb-cv-who > .i{width:12px;height:12px;color:var(--lb-agent)}
@@ -231,31 +232,35 @@
 .yt-studio .lb-cv-side{position:absolute;left:calc(100% + 34px);top:0;z-index:50;width:300px}
 
 /* ---------- ports: a column of typed inputs on the left, the output on the right ---------- */
-/* each port in the colour of what it takes or hands on; either end can be drawn from */
-.yt-studio .lb-cv .react-flow__handle.lb-cv-port{display:grid;place-items:center;width:20px;height:20px;min-width:0;min-height:0;border-radius:50%;cursor:crosshair;
-  border:1px solid color-mix(in srgb,var(--pt,var(--cv-line-strong)) 42%,var(--cv-line-strong));background:var(--cv-node);color:color-mix(in srgb,var(--pt,var(--st-text-3)) 85%,var(--st-text-3));
-  transition:color .12s,border-color .12s,transform .12s,opacity .12s,box-shadow .12s}
-.yt-studio .lb-cv .react-flow__handle.lb-cv-port .i{width:11px;height:11px;pointer-events:none}
-.yt-studio .lb-cv .react-flow__handle.lb-cv-port.in{left:-15px;opacity:.7}
-.yt-studio .lb-cv .react-flow__handle.lb-cv-port.out{right:-15px}
+/* a port: a small quiet disc, the same for every type (its icon says what it takes); either end can be drawn from */
+.yt-studio .lb-cv .react-flow__handle.lb-cv-port{display:grid;place-items:center;width:22px;height:22px;min-width:0;min-height:0;border:0;border-radius:50%;cursor:crosshair;
+  background:var(--cv-port);color:var(--st-text-2);box-shadow:0 0 0 1px var(--cv-line);transition:color .12s,background .12s,transform .12s,opacity .12s,box-shadow .12s}
+.yt-studio .lb-cv .react-flow__handle.lb-cv-port .i{width:12px;height:12px;pointer-events:none}
+.yt-studio .lb-cv .react-flow__handle.lb-cv-port.in{left:-17px;opacity:.85}
+.yt-studio .lb-cv .react-flow__handle.lb-cv-port.out{right:-17px}
 .yt-studio .lb-cv .lb-cv-node:is(:hover,.selected) .react-flow__handle.lb-cv-port.in{opacity:1}
-.yt-studio .lb-cv .react-flow__handle.lb-cv-port:hover,.yt-studio .lb-cv .react-flow__handle.lb-cv-port.connectingfrom{opacity:1;color:var(--pt,var(--st-text));border-color:var(--pt,var(--cv-on));
-  box-shadow:0 0 0 4px color-mix(in srgb,var(--pt,var(--cv-on)) 16%,transparent)}
-.yt-studio .lb-cv .react-flow__handle.lb-cv-port.connectingto.valid{opacity:1;color:var(--pt,var(--st-text));border-color:var(--pt,var(--cv-on));transform:translate(-50%,-50%) scale(1.15)}
+.yt-studio .lb-cv .react-flow__handle.lb-cv-port:hover,.yt-studio .lb-cv .react-flow__handle.lb-cv-port.connectingfrom{opacity:1;background:var(--cv-port-on);color:var(--st-text);
+  box-shadow:0 0 0 1px var(--cv-line-strong),0 0 0 4px var(--cv-fill)}
+.yt-studio .lb-cv .react-flow__handle.lb-cv-port.connectingto.valid{opacity:1;background:var(--cv-port-on);color:var(--st-text);box-shadow:0 0 0 1.5px var(--cv-on);transform:translate(-50%,-50%) scale(1.12)}
 /* drawing a link: the ports it can go into show themselves on the nodes that take it */
 .yt-studio .lb-cv.w-out.t-text .fits .lb-cv-port.in.t-text,.yt-studio .lb-cv.w-out.t-image .fits .lb-cv-port.in.t-image,
 .yt-studio .lb-cv.w-out.t-video .fits .lb-cv-port.in.t-video,.yt-studio .lb-cv.w-out.t-audio .fits .lb-cv-port.in.t-audio,
-.yt-studio .lb-cv.w-in .fits .lb-cv-port.out{opacity:1;color:var(--pt);border-color:var(--pt);box-shadow:0 0 0 4px color-mix(in srgb,var(--pt) 16%,transparent)}
+.yt-studio .lb-cv.w-in .fits .lb-cv-port.out{opacity:1;background:var(--cv-port-on);color:var(--st-text);box-shadow:0 0 0 1.5px var(--cv-on)}
 .yt-studio .lb-cv .react-flow__connection-path{stroke:var(--cv-wire-on);stroke-width:1.5;stroke-dasharray:5 5}
-.yt-studio .lb-cv.wiring .react-flow__connection-path{stroke:var(--pt)}
 /* an input's name, beside it while it is pointed at */
 .yt-studio .lb-cv .react-flow__handle.lb-cv-port.in::after{content:attr(data-label);position:absolute;right:calc(100% + 8px);top:50%;transform:translateY(-50%);height:22px;padding:0 8px;border-radius:6px;
   background:var(--cv-node);box-shadow:0 0 0 1px var(--cv-line-strong),var(--cv-shadow);color:var(--st-text);font-size:11.5px;font-weight:500;line-height:22px;white-space:nowrap;opacity:0;pointer-events:none;transition:opacity .12s}
 .yt-studio .lb-cv .react-flow__handle.lb-cv-port.in:hover::after{opacity:1}
+.yt-studio .lb-cv .react-flow__handle.lb-cv-port.out::after{content:attr(data-label);position:absolute;left:calc(100% + 8px);top:50%;transform:translateY(-50%);height:22px;padding:0 8px;border-radius:6px;
+  background:var(--cv-node);box-shadow:0 0 0 1px var(--cv-line-strong),var(--cv-shadow);color:var(--st-text);font-size:11.5px;font-weight:500;line-height:22px;white-space:nowrap;opacity:0;pointer-events:none;transition:opacity .12s}
+.yt-studio .lb-cv .react-flow__handle.lb-cv-port.out:hover::after{opacity:1}
+.yt-studio .lb-cv .react-flow__handle.lb-cv-port.frame-out{opacity:.85}
+.yt-studio .lb-cv .lb-cv-node:is(:hover,.selected) .react-flow__handle.lb-cv-port.frame-out{opacity:1}
+.yt-studio .lb-cv-frame-end{width:12px;height:12px;pointer-events:none}
 
 /* ---------- links ---------- */
-.yt-studio .lb-cv .react-flow__edge-path.lb-cv-edge{stroke:color-mix(in srgb,var(--pt,var(--cv-wire)) 48%,var(--cv-wire));stroke-width:1.5;transition:stroke .15s}
-.yt-studio .lb-cv .react-flow__edge:hover .react-flow__edge-path.lb-cv-edge,.yt-studio .lb-cv .react-flow__edge-path.lb-cv-edge.selected{stroke:color-mix(in srgb,var(--pt,var(--cv-wire-on)) 70%,var(--cv-wire-on))}
+.yt-studio .lb-cv .react-flow__edge-path.lb-cv-edge{stroke:var(--cv-wire);stroke-width:1.5;transition:stroke .15s}
+.yt-studio .lb-cv .react-flow__edge:hover .react-flow__edge-path.lb-cv-edge,.yt-studio .lb-cv .react-flow__edge-path.lb-cv-edge.selected{stroke:var(--cv-wire-on)}
 .yt-studio .lb-cv .react-flow__edge-path.lb-cv-edge.passing{stroke:var(--lb-agent);stroke-dasharray:6 6;animation:lb-cv-dash .55s linear infinite}
 @keyframes lb-cv-dash{to{stroke-dashoffset:-12}}
 
@@ -267,17 +272,21 @@
 .yt-studio .lb-cv-bar button.spark .i{color:var(--lb-agent)}
 .yt-studio .lb-cv-bar-t{padding:0 8px 0 6px;font-size:12px;color:var(--st-text-3)}
 
-/* ---------- the tools on the left ---------- */
-.yt-studio .lb-cv-tools{position:absolute;left:14px;top:50%;z-index:5;display:flex;flex-direction:column;align-items:center;gap:2px;padding:4px;transform:translateY(-50%);
-  border-radius:11px;background:var(--cv-node);box-shadow:0 0 0 1px var(--cv-line),var(--cv-shadow)}
-.yt-studio .lb-cv-tools button{display:grid;place-items:center;width:34px;height:34px;border-radius:8px;color:var(--st-text-2);transition:background .12s,color .12s}
-.yt-studio .lb-cv-tools button:hover{background:var(--cv-fill);color:var(--st-text)}
-.yt-studio .lb-cv-tools button.on{background:var(--cv-fill);color:var(--st-text)}
-.yt-studio .lb-cv-tools button.on.spark{background:var(--lb-agent-soft);color:var(--lb-agent-text)}
-.yt-studio .lb-cv-tools button.primary{background:var(--st-text);color:var(--cv-node)}
-.yt-studio .lb-cv-tools button.primary:hover{opacity:.88}
-.yt-studio .lb-cv-tools svg{width:17px;height:17px;stroke-width:1.6}
-.yt-studio .lb-cv-tools > i{width:18px;height:1px;margin:3px 0;background:var(--cv-line)}
+/* ---------- the tools: a dock at the bottom middle (as in Flow); "+" at its end opens the node menu over it ---------- */
+.yt-studio .lb-cv-dock{position:absolute;left:50%;bottom:14px;z-index:6;display:flex;align-items:center;gap:2px;padding:4px;transform:translateX(-50%);
+  border-radius:12px;background:var(--cv-node);box-shadow:0 0 0 1px var(--cv-line),var(--cv-shadow)}
+.yt-studio .lb-cv-dock button{display:grid;place-items:center;width:34px;height:34px;border-radius:8px;color:var(--st-text-2);transition:background .12s,color .12s}
+.yt-studio .lb-cv-dock button:hover{background:var(--cv-fill);color:var(--st-text)}
+.yt-studio .lb-cv-dock button.on{background:var(--cv-fill);color:var(--st-text)}
+.yt-studio .lb-cv-dock button.on.spark{background:var(--lb-agent-soft);color:var(--lb-agent-text)}
+.yt-studio .lb-cv-dock button.primary{background:var(--st-text);color:var(--cv-node)}
+.yt-studio .lb-cv-dock button.primary:hover,.yt-studio .lb-cv-dock button.primary.on{background:var(--st-text);opacity:.86}
+.yt-studio .lb-cv-dock button.primary svg{transition:transform .15s}
+.yt-studio .lb-cv-dock button.primary.on svg{transform:rotate(45deg)}
+.yt-studio .lb-cv-dock svg{width:17px;height:17px;stroke-width:1.6}
+.yt-studio .lb-cv-dock > i{width:1px;height:18px;margin:0 3px;background:var(--cv-line)}
+/* the select tool: an arrow over the canvas, not a hand */
+.yt-studio .lb-cv.tool-select .react-flow__pane{cursor:default}
 
 /* ---------- the minimap (on request, over the zoom pill), the queue (top right), the zoom (bottom left) ---------- */
 .yt-studio .lb-cv .react-flow__minimap.lb-cv-map{margin:0 0 58px 14px;border-radius:10px;overflow:hidden;box-shadow:0 0 0 1px var(--cv-line),var(--cv-shadow);animation:lb-in .16s ease-out}
@@ -299,6 +308,7 @@
 .yt-studio .lb-cv-menu small{font-size:11.5px;color:var(--st-text-3);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .yt-studio .lb-cv-menu button > .i{width:14px;height:14px;flex:none}
 .yt-studio .lb-cv-menu.add{transform:translate(10px,-24px)}
+.yt-studio .lb-cv-menu.add.dock{left:50%;bottom:64px;transform:translateX(-50%)}
 .yt-studio .lb-cv-glyph{display:grid;place-items:center;width:28px;height:28px;border-radius:7px;flex:none;background:var(--cv-fill);color:var(--k)}
 .yt-studio .lb-cv-glyph .i{width:14px;height:14px}
 

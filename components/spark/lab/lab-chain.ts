@@ -1,5 +1,6 @@
 // Plan › Üretim: how each scene of the plan is made, as the nodes Spark puts on the canvas (`plan-chain.tsx`). A
-// picture is made, its frame is handed to a video model; the scene's line is written and voiced; the whole video gets
+// picture is made and handed to a video model (a scene that goes on from the one before starts on that clip's last
+// frame, an output of the clip itself); the scene's line is written and voiced; the whole video gets
 // its music and final cut. The chain is read from what the plan already holds (a scene's source and model, its
 // reference, its line, the voice and music chosen for the video), so Senaryo and Üretim are one plan. What the user
 // does on the canvas (moving, adding, linking, making a node) is kept in the run (`LabCanvas`) over this.
@@ -19,19 +20,24 @@ import {
 } from './lab-model'
 import { pickOf, sayOf, stepStatus, type AddedScene, type LabMedia, type LabRunState } from './use-lab-run'
 
-export type StageKind = 'text' | 'image' | 'frame' | 'video' | 'voice' | 'music' | 'media'
+export type StageKind = 'text' | 'image' | 'frame' | 'video' | 'avatar' | 'voice' | 'music' | 'media'
 
-/** The kinds of node, named the way the plan names things (never "node", "LLM" or "prompt"). */
+/**
+ * The kinds of node, named the way the plan names things (never "node", "LLM" or "prompt"). `frame` is only kept for
+ * canvases saved before a clip handed on its own first and last frames; nothing new is made of it.
+ */
 export const STAGE_KIND: Record<StageKind, { name: string; icon: string; hint: string }> = {
-  text: { name: 'Metin', icon: 'type', hint: 'Spark yazar: anlatım, başlık, istem' },
-  image: { name: 'Görsel', icon: 'image', hint: 'Bir modelle görsel üret' },
-  video: { name: 'Video', icon: 'video', hint: 'Bağlı görselden ya da kareden klip' },
+  text: { name: 'Metin', icon: 'type', hint: 'İstem, anlatım ve başlık' },
+  image: { name: 'Görsel', icon: 'image', hint: 'Görsel üretimi' },
+  video: { name: 'Video', icon: 'video', hint: 'Görselden ya da metinden video' },
+  avatar: { name: 'Avatar', icon: 'user', hint: 'Görsel ve sesten konuşan avatar' },
   frame: { name: 'Kare', icon: 'crop', hint: 'Klibin ilk ya da son karesi' },
-  voice: { name: 'Ses', icon: 'mic', hint: 'Bağlı metni seslendir' },
-  music: { name: 'Müzik', icon: 'music', hint: 'Videonun altına müzik' },
-  media: { name: 'Görselim', icon: 'upload', hint: 'Kendi görselin ya da klibin' },
+  voice: { name: 'Ses', icon: 'mic', hint: 'Metinden seslendirme' },
+  music: { name: 'Müzik', icon: 'music', hint: 'Arka plan müziği' },
+  media: { name: 'Görselim', icon: 'upload', hint: 'Görsel ya da video yükle' },
 }
-export const STAGE_KINDS = Object.keys(STAGE_KIND) as StageKind[]
+/** The kinds a node can be added as. */
+export const STAGE_KINDS = (Object.keys(STAGE_KIND) as StageKind[]).filter((kind) => kind !== 'frame')
 
 export type ChainStage = {
   /** `<lane>/<part>`: a target of its own for picks and remakes (scene ids and timeline clips have no slash). */
@@ -52,6 +58,9 @@ export type ChainStage = {
   text?: { value: string; key: string; first: string }
 }
 
+/** A planned link: from a step to the next, and which output and input it joins where that is not the obvious one. */
+export type ChainLink = [source: string, target: string, from?: string, into?: string]
+
 export type ChainLane = {
   /** The scene id, or `all` for the steps of the whole video. */
   id: string
@@ -64,7 +73,7 @@ export type ChainLane = {
   stages: ChainStage[]
   pictures: number
   /** The planned links: each step to the next in its chain, and a video started from the scene before it. */
-  links: [string, string][]
+  links: ChainLink[]
   continues: boolean
   canContinue: boolean
 }
@@ -118,18 +127,16 @@ function pictureStages(state: LabRunState, lane: string, input: {
     const canContinue = model.kind === 'video' && previous !== null
     const continues = canContinue && state.picks[`from:${lane}`] === 'prev'
     const ref = state.refs[lane]
-    const first = continues
-      ? stageOf(lane, 'start', { kind: 'frame', title: `${previous!.n}. sahnenin son karesi`, how: 'Son kare', brief: '', credits: 0, art: previous!.art })
-      : ref
-        ? stageOf(lane, 'image', { kind: 'media', title: ref.title, how: 'Görselim · referans', brief: '', credits: 0, art: ref.art ?? art })
-        : stageOf(lane, 'image', {
-            kind: 'image',
-            title: asset?.title ?? `${role} görseli`,
-            how: model.kind === 'image' ? model.title : 'FLUX.2 Pro',
-            brief: briefs.image ?? `${role} sahnesi için bir görsel.`,
-            credits: model.kind === 'image' ? creditsOf(model.meta) : 4,
-            art,
-          })
+    const first = ref
+      ? stageOf(lane, 'image', { kind: 'media', title: ref.title, how: 'Görselim · referans', brief: '', credits: 0, art: ref.art ?? art })
+      : stageOf(lane, 'image', {
+          kind: 'image',
+          title: asset?.title ?? `${role} görseli`,
+          how: model.kind === 'image' ? model.title : 'FLUX.2 Pro',
+          brief: briefs.image ?? `${role} sahnesi için bir görsel.`,
+          credits: model.kind === 'image' ? creditsOf(model.meta) : 4,
+          art,
+        })
     if (model.kind === 'image') return one(first)
     const video = stageOf(lane, 'video', {
       kind: 'video',
@@ -140,7 +147,8 @@ function pictureStages(state: LabRunState, lane: string, input: {
       art,
       seconds,
     })
-    return { stages: [first, video], continues, canContinue }
+    // Going on from the scene before, the clip starts on that scene's last frame: no picture of its own.
+    return { stages: continues ? [video] : [first, video], continues, canContinue }
   }
 
   if (kind === 'library') {
@@ -168,7 +176,7 @@ function pictureStages(state: LabRunState, lane: string, input: {
 function wordStages(state: LabRunState, lane: string, line: string, first: string, seconds: number, ownClip: boolean): ChainStage[] {
   if (!line) return []
   return [
-    stageOf(lane, 'say', { kind: 'text', title: 'Anlatım', how: 'Spark yazar', brief: '', credits: 0, text: { value: line, key: `say:${lane}`, first } }),
+    stageOf(lane, 'say', { kind: 'text', title: 'Anlatım', how: 'Spark', brief: '', credits: 0, text: { value: line, key: `say:${lane}`, first } }),
     stageOf(lane, 'voice', {
       kind: 'voice',
       title: ownClip ? 'Konuşma · klipten' : 'Seslendirme',
@@ -181,8 +189,8 @@ function wordStages(state: LabRunState, lane: string, line: string, first: strin
 }
 
 /** Each step to the next within its chain (the picture chain, then the words chain). */
-const chainLinks = (stages: ChainStage[], pictures: number): [string, string][] =>
-  stages.flatMap((stage, index) => (index > 0 && index !== pictures ? [[stages[index - 1]!.id, stage.id] as [string, string]] : []))
+const chainLinks = (stages: ChainStage[], pictures: number): ChainLink[] =>
+  stages.flatMap((stage, index) => (index > 0 && index !== pictures ? [[stages[index - 1]!.id, stage.id] as ChainLink] : []))
 
 /** Where the lane before ends: its number and its last picture, for a video that starts from there. */
 const endOf = (lane: ChainLane | null) => (lane?.n ? { n: lane.n, art: lane.stages[lane.pictures - 1]?.art ?? 'hook' } : null)
@@ -190,9 +198,10 @@ const endOf = (lane: ChainLane | null) => (lane?.n ? { n: lane.n, art: lane.stag
 function laneOf(base: Omit<ChainLane, 'stages' | 'pictures' | 'links' | 'continues' | 'canContinue'>, picture: ReturnType<typeof pictureStages>, words: ChainStage[], previous: ChainLane | null): ChainLane {
   const stages = [...picture.stages, ...words]
   const links = chainLinks(stages, picture.stages.length)
-  // A video started where the scene before it ends takes that scene's last picture.
+  // A video started where the scene before it ends starts on that scene's last frame: a clip's own "Son kare"
+  // output, or the picture itself.
   const handover = previous && picture.continues ? previous.stages[previous.pictures - 1] : undefined
-  if (handover) links.unshift([handover.id, stages[0]!.id])
+  if (handover) links.unshift([handover.id, stages[0]!.id, handover.kind === 'video' ? 'last' : undefined, 'start'])
   return { ...base, stages, pictures: picture.stages.length, links, continues: picture.continues, canContinue: picture.canContinue }
 }
 
@@ -241,7 +250,7 @@ export function chainLanes(state: LabRunState, scenes: LabScene[]): ChainLane[] 
  */
 export type StageStatus = 'writing' | 'draft' | 'queued' | 'running' | 'done' | 'yours'
 
-export const isPicture = (stage: ChainStage) => stage.kind === 'image' || stage.kind === 'frame' || stage.kind === 'video' || stage.kind === 'media'
+export const isPicture = (stage: ChainStage) => stage.kind === 'image' || stage.kind === 'frame' || stage.kind === 'video' || stage.kind === 'avatar' || stage.kind === 'media'
 
 const LANE_STEPS = (lane: string) => STEPS.map((step, index) => ({ step, index })).filter(({ step }) => (lane === 'all' ? step.sceneId === null : step.sceneId === lane))
 

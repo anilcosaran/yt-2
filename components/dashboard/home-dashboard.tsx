@@ -27,7 +27,7 @@ export function HomeDashboard() {
   const setupDone = data.setupSteps.map((_, index) => index === 0 && activeChannel?.status === 'connected')
 
   return (
-    <div className="hg-scrollbar relative h-full overflow-y-auto bg-background text-foreground">
+    <div className="hg-scrollbar @container relative h-full overflow-y-auto bg-background text-foreground">
       <div className="mx-auto w-full max-w-[1440px] px-4 pb-10 pt-6 md:px-8 md:pt-8">
         <header className="flex flex-wrap items-start justify-between gap-4">
           <div className="min-w-0">
@@ -37,8 +37,9 @@ export function HomeDashboard() {
           <SetupProgress t={tDashboard} steps={data.setupSteps} done={setupDone} />
         </header>
 
-        {/* Two independent columns: each stacks its own blocks, so a tall side never stretches the other. */}
-        <div className="mt-6 grid items-start gap-4 xl:grid-cols-[minmax(0,1fr)_380px]">
+        {/* Two independent columns: each stacks its own blocks, so a tall side never stretches the other. They split
+            on the page's own width, not the window's: a widened sidebar stacks them instead of squeezing the left one. */}
+        <div className="mt-6 grid items-start gap-4 @min-[55rem]:grid-cols-[minmax(0,1fr)_380px]">
           <div className="flex min-w-0 flex-col gap-4">
             <GrowthPanel
               t={tDashboard}

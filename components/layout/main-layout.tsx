@@ -61,6 +61,8 @@ import {
   SIDEBAR_MAX_WIDTH,
   SIDEBAR_MIN_WIDTH,
   SIDEBAR_WIDTH_STORAGE_KEY,
+  readStoredPreference,
+  storePreference,
 } from './layout-preferences'
 import { ACCOUNT_PROFILE_QUERY_KEY } from '@/components/account/browser-account-client'
 import { BILLING_QUOTA_USAGE_QUERY_KEY } from '@/lib/billing/api'
@@ -260,12 +262,12 @@ export function MainLayout({
 
   const setSelectedChannelId = React.useCallback((channelId: string) => {
     setSelectedChannelIdState(channelId)
-    window.localStorage.setItem(ACTIVE_CHANNEL_STORAGE_KEY, channelId)
+    storePreference(ACTIVE_CHANNEL_STORAGE_KEY, channelId)
   }, [])
 
   const clearSelectedChannelId = React.useCallback(() => {
     setSelectedChannelIdState(null)
-    window.localStorage.removeItem(ACTIVE_CHANNEL_STORAGE_KEY)
+    storePreference(ACTIVE_CHANNEL_STORAGE_KEY, null)
   }, [])
 
   React.useLayoutEffect(() => {
@@ -276,10 +278,10 @@ export function MainLayout({
       boundPrincipalRef.current = initialPrincipal
     }
     const storedWidth = readStoredSidebarWidth()
-    setSidebarCollapsed(window.localStorage.getItem(SIDEBAR_COLLAPSED_STORAGE_KEY) === 'true')
+    setSidebarCollapsed(readStoredPreference(SIDEBAR_COLLAPSED_STORAGE_KEY) === 'true')
     setSidebarWidth(storedWidth)
     root.style.setProperty('--youtorch-sidebar-width', `${storedWidth}px`)
-    setSelectedChannelIdState(window.localStorage.getItem(ACTIVE_CHANNEL_STORAGE_KEY))
+    setSelectedChannelIdState(readStoredPreference(ACTIVE_CHANNEL_STORAGE_KEY))
     setPreferencesHydrated(true)
     delete root.dataset.youtorchSidebarCollapsed
 
@@ -362,7 +364,7 @@ export function MainLayout({
       setSidebarPreviewModule(null)
     }
     setSidebarCollapsed(nextValue)
-    window.localStorage.setItem(SIDEBAR_COLLAPSED_STORAGE_KEY, String(nextValue))
+    storePreference(SIDEBAR_COLLAPSED_STORAGE_KEY, String(nextValue))
     window.dispatchEvent(new CustomEvent(SIDEBAR_COLLAPSED_EVENT, { detail: nextValue }))
   }, [forceExpandedSidebar, sidebarCollapsed])
 
@@ -418,8 +420,10 @@ export function MainLayout({
   }, [closeSidebarPreview, sidebarPreviewPinned])
 
   const startSidebarResize = React.useCallback((event: React.PointerEvent<HTMLDivElement>) => {
-    if (effectiveSidebarCollapsed) return
+    if (effectiveSidebarCollapsed || event.button !== 0) return
     event.preventDefault()
+    // The drag keeps following the pointer when it leaves the window.
+    event.currentTarget.setPointerCapture(event.pointerId)
     setSidebarResizeSession({ startX: event.clientX, startWidth: sidebarWidth })
   }, [effectiveSidebarCollapsed, sidebarWidth])
 
@@ -427,7 +431,7 @@ export function MainLayout({
     const clampedWidth = clampSidebarWidth(nextWidth)
     setSidebarWidth(clampedWidth)
     document.documentElement.style.setProperty('--youtorch-sidebar-width', `${clampedWidth}px`)
-    window.localStorage.setItem(SIDEBAR_WIDTH_STORAGE_KEY, String(clampedWidth))
+    storePreference(SIDEBAR_WIDTH_STORAGE_KEY, String(clampedWidth))
   }, [])
 
   const handleSidebarResizeKeyDown = React.useCallback((event: React.KeyboardEvent<HTMLDivElement>) => {
@@ -451,15 +455,16 @@ export function MainLayout({
     const previousUserSelect = root.style.userSelect
     let latestWidth = sidebarResizeSession.startWidth
 
+    // While dragging only the width variable moves (no re-render of the menu); the state follows on release.
     const handlePointerMove = (event: PointerEvent) => {
       latestWidth = clampSidebarWidth(
         sidebarResizeSession.startWidth + event.clientX - sidebarResizeSession.startX,
       )
-      setSidebarWidth(latestWidth)
       root.style.setProperty('--youtorch-sidebar-width', `${latestWidth}px`)
     }
     const finishResize = () => {
-      window.localStorage.setItem(SIDEBAR_WIDTH_STORAGE_KEY, String(latestWidth))
+      setSidebarWidth(latestWidth)
+      storePreference(SIDEBAR_WIDTH_STORAGE_KEY, String(latestWidth))
       setSidebarResizeSession(null)
     }
 
@@ -533,11 +538,12 @@ export function MainLayout({
         {showAnnouncementBar && <MemberAnnouncementBar />}
 
         <div className="flex min-h-0 flex-1 overflow-hidden">
-          {/* Desktop Sidebar */}
+          {/* Desktop Sidebar. Its view-transition name makes it a layer of its own: `z-10` keeps that layer (the
+              resize handle on its edge, the rail's preview flyout) above the page panel beside it. */}
           <div
             ref={desktopSidebarFrameRef}
             data-workspace-sidebar-frame
-            className="relative hidden shrink-0 md:flex"
+            className="relative z-10 hidden shrink-0 md:flex"
             onMouseLeave={() => {
               if (!sidebarPreviewPinned) closeSidebarPreview()
             }}
@@ -628,12 +634,14 @@ export function MainLayout({
                 aria-valuemax={SIDEBAR_MAX_WIDTH}
                 aria-valuenow={sidebarWidth}
                 tabIndex={0}
+                data-resizing={sidebarResizeSession ? '' : undefined}
                 className="group absolute inset-y-0 -right-1 z-30 w-2 cursor-col-resize touch-none outline-none"
                 onPointerDown={startSidebarResize}
                 onDoubleClick={() => setAndStoreSidebarWidth(SIDEBAR_DEFAULT_WIDTH)}
                 onKeyDown={handleSidebarResizeKeyDown}
               >
-                <span className="absolute inset-y-0 left-1/2 w-px -translate-x-1/2 bg-transparent transition-colors group-hover:bg-primary/55 group-focus-visible:bg-primary" />
+                {/* A quiet line on the page panel's edge, after a short hover (not while the pointer passes by). */}
+                <span className="absolute inset-y-5 left-1/2 w-0.5 -translate-x-1/2 rounded-full bg-transparent transition-colors group-hover:bg-foreground/20 group-hover:delay-150 group-focus-visible:bg-ring group-data-[resizing]:bg-foreground/30" />
               </div>
             )}
           </div>
@@ -675,8 +683,8 @@ export function MainLayout({
             </SheetContent>
           </Sheet>
 
-          {/* The page panel: inset from the window on desktop, rounded, with a hairline edge (no shadow). */}
-          <div className="relative flex min-w-0 flex-1 flex-col overflow-hidden bg-background md:my-2 md:mr-2 md:rounded-[10px] md:border md:border-border">
+          {/* The page panel: inset from the darker window on desktop, rounded, with a hairline edge and a soft drop. */}
+          <div className="relative flex min-w-0 flex-1 flex-col overflow-hidden bg-background md:my-2 md:mr-2 md:rounded-[10px] md:border md:border-page-panel-edge md:shadow-page-panel">
             {!showHeader && (
               <button
                 type="button"
@@ -848,7 +856,7 @@ function getChannelTone(id: string) {
 }
 
 function readStoredSidebarWidth() {
-  return clampSidebarWidth(Number(window.localStorage.getItem(SIDEBAR_WIDTH_STORAGE_KEY)))
+  return clampSidebarWidth(Number(readStoredPreference(SIDEBAR_WIDTH_STORAGE_KEY)))
 }
 
 function clampSidebarWidth(width: number) {

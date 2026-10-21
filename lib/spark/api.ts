@@ -17,6 +17,9 @@ const sparkProjectSchema = z.object({
   schema_version: z.number().int(),
   // P02-01 fields; archived and deleted projects are read-only in the editor.
   lifecycle_state: z.enum(sparkProjectLifecycleStates).optional(),
+  // Proposed list field, not in the gateway yet: a still of the project (its last render, else its first visual
+  // scene). Missing or malformed reads as no cover, so the list never fails over it.
+  cover_url: z.string().min(1).nullable().optional().catch(null),
   created_at: z.string(),
   updated_at: z.string(),
 })
@@ -27,6 +30,7 @@ export type SparkProject = {
   title: string
   aspectRatio: SparkAspectRatio
   lifecycleState?: SparkProjectLifecycleState
+  coverUrl?: string
   createdAt: string
   updatedAt: string
 }
@@ -50,6 +54,7 @@ function toSparkProject(payload: z.output<typeof sparkProjectSchema>): SparkProj
     title: payload.title,
     aspectRatio: payload.aspect_ratio,
     ...(payload.lifecycle_state && { lifecycleState: payload.lifecycle_state }),
+    ...(payload.cover_url && { coverUrl: payload.cover_url }),
     createdAt: payload.created_at,
     updatedAt: payload.updated_at,
   }

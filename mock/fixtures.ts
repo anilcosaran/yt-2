@@ -811,25 +811,36 @@ type MockSparkProject = {
   visibility: 'private'
   schema_version: number
   lifecycle_state: 'active'
+  cover_url?: string | null
   created_at: string
   updated_at: string
 }
 
 const SPARK_PROJECTS_KEY = 'yt2_mock_spark_projects'
 const SPARK_SAMPLE_CHANNEL_ID = '6f1c2a3b-8d4e-4f5a-9b6c-1d2e3f4a5b6c'
-const SPARK_SAMPLE_RATIOS = ['9:16', '16:9', '9:16', '1:1', '16:9', '9:16']
+// Sample projects already have scenes, so each carries a cover in its own ratio; new projects and the demo
+// (still at its plan) have none and show the placeholder.
+const SPARK_SAMPLES = [
+  { ratio: '9:16', cover: '/spark/covers/summer-campaign.webp' },
+  { ratio: '16:9', cover: '/spark/covers/product-launch.webp' },
+  { ratio: '9:16', cover: '/spark/covers/podcast.webp' },
+  { ratio: '1:1', cover: '/spark/covers/brand-story.webp' },
+  { ratio: '16:9', cover: '/spark/covers/shorts-tips.webp' },
+  { ratio: '9:16', cover: '/spark/covers/testimonials.webp' },
+]
 
 function sparkSampleProjects(): MockSparkProject[] {
-  return SPARK_SAMPLE_RATIOS.map((aspectRatio, index) => {
+  return SPARK_SAMPLES.map((sample, index) => {
     const at = new Date(Date.UTC(2026, 8, 28 - index * 3, 9, 30)).toISOString()
     return {
       id: `00000000-0000-4000-8000-00000000000${index + 1}`,
       channel_id: SPARK_SAMPLE_CHANNEL_ID,
       title: MOCK_TITLES[index] ?? `Proje ${index + 1}`,
-      aspect_ratio: aspectRatio,
+      aspect_ratio: sample.ratio,
       visibility: 'private',
       schema_version: 1,
       lifecycle_state: 'active',
+      cover_url: sample.cover,
       created_at: at,
       updated_at: at,
     }

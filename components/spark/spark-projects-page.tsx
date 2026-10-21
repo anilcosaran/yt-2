@@ -180,8 +180,8 @@ function ProjectCard({ project, onOpen }: { project: SparkProject; onOpen: (proj
       onClick={() => onOpen(project)}
       className="group flex w-full flex-col overflow-hidden rounded-xl border border-border bg-panel text-left transition-colors hover:border-foreground/30 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
     >
-      <div className="flex h-32 items-center justify-center bg-muted/40">
-        <AspectFrame ratio={project.aspectRatio} />
+      <div className="relative aspect-video overflow-hidden bg-muted/40">
+        <ProjectCover url={project.coverUrl} ratio={project.aspectRatio} />
       </div>
       <div className="space-y-1 p-3">
         <p className="truncate text-sm font-medium" title={project.title}>{project.title}</p>
@@ -193,21 +193,57 @@ function ProjectCard({ project, onOpen }: { project: SparkProject; onOpen: (proj
   )
 }
 
-const aspectFrameSize: Record<SparkAspectRatio, string> = {
-  '16:9': 'h-14 w-24',
-  '9:16': 'h-24 w-14',
-  '1:1': 'size-20',
+const coverFrameClass: Record<SparkAspectRatio, string> = {
+  '16:9': 'size-full',
+  '9:16': 'aspect-[9/16] h-full',
+  '1:1': 'aspect-square h-full',
 }
 
-function AspectFrame({ ratio }: { ratio: SparkAspectRatio }) {
-  return <div className={`${aspectFrameSize[ratio]} rounded-md border-2 border-foreground/20 bg-background`} aria-hidden />
+/**
+ * The project's still in its own ratio; vertical and square stills sit on a blurred copy of themselves so the
+ * 16:9 card stays filled. A project without a still (or one that fails to load) shows a quiet icon instead.
+ */
+function ProjectCover({ url, ratio }: { url?: string; ratio: SparkAspectRatio }) {
+  const [failedUrl, setFailedUrl] = React.useState<string | null>(null)
+  if (!url || failedUrl === url) {
+    return (
+      <div className="flex h-full items-center justify-center text-muted-foreground/50">
+        <Clapperboard className="size-6" aria-hidden />
+      </div>
+    )
+  }
+  return (
+    <>
+      {ratio === '16:9' ? null : (
+        // eslint-disable-next-line @next/next/no-img-element
+        <img src={url} alt="" loading="lazy" decoding="async" className="absolute inset-0 size-full scale-110 object-cover opacity-50 blur-xl" aria-hidden />
+      )}
+      <div className="relative flex h-full items-center justify-center">
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img
+          src={url}
+          alt=""
+          loading="lazy"
+          decoding="async"
+          onError={() => setFailedUrl(url)}
+          className={`${coverFrameClass[ratio]} object-cover`}
+        />
+      </div>
+    </>
+  )
 }
 
 function ProjectGridSkeleton() {
   return (
     <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
       {[0, 1, 2, 3].map((item) => (
-        <Skeleton key={item} className="h-48 rounded-xl" />
+        <div key={item} className="overflow-hidden rounded-xl border border-border bg-panel">
+          <Skeleton className="aspect-video rounded-none" />
+          <div className="space-y-2 p-3">
+            <Skeleton className="h-4 w-3/4" />
+            <Skeleton className="h-3 w-1/2" />
+          </div>
+        </div>
       ))}
     </div>
   )

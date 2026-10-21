@@ -29,25 +29,27 @@ import { revealed, sayOf, type LabRun } from './use-lab-run'
 
 // The "Plan" view (`?v=b`): what the video will be, before and while it is made. It opens once there is a plan
 // to show; a project starts in Sohbet. The agent's presence shows on the scene it is working on, and holding a
-// scene takes it over while the agent goes on with the others. The timeline is a detail opened from the bottom.
-// A plan that waits for the user is approved here, on a bar under it: the chat only leads here ("Planı gör").
+// scene takes it over while the agent goes on with the others. There is no timeline here: the scenes' lengths are on
+// their rows. A plan that waits for the user is approved here, on a bar under it: the chat only leads here ("Planı gör").
 // Spark's panel ("Spark" at the end of the top bar) is shut unless opened, and opens by itself for its questions.
 //
 // The plan has three views (`board`). Senaryo is the plan in full and the default (`plan-script.tsx`). Şerit
 // shows the frames side by side. Akış is the same plan on the Flow canvas.
 
-const cardTarget = (step: AgentStep) => (step.sceneId ? `card-${step.sceneId}` : 'board-foot')
+/**
+ * Where the agent's cursor goes in the plan: the scene a step works on. A step of the whole video (music, captions)
+ * has nothing to point at here, so the cursor rests.
+ */
+const cardTarget = (step: AgentStep) => (step.sceneId ? `card-${step.sceneId}` : 'none')
 /** The container width at and under which Spark's panel covers the plan instead of standing beside it (lab.css). */
 const PLAN_PANEL_OVER = 1020
 
 export function VariantStoryboard({
   run,
-  open = false,
   board = 'script',
   onBoard,
 }: {
   run: LabRun
-  open?: boolean
   board?: LabBoard
   onBoard: (board: LabBoard) => void
 }) {
@@ -65,7 +67,6 @@ export function VariantStoryboard({
       <div className="lb-b-main" style={right ? ({ '--lb-b-right': `${right}px` } as React.CSSProperties) : undefined}>
         <PlanWork
           run={run}
-          open={open}
           board={board}
           onBoard={onBoard}
           onPointerDown={covers ? () => spark.setOpen(false) : undefined}
@@ -88,17 +89,18 @@ export function VariantStoryboard({
   )
 }
 
-/** The plan itself: the brief line with the board switch, the board, the approval bar and the timeline. */
+/**
+ * The plan itself: the brief line with the board switch, the board and the approval bar. No timeline: the plan is
+ * the script and its scenes (their lengths are on their rows); playing and cutting are Sohbet's and the Editör's.
+ */
 function PlanWork({
   run,
-  open = false,
   board = 'script',
   onBoard,
   onPointerDown,
   onAsk,
 }: {
   run: LabRun
-  open?: boolean
   board?: LabBoard
   onBoard: (board: LabBoard) => void
   /** A press on the plan while Spark's panel covers it closes the panel. */
@@ -144,27 +146,19 @@ function PlanWork({
       )}
 
       {state.phase === 'plan' ? <PlanApproveBar run={run} onApprove={run.approve} /> : null}
-
-      <PlanTimeline run={run} open={open} onAsk={onAsk} />
     </section>
   )
 }
 
 /**
  * The timeline under a plan: closed, a strip with the play head and the pace of the scenes; opened, the full timeline.
- * The Plan view and the main Chat's canvas show it under the plan (closed until the user opens it).
+ * The main Chat's canvas shows it under its plan (closed until the user opens it); the Plan view has none.
  */
-export function PlanTimeline({ run, open = false, sizeKey = 'plan-dock', onAsk }: {
-  run: LabRun
-  open?: boolean
-  sizeKey?: string
-  /** Where Spark's panel is shut by default: a ✦ on the picked clip opens it with the pick. */
-  onAsk?: () => void
-}) {
-  const [timelineOpen, setTimelineOpen] = React.useState(open)
+export function PlanTimeline({ run, sizeKey = 'plan-dock' }: { run: LabRun; sizeKey?: string }) {
+  const [timelineOpen, setTimelineOpen] = React.useState(false)
   return (
     <footer className={`lb-b-foot${timelineOpen ? ' open' : ''}`} data-agent-target="board-foot">
-      {timelineOpen ? <LabDock run={run} compact sizeKey={sizeKey} notes={false} onAsk={onAsk} /> : (
+      {timelineOpen ? <LabDock run={run} compact sizeKey={sizeKey} notes={false} /> : (
         <div className="lb-b-strip">
           <button type="button" className="play" aria-label="Oynat"><Icon name="play" /></button>
           <span className="time">0:00<span className="tt"> / {formatClock(TOTAL_SECONDS)}</span></span>

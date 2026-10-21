@@ -42,13 +42,13 @@ export const LAB_BOARDS: { id: LabBoard; name: string; good: string }[] = [
 export const LAB_PHASES: LabPhase[] = ['empty', 'drafting', 'plan', 'building', 'done']
 
 /** What a link says about the workspace: the view it opens on and, for review links, a fixed moment of the run. */
-export type LabView = { variant: LabVariant; board?: LabBoard; ratio?: LabRatio; phase?: LabPhase; step?: number; hold: boolean; open: boolean; look: LabLook }
+export type LabView = { variant: LabVariant; board?: LabBoard; ratio?: LabRatio; phase?: LabPhase; step?: number; hold: boolean; look: LabLook }
 
 /**
  * Reads a page's query. `v=c|b|a` picks the view (Sohbet, Plan, Editör; Sohbet when absent), `board` the view of
  * the plan (`script|strip|flow`), `ratio` the output format. `phase`, `step` and `hold=1` open a fixed moment of
- * the scripted run and `open=1` starts the Plan view with its timeline open: both are for review links and
- * screenshots. `look=eski` shows the workspace without the calm component shapes.
+ * the scripted run, for review links and screenshots. `look=eski` shows the workspace without the calm component
+ * shapes.
  */
 export function labViewFromQuery(query: { [key: string]: string | string[] | undefined }): LabView {
   const one = (key: string) => {
@@ -63,7 +63,6 @@ export function labViewFromQuery(query: { [key: string]: string | string[] | und
     phase: LAB_PHASES.find((entry) => entry === one('phase')),
     step: Number.isNaN(step) ? undefined : step,
     hold: one('hold') === '1',
-    open: one('open') === '1',
     look: one('look') === 'eski' || one('look') === 'spark' ? 'spark' : 'calm',
   }
 }

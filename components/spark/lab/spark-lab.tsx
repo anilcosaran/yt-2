@@ -38,7 +38,6 @@ export function SparkLab({
   phase,
   step,
   hold,
-  open = false,
   look = 'calm',
   title,
   runKey,
@@ -52,7 +51,6 @@ export function SparkLab({
   phase?: LabPhase
   step?: number
   hold?: boolean
-  open?: boolean
   look?: LabLook
   title?: string
   /** The project's shared run (its id): the main Chat's canvas and task list of the same job read the same run. */
@@ -146,7 +144,7 @@ export function SparkLab({
               {variant === 'a' ? (
                 <VariantCopilot run={run} onOpenPlan={() => choose('b')} />
               ) : variant === 'b' ? (
-                <VariantStoryboard run={run} open={open} board={board} onBoard={chooseBoard} />
+                <VariantStoryboard run={run} board={board} onBoard={chooseBoard} />
               ) : (
                 <VariantChat run={run} onView={choose} />
               )}

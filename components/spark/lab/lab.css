@@ -693,20 +693,22 @@
 .yt-studio .lb-queue-label b{font-weight:600;color:var(--st-text);margin-right:5px}
 .yt-studio .lb-queue-meta{flex:none;margin-left:auto;color:var(--st-text-3);font-size:12px;font-weight:400}
 .yt-studio .lb-queue-meta .lb-est{padding:0}
-.yt-studio .lb-queue-list{list-style:none;margin:0;padding:4px;display:grid;border:1px solid var(--st-border);border-radius:10px;background:color-mix(in srgb,var(--st-surface) 45%,transparent)}
-.dark .yt-studio .lb-queue-list{border-color:oklch(1 0 0 / 9%)}
-.yt-studio .lb-queue-item{display:grid;grid-template-columns:16px minmax(0,1fr) auto auto;align-items:center;column-gap:10px;row-gap:2px;min-height:34px;padding:6px 10px;border-radius:7px;font-size:13px;font-weight:500;color:var(--st-text);animation:st-pop .2s ease-out}
-.yt-studio .lb-queue-item.pending .lb-queue-text{color:var(--st-text-2)}
+/* The list reads like a coding agent's task list: one clear card, a filled tick for what is done, the turning mark
+   and bright text for what is being made, a dashed ring for what is still to come. Everything stays readable. */
+.yt-studio .lb-queue-list{list-style:none;margin:0;padding:6px;display:grid;border:1px solid var(--st-border-strong);border-radius:12px;background:var(--st-surface)}
+.dark .yt-studio .lb-queue-list{border-color:oklch(1 0 0 / 14%);background:oklch(1 0 0 / 3%)}
+.yt-studio .lb-queue-item{display:grid;grid-template-columns:18px minmax(0,1fr) auto auto;align-items:center;column-gap:12px;row-gap:2px;min-height:36px;padding:7px 10px;border-radius:8px;font-size:14px;font-weight:400;color:var(--st-text-2);animation:st-pop .2s ease-out}
 .yt-studio .lb-queue-item.go{cursor:pointer}
 .yt-studio .lb-queue-item.go:hover{background:var(--st-hover)}
-.yt-studio .lb-queue-ind{display:grid;place-items:center;width:16px;height:16px}
-.yt-studio .lb-queue-ind .i{width:14px;height:14px;color:var(--st-text-3)}
+.yt-studio .lb-queue-ind{display:grid;place-items:center;width:18px;height:18px}
+.yt-studio .lb-queue-ind .i{width:15px;height:15px;color:var(--st-text-2)}
 .yt-studio .lb-queue-ind .spin{width:12px;height:12px}
 .yt-studio .lb-queue-ind .lb-waiting .i{color:var(--lb-amber)}
-.yt-studio .lb-queue-dot{display:block;width:12px;height:12px;border-radius:50%;border:1.5px solid color-mix(in srgb,var(--st-text-2) 55%,transparent);box-sizing:border-box}
+.yt-studio .lb-queue-tick{display:grid;place-items:center;width:15px;height:15px;border-radius:50%;background:var(--st-text-2);color:var(--st-panel)}
+.yt-studio .lb-queue-ind .lb-queue-tick .i{width:10px;height:10px;color:inherit;stroke-width:3}
+.yt-studio .lb-queue-dot{display:block;width:14px;height:14px;border-radius:50%;border:1.5px dashed color-mix(in srgb,var(--st-text-2) 80%,transparent);box-sizing:border-box}
 .yt-studio .lb-queue-text{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.yt-studio .lb-queue-item.done .lb-queue-text{color:var(--st-text-3)}
-.yt-studio .lb-queue-item.current .lb-queue-text{font-weight:500}
+.yt-studio .lb-queue-item.current .lb-queue-text{color:var(--st-text);font-weight:500}
 .yt-studio .lb-queue-item.skipped .lb-queue-text{color:var(--st-text-3);font-style:italic}
 .yt-studio .lb-queue-end{color:var(--st-text-3);font-size:12px;font-weight:400;font-variant-numeric:tabular-nums;white-space:nowrap}
 .yt-studio .lb-queue-acts{display:flex;gap:4px;opacity:0;transition:opacity .12s}

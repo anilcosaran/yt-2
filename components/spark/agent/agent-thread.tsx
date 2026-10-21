@@ -13,10 +13,10 @@ import { LAB_SYMBOLS, instrumentSans } from '../lab/lab-frame'
  *
  * They follow AI Elements (elements.ai-sdk.dev): `AgentThinking` is Reasoning (one shimmering line while the agent
  * works, its thoughts as plain paragraphs, folded to "6 sn düşündü" after), `AgentQueue` is Queue (the plan as to-dos in
- * sections: a ring per item, a circled tick when done), `AgentChain` is Chain of Thought (a quiet line that opens to the
- * steps the agent takes, one under the other on a thin line, with what each one makes), `AgentMedia` shows outputs
- * side by side (four images in a row while they render), `AgentQuestion` is the question the agent asks before it
- * plans and `AgentSuggestions` the Suggestion chips. Copy comes from the caller.
+ * sections: a dashed ring per item, a filled tick when done), `AgentChain` is Chain of Thought (a quiet line that
+ * opens to the steps the agent takes, one under the other on a thin line, with what each one makes), `AgentMedia`
+ * shows outputs side by side (four images in a row while they render), `AgentQuestion` is the question the agent
+ * asks before it plans and `AgentSuggestions` the Suggestion chips. Copy comes from the caller.
  */
 
 /** Spark's style scope inline, for parts shown outside a Spark page (the main Chat's thread and composer). */
@@ -136,10 +136,10 @@ export type AgentQueueSection = {
 
 /**
  * Queue: the plan as to-dos, in sections that fold (a heading with the count and the label, the items in a hairline
- * card under it), read like a coding agent's task list. Each item has a ring that becomes a circled tick when it is
- * done (the text goes quiet), turns while it is being made (the text stays bright) and shows a clock while it waits
- * on the user; a description and previews may follow it, actions show on hover. `footer` closes the queue (the
- * plan's state and its buttons).
+ * card under it), read like a coding agent's task list. Each item has a dashed ring that becomes a filled tick when
+ * it is done, turns while it is being made (its text then bright) and shows a clock while it waits on the user; a
+ * description and previews may follow it, actions show on hover. `footer` closes the queue (the plan's state and its
+ * buttons).
  */
 export function AgentQueue({ sections, footer }: { sections: AgentQueueSection[]; footer?: React.ReactNode }) {
   const [closed, setClosed] = React.useState<Record<string, boolean>>({})
@@ -158,7 +158,7 @@ export function AgentQueue({ sections, footer }: { sections: AgentQueueSection[]
               <ul className="lb-queue-list">
                 {section.items.map((item) => (
                   <li key={item.id} className={`lb-queue-item ${item.state}${item.onClick ? ' go' : ''}`} onClick={item.onClick}>
-                    <span className="lb-queue-ind"><AgentStepIcon state={item.state} pending={<i className="lb-queue-dot" />} done={<Icon name="check-c" />} /></span>
+                    <span className="lb-queue-ind"><AgentStepIcon state={item.state} pending={<i className="lb-queue-dot" />} done={<span className="lb-queue-tick"><Icon name="check" /></span>} /></span>
                     <span className="lb-queue-text">{item.text}</span>
                     {item.actions ? <span className="lb-queue-acts">{item.actions}</span> : null}
                     {item.meta ? <span className="lb-queue-end">{item.meta}</span> : null}

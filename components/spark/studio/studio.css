@@ -50,7 +50,7 @@
 .dark .yt-studio{
   color-scheme:dark;
   --st-bg:var(--background);
-  --st-stage:color-mix(in srgb,var(--background),#000 35%);
+  --st-stage:var(--sidebar);
   --st-panel:var(--card);
   --st-surface:color-mix(in srgb,var(--card),#fff 4%);
   --st-surface-2:color-mix(in srgb,var(--card),#fff 2%);
@@ -63,10 +63,10 @@
   --st-hover:color-mix(in srgb,var(--card),#fff 5%);
   --st-active:var(--muted);
   --st-bubble:var(--muted);
-  --st-accent:#3b82f6; --st-accent-hover:#60a5fa;
-  --st-accent-soft:rgba(59,130,246,.15); --st-accent-soft-2:rgba(59,130,246,.24);
-  --st-accent-text:#93c5fd; --st-accent-border:rgba(96,165,250,.4);
-  --st-ai-soft:rgba(59,130,246,.08);
+  --st-accent:#5e6ad2; --st-accent-hover:#7580e0;
+  --st-accent-soft:rgba(94,106,210,.15); --st-accent-soft-2:rgba(94,106,210,.24);
+  --st-accent-text:#a9b0f0; --st-accent-border:rgba(117,128,224,.4);
+  --st-ai-soft:rgba(94,106,210,.08);
   --st-ok:#3fcf73; --st-ok-soft:rgba(63,207,115,.13);
   --st-danger:var(--destructive); --st-danger-soft:color-mix(in srgb,var(--destructive) 14%,transparent);
   --st-frame-ring:rgba(255,255,255,.08);

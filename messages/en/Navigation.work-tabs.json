@@ -1,0 +1,9 @@
+{
+  "workTabs": {
+    "label": "Open work",
+    "close": "Close {title}",
+    "untitled": "Untitled project",
+    "newTab": "New tab",
+    "add": "New project"
+  }
+}

@@ -12,10 +12,12 @@ const SENSITIVE_EXACT_KEYS = new Set([
   'youtorch:offer-redeem-intents:v1',
   'youtorch:pending-offer-purchase-sync',
   'youtorch:onboarding-assignment-refresh',
+  'youtorch:work-tabs:v1',
 ])
 const SENSITIVE_PREFIXES = [
   'youtorch:flow-',
   'youtorch:memory-',
+  'youtorch:new-chat-handoff:',
   'youtorch:review-',
   'youtorch:tool-',
   'youtorch:transcript-',

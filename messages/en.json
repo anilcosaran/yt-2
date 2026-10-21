@@ -2285,7 +2285,7 @@
   },
   "Spark": {
     "title": "Projects",
-    "subtitle": "Create a video project, then open it in the full-screen editor.",
+    "subtitle": "Create a video project; each one opens in its own tab, where you left it.",
     "newProject": "New project",
     "recentProjects": "Recent projects",
     "emptyTitle": "No projects yet",

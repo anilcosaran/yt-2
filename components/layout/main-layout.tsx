@@ -1,6 +1,7 @@
 'use client'
 
 import * as React from 'react'
+import dynamic from 'next/dynamic'
 import { keepPreviousData, useQuery, useQueryClient } from '@tanstack/react-query'
 import { useRouter } from 'next/navigation'
 import {
@@ -13,6 +14,7 @@ import {
   type LucideIcon,
 } from 'lucide-react'
 import { AppHeader } from './app-header'
+import type { AgentPanelState } from './agent-panel'
 import { AppSidebar, type SidebarPreviewModule } from './app-sidebar'
 import { WorkspaceIconRail, type WorkspaceRailModule } from './workspace-icon-rail'
 import { ActionCenterAlertBar, type ActionCenterAlert } from './action-center-alert-bar'
@@ -65,6 +67,9 @@ import { getWorkspaceBootstrap, WORKSPACE_BOOTSTRAP_QUERY_KEY } from '@/lib/work
 import { AuthClientError } from '@/lib/auth/errors'
 import { useTranslations } from 'next-intl'
 import { SidebarToggleIcon } from './sidebar-toggle-icon'
+
+// The agent panel (and the Spark styles it brings) loads the first time "AI'a sor" opens it.
+const AgentPanel = dynamic(() => import('./agent-panel').then((mod) => mod.AgentPanel))
 
 const CHANNELS_STALE_MS = 10 * 60_000
 const ACTION_CENTER_STALE_MS = 2 * 60_000
@@ -134,6 +139,10 @@ export function MainLayout({
   } | null>(null)
   const [selectedChannelId, setSelectedChannelIdState] = React.useState<string | null>(null)
   const [preferencesHydrated, setPreferencesHydrated] = React.useState(false)
+  const [agentPanel, setAgentPanel] = React.useState<AgentPanelState>('closed')
+  const [agentPanelLoaded, setAgentPanelLoaded] = React.useState(false)
+  // A page without the top bar (the Chat) has no "AI'a sor": the panel closes there.
+  if (!showHeader && agentPanel !== 'closed') setAgentPanel('closed')
   const queryClient = useQueryClient()
   const router = useRouter()
   const boundPrincipalRef = React.useRef<string | null>(null)
@@ -519,7 +528,7 @@ export function MainLayout({
 
   return (
     <ActiveChannelProvider value={activeChannelContext}>
-      <div className={cn('flex h-screen flex-col bg-background', className)}>
+      <div className={cn('flex h-screen flex-col bg-sidebar', className)}>
         {showAnnouncementBar && <MemberAnnouncementBar />}
 
         <div className="flex min-h-0 flex-1 overflow-hidden">
@@ -552,7 +561,7 @@ export function MainLayout({
             {sidebarPreviewVisible && sidebarPreviewModule && (
               <div
                 data-sidebar-preview
-                className="absolute inset-y-0 left-[76px] z-50 min-w-0 overflow-hidden border-r border-border bg-panel shadow-[18px_0_40px_rgba(15,23,42,0.16)]"
+                className="absolute inset-y-0 left-[76px] z-50 min-w-0 overflow-hidden border-r border-border bg-sidebar shadow-[18px_0_40px_rgba(0,0,0,0.28)]"
                 style={{
                   width: `min(var(--youtorch-sidebar-width, ${sidebarWidth}px), calc(100vw - ${SIDEBAR_RAIL_WIDTH}px))`,
                 }}
@@ -665,7 +674,8 @@ export function MainLayout({
             </SheetContent>
           </Sheet>
 
-          <div className="flex min-w-0 flex-1 flex-col overflow-hidden">
+          {/* The page panel: inset from the window on desktop, rounded, with a hairline edge (no shadow). */}
+          <div className="relative flex min-w-0 flex-1 flex-col overflow-hidden bg-background md:my-2 md:mr-2 md:rounded-[10px] md:border md:border-border">
             {!showHeader && (
               <button
                 type="button"
@@ -683,7 +693,7 @@ export function MainLayout({
                 onClick={() => updateSidebarCollapsed(false)}
                 aria-label={tAuto('open_chat_menu_36eaf49e')}
                 title={tAuto('open_chat_menu_36eaf49e')}
-                className="fixed left-[calc(76px+0.5rem)] top-3 z-50 hidden size-8 items-center justify-center text-foreground/80 transition-colors hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring md:flex"
+                className="fixed left-[calc(76px+0.5rem)] top-3 z-50 hidden size-8 items-center justify-center text-muted-foreground transition-colors hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring md:flex"
               >
                 <SidebarToggleIcon className="size-5" />
               </button>
@@ -695,6 +705,11 @@ export function MainLayout({
                 onToggleDesktopSidebar={() => updateSidebarCollapsed((current) => !current)}
                 onOpenMobileSidebar={() => setMobileOpen(true)}
                 sidebarCollapsed={effectiveSidebarCollapsed}
+                askAiOpen={agentPanel !== 'closed'}
+                onAskAi={() => {
+                  setAgentPanelLoaded(true)
+                  setAgentPanel((current) => (current === 'open' ? 'closed' : 'open'))
+                }}
               />
             )}
             {showActionCenterAlerts && <ActionCenterAlertBar alerts={actionCenterAlerts} />}
@@ -710,6 +725,9 @@ export function MainLayout({
                 </div>
               )}
             </div>
+
+            {/* The agent panel floats over the page's right side; it stays mounted once opened (its conversation too). */}
+            {showHeader && agentPanelLoaded && <AgentPanel state={agentPanel} onStateChange={setAgentPanel} />}
           </div>
         </div>
         <ChannelSlotSelectionDialog
@@ -725,7 +743,7 @@ export function MainLayout({
 }
 
 function SidebarFallback() {
-  return <div className="h-full w-full border-r border-border bg-panel" />
+  return <div className="h-full w-full bg-sidebar" />
 }
 
 function toGlobalActionCenterAlert(

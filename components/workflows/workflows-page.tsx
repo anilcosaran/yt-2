@@ -98,6 +98,7 @@ import {
   type ViralClipsQuotaSnapshot,
 } from '@/lib/workflows/api'
 import { clearFlowDraftHandoff, readFlowDraftHandoff, saveFlowDraftHandoff } from '@/lib/workflows/flow-draft-handoff'
+import { closeWorkTab, openWorkTab, replaceWorkTab } from '@/lib/work-tabs'
 import { useAssistantDraftHandoff } from '@/components/workflows/use-assistant-draft-handoff'
 import { getViralClipsLaunchConfirmationPlan } from '@/lib/workflows/viral-clips-launch-confirmation'
 import { isWorkflowSettlementPending, retryWorkflowSettlementOutput, workflowSettlementRetryDelay } from '@/lib/workflows/output-query'
@@ -672,6 +673,18 @@ export function WorkflowsPage() {
       channelName: activeChannel?.name ?? activeChannelId,
     })
   }, [activeChannel?.name, activeChannelId, preservedCanvasWorkflows, selectedDefinitionQuery.data, selectedWorkflow])
+  // A saved Flow open at its own address is a tab of the shell, named after it (`lib/work-tabs.ts`).
+  const openedFlow = activeView === 'workflows'
+    && routeWorkflowId
+    && !isLocalDraft(routeWorkflowId)
+    && selectedWorkflowWithDetail?.id === routeWorkflowId
+    ? selectedWorkflowWithDetail
+    : null
+  const openedFlowId = openedFlow?.id ?? null
+  const openedFlowName = openedFlow?.name ?? ''
+  React.useEffect(() => {
+    if (openedFlowId) openWorkTab({ kind: 'flow', id: openedFlowId, title: openedFlowName })
+  }, [openedFlowId, openedFlowName])
   const selectedWorkflowProjectId = React.useMemo(() => {
     if (!selectedWorkflow) return null
     if (!isLocalDraft(selectedWorkflow.id) && selectedDefinitionQuery.data) {
@@ -1015,6 +1028,8 @@ export function WorkflowsPage() {
           [savedWorkflow.id]: savedWorkflow,
         }))
         setSelectedWorkflow(savedWorkflow)
+        // Saved, the draft is an automation: its tab takes the new tab's spot (or opens), then the address is its own.
+        replaceWorkTab({ kind: 'flow', id: savedWorkflow.id, title: savedWorkflow.name })
         replaceWorkflowUrlWithoutNavigation(buildWorkflowDetailHref(savedWorkflow.id))
         queryClient.setQueryData(workflowDefinitionDetailQueryKey(activeChannelId, detail.definition.id), detail)
         invalidateWorkflowDefinitionsList()
@@ -1516,6 +1531,33 @@ export function WorkflowsPage() {
       .catch(() => undefined)
   }, [pendingDraftExit, persistWorkflowSnapshot])
 
+  const openNewWorkflow = React.useCallback(() => {
+    const draft = createDraftWorkflow(
+      activeChannel?.name ?? activeChannelId ?? undefined,
+      tWorkflows('canvas.untitledWorkflow'),
+    )
+
+    setLocalDrafts((current) => [draft, ...current])
+    openWorkflow(draft)
+  }, [activeChannel?.name, activeChannelId, openWorkflow, setLocalDrafts, tWorkflows])
+
+  // `?new=1` (the new tab's "Yeni otomasyon"): a new Flow draft once the channel is known. The entry leaves the
+  // history, so going back lands on the list instead of making another draft.
+  const newWorkflowRequested = activeView === 'workflows' && !routeWorkflowId && searchParams.get('new') === '1'
+  const handledNewWorkflowRef = React.useRef(false)
+  React.useEffect(() => {
+    if (!newWorkflowRequested) {
+      handledNewWorkflowRef.current = false
+      return
+    }
+    if (handledNewWorkflowRef.current || channelLoading || !activeChannelId) return
+    handledNewWorkflowRef.current = true
+    const url = new URL(window.location.href)
+    url.searchParams.delete('new')
+    replaceWorkflowUrlWithoutNavigation(`${url.pathname}${url.search}`)
+    openNewWorkflow()
+  }, [activeChannelId, channelLoading, newWorkflowRequested, openNewWorkflow])
+
   const openWorkflowQuotaDialog = React.useCallback((error: unknown) => {
     const dialog = getWorkflowQuotaLimitDialogState(error)
     if (!dialog) return false
@@ -1638,6 +1680,7 @@ export function WorkflowsPage() {
         setWorkflowActionMessage({ tone: 'info', text: 'Archiving workflow...' })
         try {
           await archiveDefinition({ channelId: activeChannelId, workflowId: workflow.id })
+          closeWorkTab('flow', workflow.id)
           setSelectedWorkflow((current) => current?.id === workflow.id ? null : current)
           invalidateWorkflowDefinitionsList()
           void queryClient.invalidateQueries({ queryKey: workflowDefinitionDetailQueryKey(activeChannelId, workflow.id) })
@@ -1663,11 +1706,13 @@ export function WorkflowsPage() {
 
   if (channelLoading && activeView === 'workflows' && selectedWorkflow) {
     return (
-      <WorkflowEditorLoading
-        workflowName={selectedWorkflow.name}
-        errorMessage={null}
-        onBack={closeWorkflow}
-      />
+      <div className="relative h-full">
+        <WorkflowEditorLoading
+          workflowName={selectedWorkflow.name}
+          errorMessage={null}
+          onBack={closeWorkflow}
+        />
+      </div>
     )
   }
 
@@ -1675,19 +1720,10 @@ export function WorkflowsPage() {
     return <WorkspaceChannelRequired />
   }
 
-  const openNewWorkflow = () => {
-    const draft = createDraftWorkflow(
-      activeChannel?.name ?? activeChannelId ?? undefined,
-      tWorkflows('canvas.untitledWorkflow'),
-    )
-
-    setLocalDrafts((current) => [draft, ...current])
-    openWorkflow(draft)
-  }
-
+  // An open Flow fills the page panel under the top bar, where it is a tab (`lib/work-tabs.ts`).
   if (activeView === 'workflows' && selectedWorkflowWithDetail) {
     return (
-      <>
+      <div className="relative h-full">
         {runOutputQueries.some((query) => isWorkflowSettlementPending(query.failureReason ?? query.error)) ? (
           <div role="status" className="flex items-center justify-between gap-3 px-4 py-2 text-sm text-muted-foreground">
             <span>{tWorkflows('runs.outputSettlementPending')}</span>
@@ -1769,23 +1805,25 @@ export function WorkflowsPage() {
             router.push('/offer-plan?next=/workflows')
           }}
         />
-      </>
+      </div>
     )
   }
 
   if (activeView === 'workflows' && selectedWorkflow) {
     return (
-      <WorkflowEditorLoading
-        workflowName={selectedWorkflow.name}
-        errorMessage={
-          selectedDefinitionQuery.error instanceof Error
-            ? selectedDefinitionQuery.error.message
-            : !activeChannelId
-              ? tAuto('select_a_channel_first_ab71fe9a')
-              : null
-        }
-        onBack={closeWorkflow}
-      />
+      <div className="relative h-full">
+        <WorkflowEditorLoading
+          workflowName={selectedWorkflow.name}
+          errorMessage={
+            selectedDefinitionQuery.error instanceof Error
+              ? selectedDefinitionQuery.error.message
+              : !activeChannelId
+                ? tAuto('select_a_channel_first_ab71fe9a')
+                : null
+          }
+          onBack={closeWorkflow}
+        />
+      </div>
     )
   }
 
@@ -2117,7 +2155,7 @@ function WorkflowEditor({
   }, [localRunPending, onRun])
 
   return (
-    <div className="workflow-flow-surface fixed inset-0 z-50 overflow-hidden">
+    <div className="workflow-flow-surface absolute inset-0 z-10 overflow-hidden">
       <WorkflowCanvas
         workflow={workflow}
         locale={locale}
@@ -3415,7 +3453,7 @@ function WorkflowEditorLoading({
   const tWorkflows = useTranslations('Workflows') as unknown as WorkflowTranslator
   const displayName = localizeWorkflowDisplayText(workflowName, tWorkflows)
   return (
-    <div className="workflow-flow-surface fixed inset-0 z-50 overflow-hidden" aria-label={tWorkflows('starter.loadingWorkflow', { name: displayName })}>
+    <div className="workflow-flow-surface absolute inset-0 z-10 overflow-hidden" aria-label={tWorkflows('starter.loadingWorkflow', { name: displayName })}>
       {errorMessage ? (
         <>
           <div className="absolute left-4 top-4 z-[2]">

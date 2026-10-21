@@ -199,13 +199,15 @@ fixtures.push({
 // --- assistant composer catalog ------------------------------------------------------------------------------------
 // The generated catalog repeats random aspect ratios and duration bounds; pin the three formats and a 5 s – 10 min
 // range so the chat composer and the new-chat gallery ("Kullan" sets format and length) behave like production.
+// The default chat model is one of the listed ones (a new chat starts with it, see "New chats" below).
+const DEFAULT_CHAT_MODEL_ID = 'claude-sonnet-5-5'
 fixtures.push({
   method: 'GET',
   path: /^\/api\/v1\/assistant\/composer\/catalog$/,
   merge: true,
   handler: () => ({
     data: {
-      defaults: { aspect_ratio: '16:9', video_duration_seconds: 60, approval_mode: 'autonomous' },
+      defaults: { model_id: DEFAULT_CHAT_MODEL_ID, aspect_ratio: '16:9', video_duration_seconds: 60, approval_mode: 'autonomous' },
       aspect_ratios: [
         { id: '16:9', label: 'Yatay', detail: 'YouTube ve web videoları' },
         { id: '9:16', label: 'Dikey', detail: 'Shorts, Reels ve TikTok' },
@@ -218,7 +220,7 @@ fixtures.push({
       ],
       // Real product names in the model selector (the generated catalog names models with random titles).
       chat_models: [
-        composerModel('claude-sonnet-5-5', 'Claude Sonnet 5.5', 'chat', 'Dengeli: hızlı ve özenli planlama', 'high', 'fast', 2),
+        composerModel(DEFAULT_CHAT_MODEL_ID, 'Claude Sonnet 5.5', 'chat', 'Dengeli: hızlı ve özenli planlama', 'high', 'fast', 2),
         composerModel('claude-opus-5-5', 'Claude Opus 5.5', 'chat', 'En derin düşünme, uzun senaryolar', 'highest', 'standard', 6),
         composerModel('gpt-5', 'GPT-5', 'chat', 'Genel amaçlı, güçlü yazım', 'high', 'standard', 4),
         composerModel('gemini-3-pro', 'Gemini 3 Pro', 'chat', 'Uzun bağlam, çok dilli', 'high', 'fast', 3),
@@ -2025,7 +2027,13 @@ fixtures.push(
         && (Number(request.query.get('offset')) || 0) === 0
         && (!channelId || channelId === DEMO.channelId)
       const conversations = showDemo ? [demoConversation(), ...generated.data.conversations] : generated.data.conversations
-      return { data: { conversations, total: conversations.length } }
+      // New chats lead, newest first, in the channel they were started in.
+      const started = (Number(request.query.get('offset')) || 0) === 0
+        ? [...newChats.values()].map((chat) => chat.conversation)
+          .filter((conversation) => !channelId || conversation.metadata.channel_id === channelId)
+          .reverse()
+        : []
+      return { data: { conversations: [...started, ...conversations], total: started.length + conversations.length } }
     },
   },
   {
@@ -2263,6 +2271,287 @@ fixtures.push(
         funding: { quota_credits: 0, plan_credits: DEMO_PREPARATION_CREDITS, top_up_credits: 0, unattributed_credits: 0, source: 'plan_credits' },
       },
     }),
+  },
+)
+
+// --- New chats (the shell's agent panel, a new chat on /chat) -------------------------------------------------------
+// A conversation created here keeps its messages in memory. Each message starts a run that reads the channel's memory,
+// plans, then answers once (an assistant message, the run completed), by the clock like the demo chat: the handlers
+// advance it when polled and the run's open stream hears each event.
+type NewChatConversation = {
+  id: string
+  user_id: string
+  title: string
+  status: string
+  metadata: Record<string, unknown>
+  last_message_at: string | null
+  archived_at: null
+  deleted_at: null
+  version: number
+  created_at: string
+  updated_at: string
+}
+type NewChat = { conversation: NewChatConversation; messages: DemoMessage[]; runs: string[] }
+type NewChatRun = {
+  id: string
+  conversationId: string
+  triggerMessageId: string
+  state: 'running' | 'completed' | 'cancelled'
+  startedAt: number
+  stage: number
+  prompt: string
+  events: DemoEvent[]
+  createdAt: string
+  updatedAt: string
+}
+
+const newChats = new Map<string, NewChat>()
+const newChatRuns = new Map<string, NewChatRun>()
+const newChatReplays = new Map<string, unknown>()
+const NEW_CHAT_PLANNING_AT_MS = 700
+const NEW_CHAT_ANSWER_AT_MS = 1600
+
+function createNewChat(body: unknown) {
+  const input = (body ?? {}) as { title?: unknown; metadata?: unknown }
+  const at = new Date().toISOString()
+  const conversation: NewChatConversation = {
+    id: `conv-new-${newChats.size + 1}`,
+    user_id: MOCK_TENANT.id,
+    title: typeof input.title === 'string' && input.title.trim() ? input.title.trim() : 'Yeni sohbet',
+    status: 'active',
+    metadata: typeof input.metadata === 'object' && input.metadata ? input.metadata as Record<string, unknown> : {},
+    last_message_at: null,
+    archived_at: null,
+    deleted_at: null,
+    version: 1,
+    created_at: at,
+    updated_at: at,
+  }
+  newChats.set(conversation.id, { conversation, messages: [], runs: [] })
+  return { data: conversation }
+}
+
+function readNewChat(conversationId: string) {
+  const chat = newChats.get(conversationId)
+  if (!chat) throw mockError(404, 'ASSISTANT_CONVERSATION_NOT_FOUND', 'Sohbet bulunamadı.')
+  for (const runId of chat.runs) advanceNewChatRun(runId)
+  return chat
+}
+
+function readNewChatRun(runId: string) {
+  const run = newChatRuns.get(runId)
+  if (!run) throw mockError(404, 'ASSISTANT_RUN_NOT_FOUND', 'İş bulunamadı.')
+  advanceNewChatRun(runId)
+  return run
+}
+
+function newChatMessage(chat: NewChat, runId: string, role: DemoMessage['role'], content: string) {
+  const at = new Date().toISOString()
+  const message: DemoMessage = {
+    id: `${chat.conversation.id}-msg-${chat.messages.length + 1}`,
+    conversation_id: chat.conversation.id,
+    run_id: runId,
+    role,
+    content,
+    content_json: {},
+    status: 'completed',
+    created_at: at,
+    updated_at: at,
+    deleted_at: null,
+  }
+  chat.messages.push(message)
+  chat.conversation = { ...chat.conversation, last_message_at: at, updated_at: at, version: chat.conversation.version + 1 }
+  return message
+}
+
+function pushNewChatEvent(run: NewChatRun, eventType: string, payload: Record<string, unknown>) {
+  const at = new Date().toISOString()
+  const event: DemoEvent = { id: `${run.id}-evt-${run.events.length + 1}`, run_id: run.id, sequence: run.events.length + 1, event_type: eventType, payload, public: true, transient: false, created_at: at }
+  run.events.push(event)
+  run.updatedAt = at
+  publishMockStreamEvent((url) => url.includes(`/runs/${run.id}/stream`), 'run_event', event)
+  return event
+}
+
+function addNewChatMessage(conversationId: string, body: unknown) {
+  const chat = readNewChat(conversationId)
+  const content = typeof (body as { content?: unknown } | undefined)?.content === 'string' ? (body as { content: string }).content.trim() : ''
+  if (!content) throw mockError(422, 'ASSISTANT_MESSAGE_EMPTY', 'Mesaj boş olamaz.')
+  const runId = `job-new-${newChatRuns.size + 1}`
+  const message = newChatMessage(chat, runId, 'user', content)
+  const run: NewChatRun = {
+    id: runId,
+    conversationId,
+    triggerMessageId: message.id,
+    state: 'running',
+    startedAt: Date.now(),
+    stage: 0,
+    prompt: content,
+    events: [],
+    createdAt: message.created_at,
+    updatedAt: message.created_at,
+  }
+  newChatRuns.set(run.id, run)
+  chat.runs.push(run.id)
+  const event = pushNewChatEvent(run, 'message.created', { message_id: message.id, conversation_id: conversationId })
+  pushNewChatEvent(run, 'run.started', { state: 'running', conversation_id: conversationId })
+  pushNewChatEvent(run, 'assistant.status.updated', { stage: 'memory_context' })
+  if (typeof window !== 'undefined') {
+    window.setTimeout(() => advanceNewChatRun(run.id), NEW_CHAT_PLANNING_AT_MS + 20)
+    window.setTimeout(() => advanceNewChatRun(run.id), NEW_CHAT_ANSWER_AT_MS + 20)
+  }
+  return { data: { message, run: newChatRunRecord(run), event, outbox_event: { id: `outbox-${run.id}`, status: 'published' }, replayed: false } }
+}
+
+/** Planning after a moment, then the answer and the end of the run. */
+function advanceNewChatRun(runId: string) {
+  const run = newChatRuns.get(runId)
+  const chat = run ? newChats.get(run.conversationId) : undefined
+  if (!run || !chat || run.state !== 'running') return
+  const elapsed = Date.now() - run.startedAt
+  if (elapsed >= NEW_CHAT_PLANNING_AT_MS && run.stage < 1) {
+    run.stage = 1
+    pushNewChatEvent(run, 'assistant.status.updated', { stage: 'planning' })
+  }
+  if (elapsed < NEW_CHAT_ANSWER_AT_MS) return
+  run.state = 'completed'
+  const reply = newChatMessage(chat, run.id, 'assistant', newChatReply(run.prompt))
+  pushNewChatEvent(run, 'message.created', { message_id: reply.id, conversation_id: chat.conversation.id })
+  pushNewChatEvent(run, 'run.completed', { state: 'completed' })
+}
+
+function newChatReply(prompt: string) {
+  const topic = prompt.replace(/\s+/g, ' ').trim()
+  const excerpt = topic.length > 80 ? `${topic.slice(0, 79).trimEnd()}…` : topic
+  return [
+    'Şöyle ilerleyebiliriz:',
+    '',
+    `1. **Konu:** “${excerpt}” — kanalın son videolarıyla bağını kurarım.`,
+    '2. **Biçim:** 30–60 saniyelik dikey bir kısa video ya da 6–8 dakikalık yatay bir anlatım.',
+    '3. **Sonraki adım:** Uygunsa senaryo taslağını hazırlarım.',
+    '',
+    '*Bu, yt-2’nin örnek yanıtıdır; sunucu bağlı değil.*',
+  ].join('\n')
+}
+
+function newChatRunRecord(run: NewChatRun) {
+  const ended = run.state === 'running' ? null : run.updatedAt
+  return {
+    id: run.id,
+    conversation_id: run.conversationId,
+    trigger_message_id: run.triggerMessageId,
+    state: run.state,
+    model_id: null,
+    planner_version: null,
+    metadata: {},
+    error_code: null,
+    error_message: null,
+    started_at: run.createdAt,
+    completed_at: run.state === 'completed' ? ended : null,
+    failed_at: null,
+    cancelled_at: run.state === 'cancelled' ? ended : null,
+    version: run.events.length,
+    created_at: run.createdAt,
+    updated_at: run.updatedAt,
+  }
+}
+
+function withNewChatReplay(scope: string, body: unknown, run: () => { data: Record<string, unknown> }) {
+  const key = demoIdempotencyKey(body, scope)
+  const recorded = key ? newChatReplays.get(key) : undefined
+  if (recorded) return recorded
+  const answer = run()
+  if (key) newChatReplays.set(key, answer)
+  return answer
+}
+
+fixtures.push(
+  {
+    method: 'POST',
+    path: /^\/api\/v1\/assistant\/conversations$/,
+    handler: (request) => withNewChatReplay('conversation', request.body, () => createNewChat(request.body)),
+  },
+  {
+    method: 'GET',
+    path: /^\/api\/v1\/assistant\/conversations\/(conv-new-\d+)$/,
+    handler: (_request, match) => {
+      const chat = readNewChat(match[1])
+      return { data: { conversation: chat.conversation, messages: chat.messages, next_message_cursor: null } }
+    },
+  },
+  {
+    method: 'GET',
+    path: /^\/api\/v1\/assistant\/conversations\/(conv-new-\d+)\/messages$/,
+    handler: (_request, match) => ({ data: { messages: readNewChat(match[1]).messages, next_cursor: null } }),
+  },
+  {
+    method: 'POST',
+    path: /^\/api\/v1\/assistant\/conversations\/(conv-new-\d+)\/messages$/,
+    handler: (request, match) => withNewChatReplay('message', request.body, () => addNewChatMessage(match[1], request.body)),
+  },
+  {
+    // The new-job defaults the chat's composer starts with (its default model and Agent mode), so a new /chat commits nothing.
+    method: 'GET',
+    path: /^\/api\/v1\/assistant\/conversations\/(conv-new-\d+)\/settings$/,
+    merge: true,
+    handler: (_request, match) => ({ data: { defaults: { conversation_id: match[1], default_mode: 'auto', default_planner_model_id: DEFAULT_CHAT_MODEL_ID }, job: null } }),
+  },
+  {
+    method: 'GET',
+    path: /^\/api\/v1\/assistant\/runs\/(job-new-\d+)\/status$/,
+    handler: (_request, match) => {
+      const run = newChatRunRecord(readNewChatRun(match[1]))
+      return {
+        data: {
+          run_id: run.id,
+          conversation_id: run.conversation_id,
+          state: run.state,
+          job_version: run.version,
+          error_code: null,
+          error_message: null,
+          started_at: run.started_at,
+          completed_at: run.completed_at,
+          failed_at: null,
+          cancelled_at: run.cancelled_at,
+          updated_at: run.updated_at,
+        },
+      }
+    },
+  },
+  {
+    method: 'GET',
+    path: /^\/api\/v1\/assistant\/runs\/(job-new-\d+)\/events$/,
+    handler: (request, match) => {
+      const run = readNewChatRun(match[1])
+      const after = Number(request.query.get('after_sequence')) || 0
+      const limit = Number(request.query.get('limit')) || 100
+      return { data: { events: run.events.filter((event) => event.sequence > after).slice(0, limit) } }
+    },
+  },
+  {
+    method: 'POST',
+    path: /^\/api\/v1\/assistant\/runs\/(job-new-\d+)\/stop$/,
+    handler: (_request, match) => {
+      const run = readNewChatRun(match[1])
+      const running = run.state === 'running'
+      if (running) run.state = 'cancelled'
+      const event = running ? pushNewChatEvent(run, 'run.cancelled', { state: 'cancelled' }) : null
+      return { data: { run_id: run.id, state: run.state, cancelled: running, cancel_requested: running, replayed: false, event, skipped: !running } }
+    },
+  },
+  // A new chat's answer is plain text: no production job behind it (no plan card, no final video, no replan).
+  {
+    method: 'GET',
+    path: /^\/api\/v1\/production-launch\/jobs\/job-new-\d+$/,
+    handler: () => {
+      throw mockError(404, 'PRODUCTION_JOB_NOT_FOUND', 'Bu işin üretim planı yok.')
+    },
+  },
+  { method: 'GET', path: /^\/api\/v1\/final-render\/jobs\/job-new-\d+$/, handler: () => ({ data: { decision: null, export: null } }) },
+  {
+    method: 'GET',
+    path: /^\/api\/v1\/assistant-plan-replans\/jobs\/(job-new-\d+)$/,
+    handler: (_request, match) => ({ data: { schema_version: 'assistant_plan_replan_state_v1', job_id: match[1], updating: false, latest: null } }),
   },
 )
 

@@ -205,5 +205,15 @@ export function useComposerModeControl(input: {
     ? { prompt, confirm: () => void confirmConsent(), dismiss: dismissConsent }
     : null), [confirmConsent, dismissConsent, prompt])
 
-  return { value, options, pending, view, select, commitInitialMode, fullAccessConsent }
+  /** The pick before a conversation exists (and the consent a Full access pick was confirmed with). */
+  const draft = React.useMemo<ComposerModeDraft>(() => ({ mode: draftMode, consentId: draftConsentId }), [draftConsentId, draftMode])
+  /** A new chat started elsewhere (the new tab) brings its pick; it is committed on the first send like a local one. */
+  const restoreDraft = React.useCallback((next: ComposerModeDraft) => {
+    setDraftMode(next.mode)
+    setDraftConsentId(next.mode === 'auto_full' ? next.consentId : null)
+  }, [])
+
+  return { value, options, pending, view, select, commitInitialMode, fullAccessConsent, draft, restoreDraft }
 }
+
+export type ComposerModeDraft = { mode: ComposerMode; consentId: string | null }

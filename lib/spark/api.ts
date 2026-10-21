@@ -116,3 +116,8 @@ export async function getSparkProject(projectId: string, options: { signal?: Abo
 export function sparkProjectHref(projectId: string) {
   return `/spark/${encodeURIComponent(projectId)}`
 }
+
+/** "Yeni proje": the workspace on Sohbet in `channelId`, before the project exists (`SparkNewProjectPage`). */
+export function newSparkProjectHref(channelId: string) {
+  return `/spark/new?channel=${encodeURIComponent(channelId)}`
+}

@@ -96,7 +96,7 @@ export function ChannelSwitcher({
       type="button"
       disabled={loading}
       className={cn(
-        'group flex min-w-0 items-center rounded-[9px] text-left text-sidebar-foreground outline-none transition-colors hover:bg-sidebar-accent/80 focus-visible:ring-2 focus-visible:ring-sidebar-ring data-[state=open]:bg-sidebar-accent dark:hover:bg-muted/55',
+        'group flex min-w-0 items-center rounded-[9px] text-left text-sidebar-foreground outline-none transition-colors hover:bg-sidebar-accent/80 focus-visible:ring-2 focus-visible:ring-sidebar-ring data-[state=open]:bg-sidebar-accent',
         loading && 'cursor-default hover:bg-transparent',
         collapsed
           ? 'h-10 w-10 justify-center p-0'
@@ -249,7 +249,7 @@ function ChannelAvatar({
   return (
     <Avatar className={cn('shrink-0 rounded-lg', className)}>
       {channel.logoUrl && <AvatarImage src={channel.logoUrl} alt="" />}
-      <AvatarFallback className="rounded-lg bg-gradient-to-br from-orange-500 to-rose-500 text-[10px] font-bold text-white">
+      <AvatarFallback className="rounded-lg bg-sidebar-accent text-[10px] font-semibold text-sidebar-foreground dark:bg-white/[0.08]">
         {channel.initials}
       </AvatarFallback>
     </Avatar>

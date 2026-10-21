@@ -11,7 +11,9 @@ import en_Billing_invoices from '@/messages/en/Billing.invoices.json'
 import en_BrandAvatar_filters from '@/messages/en/BrandAvatar.filters.json'
 import en_BrandAvatar_shot_dock from '@/messages/en/BrandAvatar.shot-dock.json'
 import en_BrandVoice_library from '@/messages/en/BrandVoice.library.json'
+import en_Calendar from '@/messages/en/Calendar.json'
 import en_Channels_google_connect from '@/messages/en/Channels.google-connect.json'
+import en_Chat_agent_panel from '@/messages/en/Chat.agent-panel.json'
 import en_Chat_ai_elements from '@/messages/en/Chat.ai-elements.json'
 import en_Chat_answered_model from '@/messages/en/Chat.answered-model.json'
 import en_Chat_composer_connectors from '@/messages/en/Chat.composer-connectors.json'
@@ -48,6 +50,7 @@ import en_Community_profile from '@/messages/en/Community.profile.json'
 import en_Community_quota from '@/messages/en/Community.quota.json'
 import en_Community_report from '@/messages/en/Community.report.json'
 import en_CreditAction from '@/messages/en/CreditAction.json'
+import en_Dashboard_growth from '@/messages/en/Dashboard.growth.json'
 import en_DeveloperConsent from '@/messages/en/DeveloperConsent.json'
 import en_Library from '@/messages/en/Library.json'
 import en_Library_preview from '@/messages/en/Library.preview.json'
@@ -58,8 +61,10 @@ import en_Memory_skill_ai_create from '@/messages/en/Memory.skill-ai-create.json
 import en_Memory_skill_history from '@/messages/en/Memory.skill-history.json'
 import en_MemoryPage from '@/messages/en/MemoryPage.json'
 import en_Navigation_approvals from '@/messages/en/Navigation.approvals.json'
+import en_Navigation_calendar from '@/messages/en/Navigation.calendar.json'
 import en_Navigation_developer from '@/messages/en/Navigation.developer.json'
 import en_Navigation_recent_chats from '@/messages/en/Navigation.recent-chats.json'
+import en_Navigation_work_tabs from '@/messages/en/Navigation.work-tabs.json'
 import en_NewTheme_brand_kits from '@/messages/en/NewTheme.brand-kits.json'
 import en_NewTheme_brand_library from '@/messages/en/NewTheme.brand-library.json'
 import en_NewTheme_connector_accounts from '@/messages/en/NewTheme.connector-accounts.json'
@@ -86,7 +91,9 @@ import tr_Billing_invoices from '@/messages/tr/Billing.invoices.json'
 import tr_BrandAvatar_filters from '@/messages/tr/BrandAvatar.filters.json'
 import tr_BrandAvatar_shot_dock from '@/messages/tr/BrandAvatar.shot-dock.json'
 import tr_BrandVoice_library from '@/messages/tr/BrandVoice.library.json'
+import tr_Calendar from '@/messages/tr/Calendar.json'
 import tr_Channels_google_connect from '@/messages/tr/Channels.google-connect.json'
+import tr_Chat_agent_panel from '@/messages/tr/Chat.agent-panel.json'
 import tr_Chat_ai_elements from '@/messages/tr/Chat.ai-elements.json'
 import tr_Chat_answered_model from '@/messages/tr/Chat.answered-model.json'
 import tr_Chat_composer_connectors from '@/messages/tr/Chat.composer-connectors.json'
@@ -123,6 +130,7 @@ import tr_Community_profile from '@/messages/tr/Community.profile.json'
 import tr_Community_quota from '@/messages/tr/Community.quota.json'
 import tr_Community_report from '@/messages/tr/Community.report.json'
 import tr_CreditAction from '@/messages/tr/CreditAction.json'
+import tr_Dashboard_growth from '@/messages/tr/Dashboard.growth.json'
 import tr_DeveloperConsent from '@/messages/tr/DeveloperConsent.json'
 import tr_Library from '@/messages/tr/Library.json'
 import tr_Library_preview from '@/messages/tr/Library.preview.json'
@@ -133,8 +141,10 @@ import tr_Memory_skill_ai_create from '@/messages/tr/Memory.skill-ai-create.json
 import tr_Memory_skill_history from '@/messages/tr/Memory.skill-history.json'
 import tr_MemoryPage from '@/messages/tr/MemoryPage.json'
 import tr_Navigation_approvals from '@/messages/tr/Navigation.approvals.json'
+import tr_Navigation_calendar from '@/messages/tr/Navigation.calendar.json'
 import tr_Navigation_developer from '@/messages/tr/Navigation.developer.json'
 import tr_Navigation_recent_chats from '@/messages/tr/Navigation.recent-chats.json'
+import tr_Navigation_work_tabs from '@/messages/tr/Navigation.work-tabs.json'
 import tr_NewTheme_brand_kits from '@/messages/tr/NewTheme.brand-kits.json'
 import tr_NewTheme_brand_library from '@/messages/tr/NewTheme.brand-library.json'
 import tr_NewTheme_connector_accounts from '@/messages/tr/NewTheme.connector-accounts.json'
@@ -170,7 +180,9 @@ export const messageFragments: Readonly<Record<string, readonly MessageFragment[
     { file: 'en/BrandAvatar.filters.json', namespace: 'BrandAvatar', messages: en_BrandAvatar_filters },
     { file: 'en/BrandAvatar.shot-dock.json', namespace: 'BrandAvatar', messages: en_BrandAvatar_shot_dock },
     { file: 'en/BrandVoice.library.json', namespace: 'BrandVoice', messages: en_BrandVoice_library },
+    { file: 'en/Calendar.json', namespace: 'Calendar', messages: en_Calendar },
     { file: 'en/Channels.google-connect.json', namespace: 'Channels', messages: en_Channels_google_connect },
+    { file: 'en/Chat.agent-panel.json', namespace: 'Chat', messages: en_Chat_agent_panel },
     { file: 'en/Chat.ai-elements.json', namespace: 'Chat', messages: en_Chat_ai_elements },
     { file: 'en/Chat.answered-model.json', namespace: 'Chat', messages: en_Chat_answered_model },
     { file: 'en/Chat.composer-connectors.json', namespace: 'Chat', messages: en_Chat_composer_connectors },
@@ -207,6 +219,7 @@ export const messageFragments: Readonly<Record<string, readonly MessageFragment[
     { file: 'en/Community.quota.json', namespace: 'Community', messages: en_Community_quota },
     { file: 'en/Community.report.json', namespace: 'Community', messages: en_Community_report },
     { file: 'en/CreditAction.json', namespace: 'CreditAction', messages: en_CreditAction },
+    { file: 'en/Dashboard.growth.json', namespace: 'Dashboard', messages: en_Dashboard_growth },
     { file: 'en/DeveloperConsent.json', namespace: 'DeveloperConsent', messages: en_DeveloperConsent },
     { file: 'en/Library.json', namespace: 'Library', messages: en_Library },
     { file: 'en/Library.preview.json', namespace: 'Library', messages: en_Library_preview },
@@ -217,8 +230,10 @@ export const messageFragments: Readonly<Record<string, readonly MessageFragment[
     { file: 'en/Memory.skill-history.json', namespace: 'Memory', messages: en_Memory_skill_history },
     { file: 'en/MemoryPage.json', namespace: 'MemoryPage', messages: en_MemoryPage },
     { file: 'en/Navigation.approvals.json', namespace: 'Navigation', messages: en_Navigation_approvals },
+    { file: 'en/Navigation.calendar.json', namespace: 'Navigation', messages: en_Navigation_calendar },
     { file: 'en/Navigation.developer.json', namespace: 'Navigation', messages: en_Navigation_developer },
     { file: 'en/Navigation.recent-chats.json', namespace: 'Navigation', messages: en_Navigation_recent_chats },
+    { file: 'en/Navigation.work-tabs.json', namespace: 'Navigation', messages: en_Navigation_work_tabs },
     { file: 'en/NewTheme.brand-kits.json', namespace: 'NewTheme', messages: en_NewTheme_brand_kits },
     { file: 'en/NewTheme.brand-library.json', namespace: 'NewTheme', messages: en_NewTheme_brand_library },
     { file: 'en/NewTheme.connector-accounts.json', namespace: 'NewTheme', messages: en_NewTheme_connector_accounts },
@@ -247,7 +262,9 @@ export const messageFragments: Readonly<Record<string, readonly MessageFragment[
     { file: 'tr/BrandAvatar.filters.json', namespace: 'BrandAvatar', messages: tr_BrandAvatar_filters },
     { file: 'tr/BrandAvatar.shot-dock.json', namespace: 'BrandAvatar', messages: tr_BrandAvatar_shot_dock },
     { file: 'tr/BrandVoice.library.json', namespace: 'BrandVoice', messages: tr_BrandVoice_library },
+    { file: 'tr/Calendar.json', namespace: 'Calendar', messages: tr_Calendar },
     { file: 'tr/Channels.google-connect.json', namespace: 'Channels', messages: tr_Channels_google_connect },
+    { file: 'tr/Chat.agent-panel.json', namespace: 'Chat', messages: tr_Chat_agent_panel },
     { file: 'tr/Chat.ai-elements.json', namespace: 'Chat', messages: tr_Chat_ai_elements },
     { file: 'tr/Chat.answered-model.json', namespace: 'Chat', messages: tr_Chat_answered_model },
     { file: 'tr/Chat.composer-connectors.json', namespace: 'Chat', messages: tr_Chat_composer_connectors },
@@ -284,6 +301,7 @@ export const messageFragments: Readonly<Record<string, readonly MessageFragment[
     { file: 'tr/Community.quota.json', namespace: 'Community', messages: tr_Community_quota },
     { file: 'tr/Community.report.json', namespace: 'Community', messages: tr_Community_report },
     { file: 'tr/CreditAction.json', namespace: 'CreditAction', messages: tr_CreditAction },
+    { file: 'tr/Dashboard.growth.json', namespace: 'Dashboard', messages: tr_Dashboard_growth },
     { file: 'tr/DeveloperConsent.json', namespace: 'DeveloperConsent', messages: tr_DeveloperConsent },
     { file: 'tr/Library.json', namespace: 'Library', messages: tr_Library },
     { file: 'tr/Library.preview.json', namespace: 'Library', messages: tr_Library_preview },
@@ -294,8 +312,10 @@ export const messageFragments: Readonly<Record<string, readonly MessageFragment[
     { file: 'tr/Memory.skill-history.json', namespace: 'Memory', messages: tr_Memory_skill_history },
     { file: 'tr/MemoryPage.json', namespace: 'MemoryPage', messages: tr_MemoryPage },
     { file: 'tr/Navigation.approvals.json', namespace: 'Navigation', messages: tr_Navigation_approvals },
+    { file: 'tr/Navigation.calendar.json', namespace: 'Navigation', messages: tr_Navigation_calendar },
     { file: 'tr/Navigation.developer.json', namespace: 'Navigation', messages: tr_Navigation_developer },
     { file: 'tr/Navigation.recent-chats.json', namespace: 'Navigation', messages: tr_Navigation_recent_chats },
+    { file: 'tr/Navigation.work-tabs.json', namespace: 'Navigation', messages: tr_Navigation_work_tabs },
     { file: 'tr/NewTheme.brand-kits.json', namespace: 'NewTheme', messages: tr_NewTheme_brand_kits },
     { file: 'tr/NewTheme.brand-library.json', namespace: 'NewTheme', messages: tr_NewTheme_brand_library },
     { file: 'tr/NewTheme.connector-accounts.json', namespace: 'NewTheme', messages: tr_NewTheme_connector_accounts },

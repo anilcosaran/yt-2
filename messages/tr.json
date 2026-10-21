@@ -2285,7 +2285,7 @@
   },
   "Spark": {
     "title": "Projeler",
-    "subtitle": "Bir video projesi oluştur, sonra tam ekran editörde aç.",
+    "subtitle": "Bir video projesi oluştur; her proje kendi sekmesinde, kaldığın yerden açılır.",
     "newProject": "Yeni proje",
     "recentProjects": "Son projeler",
     "emptyTitle": "Henüz projen yok",

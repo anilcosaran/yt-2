@@ -204,7 +204,7 @@ export function LibraryAssetsView({
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button variant="outline" size="sm" className={cn(activeFilters > 0 && 'border-primary/50')}>
-              <ListFilter />{t('filters')}{activeFilters > 0 && <span className="rounded-full bg-primary px-1.5 text-[10px] text-primary-foreground">{activeFilters}</span>}
+              <ListFilter />{t('filters')}{activeFilters > 0 && <span className="rounded-full bg-primary px-1.5 text-[11px] text-primary-foreground">{activeFilters}</span>}
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end" className="w-60">
@@ -447,7 +447,7 @@ export function AssetCard({
           />
           {asset.kind === 'text' && asset.text && (
             <div className="absolute inset-0 bg-card px-3 pb-3 pt-9">
-              <p className="line-clamp-5 whitespace-pre-line text-[11px] leading-4 text-muted-foreground">{asset.text}</p>
+              <p className="line-clamp-5 whitespace-pre-line text-xs leading-4 text-muted-foreground">{asset.text}</p>
             </div>
           )}
           <div className="absolute left-2 top-2 flex flex-wrap items-center gap-1">
@@ -457,8 +457,8 @@ export function AssetCard({
           <div className="absolute bottom-2 left-2 right-2 flex flex-wrap items-center gap-1">
             <AnalysisBadge state={asset.analysis.state} compact />
             {availability.state !== 'pending_analysis' && <AvailabilityBadge availability={availability} />}
-            {asset.flags.includes('duplicate') && availability.state !== 'blocked_duplicate' && <span className="rounded-md bg-violet-600/90 px-1.5 py-0.5 text-[10px] font-semibold text-white">{t('duplicate')}</span>}
-            {asset.flags.includes('low_quality') && availability.state !== 'blocked_quality' && <span className="rounded-md bg-zinc-700/90 px-1.5 py-0.5 text-[10px] font-semibold text-white">{t('lowQuality')}</span>}
+            {asset.flags.includes('duplicate') && availability.state !== 'blocked_duplicate' && <span className="rounded-md bg-violet-600/90 px-1.5 py-0.5 text-[11px] font-semibold text-white">{t('duplicate')}</span>}
+            {asset.flags.includes('low_quality') && availability.state !== 'blocked_quality' && <span className="rounded-md bg-zinc-700/90 px-1.5 py-0.5 text-[11px] font-semibold text-white">{t('lowQuality')}</span>}
           </div>
         </div>
         <div className="space-y-1 px-3 pb-3 pt-2.5">

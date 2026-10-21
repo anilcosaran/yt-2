@@ -109,6 +109,7 @@ import {
   type BillingQuotaUsage,
 } from '@/lib/billing/api'
 import { useActiveChannel } from '@/lib/channel/active-channel'
+import { AddToCalendarButton } from '@/components/calendar/schedule-dialog'
 import { WorkspaceChannelRequired } from '@/components/channel/workspace-channel-required'
 import { WorkspaceRouteLoading } from '@/components/common/workspace-route-loading'
 import { isAuthClientError } from '@/lib/auth/errors'
@@ -11791,6 +11792,12 @@ function ToolBatchOutputGalleryContent({
                   >
                     <Upload className="size-3.5" />
                   </Link>
+                ) : null}
+                {shortsGrid && storageObjectId && storageReadyForDelivery ? (
+                  <AddToCalendarButton
+                    item={{ id: `short:${storageObjectId}`, title: toolCopy(item.label), thumbnail: thumbnailUrl, source: 'short' }}
+                    className="flex size-7 items-center justify-center rounded-md text-muted-foreground hover:bg-accent hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                  />
                 ) : null}
                 <button
                   type="button"

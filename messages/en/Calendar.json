@@ -1,0 +1,63 @@
+{
+  "title": "Calendar",
+  "subtitle": "Your channel's videos: published, scheduled and awaiting review.",
+  "week": "Week",
+  "month": "Month",
+  "today": "Today",
+  "viewLabel": "View",
+  "previousWeek": "Previous week",
+  "nextWeek": "Next week",
+  "previousMonth": "Previous month",
+  "nextMonth": "Next month",
+  "status": {
+    "live": "Live",
+    "scheduled": "Scheduled",
+    "review": "Awaiting review",
+    "approved": "Approved"
+  },
+  "legend": "Statuses",
+  "source": {
+    "spark": "Spark",
+    "short": "Short",
+    "flow": "Flow"
+  },
+  "automation": "Automation",
+  "automationHint": "A scheduled automation in Flow; it is not changed here.",
+  "views": "{count} views",
+  "suggestedSlot": "{slot} · {reason}",
+  "slotReason": {
+    "peak": "most active hour",
+    "evening": "strong evening views",
+    "weekend": "weekend peak"
+  },
+  "fill": "Fill",
+  "fillHint": "Put one of your approved clips at this time.",
+  "placeHere": "Put here",
+  "noApprovedClips": "No approved clips waiting.",
+  "makeClips": "Make clips in Viral Clips",
+  "approve": "Approve",
+  "dragHint": "Drag to another day to reschedule",
+  "pastDay": "A video cannot be moved to a past day.",
+  "dayCount": "{day}: {count, plural, one {# video} other {# videos}}",
+  "more": "+{count} more",
+  "videoCount": "{count, plural, one {# video} other {# videos}}",
+  "emptyWeek": "No videos on the calendar this week. Start by filling an empty strong slot.",
+  "emptyMonth": "No videos on the calendar this month.",
+  "publishNow": "Publish now",
+  "schedule": "Schedule",
+  "added": "Added to calendar",
+  "viewInCalendar": "View in calendar",
+  "addToCalendar": "Add to calendar",
+  "dialog": {
+    "title": "When should it go out?",
+    "description": "Publish the video now or pick a day and time.",
+    "mode": "Publish time",
+    "suggested": "Empty strong slots",
+    "date": "Date",
+    "time": "Time",
+    "nowAt": "It goes on the calendar as today, {time}.",
+    "pastTime": "A time in the past cannot be picked.",
+    "demoNote": "YouTube upload is not connected yet; the plan is kept on the calendar.",
+    "cancel": "Cancel"
+  }
+}

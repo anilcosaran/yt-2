@@ -1,9 +1,11 @@
 'use client'
 
 import * as React from 'react'
+import { createPortal } from 'react-dom'
 import Link from 'next/link'
 import { MousePointer2 } from 'lucide-react'
 
+import { ScheduleDialog } from '@/components/calendar/schedule-dialog'
 import { AgentChain, AgentMedia, AgentQueue, AgentStepIcon, AgentSuggestions, AgentThinking, type AgentChainStep, type AgentQueueItem, type AgentStepState } from '../agent/agent-thread'
 import { PromptBox, PromptBoxChip, PromptBoxInput, PromptBoxSend, PromptBoxSpacer } from '../agent/prompt-box'
 import { Icon } from '../tools/studio-parts'
@@ -791,8 +793,8 @@ export function LabStage({ run }: { run: LabRun }) {
     <div className="stage lb-stage">
       <div className="lb-stage-in">
         <div className={`frame lb-frame${onFrame ? ' lb-agent-on' : ''}`} data-agent-target="frame">
+          {/* Before production the frame stays empty and says nothing: the chat is the one place that says how to start. */}
           {live ? <SceneThumb scene={scene} run={run} targets /> : null}
-          {!live ? <span className="lb-frame-empty">Boş tuval</span> : null}
           {generating ? <span className="lb-frame-empty shimmer">{assetById(scene.assetId)?.kind === 'generate' ? 'Üretiliyor…' : 'Yerleştiriliyor…'}</span> : null}
         </div>
       </div>
@@ -855,18 +857,40 @@ export function AgentCursor({ scope, run, targetOf }: { scope: React.RefObject<H
   )
 }
 
+/** The tools on the rail, after the view's own lead (Scenes). */
 const TOOLS = [
-  { id: 'avatar', icon: 'user', label: 'Avatar' },
-  { id: 'text', icon: 'type', label: 'Metin' },
   { id: 'media', icon: 'image', label: 'Medya' },
+  { id: 'text', icon: 'type', label: 'Metin' },
+  { id: 'captions', icon: 'captions', label: 'Altyazı' },
+]
+/** The tools behind "Daha fazla". */
+const MORE_TOOLS = [
+  { id: 'avatar', icon: 'user', label: 'Avatar' },
   { id: 'shape', icon: 'shapes', label: 'Şekil' },
   { id: 'motion', icon: 'motion', label: 'Hareket' },
-  { id: 'captions', icon: 'captions', label: 'Altyazı' },
   { id: 'record', icon: 'record', label: 'Kayıt' },
 ]
 
-/** The editor's tool rail. `lead` is the first tool (Scenes), which the view wires to its drawer. */
+/**
+ * The editor's tool rail. `lead` is the first tool (Scenes), which the view wires to its drawer. Three tools follow
+ * it; the rest open from "Daha fazla" as a small menu beside the rail.
+ */
 export function ToolRail({ lead }: { lead?: React.ReactNode }) {
+  const trigger = React.useRef<HTMLButtonElement>(null)
+  const [more, setMore] = React.useState<{ left: number; top: number; shell: Element } | null>(null)
+  const toggleMore = () => {
+    const button = trigger.current
+    const shell = button?.closest('.st-shell')
+    if (more || !button || !shell) return setMore(null)
+    // The shell is a size container, so a fixed box is placed from its corner, not the window's.
+    const box = button.getBoundingClientRect()
+    const frame = shell.getBoundingClientRect()
+    setMore({ left: box.right - frame.left + 6, top: box.top - frame.top, shell })
+  }
+  const close = () => {
+    setMore(null)
+    trigger.current?.focus()
+  }
   return (
     <nav className="rail">
       {lead}
@@ -876,6 +900,26 @@ export function ToolRail({ lead }: { lead?: React.ReactNode }) {
           {tool.label}
         </button>
       ))}
+      <button ref={trigger} type="button" className={`rail-btn lb-rail-more${more ? ' on' : ''}`} aria-haspopup="menu" aria-expanded={Boolean(more)} onClick={toggleMore}>
+        <Icon name="more" />
+        Daha fazla
+      </button>
+      {more
+        ? createPortal(
+            <>
+              <div className="lb-menu-veil" onPointerDown={() => setMore(null)} />
+              <div className="lb-menu lb-rail-menu" role="menu" aria-label="Diğer araçlar" style={{ left: more.left, top: more.top }} onKeyDown={(event) => event.key === 'Escape' && close()}>
+                {MORE_TOOLS.map((tool, index) => (
+                  <button key={tool.id} type="button" role="menuitem" autoFocus={index === 0} onClick={close}>
+                    <Icon name={tool.icon} />
+                    {tool.label}
+                  </button>
+                ))}
+              </div>
+            </>,
+            more.shell,
+          )
+        : null}
     </nav>
   )
 }
@@ -898,11 +942,14 @@ function SaveMark({ run }: { run: LabRun }) {
 
 /**
  * The project's top bar, the same in every view: the project by its name (the mark leads back to the projects)
- * and its save mark, the view switch in the exact middle, the actions.
+ * and its save mark, the view switch in the exact middle, the actions. "Dışa aktar" opens the shared schedule
+ * dialog (Şimdi yayınla / Planla); the project stays on screen, the toast leads to the calendar.
  */
 export function TopBar({ run, children }: { run: LabRun; children?: React.ReactNode }) {
   const fresh = run.state.phase === 'empty'
   const views = React.useContext(ViewSwitchContext)
+  const [exporting, setExporting] = React.useState(false)
+  const title = projectTitle(run)
   return (
     <header className="top lb-top">
       <div className="lb-top-l">
@@ -915,8 +962,13 @@ export function TopBar({ run, children }: { run: LabRun; children?: React.ReactN
       {views}
       <div className="lb-top-r">
         {children}
-        <button type="button" className="btn primary" disabled={run.state.phase !== 'done'}>Oluştur</button>
+        <button type="button" className="btn primary" disabled={run.state.phase !== 'done'} aria-haspopup="dialog" onClick={() => setExporting(true)}>Dışa aktar</button>
       </div>
+      <ScheduleDialog
+        open={exporting}
+        onOpenChange={setExporting}
+        item={{ id: `spark:${title}`, title, thumbnail: '/flows/tips.png', source: 'spark' }}
+      />
     </header>
   )
 }

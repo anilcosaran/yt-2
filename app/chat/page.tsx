@@ -4,47 +4,30 @@ import Link from 'next/link'
 import dynamic from 'next/dynamic'
 import { useRouter, useSearchParams } from 'next/navigation'
 import * as React from 'react'
-import { useQueries, useQuery, type UseQueryOptions } from '@tanstack/react-query'
+import { useQueries, type UseQueryOptions } from '@tanstack/react-query'
 import {
   ArrowUpRight,
-  AtSign,
   Bot,
   Check,
-  ChevronDown,
   ChevronLeft,
   ChevronRight,
   CircleAlert,
-  Clock,
   Copy,
-  Cpu,
   CreditCard,
   Download,
   ExternalLink,
-  File as FileIcon,
   Film,
-  Image as ImageIcon,
-  Images as ImagesIcon,
-  LayoutTemplate,
   Loader2,
-  Lock,
   Maximize2,
-  Mic,
   MoreHorizontal,
   PenLine,
   PencilLine,
   Play,
-  Plus,
-  RectangleHorizontal,
-  RectangleVertical,
   RefreshCw,
-  Search,
   ShieldCheck,
-  SlidersHorizontal,
   Sparkles,
   Square,
-  Type as TypeIcon,
   Upload,
-  UserRound,
   Workflow as WorkflowIcon,
   X,
 } from 'lucide-react'
@@ -59,15 +42,14 @@ import { publishConnectionRequirementEvent } from '@/lib/connector/requirement-e
 import { readSparkHandoff } from '@/lib/spark/spark-entry'
 import { SkillAuthoringCards } from '@/components/chat/skill-authoring-cards'
 import { useProductionG1Open, useProductionPlanShown } from '@/components/chat/production-g1-card'
-import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList, CommandSeparator } from '@/components/ui/command'
 import { ProductionRunSend, ProductionSuggestions } from '@/components/chat/production-flow'
-import { PromptBox, PromptBoxChip, PromptBoxInput, PromptBoxSend, PromptBoxSpacer } from '@/components/spark/agent/prompt-box'
+import { PromptBoxSend } from '@/components/spark/agent/prompt-box'
 import { AgentChain, AgentMedia, AgentQuestion, AgentScope, AgentSprite, AgentThinking, AgentTurn, type AgentChainStep, type AgentStepState } from '@/components/spark/agent/agent-thread'
 import { VideoProductionCard } from '@/components/chat/video-production-card'
 import { ScriptReviewHostProvider, type ScriptReviewHost } from '@/components/chat/script-review/script-review-host'
 import { ScriptReviewSidePanel } from '@/components/chat/script-review/script-review-side-panel'
 import { FinalRenderJobCard } from '@/components/chat/final-render-card'
-import { FullAccessLimitNote, FullAccessWarningCard } from '@/components/chat/full-access-warning-card'
+import { FullAccessLimitNote } from '@/components/chat/full-access-warning-card'
 import { findFullAccessLimitAsk } from '@/lib/assistant/full-access-flow'
 import { isProductionG1Reply } from '@/lib/assistant/production-launch-api'
 import { readInteractionQuestionOptions } from '@/lib/assistant/interaction-api'
@@ -75,7 +57,6 @@ import { readSkillAuthoringCards } from '@/lib/assistant/skill-authoring'
 import { classifyAssistantRunFailure, findRunTriggerMessage } from '@/lib/assistant/run-failure'
 import { answeredModelLabel, readAnsweredModelId } from '@/lib/assistant/answered-model'
 import { WorkspaceRouteLoading } from '@/components/common/workspace-route-loading'
-import { isStorageMediaSelectable } from '@/components/storage/storage-media-input'
 import type { WorkflowCanvasImageModel, WorkflowCanvasSnapshot } from '@/components/workflows/workflow-canvas'
 import { Button } from '@/components/ui/button'
 import {
@@ -84,11 +65,6 @@ import {
   DialogDescription,
   DialogTitle,
 } from '@/components/ui/dialog'
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from '@/components/ui/popover'
 import { Skeleton } from '@/components/ui/skeleton'
 import {
   Tooltip,
@@ -97,8 +73,6 @@ import {
   TooltipTrigger,
 } from '@/components/ui/tooltip'
 import {
-  ASSISTANT_COMPOSER_CATALOG_QUERY_KEY,
-  ASSISTANT_CONVERSATION_SETTINGS_QUERY_KEY,
   ASSISTANT_CONVERSATIONS_UPDATED_EVENT,
   addAssistantMessage,
   answerAssistantRun,
@@ -106,10 +80,7 @@ import {
   createAssistantIdempotencyKey,
   createAssistantConversation,
   createAssistantEventSource,
-  getAssistantComposerCatalog,
   getAssistantConversation,
-  getAssistantConversationSettings,
-  issueAssistantPlannerModelCommand,
   getAssistantRunStatus,
   inferAssistantRunState,
   listAssistantConversationMessages,
@@ -122,31 +93,14 @@ import {
   shouldApplyAssistantRunStatus,
   stopAssistantRun,
   type AssistantConversation,
-  type AssistantComposerCatalog,
-  type AssistantComposerSelection,
   type AssistantMessage,
   type AssistantRunEvent,
   type AssistantRunState,
 } from '@/lib/assistant/api'
 import {
-  classifyPlannerModelCommand,
-  plannerModelHint,
-  plannerModelView,
-  shouldRetryPlannerModelForJobOnly,
-  type PlannerModelCommandResult,
-  type PlannerModelView,
-} from '@/lib/assistant/planner-model-selection'
-import {
   readAssistantApprovalTarget,
   type AssistantApprovalTarget,
 } from '@/lib/assistant/approval-target'
-import { composerMentionToken, useTypedComposer, type TypedComposerMenuGroup, type TypedComposerMenuItem } from '@/lib/assistant/composer/use-typed-composer'
-import { isCommandChip, type ComposerMentionChip } from '@/lib/assistant/composer/composer-state'
-import { HoverCard, HoverCardContent, HoverCardTrigger } from '@/components/ui/hover-card'
-import { useSlashMenuGroups } from '@/lib/assistant/composer/use-slash-menu'
-import { useMentionMenuGroups } from '@/lib/assistant/composer/use-mention-menu'
-import { relabelFromCandidates, type ComposerResourceCandidate } from '@/lib/assistant/composer/resource-mentions'
-import { useComposerResourceDescribe } from '@/components/chat/composer/resource-describe'
 import { useConversationJobs } from '@/lib/assistant/composer/use-conversation-jobs'
 import {
   isTerminalJobState,
@@ -161,17 +115,28 @@ import {
 } from '@/lib/assistant/composer/conversation-jobs'
 import type { ComposerJobTarget, ComposerReplyTo } from '@/lib/assistant/composer/message-context'
 import { ComposerJobFocusChip, JobTargetChoicePanel, type ComposerJobOption } from '@/components/chat/composer/job-target-parts'
-import { useComposerModeControl } from '@/lib/assistant/composer/use-composer-mode'
 import { prepareChatComposerMessage } from '@/lib/assistant/composer/chat-submit'
-import { ComposerModeChip, TypedComposerChips, TypedComposerMenu, menuItemDomId } from '@/components/chat/composer/typed-composer-parts'
 import { ChatStartGallery, type ChatStartExample, type ChatStartMode } from '@/components/chat/chat-start-gallery'
-import { readComposerOutputCountMax } from '@/lib/assistant/composer/composer-output-count'
-import { useComposerOutputCount, type ComposerOutputCountControl } from '@/lib/assistant/composer/use-composer-output-count'
-import { ComposerOutputCountSection, composerOutputCountButtonValue } from '@/components/chat/composer/composer-output-count-section'
-import { connectionSwitchGroupBody } from '@/components/chat/composer/connection-switch-rows'
-import { useMcpTemplateInsert } from '@/components/chat/composer/mcp-template-insert'
-import { buildComposerMenuStops, effectiveComposerMenuIndex } from '@/lib/assistant/composer/composer-menu-stops'
-import { ComposerAddConnectors } from '@/components/chat/composer/composer-add-connectors'
+import { ChatComposer, ChatComposerDialogs } from '@/components/chat/composer/chat-composer'
+import { appendComposerToken, useChatComposer } from '@/components/chat/composer/use-chat-composer'
+import { clampVideoDurationSeconds, serializeComposerSelection, toWorkflowCanvasImageModel } from '@/components/chat/composer/composer-settings'
+import {
+  AttachmentKindIcon,
+  formatAttachmentMeta,
+  getMediaThumbnailUrl,
+  inferAttachmentKind,
+  isEmbeddableVideoUrl,
+  isHlsVideoUrl,
+  isImageMediaUrl,
+  isVideoMediaUrl,
+  isVisualAttachment,
+  looksLikeYoutorchMediaUrl,
+  type ChatAssetAttachment,
+  type ChatAssetKind,
+} from '@/components/chat/composer/chat-attachments'
+import { getChatCopy, useChatCopy, type ChatCopy, type ChatLocale, type ChatTranslator } from '@/components/chat/chat-copy'
+import { ChatInlineAlert } from '@/components/chat/chat-inline-alert'
+import { takeNewChatHandoff, type NewChatHandoff } from '@/lib/assistant/composer/new-chat-handoff'
 import {
   buildAssistantConversationIdempotencyKey,
   createAssistantMessageAttemptStore,
@@ -199,33 +164,18 @@ import {
   type WorkflowDraftPreviewSource,
 } from '@/lib/workflows/dsl-mapper'
 import {
-  completeStorageUpload,
   getStorageDeliveryUrls,
   getStorageDownloadUrl,
   getStoragePlaybackUrl,
-  initiateStorageUpload,
-  listStorageObjects,
-  resolveStorageUploadTransport,
   storageDeliveryRefreshDelay,
-  uploadDirectContent,
-  uploadProxyContent,
-  uploadTusContent,
   type DeliveryUrlsBatchResult,
-  type InitiateUploadResult,
-  type StorageListInput,
-  type StorageObjectItem,
 } from '@/lib/storage/api'
-import { useStorageThumbnailUrl } from '@/lib/storage/use-storage-thumbnail-url'
 import { cn } from '@/lib/utils'
 import type { Workflow } from '@/lib/types'
 import { UiText } from '@/components/i18n/ui-text'
 import { useLocalizedError } from '@/hooks/use-localized-error'
-import { MemoryIngestionCheckbox, MemoryUploadSummaryLine } from '@/components/memory/memory-ingestion-checkbox'
-import { useMemoryUploadChoice, type MemoryUploadChoice } from '@/components/memory/use-memory-upload-choice'
-import type { StorageMemoryIngestionRequest } from '@/lib/storage/api'
 import { useLocale, useTranslations } from 'next-intl'
 
-type ChatLocale = 'tr' | 'en'
 
 type LiveAssistantDraft = {
   runId: string
@@ -247,22 +197,6 @@ type PaymentWaitInfo = {
   reason: string | null
 }
 
-type ChatAssetKind = 'image' | 'video' | 'audio' | 'document' | 'file'
-
-type ChatAssetAttachment = {
-  id: string
-  objectId?: string | null
-  channelId?: string | null
-  kind: ChatAssetKind
-  name: string
-  url: string | null
-  previewUrl?: string | null
-  mimeType?: string | null
-  source: 'storage' | 'upload' | 'generated'
-  sizeBytes?: string | null
-  status?: string | null
-  metadata?: Record<string, unknown>
-}
 
 type WorkflowDraftAttachment = WorkflowDraftPreviewSource & {
   messageId: string
@@ -333,157 +267,7 @@ type ActiveRunVisual = {
   steps: ActiveRunVisualStep[]
 }
 
-type MediaPickerView = 'image' | 'video' | 'uploads'
-type ComposerChatProfile = AssistantComposerSelection['chat_profile']
-type ComposerApprovalMode = AssistantComposerSelection['approval_mode']
-type ComposerAspectRatio = AssistantComposerSelection['aspect_ratio']
 
-type ComposerSettings = {
-  chatProfile: ComposerChatProfile
-  /** P01A-11: exact chat model picked before the conversation exists; committed on the first send. */
-  chatModelId: string | null
-  approvalMode: ComposerApprovalMode
-  durationSeconds: number
-  aspectRatio: ComposerAspectRatio
-  imageModelId: string | null
-  videoModelId: string | null
-  imageTask: string
-  imageSize: string
-  imageResolution: string
-  imageQuality: string
-  imageOutputFormat: string
-}
-
-type ComposerProfileOption = {
-  id: ComposerChatProfile
-  label: string
-  detail: string
-  credits: number | null
-  modelId: string
-  modelLabel: string
-}
-
-type ComposerAspectOption = {
-  id: ComposerAspectRatio
-  label: string
-  detail: string
-  icon: React.ComponentType<{ className?: string }>
-}
-
-type ComposerModelOption = {
-  id: string
-  label: string
-  description: string
-  quality: string
-  cost: string
-  speed: string
-  estimatedCredits: number | null
-  inputSchema: Record<string, unknown>
-  pricingRule: Record<string, unknown>
-  rateLimit: Record<string, unknown>
-  capacityLimit: Record<string, unknown>
-}
-
-type ComposerInputOption = {
-  id: string
-  label: string
-  detail: string
-}
-
-type ComposerApprovalOption = {
-  id: ComposerApprovalMode
-  label: string
-  detail: string
-}
-
-type ComposerOptions = {
-  chatProfiles: ComposerProfileOption[]
-  /** P01A-11: exact supported chat models of the catalog (a Fast/Pro/Max profile is not a model identity). */
-  chatModels: ComposerModelOption[]
-  approvalModes: ComposerApprovalOption[]
-  aspectRatios: ComposerAspectOption[]
-  imageModels: ComposerModelOption[]
-  videoModels: ComposerModelOption[]
-}
-
-const FALLBACK_IMAGE_SCHEMA: Record<string, unknown> = {
-  tasks: ['text_to_image', 'image_to_image', 'reference_image', 'first_last_frame'],
-  default_task: 'text_to_image',
-  sizes: ['auto', '1024x1024', '1536x1024', '1024x1536'],
-  default_size: 'auto',
-  qualities: ['auto', 'low', 'medium', 'high'],
-  default_quality: 'auto',
-  backgrounds: ['auto', 'opaque', 'transparent'],
-  default_background: 'auto',
-  output_formats: ['png', 'jpeg', 'webp'],
-  default_output_format: 'png',
-  output_compression_supported: true,
-  output_compression_formats: ['jpeg', 'webp'],
-  default_output_compression: 100,
-  input_fidelity_supported: true,
-  input_fidelities: ['low', 'high'],
-  default_input_fidelity: 'low',
-  max_images_per_run: 10,
-}
-
-function getFallbackComposerImageModels(t: ChatTranslator): ComposerModelOption[] {
-  return [
-  {
-    id: 'flux-2-klein-4b',
-    label: 'FLUX.2 Klein 4B',
-    description: t('composer.fluxDescription'),
-    quality: t('composer.high'),
-    cost: t('composer.resolutionCredits'),
-    speed: t('composer.fastSpeed'),
-    estimatedCredits: null,
-    inputSchema: {
-      tasks: ['text_to_image'],
-      default_task: 'text_to_image',
-      aspect_ratios: ['1:1', '2:3', '3:2', '3:4', '4:3', '4:5', '5:4', '9:16', '16:9', '21:9'],
-      default_aspect_ratio: '1:1',
-      resolutions: ['1k', '2k', '4k'],
-      default_resolution: '1k',
-      styles: ['auto', 'natural', 'vivid', 'cinematic', 'anime'],
-      default_style: 'auto',
-      max_images_per_run: 1,
-    },
-    pricingRule: {},
-    rateLimit: {},
-    capacityLimit: {},
-  },
-  createFallbackComposerImageModel(t, 'gpt-image-2', 'GPT Image 2', {
-    quality: t('composer.highest'),
-    description: t('composer.defaultImageDescription'),
-    inputSchema: {
-      ...FALLBACK_IMAGE_SCHEMA,
-      tasks: ['text_to_image', 'image_to_image', 'reference_image'],
-      input_fidelity_supported: false,
-    },
-  }),
-]
-}
-
-function createFallbackComposerImageModel(
-  t: ChatTranslator,
-  id: string,
-  label: string,
-  overrides: Partial<Pick<ComposerModelOption, 'description' | 'quality' | 'speed' | 'inputSchema'>> = {},
-): ComposerModelOption {
-  return {
-    id,
-    label,
-    description: overrides.description ?? t('composer.genericImageDescription', { model: label }),
-    quality: overrides.quality ?? t('composer.high'),
-    cost: t('composer.imagePricing'),
-    speed: overrides.speed ?? t('composer.mediumSpeed'),
-    estimatedCredits: null,
-    inputSchema: overrides.inputSchema ?? FALLBACK_IMAGE_SCHEMA,
-    // Prices come from the current server catalog, including the retail tariff.
-    pricingRule: {},
-    rateLimit: {},
-    capacityLimit: {},
-  }
-}
 
 const TERMINAL_RUN_STATES = new Set<AssistantRunState>(['completed', 'failed', 'cancelled'])
 const ACTIVE_RUN_STATES = new Set<AssistantRunState>([
@@ -506,17 +290,11 @@ const TERMINAL_CONVERSATION_REFRESH_RETRY_DELAYS_MS = [2_500, 5_000, 10_000] as 
 const INLINE_REVIEW_EVENT_DEBOUNCE_MS = 250
 const DRAFT_REVEAL_INTERVAL_MS = 48
 const CHAT_QUERY_PARAM = 'id'
-const CHAT_COMPOSER_MENU_ID = 'chat-composer-menu'
 const LEGACY_CHAT_QUERY_PARAM = 'chat'
-const CHAT_MEDIA_UPLOAD_ACCEPT = 'image/*,video/*,audio/*,.pdf,.txt,.md,.doc,.docx,.ppt,.pptx,.csv,.json'
 const CHAT_STORAGE_DELIVERY_BATCH_SIZE = 64
 const CHAT_STORAGE_DELIVERY_REFERENCE_LIMIT = 1_024
 const CHAT_STORAGE_DELIVERY_PENDING_POLL_MAX_MS = 20 * 60_000
 const MEDIA_URL_PATTERN = /https?:\/\/[^\s<>)"']+/gi
-const COMPOSER_VIDEO_DURATION_MIN_SECONDS = 5
-const IMAGE_GENERATE_CAPABILITY = 'image.generate'
-const VIDEO_GENERATE_CAPABILITY = 'video.generate'
-const DEFAULT_IMAGE_MODEL_ID = 'flux-2-klein-4b'
 const WORKSPACE_PANEL_DEFAULT_WIDTH = 1040
 const WORKSPACE_PANEL_MIN_WIDTH = 420
 const WORKSPACE_PANEL_MAX_WIDTH = 1280
@@ -528,127 +306,7 @@ const WorkflowCanvas = dynamic(
   },
 )
 
-const COMPOSER_DURATION_PRESETS = [15, 30, 60, 180, 300] as const
 
-const COMPOSER_DURATION_SLIDER_STEP_SECONDS = 1
-type ComposerDurationUnit = 'seconds' | 'minutes'
-const COMPOSER_DEFAULT_SETTINGS: ComposerSettings = {
-  chatProfile: 'fast',
-  chatModelId: null,
-  // Q62: a new conversation starts in Auto (legacy spelling 'autonomous').
-  approvalMode: 'autonomous',
-  durationSeconds: 30,
-  aspectRatio: '16:9',
-  imageModelId: null,
-  videoModelId: null,
-  imageTask: 'text_to_image',
-  imageSize: '',
-  imageResolution: '',
-  imageQuality: 'auto',
-  imageOutputFormat: 'png',
-}
-
-function getFallbackComposerProfileOptions(t: ChatTranslator): ComposerProfileOption[] {
-  return [
-    { id: 'fast', label: t('composer.fast'), detail: t('composer.fastDetail'), credits: null, modelId: 'auto-llm', modelLabel: 'Auto LLM' },
-    { id: 'pro', label: t('composer.pro'), detail: t('composer.proDetail'), credits: null, modelId: 'auto-llm', modelLabel: 'Auto LLM' },
-    { id: 'max', label: t('composer.max'), detail: t('composer.maxDetail'), credits: null, modelId: 'auto-llm', modelLabel: 'Auto LLM' },
-  ]
-}
-
-function getFallbackComposerApprovalOptions(t: ChatTranslator): ComposerApprovalOption[] {
-  return [
-    { id: 'ask', label: t('composer.ask'), detail: t('composer.askDetail') },
-    { id: 'autonomous', label: t('composer.auto'), detail: t('composer.autoDetail') },
-  ]
-}
-
-function getFallbackComposerAspectOptions(t: ChatTranslator): ComposerAspectOption[] {
-  return [
-    { id: '16:9', label: t('composer.landscape'), detail: t('composer.landscapeDetail'), icon: RectangleHorizontal },
-    { id: '9:16', label: t('composer.short'), detail: t('composer.shortDetail'), icon: RectangleVertical },
-    { id: '1:1', label: t('composer.square'), detail: t('composer.squareDetail'), icon: Square },
-  ]
-}
-
-type ChatTranslator = (key: string, values?: Record<string, string | number>) => string
-
-function getChatCopy(t: ChatTranslator) {
-  return {
-    ready: t('copy.ready'),
-    channelMissing: t('copy.channelMissing'),
-    noMessages: t('copy.noMessages'),
-    selectChannel: t('copy.selectChannel'),
-    placeholder: t('copy.placeholder'),
-    thinking: t('copy.thinking'),
-    finishing: t('copy.finishing'),
-    stopRun: t('copy.stopRun'),
-    stoppingRun: t('copy.stoppingRun'),
-    sendMessage: t('copy.sendMessage'),
-    addContext: t('copy.addContext'),
-    voice: t('copy.voice'),
-    model: t('copy.model'),
-    creditTitle: t('copy.creditTitle'),
-    creditDescription: t('copy.creditDescription'),
-    topUp: t('copy.topUp'),
-    continueAfterTopUp: t('copy.continueAfterTopUp'),
-    amountApprovalTitle: t('copy.amountApprovalTitle'),
-    amountApprovalDescription: t('copy.amountApprovalDescription'),
-    approveHigherAmount: t('copy.approveHigherAmount'),
-    approvalTitle: t('copy.approvalTitle'),
-    approvalDescription: t('copy.approvalDescription'),
-    approve: t('copy.approve'),
-    approvalProcessing: t('copy.approvalProcessing'),
-    startApproved: t('copy.startApproved'),
-    actionPendingTitle: t('copy.actionPendingTitle'),
-    actionPendingDescription: t('copy.actionPendingDescription'),
-    reject: t('copy.reject'),
-    revise: t('copy.revise'),
-    loadErrorTitle: t('copy.loadErrorTitle'),
-    newChat: t('copy.newChat'),
-    quickDecisionTitle: t('copy.quickDecisionTitle'),
-    quickDecisionDefault: t('copy.quickDecisionDefault'),
-    quickDecisionContinue: t('copy.quickDecisionContinue'),
-    quickDecisionCustomPlaceholder: t('copy.quickDecisionCustomPlaceholder'),
-    quickDecisionCustomSend: t('copy.quickDecisionCustomSend'),
-    requiredFieldsTitle: t('copy.requiredFieldsTitle'),
-    requiredFieldsPlaceholder: t('copy.requiredFieldsPlaceholder'),
-    requiredFieldsSubmit: t('copy.requiredFieldsSubmit'),
-    attachmentsTitle: t('copy.attachmentsTitle'),
-    addMenuUpload: t('copy.addMenuUpload'),
-    addMenuAssets: t('copy.addMenuAssets'),
-    uploadingMedia: t('copy.uploadingMedia'),
-    generatedEdit: t('copy.generatedEdit'),
-    openMedia: t('copy.openMedia'),
-    downloadMedia: t('copy.downloadMedia'),
-    openOriginal: t('copy.openOriginal'),
-    mediaPickerTitle: t('copy.mediaPickerTitle'),
-    mediaPickerSearch: t('copy.mediaPickerSearch'),
-    mediaPickerRecent: t('copy.mediaPickerRecent'),
-    mediaPickerImages: t('copy.mediaPickerImages'),
-    mediaPickerVideos: t('copy.mediaPickerVideos'),
-    mediaPickerUploads: t('copy.mediaPickerUploads'),
-    mediaPickerUpload: t('copy.mediaPickerUpload'),
-    mediaPickerEmpty: t('copy.mediaPickerEmpty'),
-    mediaPickerSelect: t('copy.mediaPickerSelect'),
-    mediaPickerClose: t('copy.mediaPickerClose'),
-    yes: t('copy.yes'),
-    no: t('copy.no'),
-    same: t('copy.same'),
-    different: t('copy.different'),
-    sameValue: t('copy.sameValue'),
-    differentValue: t('copy.differentValue'),
-    quickDecisionDefaultValue: t('copy.quickDecisionDefaultValue'),
-    quickDecisionContinueValue: t('copy.quickDecisionContinueValue'),
-  }
-}
-
-type ChatCopy = ReturnType<typeof getChatCopy>
-
-function useChatCopy() {
-  const t = useTranslations('Chat') as unknown as ChatTranslator
-  return React.useMemo(() => getChatCopy(t), [t])
-}
 
 export default function ChatPage() {
   return (
@@ -688,29 +346,9 @@ function ChatWorkspace() {
   const [isBooting, setIsBooting] = React.useState(false)
   const [isSending, setIsSending] = React.useState(false)
   const [isActing, setIsActing] = React.useState(false)
-  const [isAddMenuOpen, setIsAddMenuOpen] = React.useState(false)
   const [pendingInlineReview, setPendingInlineReview] = React.useState<ReviewItem | null>(null)
-  const [isMediaPickerOpen, setIsMediaPickerOpen] = React.useState(false)
   const [workspacePanelsByChat, setWorkspacePanelsByChat] = React.useState<Record<string, ChatWorkspacePanelState>>({})
-  const [isComposerUploading, setIsComposerUploading] = React.useState(false)
-  const [composerUploadProgress, setComposerUploadProgress] = React.useState<number | null>(null)
-  const [composerSettings, setComposerSettings] = React.useState<ComposerSettings>(COMPOSER_DEFAULT_SETTINGS)
-  const [selectedAssets, setSelectedAssets] = React.useState<ChatAssetAttachment[]>([])
-  // Short names of the attached files (`image1`); see appendSelectedAsset.
-  const selectedAssetsRef = React.useRef<ChatAssetAttachment[]>([])
-  const assetLabelsRef = React.useRef<Record<string, string>>({})
-  const [assetLabels, setAssetLabels] = React.useState<Record<string, string>>({})
-  React.useEffect(() => {
-    selectedAssetsRef.current = selectedAssets
-  }, [selectedAssets])
-  const composerUploadInputRef = React.useRef<HTMLInputElement | null>(null)
-  const composerUploadAbortRef = React.useRef<AbortController | null>(null)
   const messagePageAbortRef = React.useRef<AbortController | null>(null)
-  const composerTextareaRef = React.useRef<HTMLTextAreaElement | null>(null)
-  const composerFormRef = React.useRef<HTMLFormElement | null>(null)
-  const composerMirrorRef = React.useRef<HTMLDivElement | null>(null)
-  const composerInputWrapRef = React.useRef<HTMLDivElement | null>(null)
-  const [composerTokenHover, setComposerTokenHover] = React.useState<{ token: string; left: number; bottom: number } | null>(null)
   const conversationIdRef = React.useRef<string | null>(null)
   const conversationLoadGenerationRef = React.useRef(0)
   const conversationCreationRef = React.useRef<{
@@ -740,55 +378,6 @@ function ChatWorkspace() {
     ? `conversation:${requestedConversationId}`
     : `new:${requestedNewChatId ?? 'latest'}:${conversationChannelId ?? 'none'}`
   const composerContextKeyRef = React.useRef(composerContextKey)
-  // S19: one shared "Belleğe de ekle" choice for the composer and the media picker uploads.
-  const memoryUpload = useMemoryUploadChoice(conversationContextReady ? conversationChannelId : null, 'chat_upload')
-  // P03-01: shared typed composer (text + typed chips with one undo history); `draft`/`setDraft` are its text view.
-  // QA-172: an MCP template chosen in the `/` menu is rendered and inserted as text (never sent).
-  const mcpTemplates = useMcpTemplateInsert({ onNotice: setError })
-  const typedComposer = useTypedComposer({ resetKey: composerContextKey, textareaRef: composerTextareaRef, onInsertAction: mcpTemplates.onInsertAction, mentionTokens: true })
-  const draft = typedComposer.text
-  const setDraft = typedComposer.setText
-  const resetComposer = typedComposer.reset
-  const slashMenu = useSlashMenuGroups({
-    surface: 'dashboard_chat',
-    channelId: conversationChannelId,
-    trigger: typedComposer.trigger,
-    enabled: Boolean(conversationChannelId && conversationContextReady),
-    conversationId: conversation?.id ?? null,
-  })
-  // P03-02: `@` resource mentions from the owners' projections; a result relabels chips of the exact same identity.
-  const describeComposerResource = useComposerResourceDescribe()
-  const relabelComposer = typedComposer.relabel
-  const handleMentionCandidates = React.useCallback(
-    (candidates: ComposerResourceCandidate[]) => relabelComposer(relabelFromCandidates(candidates)),
-    [relabelComposer],
-  )
-  const mentionMenu = useMentionMenuGroups({
-    channelId: conversationChannelId,
-    trigger: typedComposer.trigger,
-    enabled: Boolean(conversationChannelId && conversationContextReady),
-    locale,
-    describe: describeComposerResource,
-    onCandidates: handleMentionCandidates,
-  })
-  const mentionTrigger = typedComposer.trigger?.kind === 'mention' ? typedComposer.trigger : null
-  const attachedFilesGroup = React.useMemo<TypedComposerMenuGroup | null>(() => {
-    if (!mentionTrigger) return null
-    const query = mentionTrigger.query.trim().toLocaleLowerCase()
-    const items: TypedComposerMenuItem[] = selectedAssets
-      .map((asset) => ({ id: `file:${asset.id}`, group: 'attachedFiles', label: `@${assetLabels[asset.id] ?? asset.kind}`, description: asset.name }))
-      .filter((item) => !query || item.label.toLocaleLowerCase().includes(query) || item.description.toLocaleLowerCase().includes(query))
-    items.push({ id: 'file:pick', group: 'attachedFiles', label: tChat('typedComposer.pickFromLibrary'), description: tChat('typedComposer.pickFromLibraryHint') })
-    return { id: 'attachedFiles', items }
-  }, [assetLabels, mentionTrigger, selectedAssets, tChat])
-  const activeComposerMenu = mentionTrigger
-    ? { ...mentionMenu, groups: attachedFilesGroup ? [attachedFilesGroup, ...mentionMenu.groups] : mentionMenu.groups }
-    : slashMenu
-  // QA-140: the keyboard stops include the connection header rows of the slash menu (Space turns their switch).
-  const slashSwitchRows = typedComposer.trigger?.kind === 'slash' ? slashMenu.connectionSwitches?.rows ?? null : null
-  const composerMenuItems = React.useMemo(() => buildComposerMenuStops(activeComposerMenu.groups, slashSwitchRows), [activeComposerMenu.groups, slashSwitchRows])
-  const composerMenuOpen = typedComposer.trigger !== null
-  const activeComposerMenuItemId = composerMenuItems[effectiveComposerMenuIndex(composerMenuItems, typedComposer.activeIndex, typedComposer.activeExplicit)]?.id ?? null
   // P03-14: the composer's job focus (the live job by default) and a pending ambiguous-target choice, per context.
   const [jobFocusState, setJobFocusState] = React.useState<{ key: string; focus: ComposerJobFocus }>({ key: composerContextKey, focus: { mode: 'auto' } })
   const jobFocus: ComposerJobFocus = jobFocusState.key === composerContextKey ? jobFocusState.focus : { mode: 'auto' }
@@ -813,25 +402,15 @@ function ChatWorkspace() {
     if (composerContextKeyRef.current === composerContextKey) return
     composerContextKeyRef.current = composerContextKey
     conversationCreationRef.current = null
-    composerUploadAbortRef.current?.abort()
-    composerUploadAbortRef.current = null
-    setIsComposerUploading(false)
-    setComposerUploadProgress(null)
-    setSelectedAssets([])
-    setIsMediaPickerOpen(false)
-    if (composerUploadInputRef.current) composerUploadInputRef.current.value = ''
   }, [composerContextKey])
 
   React.useEffect(() => () => {
-    composerUploadAbortRef.current?.abort()
-    composerUploadAbortRef.current = null
     messagePageAbortRef.current?.abort()
     messagePageAbortRef.current = null
   }, [])
 
+  // The composer resets its own part (text, chips, files, uploads) on the same principal change.
   React.useEffect(() => registerBrowserPrincipalLifecycleResetter(() => {
-    composerUploadAbortRef.current?.abort()
-    composerUploadAbortRef.current = null
     messagePageAbortRef.current?.abort()
     messagePageAbortRef.current = null
     streamRef.current?.close()
@@ -844,15 +423,10 @@ function ChatWorkspace() {
     sendInFlightRef.current = false
     assistantMessageAttemptStoreRef.current = createAssistantMessageAttemptStore()
     stopRunIdempotencyKeysRef.current = new Map()
-    resetComposer()
     setWorkspacePanelsByChat({})
-    setSelectedAssets([])
     setLiveDraft(null)
     setIsDraftAnimating(false)
     setLiveProgressEvent(null)
-    setIsComposerUploading(false)
-    setComposerUploadProgress(null)
-    setIsMediaPickerOpen(false)
     setConversation(null)
     setMessages([])
     setOptimisticMessages([])
@@ -861,8 +435,7 @@ function ChatWorkspace() {
     setRunState(null)
     setError(null)
     setRunConnectionError(null)
-    if (composerUploadInputRef.current) composerUploadInputRef.current.value = ''
-  }), [resetComposer])
+  }), [])
 
   // P03-20: one right panel at a time; the Script panel closes (after its save) when the workflow canvas opens.
   const scriptReviewRef = React.useRef<ScriptReviewHost | null>(null)
@@ -912,40 +485,6 @@ function ChatWorkspace() {
     })
   }, [workspaceKey])
 
-  const composerCatalogQuery = useQuery({
-    queryKey: ASSISTANT_COMPOSER_CATALOG_QUERY_KEY,
-    queryFn: getAssistantComposerCatalog,
-    enabled: Boolean(conversationChannelId && conversationContextReady),
-    staleTime: 60_000,
-  })
-  const composerCatalog = composerCatalogQuery.data ?? null
-  const composerOptions = React.useMemo(() => buildComposerOptions(composerCatalog, tChat), [composerCatalog, tChat])
-  const answeredModelLabels = React.useMemo(
-    () => new Map(composerOptions.chatModels.map((option) => [option.id, option.label] as const)),
-    [composerOptions.chatModels],
-  )
-  const workflowCanvasImageModels = React.useMemo(
-    () => composerOptions.imageModels.map(toWorkflowCanvasImageModel),
-    [composerOptions.imageModels],
-  )
-  const minVideoDurationSeconds = composerCatalog?.duration.min_seconds ?? COMPOSER_VIDEO_DURATION_MIN_SECONDS
-  const maxVideoDurationSeconds = composerCatalog?.duration.max_seconds ?? null
-  const durationScaleMaxSeconds = composerCatalog?.duration.scale_max_seconds ?? maxVideoDurationSeconds
-  // QA-078: "Adet" of the canvas popover — up to the selected image model's max; the server re-checks it at dispatch.
-  const outputCount = useComposerOutputCount({
-    contextKey: composerContextKey,
-    text: draft,
-    modelMax: readComposerOutputCountMax(selectedComposerImageModel(composerSettings, composerCatalog, composerOptions)?.inputSchema),
-  })
-
-  React.useEffect(() => {
-    if (!composerCatalog) return
-    setComposerSettings((current) => {
-      const next = reconcileComposerSettings(current, composerCatalog, tChat)
-      return areComposerSettingsEqual(current, next) ? current : next
-    })
-  }, [composerCatalog, tChat])
-
   // P01A-11: the server-committed planner model of this conversation and of its active job (job id = run id).
   // P03-14: model/mode commands target the composer's focused job (+ new jobs); without one only new jobs change.
   const liveJobId = activeRunId && runState && ACTIVE_RUN_STATES.has(runState) ? activeRunId : null
@@ -958,33 +497,46 @@ function ChatWorkspace() {
     }
     return jobs.map((job) => ({ jobId: job.jobId, state: job.state, label: jobLabelFromMessages(job.jobId, messages) }))
   }, [conversationJobs, liveJobId, messages, runState])
-  const conversationSettingsQuery = useQuery({
-    queryKey: [...ASSISTANT_CONVERSATION_SETTINGS_QUERY_KEY, conversation?.id ?? null, plannerSelectedJobId],
-    queryFn: ({ signal }) => getAssistantConversationSettings(
-      { conversationId: conversation!.id, jobId: plannerSelectedJobId },
-      { signal },
-    ),
-    enabled: Boolean(conversation?.id),
-  })
-  const conversationSettings = conversationSettingsQuery.data ?? null
-  const refetchConversationSettings = conversationSettingsQuery.refetch
-  const plannerModel = React.useMemo(() => plannerModelView(conversationSettings), [conversationSettings])
-  // P03-01 (Q74): three-level mode chip over the same settings command authority as the planner model.
-  const composerMode = useComposerModeControl({
+
+  // P03-01: the composer (text + typed chips, files, settings, the model and the mode); this page adds its run.
+  const composer = useChatComposer({
+    channelId: conversationChannelId,
     conversationId: conversation?.id ?? null,
-    settings: conversationSettings,
+    contextKey: composerContextKey,
+    ready: conversationContextReady,
     selectedJobId: plannerSelectedJobId,
-    catalog: composerCatalog,
-    refetchSettings: refetchConversationSettings,
-    t: tChat,
     onNotice: setError,
   })
-  const [plannerModelCommandPending, setPlannerModelCommandPending] = React.useState(false)
-  // A notice belongs to the conversation it was raised in; switching conversations never shows another one's.
-  const [plannerModelNoticeState, setPlannerModelNoticeState] = React.useState<{ conversationId: string | null; result: PlannerModelCommandResult } | null>(null)
-  const plannerModelNotice = plannerModelNoticeState && plannerModelNoticeState.conversationId === (conversation?.id ?? null)
-    ? plannerModelNoticeState.result
-    : null
+  const {
+    typedComposer,
+    draft,
+    setDraft,
+    selectedAssets,
+    setSelectedAssets,
+    appendSelectedAsset,
+    outputCount,
+    memoryUpload,
+    refetchConversationSettings,
+    plannerModel,
+    commitInitialPlannerModel,
+    minVideoDurationSeconds,
+    maxVideoDurationSeconds,
+  } = composer
+  const composerSettings = composer.settings
+  const setComposerSettings = composer.setSettings
+  const composerCatalog = composer.catalog
+  const composerOptions = composer.options
+  const composerMode = composer.mode
+  const composerTextareaRef = composer.textareaRef
+  const composerFormRef = composer.formRef
+  const answeredModelLabels = React.useMemo(
+    () => new Map(composerOptions.chatModels.map((option) => [option.id, option.label] as const)),
+    [composerOptions.chatModels],
+  )
+  const workflowCanvasImageModels = React.useMemo(
+    () => composerOptions.imageModels.map(toWorkflowCanvasImageModel),
+    [composerOptions.imageModels],
+  )
   const lastModelSwitchEventId = React.useMemo(
     () => [...runEvents].reverse().find((event) => event.event_type.startsWith('assistant.model_switch.'))?.id ?? null,
     [runEvents],
@@ -993,63 +545,6 @@ function ChatWorkspace() {
     // The job's boundary activated or refused a switch: re-read the server state.
     if (lastModelSwitchEventId) void refetchConversationSettings()
   }, [lastModelSwitchEventId, refetchConversationSettings])
-  async function selectPlannerModel(modelId: string) {
-    if (!conversation) {
-      // No conversation yet: the pick is only the first message's request; it is committed on send.
-      setComposerSettings((current) => ({ ...current, chatModelId: modelId }))
-      return
-    }
-    if (!conversationSettings || plannerModelCommandPending || modelId === plannerModel.selectedModelId) return
-    const job = conversationSettings.job && conversationSettings.job.job_id === plannerSelectedJobId ? conversationSettings.job : null
-    setPlannerModelCommandPending(true)
-    setPlannerModelNoticeState(null)
-    try {
-      const selectedJob = job ? { jobId: job.job_id, expectedJobSettingsVersion: job.job_settings_version } : null
-      const result = await issueAssistantPlannerModelCommand({
-        conversationId: conversation.id,
-        plannerModelId: modelId,
-        expectedConversationDefaultsVersion: conversationSettings.defaults.defaults_version,
-        selectedJob,
-      })
-      if (shouldRetryPlannerModelForJobOnly(result.outcome, Boolean(selectedJob))) {
-        // S9: a member of a shared conversation changes the model of the job they started; the default stays the owner's.
-        const jobOnly = await issueAssistantPlannerModelCommand({
-          conversationId: conversation.id,
-          plannerModelId: modelId,
-          expectedConversationDefaultsVersion: conversationSettings.defaults.defaults_version,
-          selectedJob,
-          jobOnly: true,
-        })
-        const jobOnlyOutcome = classifyPlannerModelCommand(jobOnly.outcome)
-        setPlannerModelNoticeState({ conversationId: conversation.id, result: jobOnlyOutcome === 'applied' ? 'job_only' : jobOnlyOutcome })
-        return
-      }
-      const outcome = classifyPlannerModelCommand(result.outcome)
-      if (outcome !== 'applied') setPlannerModelNoticeState({ conversationId: conversation.id, result: outcome })
-    } catch {
-      setPlannerModelNoticeState({ conversationId: conversation.id, result: 'failed' })
-    } finally {
-      // Whatever happened, the composer shows the server's state, never the click.
-      await refetchConversationSettings()
-      setPlannerModelCommandPending(false)
-    }
-  }
-
-  /** A brand-new conversation's first message: the picked model becomes its committed new-job default first. */
-  async function commitInitialPlannerModel(conversationId: string, modelId: string) {
-    const current = await getAssistantConversationSettings({ conversationId })
-    if (current.defaults.default_planner_model_id === modelId) return
-    const result = await issueAssistantPlannerModelCommand({
-      conversationId,
-      plannerModelId: modelId,
-      expectedConversationDefaultsVersion: current.defaults.defaults_version,
-    })
-    const outcome = classifyPlannerModelCommand(result.outcome)
-    if (outcome !== 'applied') {
-      setPlannerModelNoticeState({ conversationId, result: outcome })
-      throw new Error(tChat(plannerModelNoticeKey(outcome)))
-    }
-  }
 
   const clearDraftRevealTimer = React.useCallback(() => {
     if (!draftRevealTimerRef.current) return
@@ -1844,16 +1339,30 @@ function ChatWorkspace() {
   const productionG1Open = useProductionG1Open(activeRunId)
   // Once the job has a plan its flow (plan card, then tasks) tells what the run does; no second narration line.
   const productionPlanShown = useProductionPlanShown(activeRunId)
-  const canSubmit = Boolean(
-    conversationChannelId
-      && conversationContextReady
-      && (draft.trim() || selectedAssets.length > 0 || typedComposer.chips.length > 0)
-      && !isSending
-      && !isComposerUploading
-      // P01A-11: an existing conversation sends only after its committed model is known (no local guess).
-      && !(conversation && !conversationSettings)
-      && !plannerModelCommandPending,
-  )
+  // The composer's own conditions (a channel, a loaded context, content, no upload, a known committed model).
+  const canSubmit = composer.canSubmit && !isSending
+
+  // A new chat started on the new tab (`/chat?new=<intent>`): its composer comes back here and is sent once, through
+  // the usual send, as the first message; a send that fails puts the content back in the composer as always.
+  const restoreComposer = composer.restore
+  const handoffSendRef = React.useRef<{ intentId: string; state: NewChatHandoff['state'] } | null>(null)
+  React.useEffect(() => {
+    if (!requestedNewChatId || !conversationChannelId) return
+    const handoff = takeNewChatHandoff(requestedNewChatId)
+    if (!handoff) return
+    restoreComposer(handoff)
+    handoffSendRef.current = { intentId: requestedNewChatId, state: handoff.state }
+  }, [conversationChannelId, requestedNewChatId, restoreComposer])
+  const composerState = typedComposer.state
+  React.useEffect(() => {
+    const pending = handoffSendRef.current
+    if (!requestedNewChatId || pending?.intentId !== requestedNewChatId) return
+    // Only once the restored content is the rendered one: the submit sends what this render holds.
+    if (composerState !== pending.state) return
+    if (!conversationContextReady || !composerCatalog || !canSubmit) return
+    handoffSendRef.current = null
+    composerFormRef.current?.requestSubmit()
+  }, [canSubmit, composerCatalog, composerFormRef, composerState, conversationContextReady, requestedNewChatId])
 
   const showDraftMessage = Boolean(
     activeRunId
@@ -2264,118 +1773,11 @@ function ChatWorkspace() {
     router.push(buildAssistantDraftFlowsHref(ref))
   }
 
-  // Each attached file gets a short name (`image1`, `video2`) that is written into the text as `@image1`; the file
-  // itself shows as a small token next to "+" (hover to preview) instead of a box above the composer.
-
-  const appendSelectedAsset = React.useCallback((asset: ChatAssetAttachment, options: { insertToken?: boolean } = {}) => {
-    const current = selectedAssetsRef.current
-    const existing = current.find((item) => item.id === asset.id)
-    if (existing) return assetLabelsRef.current[existing.id] ?? null
-    const label = nextComposerAssetLabel(asset.kind, current.map((item) => assetLabelsRef.current[item.id]).filter(Boolean))
-    assetLabelsRef.current = { ...assetLabelsRef.current, [asset.id]: label }
-    selectedAssetsRef.current = [...current, asset]
-    setAssetLabels(assetLabelsRef.current)
-    setSelectedAssets((items) => (items.some((item) => item.id === asset.id) ? items : [...items, asset]))
-    if (options.insertToken !== false) setDraft((text) => appendComposerToken(text, `@${label}`))
-    return label
-  }, [setDraft])
-
-  function handleSelectMediaAsset(asset: ChatAssetAttachment) {
-    appendSelectedAsset(asset)
-    setIsMediaPickerOpen(false)
-    // Typing goes on after the new `@image1` token (the caret was still where `@` was typed, before the token).
-    window.requestAnimationFrame(() => {
-      const textarea = composerTextareaRef.current
-      if (!textarea) return
-      textarea.focus()
-      textarea.setSelectionRange(textarea.value.length, textarea.value.length)
-    })
-  }
-
-  function handleRemoveMediaAsset(assetId: string) {
-    const label = assetLabelsRef.current[assetId]
-    setSelectedAssets((current) => current.filter((asset) => asset.id !== assetId))
-    if (label) setDraft((text) => removeComposerToken(text, `@${label}`))
-  }
-
-  /** `@` menu rows of attached files: an attached file writes its `@image1` token; "Kütüphaneden seç" opens the picker. */
-  function handleAttachedFileMenuItem(item: TypedComposerMenuItem) {
-    if (!item.id.startsWith('file:')) return false
-    const trigger = typedComposer.trigger
-    if (!trigger) return true
-    const range = { start: trigger.start, end: trigger.end, token: draft.slice(trigger.start, trigger.end) }
-    if (item.id === 'file:pick') {
-      typedComposer.insertText(range, '')
-      setIsMediaPickerOpen(true)
-      return true
-    }
-    const label = assetLabelsRef.current[item.id.slice('file:'.length)]
-    if (label) typedComposer.insertText(range, `@${label} `)
-    return true
-  }
-
-  function selectComposerMenuItem(item: TypedComposerMenuItem) {
-    if (!handleAttachedFileMenuItem(item)) typedComposer.selectMenuItem(item)
-  }
-
-  // `@image1` / `@Ece_Avatar` tokens of this message: the inline layer draws them as pills with their picture.
-  const composerTokens = new Map<string, ComposerTokenRef>()
-  for (const asset of selectedAssets) {
-    const label = assetLabels[asset.id]
-    if (label) composerTokens.set(`@${label}`, { kind: 'asset', asset })
-  }
-  for (const chip of typedComposer.chips) {
-    if (chip.kind === 'mention') composerTokens.set(composerMentionToken(chip.label), { kind: 'mention', chip })
-  }
-  const inlineTokens = [...composerTokens.keys()].filter((token) => hasComposerToken(draft, token))
-  // A reference whose token is not in the text (e.g. the text was replaced) stays visible next to "+".
-  const orphanAssets = selectedAssets.filter((asset) => !inlineTokens.includes(`@${assetLabels[asset.id] ?? ''}`))
-  const orphanMentions = typedComposer.chips.filter((chip): chip is ComposerMentionChip => chip.kind === 'mention' && !inlineTokens.includes(composerMentionToken(chip.label)))
-
-  /** Typing away a token removes what it refers to (the attached file or the `@` resource). */
-  function handleComposerTextChange(event: React.ChangeEvent<HTMLTextAreaElement>) {
-    typedComposer.handleChange(event)
-    const next = event.target.value
-    const gone = (token: string) => hasComposerToken(draft, token) && !hasComposerToken(next, token)
-    const removedAssetIds = selectedAssets.filter((asset) => assetLabels[asset.id] && gone(`@${assetLabels[asset.id]}`)).map((asset) => asset.id)
-    if (removedAssetIds.length > 0) setSelectedAssets((current) => current.filter((asset) => !removedAssetIds.includes(asset.id)))
-    for (const chip of typedComposer.chips) {
-      if (chip.kind === 'mention' && gone(composerMentionToken(chip.label))) typedComposer.removeChip(chip.key)
-    }
-  }
-
-  /** The preview card of the token under the pointer (the layer sits under the textarea, so hit-test its pills). */
-  function handleComposerPointer(event: React.MouseEvent<HTMLTextAreaElement>) {
-    const mirror = composerMirrorRef.current
-    const wrap = composerInputWrapRef.current
-    if (!mirror || !wrap || inlineTokens.length === 0) {
-      if (composerTokenHover) setComposerTokenHover(null)
-      return
-    }
-    for (const element of mirror.querySelectorAll<HTMLElement>('[data-token]')) {
-      const rect = element.getBoundingClientRect()
-      if (event.clientX >= rect.left && event.clientX <= rect.right && event.clientY >= rect.top && event.clientY <= rect.bottom) {
-        const token = element.dataset.token ?? ''
-        if (composerTokenHover?.token !== token) {
-          const box = wrap.getBoundingClientRect()
-          setComposerTokenHover({ token, left: rect.left - box.left, bottom: box.bottom - rect.top + 6 })
-        }
-        return
-      }
-    }
-    if (composerTokenHover) setComposerTokenHover(null)
-  }
-
-  function handleRemoveMentionChip(chip: ComposerMentionChip) {
-    typedComposer.removeChip(chip.key)
-    setDraft((text) => removeComposerToken(text, composerMentionToken(chip.label)))
-  }
-
   /** SV: a card action puts its typed message into the composer; the user reads it, completes it and sends it. */
   const askInComposer = React.useCallback((text: string) => {
     setDraft(text)
     window.requestAnimationFrame(() => composerTextareaRef.current?.focus())
-  }, [setDraft])
+  }, [composerTextareaRef, setDraft])
 
   const handleEditMediaAsset = React.useCallback((asset: ChatAssetAttachment) => {
     // P03-01: only a Storage object can be attached (owner ref); a bare media URL goes into the text the user sends.
@@ -2387,57 +1789,7 @@ function ChatWorkspace() {
       return label ? appendComposerToken(withUrl, `@${label}`) : withUrl
     })
     window.requestAnimationFrame(() => composerTextareaRef.current?.focus())
-  }, [appendSelectedAsset, setDraft, tChat])
-
-  function openComposerUploadPicker() {
-    setIsAddMenuOpen(false)
-    if (!composerUploadInputRef.current) return
-    composerUploadInputRef.current.value = ''
-    composerUploadInputRef.current.click()
-  }
-
-  async function handleComposerUpload(files: FileList | null) {
-    const targetChannelId = conversationChannelId
-    if (
-      !files
-      || files.length === 0
-      || !targetChannelId
-      || !conversationContextReady
-      || isComposerUploading
-    ) return
-    const selectedFiles = Array.from(files).filter((file) => file.size > 0)
-    if (selectedFiles.length === 0) return
-    composerUploadAbortRef.current?.abort()
-    const uploadController = new AbortController()
-    composerUploadAbortRef.current = uploadController
-    setIsComposerUploading(true)
-    setComposerUploadProgress(0)
-    setError(null)
-    const memoryIngestion = memoryUpload.beginBatch(targetChannelId, selectedFiles)
-    try {
-      for (let index = 0; index < selectedFiles.length; index += 1) {
-        if (uploadController.signal.aborted) break
-        const file = selectedFiles[index]!
-        const uploaded = await uploadChatMediaFile(targetChannelId, file, (progress) => {
-          if (composerUploadAbortRef.current !== uploadController || uploadController.signal.aborted) return
-          const base = (index / selectedFiles.length) * 100
-          setComposerUploadProgress(Math.round(base + (progress / selectedFiles.length)))
-        }, uploadController.signal, memoryIngestion)
-        if (composerUploadAbortRef.current !== uploadController || uploadController.signal.aborted) break
-        appendSelectedAsset(uploaded)
-      }
-    } catch (uploadError) {
-      if (!isChatUploadAbort(uploadError, uploadController.signal)) {
-        setError(localizeError(uploadError))
-      }
-    } finally {
-      if (composerUploadAbortRef.current !== uploadController) return
-      composerUploadAbortRef.current = null
-      setIsComposerUploading(false)
-      setComposerUploadProgress(null)
-      if (composerUploadInputRef.current) composerUploadInputRef.current.value = ''
-    }
-  }
+  }, [appendSelectedAsset, composerTextareaRef, setDraft, tChat])
 
   async function handleStop() {
     if (!activeRunId || isActing || isCancellationRunState(runState)) return
@@ -2815,182 +2167,44 @@ function ChatWorkspace() {
                 onDismiss={() => setJobTargetChoiceState(null)}
               />
             ) : null}
-            {isComposerUploading && (
-              <ComposerUploadProgress progress={composerUploadProgress} locale={locale} />
-            )}
-            {(selectedAssets.length > 0 || isComposerUploading) && (
-              <MemoryUploadSummaryLine summary={memoryUpload.summary} className="-mt-1 mb-2 px-1" />
-            )}
-
-            <PromptBox
-              as="form"
-              ref={composerFormRef}
+            <ChatComposer
+              composer={composer}
               size={isWelcome ? 'big' : 'default'}
-              className="@container scroll-mt-24"
               onSubmit={handleSubmit}
-              overlay={composerMenuOpen && typedComposer.trigger ? (
-                <TypedComposerMenu
-                  id={CHAT_COMPOSER_MENU_ID}
-                  kind={typedComposer.trigger.kind}
-                  groups={activeComposerMenu.groups}
-                  activeItemId={activeComposerMenuItemId}
-                  loading={activeComposerMenu.loading}
-                  error={activeComposerMenu.error}
-                  notice={typedComposer.trigger.kind === 'mention' && mentionMenu.failedKinds.length > 0 ? tChat('typedComposer.resourcesPartial') : null}
-                  onSelect={selectComposerMenuItem}
-                  renderGroupBody={typedComposer.trigger.kind === 'slash' ? connectionSwitchGroupBody(slashMenu.connectionSwitches, { menuId: CHAT_COMPOSER_MENU_ID, activeStopId: activeComposerMenuItemId }) : undefined}
+              sending={isSending}
+              placeholder={!conversationChannelId ? copy.selectChannel : pendingQuestion ? tChat('questionWidget.ownPlaceholder') : copy.placeholder}
+              dialogs={false}
+              leading={composerJobOptions.length > 1 || composerJobFocus.explicitNewJob || composerJobFocus.steerJobId !== null ? (
+                <ComposerJobFocusChip
+                  jobs={composerJobOptions}
+                  selectedJobId={composerJobFocus.selectedJobId}
+                  explicitNewJob={composerJobFocus.explicitNewJob}
+                  disabled={isSending}
+                  onSelectJob={(jobId) => setJobFocusState({ key: composerContextKey, focus: { mode: 'job', jobId } })}
+                  onSelectNewJobs={() => setJobFocusState({ key: composerContextKey, focus: { mode: 'new_jobs' } })}
+                  onFollowLive={() => setJobFocusState({ key: composerContextKey, focus: { mode: 'auto' } })}
+                  fixing={composerJobFocus.steerJobId !== null}
+                  onFixJob={(jobId) => setJobFocusState({ key: composerContextKey, focus: { mode: 'fix', jobId } })}
                 />
               ) : null}
-              top={(
-                <>
-              <TypedComposerChips
-                chips={typedComposer.chips.filter(isCommandChip)}
-                disabled={isSending}
-                onRemove={typedComposer.removeChip}
-                onCopy={typedComposer.copyChips}
-                leading={composerJobOptions.length > 1 || composerJobFocus.explicitNewJob || composerJobFocus.steerJobId !== null ? (
-                  <ComposerJobFocusChip
-                    jobs={composerJobOptions}
-                    selectedJobId={composerJobFocus.selectedJobId}
-                    explicitNewJob={composerJobFocus.explicitNewJob}
-                    disabled={isSending}
-                    onSelectJob={(jobId) => setJobFocusState({ key: composerContextKey, focus: { mode: 'job', jobId } })}
-                    onSelectNewJobs={() => setJobFocusState({ key: composerContextKey, focus: { mode: 'new_jobs' } })}
-                    onFollowLive={() => setJobFocusState({ key: composerContextKey, focus: { mode: 'auto' } })}
-                    fixing={composerJobFocus.steerJobId !== null}
-                    onFixJob={(jobId) => setJobFocusState({ key: composerContextKey, focus: { mode: 'fix', jobId } })}
-                  />
-                ) : null}
-              />
-                </>
-              )}
-              bar={(
-                <>
-                  <ComposerAddMenu
-                    copy={copy}
-                    open={isAddMenuOpen}
-                    disabled={!conversationChannelId || !conversationContextReady || isComposerUploading}
-                    onOpenChange={setIsAddMenuOpen}
-                    onUpload={openComposerUploadPicker}
-                    onAssets={() => {
-                      setIsAddMenuOpen(false)
-                      setIsMediaPickerOpen(true)
-                    }}
-                    memoryUpload={memoryUpload}
-                    connectors={<ComposerAddConnectors active={isAddMenuOpen} conversationId={conversation?.id ?? null} onAdd={() => setIsAddMenuOpen(false)} />}
-                  />
-                  <ComposerReferenceTokens
-                    assets={orphanAssets}
-                    labels={assetLabels}
-                    mentions={orphanMentions}
-                    disabled={isSending}
-                    onRemoveAsset={handleRemoveMediaAsset}
-                    onRemoveMention={handleRemoveMentionChip}
-                  />
-                  <ComposerSettingsChips
-                    settings={composerSettings}
-                    options={composerOptions}
-                    minVideoDurationSeconds={minVideoDurationSeconds}
-                    maxVideoDurationSeconds={maxVideoDurationSeconds}
-                    durationScaleMaxSeconds={durationScaleMaxSeconds}
-                    disabled={!conversationChannelId || !conversationContextReady}
-                    modelsDisabled={!conversationChannelId || !conversationContextReady}
-                    plannerModel={{
-                      serverBacked: Boolean(conversation),
-                      loaded: Boolean(conversationSettings),
-                      pending: plannerModelCommandPending,
-                      view: plannerModel,
-                      notice: plannerModelNotice,
-                      onSelect: (modelId) => void selectPlannerModel(modelId),
-                    }}
-                    outputCount={outputCount}
-                    onChange={setComposerSettings}
-                  />
-                  <PromptBoxSpacer />
-                  <ComposerModeChip
-                    value={composerMode.value}
-                    options={composerMode.options}
-                    pending={composerMode.pending}
-                    disabled={!conversationChannelId || !conversationContextReady || (Boolean(conversation) && !conversationSettings)}
-                    onSelect={(mode) => void composerMode.select(mode)}
-                  />
-                  {composerMode.fullAccessConsent && (
-                    <FullAccessWarningCard
-                      prompt={composerMode.fullAccessConsent.prompt}
-                      onConfirm={composerMode.fullAccessConsent.confirm}
-                      onDismiss={composerMode.fullAccessConsent.dismiss}
+              send={(
+                /* With nothing to send while the job's video is being made, the button pauses the production. */
+                <ProductionRunSend jobId={chatContentReady && !canSubmit ? activeRunId : null}>
+                  {activeRun && !canSubmit ? (
+                    <PromptBoxSend
+                      mode="stop"
+                      label={isCancellationRunState(runState) ? copy.stoppingRun : copy.stopRun}
+                      disabled={isActing || isCancellationRunState(runState)}
+                      busy={isActing || isCancellationRunState(runState)}
+                      onClick={() => void handleStop()}
                     />
+                  ) : (
+                    <PromptBoxSend label={copy.sendMessage} disabled={!canSubmit} busy={isSending} />
                   )}
-                  {/* With nothing to send while the job's video is being made, the button pauses the production. */}
-                  <ProductionRunSend jobId={chatContentReady && !canSubmit ? activeRunId : null}>
-                    {activeRun && !canSubmit ? (
-                      <PromptBoxSend
-                        mode="stop"
-                        label={isCancellationRunState(runState) ? copy.stoppingRun : copy.stopRun}
-                        disabled={isActing || isCancellationRunState(runState)}
-                        busy={isActing || isCancellationRunState(runState)}
-                        onClick={() => void handleStop()}
-                      />
-                    ) : (
-                      <PromptBoxSend label={copy.sendMessage} disabled={!canSubmit} busy={isSending} />
-                    )}
-                  </ProductionRunSend>
-                </>
+                </ProductionRunSend>
               )}
-            >
-              <div ref={composerInputWrapRef} className="relative">
-              {inlineTokens.length > 0 && (
-                <ComposerTokenMirror mirrorRef={composerMirrorRef} text={draft} tokens={composerTokens} inline={inlineTokens} />
-              )}
-              <PromptBoxInput
-                ref={composerTextareaRef}
-                value={draft}
-                onChange={handleComposerTextChange}
-                onSelect={typedComposer.handleSelect}
-                onScroll={(event) => {
-                  if (composerMirrorRef.current) composerMirrorRef.current.scrollTop = event.currentTarget.scrollTop
-                }}
-                onMouseMove={handleComposerPointer}
-                onMouseLeave={() => setComposerTokenHover(null)}
-                onPaste={(event) => { typedComposer.handlePaste(event) }}
-                aria-controls={composerMenuOpen ? CHAT_COMPOSER_MENU_ID : undefined}
-                aria-activedescendant={composerMenuOpen && activeComposerMenuItemId ? menuItemDomId(CHAT_COMPOSER_MENU_ID, activeComposerMenuItemId) : undefined}
-                onKeyDown={(event) => {
-                  // An attached-file row of the `@` menu is handled here (it adds text, not a chip).
-                  if (composerMenuOpen && (event.key === 'Enter' || event.key === 'Tab') && activeComposerMenuItemId?.startsWith('file:')) {
-                    const item = activeComposerMenu.groups.flatMap((group) => group.items).find((entry) => entry.id === activeComposerMenuItemId)
-                    if (item && handleAttachedFileMenuItem(item)) {
-                      event.preventDefault()
-                      return
-                    }
-                  }
-                  // P03-01: menu keys (select only adds a chip) and the composer's own undo history come first.
-                  if (typedComposer.handleKeyDown(event, composerMenuOpen ? composerMenuItems : [], {
-                    onToggleSwitch: (stop) => { if (!slashMenu.connectionSwitches?.pending) void slashMenu.connectionSwitches?.setEnabled(stop.connectionId, !stop.enabled) },
-                  })) return
-                  if (event.key !== 'Enter' || event.shiftKey) return
-                  if (!canSubmit) return
-                  event.preventDefault()
-                  event.currentTarget.form?.requestSubmit()
-                }}
-                placeholder={!conversationChannelId ? copy.selectChannel : pendingQuestion ? tChat('questionWidget.ownPlaceholder') : copy.placeholder}
-                disabled={!conversationChannelId || !conversationContextReady || isSending}
-                rows={isWelcome ? 2 : 1}
-                // With tokens in the text the layer underneath draws the words; the textarea keeps caret and selection.
-                className={cn('relative', inlineTokens.length > 0 && 'pb-ghost selection:bg-primary/25')}
-              />
-              {composerTokenHover && composerTokens.get(composerTokenHover.token) && (
-                <ComposerTokenPreview
-                  reference={composerTokens.get(composerTokenHover.token)!}
-                  token={composerTokenHover.token}
-                  style={{ left: composerTokenHover.left, bottom: composerTokenHover.bottom }}
-                />
-              )}
-              </div>
-
-            </PromptBox>
+            />
             {isWelcome && <ChatWelcomeSuggestions onSuggestion={setDraft} />}
-            {mcpTemplates.dialog}
           </div>
           {isWelcome && (
             <div className="w-full shrink-0 pb-10 pt-28 animate-in fade-in-0 slide-in-from-bottom-3 delay-150 duration-700 ease-out fill-mode-both">
@@ -3014,22 +2228,7 @@ function ChatWorkspace() {
           />
           <ScriptReviewSidePanel onAsk={askInComposer} />
         </div>
-        <MediaPickerDialog
-          open={isMediaPickerOpen}
-          channelId={conversationContextReady ? conversationChannelId : null}
-          locale={locale}
-          onClose={() => setIsMediaPickerOpen(false)}
-          onSelect={handleSelectMediaAsset}
-          memoryUpload={memoryUpload}
-        />
-        <input
-          ref={composerUploadInputRef}
-          type="file"
-          multiple
-          accept={CHAT_MEDIA_UPLOAD_ACCEPT}
-          className="hidden"
-          onChange={(event) => void handleComposerUpload(event.currentTarget.files)}
-        />
+        <ChatComposerDialogs composer={composer} />
       </div>
     </TooltipProvider>
     </ScriptReviewHostProvider>
@@ -3998,65 +3197,6 @@ function RunFailureMessage({
   )
 }
 
-type ChatInlineAlertTone = 'error' | 'warning' | 'info' | 'success'
-
-function ChatInlineAlert({
-  tone,
-  title,
-  detail,
-  className,
-  action,
-}: {
-  tone: ChatInlineAlertTone
-  title: string
-  detail: string
-  className?: string
-  action?: React.ReactNode
-}) {
-  const toneClass = {
-    error: {
-      shell: 'border-destructive/22 bg-card shadow-[0_16px_44px_rgba(15,23,42,0.08)] dark:border-red-400/22 dark:bg-red-500/[0.07] dark:shadow-[0_16px_44px_rgba(0,0,0,0.22)]',
-      accent: 'bg-destructive',
-      icon: 'bg-destructive/10 text-destructive ring-destructive/15 dark:bg-red-400/12 dark:text-red-200 dark:ring-red-300/18',
-      Icon: CircleAlert,
-    },
-    warning: {
-      shell: 'border-amber-500/24 bg-card shadow-[0_16px_44px_rgba(15,23,42,0.08)] dark:border-amber-200/22 dark:bg-amber-300/[0.08] dark:shadow-[0_16px_44px_rgba(0,0,0,0.22)]',
-      accent: 'bg-amber-500',
-      icon: 'bg-amber-500/12 text-amber-700 ring-amber-500/18 dark:bg-amber-200/14 dark:text-amber-100 dark:ring-amber-200/16',
-      Icon: CircleAlert,
-    },
-    info: {
-      shell: 'border-info/24 bg-card shadow-[0_16px_44px_rgba(15,23,42,0.08)] dark:border-info/30 dark:bg-info/[0.08] dark:shadow-[0_16px_44px_rgba(0,0,0,0.22)]',
-      accent: 'bg-info',
-      icon: 'bg-info/12 text-info ring-info/18 dark:bg-info/14 dark:text-info dark:ring-info/18',
-      Icon: Sparkles,
-    },
-    success: {
-      shell: 'border-success/24 bg-card shadow-[0_16px_44px_rgba(15,23,42,0.08)] dark:border-success/30 dark:bg-success/[0.08] dark:shadow-[0_16px_44px_rgba(0,0,0,0.22)]',
-      accent: 'bg-success',
-      icon: 'bg-success/12 text-success ring-success/18 dark:bg-success/14 dark:text-success dark:ring-success/18',
-      Icon: Check,
-    },
-  }[tone]
-  const Icon = toneClass.Icon
-
-  return (
-    <div className={cn('relative overflow-hidden rounded-md border px-4 py-3 text-sm text-card-foreground', toneClass.shell, className)}>
-      <span className={cn('absolute inset-y-0 left-0 w-1', toneClass.accent)} aria-hidden="true" />
-      <div className="flex items-start gap-3 pl-1">
-        <span className={cn('mt-0.5 flex size-8 shrink-0 items-center justify-center rounded-full ring-1', toneClass.icon)}>
-          <Icon className="size-4" />
-        </span>
-        <div className="min-w-0 flex-1">
-          <p className="font-semibold text-foreground dark:text-white">{title}</p>
-          <p className="mt-1 break-words leading-6 text-muted-foreground dark:text-white/64">{detail}</p>
-          {action ? <div className="mt-3 flex flex-wrap items-center gap-2">{action}</div> : null}
-        </div>
-      </div>
-    </div>
-  )
-}
 
 /** A thin progress line under the running step, only when the run reports a percentage. */
 function classifyFundingReason(reason: string | null): 'balance' | 'grant' {
@@ -4373,954 +3513,11 @@ function ChatQuestionCard({
   )
 }
 
-function ComposerSettingsChips({
-  settings,
-  options,
-  minVideoDurationSeconds,
-  maxVideoDurationSeconds,
-  durationScaleMaxSeconds,
-  disabled,
-  modelsDisabled,
-  plannerModel,
-  outputCount,
-  onChange,
-}: {
-  settings: ComposerSettings
-  options: ComposerOptions
-  minVideoDurationSeconds: number
-  maxVideoDurationSeconds: number | null
-  durationScaleMaxSeconds: number | null
-  disabled: boolean
-  /** P01A-11: the models control stays usable during an active job (a switch applies from its next step). */
-  modelsDisabled: boolean
-  plannerModel: ComposerPlannerModelControl
-  /** QA-078: the "Adet" section of the canvas popover. */
-  outputCount: ComposerOutputCountControl
-  onChange: React.Dispatch<React.SetStateAction<ComposerSettings>>
-}) {
-  const selectedImageModel = selectComposerImageModelForTask(settings.imageModelId, settings.imageTask, options.imageModels)
-  const compatibleImageModels = options.imageModels.filter((option) => composerModelSupportsImageTask(option, settings.imageTask))
-  const imageModelOptions = compatibleImageModels.length > 0 ? compatibleImageModels : options.imageModels
-  const imageTaskOptions = composerImageTaskOptions(options.imageModels)
-  const imageSizeOptions = modelInputOptions(selectedImageModel, 'sizes')
-  const imageResolutionOptions = modelInputOptions(selectedImageModel, 'resolutions')
-  const imageQualityOptions = modelInputOptions(selectedImageModel, 'qualities')
-  const imageFormatOptions = modelInputOptions(selectedImageModel, 'output_formats')
 
-  return (
-    <>
-      <ComposerModelsControl
-        settings={settings}
-        options={options}
-        imageModels={imageModelOptions}
-        disabled={modelsDisabled}
-        mediaDisabled={disabled}
-        plannerModel={plannerModel}
-        onChange={onChange}
-      />
-      <ComposerOutputControl
-        aspectRatio={settings.aspectRatio}
-        aspectOptions={options.aspectRatios}
-        imageTask={settings.imageTask}
-        imageTaskOptions={imageTaskOptions}
-        imageModels={options.imageModels}
-        disabled={disabled}
-        onChange={onChange}
-      />
-      <ComposerDurationChip
-        value={settings.durationSeconds}
-        minSeconds={minVideoDurationSeconds}
-        maxSeconds={maxVideoDurationSeconds}
-        scaleMaxSeconds={durationScaleMaxSeconds}
-        disabled={disabled || maxVideoDurationSeconds === null}
-        onChange={(durationSeconds) => onChange((current) => ({ ...current, durationSeconds }))}
-      />
-      <ComposerCanvasControl
-        settings={settings}
-        imageSizeOptions={imageSizeOptions}
-        imageResolutionOptions={imageResolutionOptions}
-        imageQualityOptions={imageQualityOptions}
-        imageFormatOptions={imageFormatOptions}
-        outputCount={outputCount}
-        disabled={disabled}
-        onChange={onChange}
-      />
-    </>
-  )
-}
 
-type ComposerControlOption = {
-  id: string
-  label: string
-  hint: string
-}
 
-/** P01A-11 chat model control: server-backed for an existing conversation, a local first-message pick otherwise. */
-type ComposerPlannerModelControl = {
-  serverBacked: boolean
-  loaded: boolean
-  pending: boolean
-  view: PlannerModelView
-  notice: PlannerModelCommandResult | null
-  onSelect: (modelId: string) => void
-}
 
-const PLANNER_MODEL_HINT_KEYS: Record<NonNullable<ReturnType<typeof plannerModelHint>>, string> = {
-  current_step: 'composer.modelCurrentStep',
-  next_step: 'composer.modelNextStep',
-  unavailable: 'composer.modelUnavailable',
-}
 
-const PLANNER_MODEL_NOTICE_KEYS: Record<PlannerModelCommandResult, string> = {
-  applied: 'composer.modelNextStep',
-  job_only: 'composer.modelChangeJobOnly',
-  stale: 'composer.modelChangeStale',
-  target_gone: 'composer.modelChangeTargetGone',
-  unsupported: 'composer.modelChangeUnsupported',
-  forbidden: 'composer.modelChangeForbidden',
-  defaults_owner_only: 'composer.modelChangeDefaultsOwnerOnly',
-  failed: 'composer.modelChangeFailed',
-}
-
-function plannerModelNoticeKey(result: PlannerModelCommandResult): string {
-  return PLANNER_MODEL_NOTICE_KEYS[result]
-}
-
-/**
- * A composer bar popover: it opens under its button when there is room below (the centered start screen) and flips
- * above it otherwise (the composer at the bottom of a conversation); with room on neither side it scrolls.
- */
-function ComposerPopoverContent({ className, ...props }: React.ComponentProps<typeof PopoverContent>) {
-  return (
-    <PopoverContent
-      side="bottom"
-      align="start"
-      sideOffset={8}
-      collisionPadding={12}
-      className={cn('youtorch-thin-scrollbar max-h-(--radix-popover-content-available-height) overflow-y-auto rounded-xl border-border bg-popover shadow-xl shadow-black/40', className)}
-      {...props}
-    />
-  )
-}
-
-/**
- * The composer menus' look (the model picker's): sections split by a rule (`divide-y` on the popover), a quiet label,
- * one-line rows. Shared by the "+", output, duration and canvas menus.
- */
-function ComposerMenuSection({ label, className, children }: { label?: string; className?: string; children: React.ReactNode }) {
-  return (
-    <div role="group" aria-label={label} className={cn('p-1.5', className)}>
-      {label ? <p className="px-2.5 pb-1 pt-1 text-xs text-muted-foreground">{label}</p> : null}
-      {children}
-    </div>
-  )
-}
-
-/** A menu row: icon, name, an optional quiet value (`16:9`) and, for a choice, ✓ when it is the selected one. */
-function ComposerMenuRow({
-  icon,
-  label,
-  meta,
-  selected,
-  className,
-  ...props
-}: Omit<React.ComponentProps<'button'>, 'children'> & {
-  icon?: React.ReactNode
-  label: React.ReactNode
-  meta?: React.ReactNode
-  /** Set for a choice (✓ when true); left out for an action row. */
-  selected?: boolean
-}) {
-  return (
-    <button
-      type="button"
-      aria-pressed={selected}
-      {...props}
-      className={cn(
-        'flex h-9 w-full items-center gap-3 rounded-lg px-2.5 text-left text-sm outline-none transition-colors hover:bg-accent focus-visible:bg-accent disabled:pointer-events-none disabled:opacity-40',
-        className,
-      )}
-    >
-      {icon ? <span className={cn('flex size-[18px] shrink-0 items-center justify-center [&>svg]:size-[18px]', selected ? 'text-foreground' : 'text-muted-foreground')}>{icon}</span> : null}
-      <span className={cn('min-w-0 flex-1 truncate', selected ? 'font-semibold text-foreground' : 'text-foreground/75')}>{label}</span>
-      {meta ? <span className="shrink-0 text-xs tabular-nums text-muted-foreground">{meta}</span> : null}
-      {selected === undefined ? null : selected ? <Check strokeWidth={1.75} className="size-4 shrink-0 text-foreground" /> : <span className="size-4 shrink-0" />}
-    </button>
-  )
-}
-
-/** A composer bar button; also the `asChild` trigger of its popover (the trigger's props reach the button). */
-function ComposerControlButton({
-  icon: Icon,
-  label,
-  value,
-  open,
-  ...props
-}: Omit<React.ComponentProps<'button'>, 'value'> & {
-  icon: React.ComponentType<{ className?: string }>
-  label: string
-  value?: string
-  open: boolean
-  /** A ⌄ after the value (the model picker, like a select). */
-  caret?: boolean
-}) {
-  return (
-    <PromptBoxChip
-      title={value ? `${label}: ${value}` : label}
-      aria-expanded={open}
-      {...props}
-      icon={<Icon />}
-      srLabel={label}
-      label={value}
-      collapse
-    />
-  )
-}
-
-/** A choice row of a composer menu (also the "Adet" section's row); the hint is the quiet value at its end. */
-function ComposerControlOptionRow({
-  option,
-  selected,
-  disabled = false,
-  onClick,
-}: {
-  option: ComposerControlOption
-  selected: boolean
-  disabled?: boolean
-  onClick: () => void
-}) {
-  return <ComposerMenuRow label={option.label} meta={option.hint || undefined} selected={selected} disabled={disabled} onClick={onClick} />
-}
-
-function ComposerModelsControl({
-  settings,
-  options,
-  imageModels,
-  disabled,
-  mediaDisabled,
-  plannerModel,
-  onChange,
-}: {
-  settings: ComposerSettings
-  options: ComposerOptions
-  imageModels: ComposerModelOption[]
-  disabled: boolean
-  /** Video/image picks keep their previous rule (locked while a job runs); only the chat model stays switchable. */
-  mediaDisabled: boolean
-  plannerModel: ComposerPlannerModelControl
-  onChange: React.Dispatch<React.SetStateAction<ComposerSettings>>
-}) {
-  const tAuto = useTranslations('Auto')
-  const tChat = useTranslations('Chat')
-  // Model Selector (AI Elements): a searchable palette, models grouped by what they do.
-  const [open, setOpen] = React.useState(false)
-  // P01A-11: exact catalog models; the checked one is the server-committed model (or the unsent first-message pick).
-  const plannerModelValue = plannerModel.serverBacked ? plannerModel.view.selectedModelId : settings.chatModelId
-  const groups = [
-    {
-      key: 'orchestration' as const,
-      icon: Cpu,
-      title: tChat('composer.orchestration'),
-      value: plannerModelValue,
-      options: options.chatModels.map((option) => {
-        const hint = plannerModel.serverBacked ? plannerModelHint(option.id, plannerModel.view) : null
-        return { id: option.id, label: option.label, hint: hint ? tChat(PLANNER_MODEL_HINT_KEYS[hint]) : option.description }
-      }),
-    },
-    {
-      key: 'video' as const,
-      icon: Film,
-      title: tChat('composer.video'),
-      value: settings.videoModelId,
-      options: options.videoModels.map((option) => ({ id: option.id, label: option.label, hint: option.description })),
-    },
-    {
-      key: 'image' as const,
-      icon: ImageIcon,
-      title: tChat('composer.image'),
-      value: settings.imageModelId,
-      options: imageModels.map((option) => ({ id: option.id, label: option.label, hint: option.description })),
-    },
-  ]
-
-  function selectModel(group: (typeof groups)[number]['key'], id: string) {
-    if (group === 'orchestration') {
-      plannerModel.onSelect(id)
-      return
-    }
-    if (group === 'video') {
-      onChange((current) => ({ ...current, videoModelId: id }))
-      return
-    }
-    onChange((current) => {
-      const model = options.imageModels.find((option) => option.id === id) ?? null
-      return { ...current, imageModelId: id, ...reconcileImageModelInputs(current, model) }
-    })
-  }
-
-  const plannerLabel = options.chatModels.find((option) => option.id === plannerModelValue)?.label
-
-  return (
-    <Popover open={open && !disabled} onOpenChange={(nextOpen) => setOpen(disabled ? false : nextOpen)}>
-      <PopoverTrigger asChild>
-        <ComposerControlButton
-          icon={Cpu}
-          label={tAuto('models_f3798f81')}
-          value={plannerLabel}
-          open={open}
-          disabled={disabled}
-          caret
-        />
-      </PopoverTrigger>
-      {/* A quiet select: search on top, one line per model (its kind's icon, name, ✓ / lock), groups split by rules. */}
-      <ComposerPopoverContent aria-label={tChat('modelSelector.title')} className="w-72 overflow-hidden p-0">
-        <Command className="bg-transparent **:data-[slot=command-input-wrapper]:h-11 **:data-[slot=command-input-wrapper]:gap-2.5 **:data-[slot=command-input-wrapper]:px-3.5 [&_[cmdk-group-heading]]:sr-only">
-          <CommandInput placeholder={tChat('modelSelector.search')} />
-          <CommandList className="youtorch-thin-scrollbar max-h-[min(22rem,calc(var(--radix-popover-content-available-height,100vh)_-_3rem))]">
-            <CommandEmpty>{tChat('modelSelector.empty')}</CommandEmpty>
-            {groups.map((group, index) => (
-              <React.Fragment key={group.key}>
-                {index > 0 ? <CommandSeparator className="mx-0" /> : null}
-                <CommandGroup heading={group.title} className="p-1.5">
-                  {group.key === 'orchestration' && plannerModel.notice ? (
-                    <p role="status" className="px-2.5 py-1.5 text-xs text-muted-foreground">{tChat(PLANNER_MODEL_NOTICE_KEYS[plannerModel.notice])}</p>
-                  ) : null}
-                  {group.key === 'orchestration' && plannerModel.serverBacked && !plannerModel.loaded ? (
-                    <p className="px-2.5 py-1.5 text-xs text-muted-foreground">{tChat('composer.modelSettingsLoading')}</p>
-                  ) : group.options.map((option) => {
-                    const selected = option.id === group.value
-                    const locked = group.key === 'orchestration' ? plannerModel.pending : mediaDisabled
-                    return (
-                      <CommandItem
-                        key={option.id}
-                        value={`${group.title} ${option.label} ${option.id}`}
-                        disabled={locked}
-                        title={option.hint || undefined}
-                        onSelect={() => {
-                          selectModel(group.key, option.id)
-                          setOpen(false)
-                        }}
-                        className="h-9 gap-3 rounded-lg px-2.5"
-                      >
-                        <group.icon className={cn('!size-[18px]', selected ? 'text-foreground' : 'text-muted-foreground')} />
-                        <span className={cn('min-w-0 flex-1 truncate text-sm', selected ? 'font-semibold text-foreground' : 'text-foreground/75')}>{option.label}</span>
-                        {selected
-                          ? <Check strokeWidth={1.75} className="!size-4 text-foreground" />
-                          : locked ? <Lock className="!size-3.5 text-muted-foreground" /> : null}
-                      </CommandItem>
-                    )
-                  })}
-                </CommandGroup>
-              </React.Fragment>
-            ))}
-          </CommandList>
-        </Command>
-      </ComposerPopoverContent>
-    </Popover>
-  )
-}
-
-/** The icon of an image generation mode in the output menu (an unknown mode gets the sparkles). */
-const IMAGE_TASK_ICONS: Record<string, React.ComponentType<{ className?: string }>> = {
-  text_to_image: TypeIcon,
-  image_to_image: ImageIcon,
-  reference_image: ImagesIcon,
-  image_edit: PencilLine,
-}
-
-function ComposerOutputControl({
-  aspectRatio,
-  aspectOptions,
-  imageTask,
-  imageTaskOptions,
-  imageModels,
-  disabled,
-  onChange,
-}: {
-  aspectRatio: ComposerAspectRatio
-  aspectOptions: ComposerAspectOption[]
-  imageTask: string
-  imageTaskOptions: ComposerInputOption[]
-  imageModels: ComposerModelOption[]
-  disabled: boolean
-  onChange: React.Dispatch<React.SetStateAction<ComposerSettings>>
-}) {
-  const tAuto = useTranslations('Auto')
-  const [open, setOpen] = React.useState(false)
-  const selectedAspect = aspectOptions.find((option) => option.id === aspectRatio) ?? aspectOptions[0]
-
-  return (
-    <Popover open={open && !disabled} onOpenChange={setOpen}>
-      <PopoverTrigger asChild>
-        <ComposerControlButton
-          icon={SlidersHorizontal}
-          label={tAuto('output_4bed3361')}
-          value={selectedAspect?.id === '9:16' ? tAuto('short_0fe7d82f') : selectedAspect?.label}
-          open={open}
-          disabled={disabled}
-        />
-      </PopoverTrigger>
-      <ComposerPopoverContent className="w-64 divide-y divide-border p-0">
-        <ComposerMenuSection label={tAuto('frame_size_b4062689')}>
-          {aspectOptions.map((option) => (
-            <ComposerMenuRow
-              key={option.id}
-              icon={<option.icon />}
-              label={option.id === '9:16' ? tAuto('short_0fe7d82f') : option.label}
-              meta={option.id}
-              selected={option.id === aspectRatio}
-              onClick={() => onChange((current) => ({ ...current, aspectRatio: option.id }))}
-            />
-          ))}
-        </ComposerMenuSection>
-        {imageTaskOptions.length > 0 && (
-          <ComposerMenuSection label={tAuto('generation_mode_d4e81c05')}>
-            {imageTaskOptions.map((option) => {
-              const TaskIcon = IMAGE_TASK_ICONS[option.id] ?? Sparkles
-              return (
-                <ComposerMenuRow
-                  key={option.id}
-                  icon={<TaskIcon />}
-                  label={option.label}
-                  title={option.detail}
-                  selected={option.id === imageTask}
-                  onClick={() => onChange((current) => {
-                    const model = selectComposerImageModelForTask(current.imageModelId, option.id, imageModels)
-                    const nextInputs = reconcileImageModelInputs({ ...current, imageTask: option.id }, model)
-                    return { ...current, imageModelId: model?.id ?? current.imageModelId, ...nextInputs }
-                  })}
-                />
-              )
-            })}
-          </ComposerMenuSection>
-        )}
-      </ComposerPopoverContent>
-    </Popover>
-  )
-}
-
-function ComposerDurationChip({
-  value,
-  minSeconds,
-  maxSeconds,
-  scaleMaxSeconds,
-  disabled,
-  onChange,
-}: {
-  value: number
-  minSeconds: number
-  maxSeconds: number | null
-  scaleMaxSeconds: number | null
-  disabled: boolean
-  onChange: (value: number) => void
-}) {
-  const tAuto = useTranslations('Auto')
-  const tChat = useTranslations('Chat')
-  const formatLocalizedDurationLabel = (seconds: number) => {
-    const safeSeconds = Math.max(0, Math.round(seconds))
-    if (safeSeconds < 60) return tChat('composer.durationSeconds', { seconds: safeSeconds })
-    const minutes = Math.floor(safeSeconds / 60)
-    const remainingSeconds = safeSeconds % 60
-    if (minutes < 60) return remainingSeconds === 0
-      ? tChat('composer.durationMinutes', { minutes })
-      : tChat('composer.durationMinutesSeconds', { minutes, seconds: remainingSeconds })
-    const hours = Math.floor(minutes / 60)
-    const remainingMinutes = minutes % 60
-    return remainingMinutes === 0
-      ? tChat('composer.durationHours', { hours })
-      : tChat('composer.durationHoursMinutes', { hours, minutes: remainingMinutes })
-  }
-  const [open, setOpen] = React.useState(false)
-  const [customValue, setCustomValue] = React.useState('')
-  const [customUnit, setCustomUnit] = React.useState<ComposerDurationUnit>('minutes')
-  const resolvedMinSeconds = Math.max(COMPOSER_VIDEO_DURATION_MIN_SECONDS, Math.round(minSeconds))
-  const planMaxSeconds = Math.max(resolvedMinSeconds, Math.round(maxSeconds ?? resolvedMinSeconds))
-  const clampedValue = clampVideoDurationSeconds(value, planMaxSeconds, resolvedMinSeconds)
-  const sliderStepSeconds = COMPOSER_DURATION_SLIDER_STEP_SECONDS
-  const sliderScaleMaxSeconds = getComposerDurationScaleMax(planMaxSeconds, scaleMaxSeconds)
-  const upgradeAvailable = sliderScaleMaxSeconds > planMaxSeconds
-  const [sliderValue, setSliderValue] = React.useState(clampedValue)
-  const normalizedSliderValue = clampVideoDurationSeconds(sliderValue, sliderScaleMaxSeconds, resolvedMinSeconds)
-  const planLimitProgress = Math.min((planMaxSeconds / sliderScaleMaxSeconds) * 100, 100)
-  const progress = Math.min((Math.min(normalizedSliderValue, planMaxSeconds) / sliderScaleMaxSeconds) * 100, 100)
-  const isPastPlanLimit = normalizedSliderValue > planMaxSeconds
-  const customDurationSeconds = parseComposerDurationInteger(customValue, customUnit)
-  const customExceedsPlan = customDurationSeconds !== null && customDurationSeconds > planMaxSeconds
-
-  const commitDuration = React.useCallback((candidateSeconds: number) => {
-    const committedSeconds = clampVideoDurationSeconds(candidateSeconds, planMaxSeconds, resolvedMinSeconds)
-    setSliderValue(committedSeconds)
-    onChange(committedSeconds)
-    setOpen(false)
-  }, [onChange, planMaxSeconds, resolvedMinSeconds])
-
-  // Opening starts from the committed duration with an empty custom field; closing drops an uncommitted slider value.
-  const handleOpenChange = (nextOpen: boolean) => {
-    setSliderValue(clampedValue)
-    if (nextOpen) setCustomValue('')
-    setOpen(nextOpen)
-  }
-
-  const commitCustomDuration = () => {
-    if (customDurationSeconds === null) return
-    commitDuration(customDurationSeconds)
-  }
-
-  return (
-    <Popover open={open && !disabled} onOpenChange={handleOpenChange}>
-      <PopoverTrigger asChild>
-        <PromptBoxChip
-          disabled={disabled}
-          aria-expanded={open}
-          icon={<Clock />}
-          label={<span className="tabular-nums">{maxSeconds === null ? tAuto('length_3bade34e') : formatLocalizedDurationLabel(clampedValue)}</span>}
-        />
-      </PopoverTrigger>
-
-      <ComposerPopoverContent className="w-72 divide-y divide-border p-0">
-        <div className="px-4 pb-3 pt-3">
-          <div className="flex items-baseline justify-between">
-            <span className="text-xs text-muted-foreground"><UiText id="duration_1370004d" /></span>
-            <span className={cn('text-sm font-semibold tabular-nums', isPastPlanLimit ? 'text-rose-400' : 'text-foreground')}>
-              {formatLocalizedDurationLabel(normalizedSliderValue)}
-            </span>
-          </div>
-
-          <div className="relative mt-3 flex h-4 items-center">
-            <div className="relative h-1 w-full overflow-hidden rounded-full bg-accent">
-              {upgradeAvailable && (
-                <div
-                  className="absolute inset-y-0 right-0 bg-rose-500/25"
-                  style={{ width: (100 - planLimitProgress) + '%' }}
-                />
-              )}
-              <div
-                className="absolute inset-y-0 left-0 rounded-full bg-foreground/80 transition-[width] duration-150 ease-out"
-                style={{ width: progress + '%' }}
-              />
-            </div>
-            <input
-              type="range"
-              min={resolvedMinSeconds}
-              max={sliderScaleMaxSeconds}
-              step={sliderStepSeconds}
-              value={normalizedSliderValue}
-              onChange={(event) => setSliderValue(Number(event.currentTarget.value))}
-              onPointerUp={(event) => commitDuration(Number(event.currentTarget.value))}
-              onPointerCancel={(event) => commitDuration(Number(event.currentTarget.value))}
-              onKeyDown={(event) => {
-                if (event.key === 'Escape') {
-                  event.preventDefault()
-                  setSliderValue(clampedValue)
-                  setOpen(false)
-                }
-              }}
-              onKeyUp={(event) => {
-                if (['ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown', 'Home', 'End', 'PageUp', 'PageDown', 'Enter'].includes(event.key)) {
-                  commitDuration(Number(event.currentTarget.value))
-                }
-              }}
-              className={cn(
-                'absolute inset-0 w-full cursor-pointer appearance-none bg-transparent [&::-webkit-slider-thumb]:size-4 [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:border-2 [&::-webkit-slider-thumb]:border-popover [&::-webkit-slider-thumb]:shadow [&::-webkit-slider-thumb]:transition-transform hover:[&::-webkit-slider-thumb]:scale-110',
-                isPastPlanLimit
-                  ? '[&::-webkit-slider-thumb]:bg-rose-400'
-                  : '[&::-webkit-slider-thumb]:bg-foreground',
-              )}
-              aria-label={tAuto('video_duration_72347bc5')}
-              aria-valuetext={isPastPlanLimit
-                ? tChat('composer.planLimitExceededSelection', { duration: formatLocalizedDurationLabel(planMaxSeconds) })
-                : formatLocalizedDurationLabel(normalizedSliderValue)}
-            />
-          </div>
-
-          <div className="relative mt-1 h-4 whitespace-nowrap text-[11px] text-muted-foreground">
-            <span className="absolute left-0">{formatLocalizedDurationLabel(resolvedMinSeconds)}</span>
-            <span
-              className="absolute -translate-x-full text-foreground/75"
-              style={{ left: planLimitProgress + '%' }}
-            >
-              {formatLocalizedDurationLabel(planMaxSeconds)}
-            </span>
-            {upgradeAvailable && <span className="absolute right-0 text-rose-400"><UiText id="maks_sure_fc0583c5" /></span>}
-          </div>
-
-          {(isPastPlanLimit || customExceedsPlan) && (
-            <p className="mt-1.5 flex items-start gap-1.5 text-[11px] leading-4 text-rose-400">
-              <CircleAlert className="mt-0.5 size-3.5 shrink-0" />
-              <span>
-                {isPastPlanLimit
-                  ? tChat('composer.planMaximumWillBeSelected', { duration: formatLocalizedDurationLabel(planMaxSeconds) })
-                  : customExceedsPlan
-                    ? tChat('composer.planMaximumWillBeApplied', { duration: formatLocalizedDurationLabel(planMaxSeconds) })
-                    : tChat('composer.planMaximum', { duration: formatLocalizedDurationLabel(planMaxSeconds) })}
-              </span>
-            </p>
-          )}
-        </div>
-
-        <div className="grid auto-cols-fr grid-flow-col gap-1 p-1.5">
-          {COMPOSER_DURATION_PRESETS.map((preset) => {
-            const locked = preset < resolvedMinSeconds || preset > planMaxSeconds
-            const selected = clampedValue === preset
-            return (
-              <button
-                key={preset}
-                type="button"
-                disabled={locked}
-                aria-pressed={selected}
-                title={locked ? tChat('composer.planMaximum', { duration: formatLocalizedDurationLabel(planMaxSeconds) }) : undefined}
-                onClick={() => commitDuration(preset)}
-                className={cn(
-                  'h-8 whitespace-nowrap rounded-lg px-1 text-[13px] tabular-nums transition-colors hover:bg-accent disabled:pointer-events-none disabled:opacity-35',
-                  selected ? 'bg-accent font-semibold text-foreground' : 'text-foreground/75',
-                )}
-              >
-                {formatLocalizedDurationLabel(preset)}
-              </button>
-            )
-          })}
-        </div>
-
-        <div className="p-1.5">
-          <div className="flex h-9 items-center gap-3 rounded-lg px-2.5 focus-within:bg-accent/60">
-            <Clock className={cn('size-[18px] shrink-0', customExceedsPlan ? 'text-rose-400' : 'text-muted-foreground')} />
-            <input
-              value={customValue}
-              inputMode="numeric"
-              pattern="[0-9]*"
-              onChange={(event) => {
-                const digits = event.currentTarget.value.replace(/\D/g, '').replace(/^0+(?=\d)/, '')
-                setCustomValue(digits)
-              }}
-              onKeyDown={(event) => {
-                if (event.key !== 'Enter') return
-                event.preventDefault()
-                commitCustomDuration()
-              }}
-              placeholder="3"
-              aria-label={tAuto('custom_video_duration_796a41ab')}
-              className="min-w-0 flex-1 bg-transparent text-sm tabular-nums text-foreground outline-none placeholder:text-muted-foreground"
-            />
-            <div className="relative shrink-0">
-              <select
-                value={customUnit}
-                onChange={(event) => setCustomUnit(event.currentTarget.value as ComposerDurationUnit)}
-                aria-label={tAuto('duration_unit_0af43a1a')}
-                className="h-7 appearance-none rounded-md bg-transparent py-0 pl-2 pr-6 text-xs text-foreground/75 outline-none transition hover:bg-accent focus-visible:bg-accent"
-              >
-                <option value="seconds">{tChat('composer.secondsShort')}</option>
-                <option value="minutes">{tChat('composer.minutesShort')}</option>
-              </select>
-              <ChevronDown className="pointer-events-none absolute right-1.5 top-1/2 size-3 -translate-y-1/2 text-muted-foreground" />
-            </div>
-            <button
-              type="button"
-              disabled={customDurationSeconds === null}
-              title={customExceedsPlan ? tChat('composer.maximumApplied', { duration: formatLocalizedDurationLabel(planMaxSeconds) }) : tAuto('sureyi_uygula_59d32ccd')}
-              onClick={commitCustomDuration}
-              aria-label={tAuto('apply_custom_duration_36683753')}
-              className={cn(
-                '-mr-1 grid size-7 shrink-0 place-items-center rounded-md transition-colors disabled:pointer-events-none disabled:opacity-30',
-                customExceedsPlan
-                  ? 'bg-rose-500/15 text-rose-400 hover:bg-rose-500/25'
-                  : 'bg-foreground text-background hover:bg-foreground/90',
-              )}
-            >
-              <Check className="size-3.5" />
-            </button>
-          </div>
-        </div>
-      </ComposerPopoverContent>
-    </Popover>
-  )
-}
-function ComposerCanvasControl({
-  settings,
-  imageSizeOptions,
-  imageResolutionOptions,
-  imageQualityOptions,
-  imageFormatOptions,
-  outputCount,
-  disabled,
-  onChange,
-}: {
-  settings: ComposerSettings
-  imageSizeOptions: ComposerInputOption[]
-  imageResolutionOptions: ComposerInputOption[]
-  imageQualityOptions: ComposerInputOption[]
-  imageFormatOptions: ComposerInputOption[]
-  outputCount: ComposerOutputCountControl
-  disabled: boolean
-  onChange: React.Dispatch<React.SetStateAction<ComposerSettings>>
-}) {
-  const tAuto = useTranslations('Auto')
-  const tChat = useTranslations('Chat')
-  const [open, setOpen] = React.useState(false)
-  const groups = [
-    { key: 'imageSize' as const, title: tChat('composer.canvasSize'), value: settings.imageSize, options: imageSizeOptions },
-    { key: 'imageResolution' as const, title: tChat('composer.resolution'), value: settings.imageResolution, options: imageResolutionOptions },
-    { key: 'imageQuality' as const, title: tChat('composer.quality'), value: settings.imageQuality, options: imageQualityOptions },
-    { key: 'imageOutputFormat' as const, title: tChat('composer.format'), value: settings.imageOutputFormat, options: imageFormatOptions },
-  ].filter((group) => group.options.length > 0)
-
-  return (
-    <Popover open={open && !disabled} onOpenChange={setOpen}>
-      <PopoverTrigger asChild>
-        <ComposerControlButton
-          icon={LayoutTemplate}
-          label={tAuto('canvas_a3f80b87')}
-          value={composerOutputCountButtonValue(outputCount, tChat)}
-          open={open}
-          disabled={disabled}
-        />
-      </PopoverTrigger>
-      <ComposerPopoverContent className="max-h-[min(24rem,var(--radix-popover-content-available-height,100vh))] w-60 divide-y divide-border p-0">
-        <ComposerOutputCountSection view={outputCount} row={ComposerControlOptionRow} onSelect={outputCount.select} />
-        {groups.length === 0 && outputCount.options.length === 0 ? (
-          <p className="px-4 py-3 text-sm text-muted-foreground"><UiText id="no_canvas_settings_for_this_model_c1bf28da" /></p>
-        ) : groups.map((group) => (
-          <ComposerMenuSection key={group.key} label={group.title}>
-            {group.options.map((option) => (
-              <ComposerMenuRow
-                key={option.id}
-                label={option.label}
-                title={option.detail}
-                selected={option.id === group.value}
-                onClick={() => onChange((current) => ({ ...current, [group.key]: option.id }))}
-              />
-            ))}
-          </ComposerMenuSection>
-        ))}
-      </ComposerPopoverContent>
-    </Popover>
-  )
-}
-
-function ComposerUploadProgress({
-  progress,
-  locale,
-}: {
-  progress: number | null
-  locale: ChatLocale
-}) {
-  const copy = useChatCopy()
-  return (
-    <div className="mb-3 rounded-[14px] border border-border/80 bg-background px-3 py-2 text-foreground shadow-[0_12px_32px_rgba(15,23,42,0.06)] dark:border-white/10 dark:bg-white/[0.055] dark:text-white dark:shadow-none">
-      <div className="flex items-center gap-2 text-sm font-medium">
-        <Loader2 className="size-4 animate-spin text-muted-foreground dark:text-white/58" />
-        <span>{copy.uploadingMedia}{progress === null ? '' : ` ${progress}%`}</span>
-      </div>
-      <div className="mt-2 h-1.5 overflow-hidden rounded-full bg-muted dark:bg-white/8">
-        <div className="h-full rounded-full bg-primary transition-all dark:bg-white/70" style={{ width: `${progress ?? 12}%` }} />
-      </div>
-    </div>
-  )
-}
-
-/** Attached files and `@` resources as small tokens next to "+": thumbnail/icon + `@name`; hover shows a preview. */
-function ComposerReferenceTokens({
-  assets,
-  labels,
-  mentions,
-  disabled,
-  onRemoveAsset,
-  onRemoveMention,
-}: {
-  assets: ChatAssetAttachment[]
-  labels: Record<string, string>
-  mentions: ComposerMentionChip[]
-  disabled: boolean
-  onRemoveAsset: (assetId: string) => void
-  onRemoveMention: (chip: ComposerMentionChip) => void
-}) {
-  const tAuto = useTranslations('Auto')
-  if (assets.length === 0 && mentions.length === 0) return null
-  const token = 'flex h-9 max-w-44 shrink-0 items-center gap-1.5 rounded-full border border-border bg-background/40 pl-1 pr-1.5 text-xs font-medium text-foreground'
-  const remove = 'flex size-5 shrink-0 items-center justify-center rounded-full text-muted-foreground transition-colors hover:bg-muted hover:text-foreground disabled:pointer-events-none disabled:opacity-45'
-  return (
-    <div className="flex min-w-0 items-center gap-1.5">
-      {assets.map((asset) => {
-        const name = `@${labels[asset.id] ?? asset.kind}`
-        return (
-          <HoverCard key={asset.id} openDelay={150} closeDelay={80}>
-            <HoverCardTrigger asChild>
-              <span className={token} tabIndex={0}>
-                <span className="flex size-7 shrink-0 items-center justify-center overflow-hidden rounded-full bg-muted text-muted-foreground">
-                  <ComposerTokenThumb asset={asset} iconClassName="size-3.5" />
-                </span>
-                <span className="truncate">{name}</span>
-                <button type="button" disabled={disabled} aria-label={tAuto('remove_attachment_0fcc6594')} onClick={() => onRemoveAsset(asset.id)} className={remove}>
-                  <X className="size-3" />
-                </button>
-              </span>
-            </HoverCardTrigger>
-            <HoverCardContent side="top" align="start" className="w-64 p-2">
-              <div className="flex aspect-video w-full items-center justify-center overflow-hidden rounded-lg bg-muted text-muted-foreground">
-                <ComposerTokenThumb asset={asset} iconClassName="size-8" />
-              </div>
-              <p className="mt-2 truncate px-1 text-sm font-medium text-foreground">{name}</p>
-              <p className="truncate px-1 text-xs text-muted-foreground">{asset.name}</p>
-            </HoverCardContent>
-          </HoverCard>
-        )
-      })}
-      {mentions.map((chip) => {
-        const name = composerMentionToken(chip.label)
-        return (
-          <HoverCard key={chip.key} openDelay={150} closeDelay={80}>
-            <HoverCardTrigger asChild>
-              <span className={token} tabIndex={0}>
-                <span className="flex size-7 shrink-0 items-center justify-center rounded-full bg-muted text-muted-foreground">
-                  <MentionKindIcon chip={chip} className="size-3.5" />
-                </span>
-                <span className="truncate">{name}</span>
-                <button type="button" disabled={disabled} aria-label={tAuto('remove_attachment_0fcc6594')} onClick={() => onRemoveMention(chip)} className={remove}>
-                  <X className="size-3" />
-                </button>
-              </span>
-            </HoverCardTrigger>
-            <HoverCardContent side="top" align="start" className="w-56 p-3">
-              <div className="flex items-center gap-2.5">
-                <span className="flex size-10 shrink-0 items-center justify-center rounded-lg bg-muted text-muted-foreground"><MentionKindIcon chip={chip} className="size-5" /></span>
-                <span className="min-w-0">
-                  <span className="block truncate text-sm font-medium text-foreground">{chip.label}</span>
-                  <span className="block truncate text-xs text-muted-foreground">{name}</span>
-                </span>
-              </div>
-            </HoverCardContent>
-          </HoverCard>
-        )
-      })}
-    </div>
-  )
-}
-
-type ComposerTokenRef = { kind: 'asset'; asset: ChatAssetAttachment } | { kind: 'mention'; chip: ComposerMentionChip }
-
-function MentionKindIcon({ chip, className }: { chip: ComposerMentionChip; className?: string }) {
-  if (chip.resourceKind === 'avatar') return <UserRound className={className} />
-  if (chip.resourceKind === 'voice') return <Mic className={className} />
-  if (chip.resourceKind.includes('template')) return <LayoutTemplate className={className} />
-  return <AtSign className={className} />
-}
-
-/** Space (px) between a token's picture and its label in the composer text. */
-const COMPOSER_TOKEN_PICTURE_GAP = 3
-
-/**
- * Draws the composer text under the (transparent) textarea with the same box and wrapping, so `@image1` tokens show
- * as pills with their picture in place of the `@`, exactly where they are typed. Same characters, so the caret lines up.
- */
-function ComposerTokenMirror({
-  mirrorRef,
-  text,
-  tokens,
-  inline,
-}: {
-  mirrorRef: React.Ref<HTMLDivElement>
-  text: string
-  tokens: Map<string, ComposerTokenRef>
-  inline: string[]
-}) {
-  const alternatives = inline.map((token) => token.replace(/[.*+?^${}()|[\]\\]/gu, '\\$&')).join('|')
-  const pattern = new RegExp(`(?<=^|\\s)(${alternatives})(?=\\s|$)`, 'u')
-  const parts = text.split(pattern)
-  return (
-    <div
-      ref={mirrorRef}
-      aria-hidden="true"
-      className="pb-input pb-mirror"
-    >
-      {parts.map((part, index) => {
-        const reference = index % 2 === 1 ? tokens.get(part) : undefined
-        if (!reference) return <React.Fragment key={index}>{part}</React.Fragment>
-        const label = part.slice(1)
-        return (
-          <span key={index} data-token={part} className="relative rounded-[5px] bg-primary/15 ring-[3px] ring-primary/15">
-            <span className="text-transparent">@</span>
-            <span className="absolute -left-px top-1/2 flex size-[14px] -translate-y-1/2 items-center justify-center overflow-hidden rounded-[4px] bg-muted text-muted-foreground">
-              {reference.kind === 'asset' ? <ComposerTokenThumb asset={reference.asset} iconClassName="size-2.5" /> : <MentionKindIcon chip={reference.chip} className="size-2.5" />}
-            </span>
-            {/* A small gap after the picture; the label's tighter tracking gives the width back, so the token keeps its width. */}
-            <span style={{ marginLeft: COMPOSER_TOKEN_PICTURE_GAP, letterSpacing: -COMPOSER_TOKEN_PICTURE_GAP / Array.from(label).length }}>{label}</span>
-          </span>
-        )
-      })}
-      {'\u200b'}
-    </div>
-  )
-}
-
-/** The preview card above a hovered token: the picture (or icon), the token and the file / resource name. */
-function ComposerTokenPreview({ reference, token, style }: { reference: ComposerTokenRef; token: string; style: React.CSSProperties }) {
-  return (
-    <div style={style} className="pointer-events-none absolute z-30 w-60 rounded-xl border border-border bg-popover p-2 text-popover-foreground shadow-xl shadow-black/30 duration-150 animate-in fade-in slide-in-from-bottom-1">
-      {reference.kind === 'asset' ? (
-        <>
-          <div className="flex aspect-video w-full items-center justify-center overflow-hidden rounded-lg bg-muted text-muted-foreground">
-            <ComposerTokenThumb asset={reference.asset} iconClassName="size-8" />
-          </div>
-          <p className="mt-2 truncate px-1 text-sm font-medium">{token}</p>
-          <p className="truncate px-1 text-xs text-muted-foreground">{reference.asset.name}</p>
-        </>
-      ) : (
-        <div className="flex items-center gap-2.5 p-1">
-          <span className="flex size-10 shrink-0 items-center justify-center rounded-lg bg-muted text-muted-foreground"><MentionKindIcon chip={reference.chip} className="size-5" /></span>
-          <span className="min-w-0">
-            <span className="block truncate text-sm font-medium">{reference.chip.label}</span>
-            <span className="block truncate text-xs text-muted-foreground">{token}</span>
-          </span>
-        </div>
-      )}
-    </div>
-  )
-}
-
-function hasComposerToken(text: string, token: string) {
-  return composerTokenPattern(token).test(text)
-}
-
-/**
- * A token's picture: a Storage file's signed thumbnail (as in the media picker; a video has no image URL of its own),
- * else the file's preview image, else its kind icon (also when the image fails).
- */
-function ComposerTokenThumb({ asset, iconClassName }: { asset: ChatAssetAttachment; iconClassName?: string }) {
-  const [failedSrc, setFailedSrc] = React.useState<string | null>(null)
-  const storageThumbnail = useStorageThumbnailUrl({
-    channelId: asset.channelId,
-    objectId: asset.objectId ?? '',
-    enabled: Boolean(asset.objectId) && isVisualAttachment(asset),
-  })
-  const src = storageThumbnail.data?.url ?? getMediaThumbnailUrl(asset) ?? (isVisualAttachment(asset) ? asset.previewUrl ?? null : null)
-  if (!src || failedSrc === src) return <AttachmentKindIcon kind={asset.kind} className={iconClassName} />
-  // eslint-disable-next-line @next/next/no-img-element
-  return <img src={src} alt="" referrerPolicy="strict-origin-when-cross-origin" className="h-full w-full object-cover" onError={() => setFailedSrc(src)} />
-}
-
-/** `image1`, `image2`, `video1`…: the lowest free number for the kind among the files already attached. */
-function nextComposerAssetLabel(kind: ChatAssetKind, taken: string[]) {
-  const prefix = kind === 'document' ? 'file' : kind
-  let index = 1
-  while (taken.includes(`${prefix}${index}`)) index += 1
-  return `${prefix}${index}`
-}
-
-function composerTokenPattern(token: string) {
-  const escaped = token.replace(/[.*+?^${}()|[\]\\]/gu, '\\$&')
-  return new RegExp(`(^|\\s)${escaped}(?=\\s|$)`, 'u')
-}
-
-/** Adds ` @image1 ` at the end of the text unless it is already there. */
-function appendComposerToken(text: string, token: string) {
-  if (composerTokenPattern(token).test(text)) return text
-  const base = text.replace(/\s+$/u, '')
-  return base ? `${base} ${token} ` : `${token} `
-}
-
-/** Removes the first `@image1` token from the text (and the extra space it leaves). */
-function removeComposerToken(text: string, token: string) {
-  return text.replace(composerTokenPattern(token), '$1').replace(/ {2,}/gu, ' ')
-}
 
 function MessageAttachments({
   attachments,
@@ -5627,36 +3824,6 @@ function AttachmentPreview({ asset }: { asset: ChatAssetAttachment }) {
   )
 
 }
-function StoragePickerPreview({
-  item,
-  channelId,
-}: {
-  item: StorageObjectItem
-  channelId: string | null
-}) {
-  const kind = inferAttachmentKind({ url: item.name, mimeType: item.mime_type, name: item.name })
-  const thumbnail = useStorageThumbnailUrl({
-    channelId,
-    objectId: item.id,
-    enabled: kind === 'image' || kind === 'video',
-  })
-  if (thumbnail.data?.url && (kind === 'image' || kind === 'video')) {
-    return (
-      // eslint-disable-next-line @next/next/no-img-element
-      <img
-        src={thumbnail.data.url}
-        alt={item.name}
-        referrerPolicy="strict-origin-when-cross-origin"
-        className="h-full w-full object-cover"
-      />
-    )
-  }
-  return (
-    <div className="flex h-full items-center justify-center text-muted-foreground dark:text-white/48">
-      <AttachmentKindIcon kind={kind} className="size-9" />
-    </div>
-  )
-}
 
 function AttachmentThumb({ asset, compact = false }: { asset: ChatAssetAttachment; compact?: boolean }) {
   return (
@@ -5670,418 +3837,7 @@ function AttachmentThumb({ asset, compact = false }: { asset: ChatAssetAttachmen
   )
 }
 
-function AttachmentKindIcon({ kind, className }: { kind: ChatAssetKind; className?: string }) {
-  if (kind === 'image') return <ImageIcon className={className} />
-  if (kind === 'video') return <Film className={className} />
-  return <FileIcon className={className} />
-}
 
-function ComposerAddMenu({
-  copy,
-  open,
-  disabled,
-  onOpenChange,
-  onUpload,
-  onAssets,
-  memoryUpload,
-  connectors,
-}: {
-  copy: ChatCopy
-  open: boolean
-  disabled: boolean
-  onOpenChange: (open: boolean) => void
-  onUpload: () => void
-  onAssets: () => void
-  memoryUpload: MemoryUploadChoice
-  /** QA-131: the "Connectors" group (connected connectors + "Add" in a new tab). */
-  connectors?: React.ReactNode
-}) {
-  return (
-    <Popover open={open && !disabled} onOpenChange={(nextOpen) => onOpenChange(disabled ? false : nextOpen)}>
-      <PopoverTrigger asChild>
-        <PromptBoxChip aria-label={copy.addContext} title={copy.addContext} disabled={disabled} icon={<Plus />} />
-      </PopoverTrigger>
-      <ComposerPopoverContent className="w-64 divide-y divide-border p-0">
-        <ComposerMenuSection>
-          <ComposerMenuRow icon={<Upload />} label={copy.addMenuUpload} onClick={onUpload} />
-          <MemoryIngestionCheckbox
-            checked={memoryUpload.checked}
-            availability={memoryUpload.availability}
-            onCheckedChange={memoryUpload.setChecked}
-            className={cn('h-9 w-full gap-3 rounded-lg px-2.5 hover:bg-accent [&>button]:mx-px', memoryUpload.availability.available && 'text-foreground/75')}
-          />
-          <ComposerMenuRow icon={<ImageIcon />} label={copy.addMenuAssets} onClick={onAssets} />
-        </ComposerMenuSection>
-        {connectors}
-      </ComposerPopoverContent>
-    </Popover>
-  )
-}
-
-function MediaPickerDialog({
-  open,
-  channelId,
-  locale,
-  onClose,
-  onSelect,
-  memoryUpload,
-}: {
-  open: boolean
-  channelId: string | null
-  locale: ChatLocale
-  onClose: () => void
-  onSelect: (asset: ChatAssetAttachment) => void
-  memoryUpload: MemoryUploadChoice
-}) {
-  const copy = useChatCopy()
-  const localizeError = useLocalizedError()
-  const fileInputRef = React.useRef<HTMLInputElement | null>(null)
-  const uploadAbortRef = React.useRef<AbortController | null>(null)
-  const [view, setView] = React.useState<MediaPickerView>('image')
-  const [search, setSearch] = React.useState('')
-  const [items, setItems] = React.useState<StorageObjectItem[]>([])
-  const [previewItem, setPreviewItem] = React.useState<StorageObjectItem | null>(null)
-  const [loading, setLoading] = React.useState(false)
-  const [uploading, setUploading] = React.useState(false)
-  const [uploadProgress, setUploadProgress] = React.useState<number | null>(null)
-  const [error, setError] = React.useState<string | null>(null)
-
-  React.useEffect(() => {
-    uploadAbortRef.current?.abort()
-    uploadAbortRef.current = null
-    setUploading(false)
-    setUploadProgress(null)
-    if (fileInputRef.current) fileInputRef.current.value = ''
-  }, [channelId])
-
-  React.useEffect(() => () => {
-    uploadAbortRef.current?.abort()
-    uploadAbortRef.current = null
-  }, [])
-
-  React.useEffect(() => {
-    if (!open || !channelId) return undefined
-    const controller = new AbortController()
-    let cancelled = false
-    setLoading(true)
-    setError(null)
-    const timeout = window.setTimeout(() => {
-      const input = getChatMediaListInput(view, search)
-      listStorageObjects(channelId, input, { signal: controller.signal })
-        .then((result) => {
-          if (cancelled) return
-          const nextItems = result.data.filter((item) => item.type === 'file')
-          setItems(nextItems)
-          setPreviewItem((current) => current && nextItems.some((item) => item.id === current.id) ? current : nextItems[0] ?? null)
-        })
-        .catch((loadError) => {
-          if (cancelled) return
-          setError(localizeError(loadError))
-          setItems([])
-          setPreviewItem(null)
-        })
-        .finally(() => {
-          if (!cancelled) setLoading(false)
-        })
-    }, 180)
-    return () => {
-      cancelled = true
-      controller.abort()
-      window.clearTimeout(timeout)
-    }
-  }, [channelId, open, search, view])
-
-  if (!open) return null
-
-  async function refreshItems(signal?: AbortSignal) {
-    if (!channelId) return
-    const result = await listStorageObjects(
-      channelId,
-      getChatMediaListInput(view, search),
-      { signal },
-    )
-    const nextItems = result.data.filter((item) => item.type === 'file')
-    setItems(nextItems)
-    setPreviewItem(nextItems[0] ?? null)
-  }
-
-  async function handleUpload(files: FileList | null) {
-    if (!files || files.length === 0 || !channelId || uploading) return
-    const selectedFiles = Array.from(files).filter((file) => file.size > 0)
-    if (selectedFiles.length === 0) return
-    uploadAbortRef.current?.abort()
-    const uploadController = new AbortController()
-    uploadAbortRef.current = uploadController
-    setUploading(true)
-    setUploadProgress(0)
-    setError(null)
-    const memoryIngestion = memoryUpload.beginBatch(channelId, selectedFiles)
-    try {
-      for (let index = 0; index < selectedFiles.length; index += 1) {
-        if (uploadController.signal.aborted) break
-        const file = selectedFiles[index]!
-        const uploaded = await uploadChatMediaFile(channelId, file, (progress) => {
-          if (uploadAbortRef.current !== uploadController || uploadController.signal.aborted) return
-          const base = (index / selectedFiles.length) * 100
-          setUploadProgress(Math.round(base + (progress / selectedFiles.length)))
-        }, uploadController.signal, memoryIngestion)
-        if (uploadAbortRef.current !== uploadController || uploadController.signal.aborted) break
-        onSelect(uploaded)
-      }
-      if (!uploadController.signal.aborted) await refreshItems(uploadController.signal)
-    } catch (uploadError) {
-      if (!isChatUploadAbort(uploadError, uploadController.signal)) {
-        setError(localizeError(uploadError))
-      }
-    } finally {
-      if (uploadAbortRef.current !== uploadController) return
-      uploadAbortRef.current = null
-      setUploading(false)
-      setUploadProgress(null)
-      if (fileInputRef.current) fileInputRef.current.value = ''
-    }
-  }
-
-  const tabs: Array<{ id: MediaPickerView; label: string; icon: React.ReactNode }> = [
-    { id: 'image', label: copy.mediaPickerImages, icon: <ImageIcon className="size-4" /> },
-    { id: 'video', label: copy.mediaPickerVideos, icon: <Film className="size-4" /> },
-    { id: 'uploads', label: copy.mediaPickerUploads, icon: <Upload className="size-4" /> },
-  ]
-
-  return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-foreground/24 p-3 text-foreground backdrop-blur-md dark:bg-black/54 dark:text-white sm:p-6">
-      <div className="flex h-[min(720px,92vh)] w-full max-w-5xl overflow-hidden rounded-[28px] border border-border/80 bg-card shadow-[0_34px_90px_rgba(15,23,42,0.18)] dark:border-white/10 dark:bg-[#202020] dark:shadow-[0_40px_120px_rgba(0,0,0,0.7)]">
-        <aside className="relative hidden w-40 shrink-0 border-r border-border/70 bg-muted/45 p-3 dark:border-white/6 dark:bg-black/12 sm:block">
-          <div className="mb-4 truncate px-2 text-sm font-semibold text-muted-foreground dark:text-white/74">{copy.mediaPickerTitle}</div>
-          <div className="space-y-1">
-            {tabs.map((tab) => (
-              <button
-                key={tab.id}
-                type="button"
-                onClick={() => setView(tab.id)}
-                className={cn(
-                  'flex h-11 w-full items-center gap-2 rounded-md px-3 text-sm font-medium transition-colors',
-                  view === tab.id
-                    ? 'bg-accent text-accent-foreground dark:bg-white/16 dark:text-white'
-                    : 'text-muted-foreground hover:bg-muted hover:text-foreground dark:text-white/48 dark:hover:bg-white/8 dark:hover:text-white/76',
-                )}
-              >
-                {tab.icon}
-                {tab.label}
-              </button>
-            ))}
-          </div>
-          <div className="absolute bottom-8 flex flex-col items-start gap-1">
-            <MemoryIngestionCheckbox
-              checked={memoryUpload.checked}
-              availability={memoryUpload.availability}
-              disabled={uploading || !channelId}
-              onCheckedChange={memoryUpload.setChecked}
-              className="px-3 py-1 text-xs dark:text-white/74"
-            />
-            <button
-              type="button"
-              disabled={uploading || !channelId}
-              onClick={() => fileInputRef.current?.click()}
-              className="flex items-center gap-2 rounded-md px-3 py-2 text-sm font-semibold text-foreground transition-colors hover:bg-muted disabled:opacity-50 dark:text-white dark:hover:bg-white/8"
-            >
-              {uploading ? <Loader2 className="size-4 animate-spin" /> : <Upload className="size-4" />}
-              {copy.mediaPickerUpload}
-            </button>
-            <MemoryUploadSummaryLine summary={memoryUpload.summary} className="max-w-[8.5rem] whitespace-normal px-3" />
-          </div>
-        </aside>
-
-        <div className="flex min-w-0 flex-1 flex-col">
-          <div className="flex shrink-0 items-center gap-2 border-b border-border/70 p-3 dark:border-white/6">
-            <div className="flex h-11 min-w-0 flex-1 items-center gap-2 rounded-[14px] border border-border/70 bg-input px-3 dark:border-transparent dark:bg-white/7">
-              <Search className="size-5 shrink-0 text-muted-foreground dark:text-white/46" />
-              <input
-                value={search}
-                onChange={(event) => setSearch(event.target.value)}
-                placeholder={copy.mediaPickerSearch}
-                className="min-w-0 flex-1 bg-transparent text-sm text-foreground outline-none placeholder:text-muted-foreground dark:text-white dark:placeholder:text-white/42"
-              />
-            </div>
-            <div className="hidden h-11 items-center gap-2 rounded-[14px] border border-border/70 bg-muted/50 px-4 text-sm font-semibold text-muted-foreground dark:border-transparent dark:bg-white/7 dark:text-white/64 sm:flex">
-              {copy.mediaPickerRecent}
-              <ChevronDown className="size-4 text-muted-foreground/80 dark:text-white/42" />
-            </div>
-            <button
-              type="button"
-              aria-label={copy.mediaPickerClose}
-              onClick={onClose}
-              className="flex size-11 items-center justify-center rounded-full text-muted-foreground hover:bg-muted hover:text-foreground dark:text-white/58 dark:hover:bg-white/8 dark:hover:text-white"
-            >
-              <X className="size-5" />
-            </button>
-          </div>
-
-          <div className="grid min-h-0 flex-1 grid-cols-1 md:grid-cols-[1fr_480px]">
-            <div className="min-h-0 overflow-y-auto p-4">
-              <div className="mb-3 flex gap-2 sm:hidden">
-                {tabs.map((tab) => (
-                  <button
-                    key={tab.id}
-                    type="button"
-                    onClick={() => setView(tab.id)}
-                    className={cn(
-                      'flex h-9 items-center gap-1 rounded-full px-3 text-sm transition-colors',
-                      view === tab.id
-                        ? 'bg-accent text-accent-foreground dark:bg-white dark:text-black'
-                        : 'bg-muted text-muted-foreground hover:bg-muted/80 hover:text-foreground dark:bg-white/8 dark:text-white/62 dark:hover:bg-white/12 dark:hover:text-white',
-                    )}
-                  >
-                    {tab.icon}
-                    {tab.label}
-                  </button>
-                ))}
-              </div>
-
-              {error && (
-                <ChatInlineAlert
-                  tone="error"
-                  title={copy.loadErrorTitle}
-                  detail={error}
-                  className="mb-3"
-                />
-              )}
-
-              {uploading && (
-                <div className="mb-3 rounded-md border border-border/80 bg-muted/35 px-3 py-2 text-sm text-muted-foreground dark:border-white/10 dark:bg-white/[0.055] dark:text-white/72">
-                  <div className="flex items-center gap-2">
-                    <Loader2 className="size-4 animate-spin" />
-                    <UiText id="uploading_media_456f6114" />{uploadProgress === null ? '' : ` ${uploadProgress}%`}
-                  </div>
-                  <div className="mt-2 h-1.5 overflow-hidden rounded-full bg-muted dark:bg-white/8">
-                    <div className="h-full rounded-full bg-primary transition-all dark:bg-white/55" style={{ width: `${uploadProgress ?? 12}%` }} />
-                  </div>
-                </div>
-              )}
-
-              {loading ? (
-                <div className="grid grid-cols-2 gap-3 lg:grid-cols-3">
-                  {Array.from({ length: 6 }).map((_, index) => (
-                    <Skeleton key={index} className="aspect-video rounded-md bg-muted dark:bg-white/8" />
-                  ))}
-                </div>
-              ) : items.length === 0 ? (
-                <div className="flex min-h-[360px] flex-col items-center justify-center text-center text-muted-foreground dark:text-white/62">
-                  <ImageIcon className="mb-3 size-12 text-muted-foreground/50 dark:text-white/32" />
-                  <p className="text-lg font-semibold">{copy.mediaPickerEmpty}</p>
-                </div>
-              ) : (
-                <div className="grid grid-cols-2 gap-3 lg:grid-cols-3">
-                  {items.map((item) => {
-                    const asset = attachmentFromStorageItem(item, channelId)
-                    const selected = previewItem?.id === item.id
-                    const selectable = isStorageMediaSelectable(item)
-                    return (
-                      <div
-                        key={item.id}
-                        className={cn(
-                          'overflow-hidden rounded-md border bg-card text-left transition-colors hover:border-primary/30 hover:bg-muted/45 dark:bg-white/[0.045] dark:hover:border-white/24 dark:hover:bg-white/[0.07]',
-                          selected ? 'border-primary/45 dark:border-white/34' : 'border-border/80 dark:border-white/10',
-                        )}
-                      >
-                        <button
-                          type="button"
-                          onClick={() => setPreviewItem(item)}
-                          onDoubleClick={() => selectable && onSelect(asset)}
-                          className="block w-full text-left"
-                        >
-                          <div className="aspect-video bg-muted dark:bg-black/36">
-                            <StoragePickerPreview item={item} channelId={channelId} />
-                          </div>
-                        </button>
-                        <div className="flex items-center gap-2 p-2">
-                          <button
-                            type="button"
-                            onClick={() => setPreviewItem(item)}
-                            className="min-w-0 flex-1 text-left"
-                          >
-                            <p className="truncate text-sm font-medium text-foreground dark:text-white/82">{item.name}</p>
-                            <p className="text-xs text-muted-foreground dark:text-white/38">{formatAttachmentMeta(asset)}</p>
-                          </button>
-                          <button
-                            type="button"
-                            aria-label={copy.mediaPickerSelect}
-                            disabled={!selectable}
-                            onClick={() => selectable && onSelect(asset)}
-                            className="flex size-8 shrink-0 items-center justify-center rounded-full bg-primary text-primary-foreground transition-colors hover:bg-primary/90 dark:bg-white/10 dark:text-white dark:hover:bg-white dark:hover:text-black"
-                          >
-                            <Plus className="size-4" />
-                          </button>
-                        </div>
-                      </div>
-                    )
-                  })}
-                </div>
-              )}
-            </div>
-
-            <div className="hidden min-h-0 border-l border-border/70 p-4 dark:border-white/6 md:block">
-              <div className="flex h-full flex-col overflow-hidden rounded-[20px] border border-border/70 bg-muted/30 dark:border-transparent dark:bg-white/[0.045]">
-                {previewItem ? (
-                  <>
-                    <div className="min-h-0 flex-1 bg-muted/60 dark:bg-black/22">
-                      <StoragePickerPreview item={previewItem} channelId={channelId} />
-                    </div>
-                    <div className="border-t border-border/70 p-4 dark:border-white/8">
-                      <p className="truncate text-sm font-semibold text-foreground dark:text-white/86">{previewItem.name}</p>
-                      <p className="mt-1 text-xs text-muted-foreground dark:text-white/42">{previewItem.mime_type ?? 'file'} · {formatBytesLabel(previewItem.size_bytes)}</p>
-                      <Button
-                        type="button"
-                        disabled={!isStorageMediaSelectable(previewItem)}
-                        onClick={() => isStorageMediaSelectable(previewItem)
-                          && onSelect(attachmentFromStorageItem(previewItem, channelId))}
-                        className="mt-4 h-10 w-full rounded-full bg-primary text-sm font-semibold text-primary-foreground hover:bg-primary/90 dark:bg-white dark:text-black dark:hover:bg-white/90"
-                      >
-                        <Plus className="size-4" />
-                        {copy.mediaPickerSelect}
-                      </Button>
-                    </div>
-                  </>
-                ) : (
-                  <div className="flex h-full items-center justify-center text-muted-foreground dark:text-white/38">
-                    <ImageIcon className="size-10" />
-                  </div>
-                )}
-              </div>
-            </div>
-          </div>
-
-          <div className="shrink-0 space-y-2 border-t border-border/70 p-3 dark:border-white/6 sm:hidden">
-            <MemoryIngestionCheckbox
-              checked={memoryUpload.checked}
-              availability={memoryUpload.availability}
-              disabled={uploading || !channelId}
-              onCheckedChange={memoryUpload.setChecked}
-              className="justify-center text-xs dark:text-white/74"
-            />
-            <Button
-              type="button"
-              disabled={uploading || !channelId}
-              onClick={() => fileInputRef.current?.click()}
-              className="h-10 w-full rounded-full bg-primary text-sm font-semibold text-primary-foreground hover:bg-primary/90 dark:bg-white dark:text-black dark:hover:bg-white/90"
-            >
-              {uploading ? <Loader2 className="size-4 animate-spin" /> : <Upload className="size-4" />}
-              {copy.mediaPickerUpload}
-            </Button>
-          </div>
-        </div>
-      </div>
-      <input
-        ref={fileInputRef}
-        type="file"
-        multiple
-        accept={CHAT_MEDIA_UPLOAD_ACCEPT}
-        className="hidden"
-        onChange={(event) => void handleUpload(event.currentTarget.files)}
-      />
-    </div>
-  )
-}
 
 function findPendingQuickQuestion(messages: AssistantMessage[], runState: AssistantRunState | null, locale: ChatLocale, copy: ChatCopy): PendingQuickQuestion | null {
   if (runState !== 'waiting_for_user') return null
@@ -6469,153 +4225,7 @@ function dedupeAttachments(attachments: ChatAssetAttachment[]) {
   }).slice(0, 256)
 }
 
-function getChatMediaListInput(view: MediaPickerView, search: string): StorageListInput {
-  const base: StorageListInput = {
-    type: 'file',
-    scope: 'descendants',
-    search: search.trim() || undefined,
-    sortBy: 'updated_at',
-    sortOrder: 'desc',
-    limit: 60,
-  }
-  if (view === 'image') return { ...base, category: 'image' }
-  if (view === 'video') return { ...base, category: 'video' }
-  return base
-}
 
-async function uploadChatMediaFile(
-  channelId: string,
-  file: File,
-  onProgress: (progress: number) => void,
-  signal?: AbortSignal,
-  // S19: the shared "Belleğe de ekle" choice of the batch (default: the channel's chat-upload rules decide).
-  memoryIngestion: StorageMemoryIngestionRequest = { source: 'chat_upload' },
-): Promise<ChatAssetAttachment> {
-  const session = await initiateStorageUpload({
-    channelId,
-    file,
-    // P01B-04: the channel's chat-upload ingestion rules apply to composer uploads.
-    memoryIngestion,
-    idempotencyKey: `chat-media-upload:${createClientId()}`,
-    signal,
-  })
-  const uploadTransport = resolveStorageUploadTransport(session)
-  if (uploadTransport === 'direct') {
-    await uploadDirectContent({ session, file, onProgress, signal })
-    await completeStorageUpload({
-      channelId,
-      uploadSessionId: session.upload_session_id,
-      finalizeToken: session.finalize_token,
-      signal,
-    })
-  } else if (uploadTransport === 'tus') {
-    await uploadTusContent({ session, file, onProgress, signal })
-    await completeStorageUpload({
-      channelId,
-      uploadSessionId: session.upload_session_id,
-      finalizeToken: session.finalize_token,
-      signal,
-    })
-  } else {
-    const result = await uploadProxyContent({ session, file, onProgress, signal })
-    if (!result.completed) {
-      await completeStorageUpload({
-        channelId,
-        uploadSessionId: session.upload_session_id,
-        finalizeToken: session.finalize_token,
-        signal,
-      })
-    }
-  }
-  return attachmentFromUploadSession(channelId, file, session)
-}
-
-function isChatUploadAbort(error: unknown, signal?: AbortSignal) {
-  if (signal?.aborted) return true
-  if (error instanceof DOMException && error.name === 'AbortError') return true
-  if (!error || typeof error !== 'object') return false
-  const candidate = error as { code?: unknown; name?: unknown }
-  return candidate.code === 'STORAGE_UPLOAD_ABORTED' || candidate.name === 'AbortError'
-}
-
-function attachmentFromUploadSession(channelId: string, file: File, session: InitiateUploadResult): ChatAssetAttachment {
-  const kind = inferAttachmentKind({ url: file.name, mimeType: file.type, name: file.name })
-  const url = getStorageDownloadUrl({
-    channelId,
-    objectId: session.object_id,
-    fileName: file.name,
-  })
-  return {
-    id: `storage:${session.object_id}`,
-    objectId: session.object_id,
-    channelId,
-    kind,
-    name: file.name,
-    url,
-    previewUrl: url,
-    mimeType: file.type || null,
-    source: 'upload',
-    sizeBytes: String(file.size),
-    status: 'uploaded',
-    metadata: {
-      upload_session_id: session.upload_session_id,
-      storage_key: session.storage_key,
-    },
-  }
-}
-
-function attachmentFromStorageItem(item: StorageObjectItem, channelId: string | null): ChatAssetAttachment {
-  const url = channelId
-    ? getStorageDownloadUrl({ channelId, objectId: item.id, fileName: item.name })
-    : null
-  return {
-    id: `storage:${item.id}`,
-    objectId: item.id,
-    channelId: channelId ?? item.channel_id,
-    kind: inferAttachmentKind({ url: item.name, mimeType: item.mime_type, name: item.name }),
-    name: item.name,
-    url,
-    previewUrl: null,
-    mimeType: item.mime_type,
-    source: 'storage',
-    sizeBytes: item.size_bytes,
-    status: item.status,
-    metadata: {
-      path: item.path,
-      storage_key: item.storage_key,
-      provider_kind: item.provider_kind,
-      delivery_variant: item.delivery_variant,
-      ...(item.checksum_sha256 ? { checksum_sha256: item.checksum_sha256 } : {}),
-    },
-  }
-}
-
-
-function formatAttachmentMeta(asset: ChatAssetAttachment) {
-  return [asset.kind, formatBytesLabel(asset.sizeBytes)].filter(Boolean).join(' · ')
-}
-
-function formatBytesLabel(value: string | number | null | undefined) {
-  const amount = typeof value === 'number' ? value : Number(value ?? 0)
-  if (!Number.isFinite(amount) || amount <= 0) return ''
-  const units = ['B', 'KB', 'MB', 'GB', 'TB']
-  const index = Math.min(Math.floor(Math.log(amount) / Math.log(1024)), units.length - 1)
-  const result = amount / 1024 ** index
-  return `${result >= 10 || index === 0 ? result.toFixed(0) : result.toFixed(1)} ${units[index]}`
-}
-
-function inferAttachmentKind(input: { url?: string | null; mimeType?: string | null; name?: string | null }): ChatAssetKind {
-  const mimeType = input.mimeType?.toLowerCase() ?? ''
-  const value = `${input.url ?? ''} ${input.name ?? ''}`.toLowerCase()
-  if (isVideoMimeType(mimeType) || isVideoMediaUrl(input.url ?? '') || /\.(mp4|webm|mov|avi|mkv|m3u8)(\?|$)/i.test(value) || /\/(mp4|webm|mov|avi|mkv|m3u8)([?#/]|$)/i.test(value)) return 'video'
-  if (mimeType.startsWith('image/') || /\.(png|jpe?g|gif|webp|svg|bmp|ico|tiff)(\?|$)/i.test(value) || /\/(png|jpe?g|gif|webp|svg|bmp|ico|tiff)([?#/]|$)/i.test(value)) return 'image'
-  if (looksLikeYoutorchMediaUrl(input.url ?? '')) {
-    return 'image'
-  }
-  if (mimeType.startsWith('audio/') || /\.(mp3|wav|ogg|aac|flac)(\?|$)/i.test(value)) return 'audio'
-  if (mimeType.includes('pdf') || /\.(pdf|docx?|pptx?|txt|md|csv|json)(\?|$)/i.test(value)) return 'document'
-  return 'file'
-}
 
 function readAttachmentKind(value: unknown): ChatAssetKind | null {
   return value === 'image' || value === 'video' || value === 'audio' || value === 'document' || value === 'file' ? value : null
@@ -6625,9 +4235,6 @@ function readAttachmentSource(value: unknown): ChatAssetAttachment['source'] | n
   return value === 'storage' || value === 'upload' || value === 'generated' ? value : null
 }
 
-function isVisualAttachment(asset: ChatAssetAttachment) {
-  return asset.kind === 'image' || asset.kind === 'video'
-}
 
 function looksLikeRenderableMediaUrl(value: string) {
   if (/^\s*data:/i.test(value)) return false
@@ -6642,11 +4249,6 @@ function getPlayableMediaUrl(asset: ChatAssetAttachment) {
   return asset.url ?? asset.previewUrl ?? null
 }
 
-function getMediaThumbnailUrl(asset: ChatAssetAttachment) {
-  if (asset.kind === 'image') return asset.previewUrl ?? asset.url
-  if (asset.previewUrl && isImageMediaUrl(asset.previewUrl)) return asset.previewUrl
-  return null
-}
 
 function inferMimeTypeFromUrl(value: string | null | undefined) {
   if (!value) return null
@@ -6655,64 +4257,6 @@ function inferMimeTypeFromUrl(value: string | null | undefined) {
   return null
 }
 
-function isImageMediaUrl(value: string) {
-  if (/^\s*data:/i.test(value)) return false
-  return /\.(png|jpe?g|gif|webp|svg|bmp|ico|tiff)(?:[?#].*)?$/i.test(value)
-    || /\/(png|jpe?g|gif|webp|svg|bmp|ico|tiff)(?:[?#/]|$)/i.test(value)
-}
-
-function isVideoMediaUrl(value: string) {
-  if (!value) return false
-  return isEmbeddableVideoUrl(value)
-    || isHlsVideoUrl(value)
-    || /\.(mp4|webm|mov|avi|mkv)(?:[?#].*)?$/i.test(value)
-    || /\/(mp4|webm|mov|avi|mkv)(?:[?#/]|$)/i.test(value)
-    || /\b(video|render|stream|playback)\b/i.test(value)
-}
-
-function isHlsVideoUrl(value: string) {
-  return /\.m3u8(?:[?#].*)?$/i.test(value) || /\/playlist\.m3u8(?:[?#].*)?$/i.test(value)
-}
-
-function isEmbeddableVideoUrl(value: string) {
-  try {
-    const parsed = new URL(value)
-    const host = parsed.hostname.toLowerCase()
-    const path = parsed.pathname.toLowerCase()
-    return (host === 'video.bunnycdn.com' && path.includes('/play/'))
-      || (host === 'iframe.mediadelivery.net' && path.includes('/embed/'))
-  } catch {
-    return false
-  }
-}
-
-function isVideoMimeType(value: string) {
-  return value.startsWith('video/')
-    || value.includes('mpegurl')
-    || value === 'application/vnd.apple.mpegurl'
-    || value === 'application/x-mpegurl'
-}
-
-function looksLikeYoutorchMediaUrl(value: string) {
-  try {
-    const parsed = new URL(value)
-    const host = parsed.hostname.toLowerCase()
-    const path = parsed.pathname.toLowerCase()
-    const isYoutorchHost = host === 'youtorch.io'
-      || host.endsWith('.youtorch.io')
-      || host.includes('youtorch')
-    const isKnownMediaHost = host.startsWith('cdn.')
-      || host.startsWith('media.')
-      || host.startsWith('assets.')
-      || host.includes('bunnycdn')
-      || host.endsWith('.b-cdn.net')
-      || host.includes('mediadelivery.net')
-    const hasMediaPath = /\/(api\/storage|storage|uploads|media|generated|artifacts|files|objects|cdn)(?:\/|$)/.test(path)
-    return isKnownMediaHost || (isYoutorchHost && hasMediaPath)
-  } catch {
-    return false
-  }
-}
 
 function normalizeExtractedUrl(value: string) {
   return value.trim().replace(/[.,;:!?]+$/g, '').replace(/\)+$/g, '')
@@ -6755,10 +4299,6 @@ function readUnknownArray(value: unknown): unknown[] {
   return Array.isArray(value) ? value : []
 }
 
-function createClientId() {
-  if (typeof crypto !== 'undefined' && 'randomUUID' in crypto) return crypto.randomUUID()
-  return `${Date.now()}-${Math.random().toString(36).slice(2)}`
-}
 
 function mergeMessages(current: AssistantMessage[], incoming: AssistantMessage[]) {
   const map = new Map<string, AssistantMessage>()
@@ -6780,337 +4320,6 @@ function mergeRunEvents(current: AssistantRunEvent[], incoming: AssistantRunEven
   return Array.from(map.values()).sort((left, right) => left.sequence - right.sequence)
 }
 
-function buildComposerOptions(catalog: AssistantComposerCatalog | null, t: ChatTranslator): ComposerOptions {
-  return {
-    chatProfiles: catalog?.chat_profiles.length
-      ? catalog.chat_profiles.map((profile) => ({
-        id: profile.id,
-        label: localizedProfileLabel(profile.id, profile.label, t),
-        detail: localizedProfileDetail(profile.id, profile.detail, t),
-        credits: profile.estimated_credits,
-        modelId: profile.model_id,
-        modelLabel: profile.model_label,
-      }))
-      : getFallbackComposerProfileOptions(t),
-    chatModels: (catalog?.chat_models ?? []).map((model) => toComposerModelOption(model, t)),
-    approvalModes: catalog?.approval_modes.length
-      ? catalog.approval_modes.map((mode) => ({
-        id: mode.id,
-        label: mode.id === 'ask' ? t('composer.ask') : t('composer.auto'),
-        detail: mode.id === 'ask' ? t('composer.askDetail') : t('composer.autoDetail'),
-      }))
-      : getFallbackComposerApprovalOptions(t),
-    aspectRatios: catalog?.aspect_ratios.length
-      ? catalog.aspect_ratios.map((aspect) => ({
-        id: aspect.id,
-        label: localizedAspectLabel(aspect.id, aspect.label, t),
-        detail: localizedAspectDetail(aspect.id, aspect.detail, t),
-        icon: iconForAspectRatio(aspect.id),
-      }))
-      : getFallbackComposerAspectOptions(t),
-    imageModels: mergeComposerModelOptions(
-      (catalog?.image_models ?? []).map((model) => toComposerModelOption(model, t)),
-      getFallbackComposerImageModels(t),
-    ),
-    videoModels: (catalog?.video_models ?? []).map((model) => toComposerModelOption(model, t)),
-  }
-}
-
-function localizedProfileLabel(id: ComposerChatProfile, fallback: string, t: ChatTranslator) {
-  if (id === 'fast') return t('composer.fast')
-  if (id === 'pro') return t('composer.pro')
-  if (id === 'max') return t('composer.max')
-  return fallback
-}
-
-function localizedProfileDetail(id: ComposerChatProfile, fallback: string, t: ChatTranslator) {
-  if (id === 'fast') return t('composer.fastDetail')
-  if (id === 'pro') return t('composer.proDetail')
-  if (id === 'max') return t('composer.maxDetail')
-  return fallback
-}
-
-function localizedAspectLabel(id: ComposerAspectRatio, fallback: string, t: ChatTranslator) {
-  if (id === '16:9') return t('composer.landscape')
-  if (id === '9:16') return t('composer.short')
-  if (id === '1:1') return t('composer.square')
-  return fallback
-}
-
-function localizedAspectDetail(id: ComposerAspectRatio, fallback: string, t: ChatTranslator) {
-  if (id === '16:9') return t('composer.landscapeDetail')
-  if (id === '9:16') return t('composer.shortDetail')
-  if (id === '1:1') return t('composer.squareDetail')
-  return fallback
-}
-
-function toComposerModelOption(model: AssistantComposerCatalog['image_models'][number], t: ChatTranslator): ComposerModelOption {
-  const fallback = getFallbackComposerImageModels(t).find((option) => option.id === model.id)
-  return {
-    id: model.id,
-    label: model.label,
-    description: fallback?.description ?? model.description,
-    quality: localizeModelRating(model.quality, t),
-    cost: model.cost_label,
-    speed: localizeModelSpeed(model.speed, t),
-    estimatedCredits: model.estimated_credits,
-    inputSchema: model.input_schema,
-    pricingRule: model.pricing_rule,
-    rateLimit: model.rate_limit,
-    capacityLimit: model.capacity_limit,
-  }
-}
-
-function localizeModelRating(value: string, t: ChatTranslator) {
-  if (value.toLowerCase() === 'highest') return t('composer.highest')
-  if (value.toLowerCase() === 'high') return t('composer.high')
-  if (value.toLowerCase() === 'draft') return t('composer.draft')
-  return value
-}
-
-function localizeModelSpeed(value: string, t: ChatTranslator) {
-  if (value.toLowerCase() === 'fast') return t('composer.fastSpeed')
-  if (value.toLowerCase() === 'medium') return t('composer.mediumSpeed')
-  return value
-}
-
-function iconForAspectRatio(value: ComposerAspectRatio) {
-  if (value === '9:16') return RectangleVertical
-  if (value === '1:1') return Square
-  return RectangleHorizontal
-}
-
-function reconcileComposerSettings(settings: ComposerSettings, catalog: AssistantComposerCatalog, t: ChatTranslator): ComposerSettings {
-  const options = buildComposerOptions(catalog, t)
-  const defaults = catalog.defaults
-  const chatProfile = options.chatProfiles.some((option) => option.id === settings.chatProfile)
-    ? settings.chatProfile
-    : defaults.chat_profile
-  const approvalMode = options.approvalModes.some((option) => option.id === settings.approvalMode)
-    ? settings.approvalMode
-    : defaults.approval_mode
-  const aspectRatio = options.aspectRatios.some((option) => option.id === settings.aspectRatio)
-    ? settings.aspectRatio
-    : defaults.aspect_ratio
-  const requestedImageModelId = selectCatalogModelId(settings.imageModelId, defaultImageModelId(defaults, options.imageModels), options.imageModels)
-  const imageModel = selectComposerImageModelForTask(requestedImageModelId, settings.imageTask, options.imageModels)
-  const imageModelId = imageModel?.id ?? requestedImageModelId
-  const videoModelId = selectCatalogModelId(settings.videoModelId, getSelectedComposerModelId(defaults, VIDEO_GENERATE_CAPABILITY), options.videoModels)
-  return {
-    chatProfile,
-    chatModelId: selectCatalogModelId(settings.chatModelId, defaults.model_id, options.chatModels),
-    approvalMode,
-    durationSeconds: clampVideoDurationSeconds(settings.durationSeconds || defaults.video_duration_seconds, catalog.duration.max_seconds, catalog.duration.min_seconds),
-    aspectRatio,
-    imageModelId,
-    videoModelId,
-    ...reconcileImageModelInputs(settings, imageModel),
-  }
-}
-
-function areComposerSettingsEqual(left: ComposerSettings, right: ComposerSettings) {
-  return left.chatProfile === right.chatProfile
-    && left.chatModelId === right.chatModelId
-    && left.approvalMode === right.approvalMode
-    && left.durationSeconds === right.durationSeconds
-    && left.aspectRatio === right.aspectRatio
-    && left.imageModelId === right.imageModelId
-    && left.videoModelId === right.videoModelId
-    && left.imageTask === right.imageTask
-    && left.imageSize === right.imageSize
-    && left.imageResolution === right.imageResolution
-    && left.imageQuality === right.imageQuality
-    && left.imageOutputFormat === right.imageOutputFormat
-}
-
-function selectCatalogModelId(current: string | null, fallback: string | null, options: ComposerModelOption[]) {
-  if (current && options.some((option) => option.id === current)) return current
-  if (fallback && options.some((option) => option.id === fallback)) return fallback
-  return options[0]?.id ?? null
-}
-
-function defaultImageModelId(defaults: AssistantComposerCatalog['defaults'] | null, options: ComposerModelOption[]) {
-  if (options.some((option) => option.id === DEFAULT_IMAGE_MODEL_ID)) return DEFAULT_IMAGE_MODEL_ID
-  return getSelectedComposerModelId(defaults, IMAGE_GENERATE_CAPABILITY)
-}
-
-function reconcileImageModelInputs(settings: ComposerSettings, model: ComposerModelOption | null): Pick<ComposerSettings, 'imageTask' | 'imageSize' | 'imageResolution' | 'imageQuality' | 'imageOutputFormat'> {
-  return {
-    imageTask: selectModelInputValue(settings.imageTask, model, 'tasks', readSchemaString(model, 'default_task') ?? 'text_to_image'),
-    imageSize: selectModelInputValue(settings.imageSize, model, 'sizes', readSchemaString(model, 'default_size') ?? ''),
-    imageResolution: selectModelInputValue(settings.imageResolution, model, 'resolutions', readSchemaString(model, 'default_resolution') ?? ''),
-    imageQuality: selectModelInputValue(settings.imageQuality, model, 'qualities', readSchemaString(model, 'default_quality') ?? 'auto'),
-    imageOutputFormat: selectModelInputValue(settings.imageOutputFormat, model, 'output_formats', readSchemaString(model, 'default_output_format') ?? 'png'),
-  }
-}
-
-function selectModelInputValue(current: string, model: ComposerModelOption | null, key: string, fallback: string) {
-  const values = schemaStringList(model, key)
-  if (values.length === 0) return current || fallback
-  if (current && values.includes(current)) return current
-  if (fallback && values.includes(fallback)) return fallback
-  return values[0] ?? fallback
-}
-
-function schemaStringList(model: ComposerModelOption | null, key: string): string[] {
-  if (!model) return []
-  const raw = model.inputSchema[key]
-  return Array.isArray(raw) ? raw.filter((item): item is string => typeof item === 'string' && item.trim().length > 0) : []
-}
-
-function readSchemaString(model: ComposerModelOption | null, key: string) {
-  const value = model?.inputSchema[key]
-  return typeof value === 'string' && value.trim() ? value.trim() : null
-}
-
-function composerModelSupportsImageTask(model: ComposerModelOption, task: string) {
-  const tasks = schemaStringList(model, 'tasks')
-  return tasks.length === 0 || tasks.includes(task)
-}
-
-function selectComposerImageModelForTask(
-  modelId: string | null,
-  task: string,
-  models: ComposerModelOption[],
-) {
-  const selected = models.find((model) => model.id === modelId) ?? null
-  if (selected && composerModelSupportsImageTask(selected, task)) return selected
-  return models.find((model) => composerModelSupportsImageTask(model, task)) ?? selected ?? models[0] ?? null
-}
-
-function composerImageTaskOptions(models: ComposerModelOption[]): ComposerInputOption[] {
-  const values = Array.from(new Set(models.flatMap((model) => schemaStringList(model, 'tasks'))))
-  const tasks = values.length > 0 ? values : ['text_to_image']
-  return tasks.map((value) => ({
-    id: value,
-    label: formatComposerInputLabel(value),
-    detail: value,
-  }))
-}
-
-function modelInputOptions(model: ComposerModelOption | null, key: string): ComposerInputOption[] {
-  return schemaStringList(model, key).map((value) => ({
-    id: value,
-    label: formatComposerInputLabel(value),
-    detail: value,
-  }))
-}
-
-function formatComposerInputLabel(value: string) {
-  return value
-    .replace(/_/g, ' ')
-    .replace(/\b\w/g, (letter) => letter.toUpperCase())
-}
-
-/** QA-078: the image model the message will name (same choice as `serializeComposerSelection`). */
-function selectedComposerImageModel(settings: ComposerSettings, catalog: AssistantComposerCatalog | null, options: ComposerOptions) {
-  const requestedImageModelId = selectCatalogModelId(settings.imageModelId, defaultImageModelId(catalog?.defaults ?? null, options.imageModels), options.imageModels)
-  return selectComposerImageModelForTask(requestedImageModelId, settings.imageTask, options.imageModels)
-}
-
-function serializeComposerSelection(
-  settings: ComposerSettings,
-  catalog: AssistantComposerCatalog | null,
-  options: ComposerOptions,
-  /** P01A-11: the server-committed planner model of an existing conversation (null before it exists). */
-  committedPlannerModelId: string | null = null,
-): AssistantComposerSelection {
-  const maxSeconds = catalog?.duration.max_seconds ?? COMPOSER_VIDEO_DURATION_MIN_SECONDS
-  const minSeconds = catalog?.duration.min_seconds ?? COMPOSER_VIDEO_DURATION_MIN_SECONDS
-  const fallbackProfile = options.chatProfiles.find((option) => option.id === settings.chatProfile) ?? options.chatProfiles[0] ?? { id: 'fast', label: '', detail: '', credits: null, modelId: 'auto-llm', modelLabel: 'Auto LLM' }
-  // The exact model is the identity; the profile field is kept only because composer_selection still carries it.
-  const plannerModelId = committedPlannerModelId ?? settings.chatModelId ?? fallbackProfile.modelId
-  const chatProfile = options.chatProfiles.find((option) => option.modelId === plannerModelId) ?? fallbackProfile
-  const aspectRatio = options.aspectRatios.some((option) => option.id === settings.aspectRatio)
-    ? settings.aspectRatio
-    : catalog?.defaults.aspect_ratio ?? '16:9'
-  const requestedImageModelId = selectCatalogModelId(settings.imageModelId, defaultImageModelId(catalog?.defaults ?? null, options.imageModels), options.imageModels)
-  const imageModel = selectComposerImageModelForTask(requestedImageModelId, settings.imageTask, options.imageModels)
-  return {
-    chat_profile: chatProfile.id,
-    model_id: plannerModelId,
-    approval_mode: options.approvalModes.some((option) => option.id === settings.approvalMode)
-      ? settings.approvalMode
-      : catalog?.defaults.approval_mode ?? 'ask',
-    video_duration_seconds: clampVideoDurationSeconds(settings.durationSeconds, maxSeconds, minSeconds),
-    aspect_ratio: aspectRatio,
-    selected_models: {
-      [IMAGE_GENERATE_CAPABILITY]: imageModel?.id ?? requestedImageModelId,
-      [VIDEO_GENERATE_CAPABILITY]: selectCatalogModelId(settings.videoModelId, getSelectedComposerModelId(catalog?.defaults ?? null, VIDEO_GENERATE_CAPABILITY), options.videoModels),
-    },
-    selected_model_inputs: {
-      [IMAGE_GENERATE_CAPABILITY]: imageComposerInputs(settings, imageModel),
-    },
-  }
-}
-
-function imageComposerInputs(settings: ComposerSettings, model?: ComposerModelOption | null): Record<string, unknown> {
-  return {
-    task: settings.imageTask,
-    ...(settings.imageSize ? { size: settings.imageSize } : {}),
-    ...(settings.imageResolution ? { resolution: settings.imageResolution } : {}),
-    quality: settings.imageQuality,
-    output_format: settings.imageOutputFormat,
-    ...implicitModelInput(model, 'background', 'default_background', 'auto'),
-    ...implicitModelInput(model, 'input_fidelity', 'default_input_fidelity'),
-  }
-}
-
-function mergeComposerModelOptions(
-  suppliedModels: ComposerModelOption[],
-  fallbackModels: ComposerModelOption[],
-) {
-  const byId = new Map<string, ComposerModelOption>()
-  fallbackModels.forEach((model) => byId.set(model.id, model))
-  suppliedModels.forEach((model) => byId.set(model.id, model))
-  return Array.from(byId.values())
-}
-
-function toWorkflowCanvasImageModel(model: ComposerModelOption): WorkflowCanvasImageModel {
-  return {
-    id: model.id,
-    label: model.label,
-    estimated_credits: model.estimatedCredits,
-    input_schema: model.inputSchema,
-    pricing_rule: model.pricingRule,
-  }
-}
-
-function implicitModelInput(model: ComposerModelOption | null | undefined, field: string, defaultField: string, fallback?: string): Record<string, string> {
-  if (!model) return {}
-  const settings = schemaStringList(model, 'settings')
-  if (!settings.includes(field)) return {}
-  const value = readSchemaString(model, defaultField) ?? fallback ?? null
-  return value ? { [field]: value } : {}
-}
-
-function getSelectedComposerModelId(
-  selection: Pick<AssistantComposerSelection, 'selected_models'> | null,
-  capability: typeof IMAGE_GENERATE_CAPABILITY | typeof VIDEO_GENERATE_CAPABILITY,
-) {
-  const selected = selection?.selected_models?.[capability]
-  if (typeof selected === 'string' && selected.trim()) return selected
-  return null
-}
-
-function clampVideoDurationSeconds(value: number, maxSeconds: number, minSeconds = COMPOSER_VIDEO_DURATION_MIN_SECONDS) {
-  if (!Number.isFinite(value)) return minSeconds
-  return Math.min(Math.max(Math.round(value), minSeconds), maxSeconds)
-}
-
-function getComposerDurationScaleMax(planMaxSeconds: number, scaleMaxSeconds: number | null) {
-  if (!Number.isFinite(scaleMaxSeconds)) return planMaxSeconds
-  return Math.max(planMaxSeconds, Math.round(scaleMaxSeconds ?? planMaxSeconds))
-}
-
-function parseComposerDurationInteger(value: string, unit: ComposerDurationUnit) {
-  const normalizedValue = value.trim()
-  if (!/^\d+$/.test(normalizedValue)) return null
-  const integerValue = Number.parseInt(normalizedValue, 10)
-  if (!Number.isSafeInteger(integerValue) || integerValue <= 0) return null
-  const seconds = unit === 'minutes' ? integerValue * 60 : integerValue
-  return Number.isSafeInteger(seconds) ? seconds : null
-}
 
 
 function createOptimisticUserMessage(input: {

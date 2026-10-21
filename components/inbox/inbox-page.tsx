@@ -953,20 +953,20 @@ function InboxListItem({ item, now, selected, onSelect }: {
       onClick={onSelect}
       className={cn(
         'grid h-[62px] w-full grid-cols-[36px_minmax(0,1fr)_auto] items-start gap-3 rounded-[8px] px-2.5 py-2 text-left transition-colors',
-        selected ? 'bg-[#f0f0f2] dark:bg-muted/60' : 'bg-[#f4f4f5] hover:bg-[#efeff1] dark:bg-muted/35 dark:hover:bg-muted/55',
+        selected ? 'bg-[#ececef] dark:bg-[#242424]' : 'hover:bg-[#f2f2f4] dark:hover:bg-[#1f1f1f]',
       )}
     >
-      <span className={cn('mt-1 flex h-8 w-8 items-center justify-center rounded-full text-white', tone.iconClassName)} style={{ background: tone.iconColor }}>
+      <span className="mt-1 flex h-8 w-8 items-center justify-center rounded-full bg-[#e9e9ec] text-[#5f6368] dark:bg-[#2a2c2f] dark:text-[#c3c5c9]" title={tone.label}>
         <ItemIcon className="h-4 w-4" />
       </span>
       <span className="min-w-0 pt-0.5">
         <span className="flex h-[17px] min-w-0 items-center gap-1.5">
           {item.read_state === 'unread' && <span className="h-2 w-2 shrink-0 rounded-full bg-[#6574df]" />}
-          <span className="truncate text-[15px] font-medium leading-[17px] text-[#34363a] dark:text-foreground">
+          <span className="truncate text-[14px] font-semibold leading-[17px] text-[#25272b] dark:text-foreground">
             {getReviewDisplayTitle(item)}
           </span>
         </span>
-        <span className="mt-0.5 block truncate text-[14px] leading-4 text-[#62666d] dark:text-muted-foreground">
+        <span className="mt-1 block truncate text-[13px] leading-4 text-[#62666d] dark:text-muted-foreground">
           {getReviewDisplayMessage(item)}
         </span>
       </span>
@@ -1071,7 +1071,7 @@ function InboxDetail({
         <div className="mx-auto w-full max-w-4xl px-8 py-7">
           <div className="mb-6 flex items-start justify-between gap-5">
             <div className="min-w-0">
-              <h2 className="text-2xl font-semibold leading-8 text-[#25272b] dark:text-foreground">
+              <h2 className="text-[28px] font-semibold leading-9 tracking-[-0.015em] text-[#1f2023] dark:text-foreground">
                 {getReviewDisplayTitle(item)}
               </h2>
               <div className="mt-3 flex flex-wrap items-center gap-x-4 gap-y-2 text-sm text-[#70747b] dark:text-muted-foreground">

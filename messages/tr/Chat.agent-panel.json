@@ -1,0 +1,35 @@
+{
+  "agentPanel": {
+    "region": "Spark paneli",
+    "modelTitle": "Yanıtlayan model",
+    "newChat": "Yeni sohbet",
+    "minimize": "Küçült",
+    "restore": "Paneli aç",
+    "expand": "Sohbette aç",
+    "close": "Kapat",
+    "emptyTitle": "Bugün ne yapalım?",
+    "emptyHint": "Bu sayfadan ayrılmadan sor. Konuşma sohbet geçmişine de kaydedilir.",
+    "suggestionsLabel": "Öneriler",
+    "suggestions": {
+      "ideas": "Bu hafta için 5 video fikri öner",
+      "summary": "Kanalımın son 30 gününü özetle",
+      "script": "60 saniyelik bir kısa video senaryosu yaz"
+    },
+    "placeholder": "Spark'a sor…",
+    "replyPlaceholder": "Yanıtla…",
+    "skills": "Yetenekler",
+    "skillsLoading": "Yetenekler yükleniyor…",
+    "skillsEmpty": "Yüklü yetenek yok",
+    "skillsError": "Yetenekler yüklenemedi",
+    "skillRemove": "Yeteneği kaldır",
+    "skillsManage": "Yetenekleri yönet",
+    "contextAdded": "bağlama eklendi",
+    "thinking": "Düşünüyor",
+    "send": "Gönder",
+    "stop": "Durdur",
+    "waitingShort": "Spark seni bekliyor",
+    "stopped": "Durduruldu.",
+    "failed": "Yanıt alınamadı. Yeniden dene ya da sohbette aç.",
+    "sendFailed": "Gönderilemedi: {reason}"
+  }
+}

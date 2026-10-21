@@ -35,6 +35,7 @@
 }
 /* The Flow canvas is the product's own component and sets a dark palette of its own (`.workflow-flow-surface`,
    globals.css). Inside the lab it takes the paper palette, so it is not a dark block in a paper page. */
+.light .lb-flow-host.workflow-flow-surface,.paper .lb-flow-host.workflow-flow-surface,
 .light .lb-flow-host .workflow-flow-surface,.paper .lb-flow-host .workflow-flow-surface{
   --background:#f1efe8; --foreground:#1f1e1d;
   --card:#fff; --card-foreground:#1f1e1d;
@@ -144,3 +145,17 @@
 .lb-calm .yt-studio .seg-b.on{background:var(--st-accent-soft);border-color:var(--st-accent-border);color:var(--st-accent-text)}
 .lb-calm .yt-studio .seg-b .n{background:transparent}
 .lb-calm .yt-studio .seg-b.on .n{background:var(--st-accent);color:#fff}
+
+/* ---------- in a work tab (the app's page panel): Spark's bar is the panel's toolbar, not a second app bar ---------- */
+/* The tab in the app bar names the project and leads back to the projects, so the bar drops the logo and sits on
+   the panel's own colour. */
+.lb-contained .yt-studio .top.lb-top{background:transparent}
+.lb-contained .yt-studio .lb-top .logo{display:none}
+
+/* ---------- the editor's "Daha fazla": the tools that are not on the rail, in the lab's small menu (`.lb-menu`) ---------- */
+/* In both looks. The menu opens beside the rail, its top on the button's; its rows lead with the tool's icon. */
+.yt-studio .rail-btn.lb-rail-more{white-space:nowrap}
+.yt-studio .lb-menu.lb-rail-menu{transform:none;min-width:160px}
+.yt-studio .lb-menu.lb-rail-menu button{justify-content:flex-start;gap:9px}
+.yt-studio .lb-menu.lb-rail-menu button .i{width:15px;height:15px;color:var(--st-text-2)}
+.yt-studio .lb-menu.lb-rail-menu button:hover .i,.yt-studio .lb-menu.lb-rail-menu button:focus-visible .i{color:var(--st-text)}

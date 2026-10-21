@@ -16,6 +16,7 @@ const ChatSidebar = dynamic(
 const workspaceShellPrefixes = [
   '/apps',
   '/brand',
+  '/calendar',
   '/channels',
   '/chat',
   '/customers',
@@ -25,6 +26,7 @@ const workspaceShellPrefixes = [
   '/library',
   '/memory',
   '/models',
+  '/new',
   '/recent',
   '/settings',
   '/spark',
@@ -73,8 +75,9 @@ export function AppShellBoundary({ children }: { children: React.ReactNode }) {
     )
   }
 
-  // An opened Spark project is a full-screen editor with its own top bar, outside the shell.
-  if (isSparkEditorPath(pathname)) return <>{children}</>
+  // An opened Spark project is work in a tab of the shell (`./work-tabs`). The workspace without a project
+  // (`/spark/lab`, for review links and screenshots) stays full-screen, outside it.
+  if (isSparkLabPath(pathname)) return <>{children}</>
 
   return (
     <MainLayout appName="Youtorch" sidebarItems={mainSidebarItems}>
@@ -83,8 +86,8 @@ export function AppShellBoundary({ children }: { children: React.ReactNode }) {
   )
 }
 
-function isSparkEditorPath(pathname: string | null) {
-  return Boolean(pathname?.startsWith('/spark/') && pathname.length > '/spark/'.length)
+function isSparkLabPath(pathname: string | null) {
+  return pathname === '/spark/lab' || Boolean(pathname?.startsWith('/spark/lab/'))
 }
 
 export function usesWorkspaceShell(pathname: string | null) {
@@ -95,5 +98,5 @@ export function usesWorkspaceShell(pathname: string | null) {
 }
 
 function SidebarFallback() {
-  return <div className="h-full w-full border-r border-border bg-panel" />
+  return <div className="h-full w-full bg-sidebar" />
 }

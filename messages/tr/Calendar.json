@@ -1,0 +1,63 @@
+{
+  "title": "Takvim",
+  "subtitle": "Kanalının videoları: yayınlananlar, planlananlar ve onay bekleyenler.",
+  "week": "Hafta",
+  "month": "Ay",
+  "today": "Bugün",
+  "viewLabel": "Görünüm",
+  "previousWeek": "Önceki hafta",
+  "nextWeek": "Sonraki hafta",
+  "previousMonth": "Önceki ay",
+  "nextMonth": "Sonraki ay",
+  "status": {
+    "live": "Yayında",
+    "scheduled": "Planlandı",
+    "review": "Onay bekliyor",
+    "approved": "Onaylandı"
+  },
+  "legend": "Durumlar",
+  "source": {
+    "spark": "Spark",
+    "short": "Short",
+    "flow": "Flow"
+  },
+  "automation": "Otomasyon",
+  "automationHint": "Flow'daki zamanlanmış otomasyon; burada değiştirilmez.",
+  "views": "{count} görüntüleme",
+  "suggestedSlot": "{slot} · {reason}",
+  "slotReason": {
+    "peak": "en aktif saat",
+    "evening": "akşam izlenmesi yüksek",
+    "weekend": "hafta sonu zirvesi"
+  },
+  "fill": "Doldur",
+  "fillHint": "Onaylı kliplerinden birini bu saate koy.",
+  "placeHere": "Buraya koy",
+  "noApprovedClips": "Bekleyen onaylı klip yok.",
+  "makeClips": "Viral Clips'te klip üret",
+  "approve": "Onayla",
+  "dragHint": "Başka bir güne sürükleyerek yeniden planla",
+  "pastDay": "Video geçmiş bir güne taşınamaz.",
+  "dayCount": "{day}: {count, plural, other {# video}}",
+  "more": "+{count} daha",
+  "videoCount": "{count, plural, other {# video}}",
+  "emptyWeek": "Bu hafta takvimde video yok. Boş güçlü saatleri doldurarak başla.",
+  "emptyMonth": "Bu ay takvimde video yok.",
+  "publishNow": "Şimdi yayınla",
+  "schedule": "Planla",
+  "added": "Takvime eklendi",
+  "viewInCalendar": "Takvimde gör",
+  "addToCalendar": "Takvime ekle",
+  "dialog": {
+    "title": "Ne zaman yayınlansın?",
+    "description": "Videoyu şimdi yayınla ya da bir gün ve saat seç.",
+    "mode": "Yayın zamanı",
+    "suggested": "Boş güçlü saatler",
+    "date": "Tarih",
+    "time": "Saat",
+    "nowAt": "Bugün {time} olarak takvime işlenir.",
+    "pastTime": "Geçmiş bir zaman seçilemez.",
+    "demoNote": "YouTube'a yükleme henüz bağlı değil; plan takvimde tutulur.",
+    "cancel": "Vazgeç"
+  }
+}

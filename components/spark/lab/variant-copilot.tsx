@@ -8,12 +8,15 @@ import { Splitter, useSplitSize } from './lab-split'
 import { revealed, type LabRun } from './use-lab-run'
 
 // The "Editör" view (`?v=a`). Today's editor, unchanged in structure: tool rail and drawer, canvas, timeline,
-// and the Assistant / Properties panel. The agent works inside it under its own cursor while a bar says who is
-// driving. The brief, the script and what they draw on live in the Plan view; the chat card leads there.
+// and Spark's panel. The agent works inside it under its own cursor while a bar says who is driving. The brief,
+// the script and what they draw on live in the Plan view; the chat card leads there. An empty project has one
+// start, the chat's: the scenes drawer stays shut until there is a scene, the stage and the timeline stay quiet.
 
 export function VariantCopilot({ run, onOpenPlan }: { run: LabRun; onOpenPlan: () => void }) {
   const scope = React.useRef<HTMLDivElement>(null)
-  const [drawerOpen, setDrawerOpen] = React.useState(true)
+  const [drawerWanted, setDrawerWanted] = React.useState(true)
+  const hasScenes = revealed(run.state, SCENES[0]!.at)
+  const drawerOpen = hasScenes && drawerWanted
   // The editor's own layout variables (`--st-drawer-w`, `--st-right-w`): a dragged edge sets them.
   const drawer = useSplitSize('editor-drawer')
   const right = useSplitSize('editor-right')
@@ -25,7 +28,13 @@ export function VariantCopilot({ run, onOpenPlan }: { run: LabRun; onOpenPlan: (
       <div className="main">
         <ToolRail
           lead={
-            <button type="button" className={`rail-btn${drawerOpen ? ' on' : ''}`} onClick={() => setDrawerOpen(!drawerOpen)}>
+            <button
+              type="button"
+              className={`rail-btn${drawerOpen ? ' on' : ''}`}
+              disabled={!hasScenes}
+              title={hasScenes ? undefined : 'Henüz sahne yok'}
+              onClick={() => setDrawerWanted(!drawerOpen)}
+            >
               <Icon name="scenes" />
               Sahneler
             </button>
@@ -37,18 +46,10 @@ export function VariantCopilot({ run, onOpenPlan }: { run: LabRun; onOpenPlan: (
           <div className="drawer-inner">
             <div className="dr-head">
               <h2>Sahneler</h2>
-              <button type="button" className="ib sm" aria-label="Kapat" onClick={() => setDrawerOpen(false)}><Icon name="left" /></button>
+              <button type="button" className="ib sm" aria-label="Kapat" onClick={() => setDrawerWanted(false)}><Icon name="left" /></button>
             </div>
             <div className="dr-body">
-              {revealed(run.state, SCENES[0]!.at) ? (
-                <PlanList run={run} onPick={run.view} />
-              ) : (
-                <div className="lb-file-empty">
-                  <span className="lb-file-ic"><Icon name="scenes" /></span>
-                  <b>Henüz sahne yok</b>
-                  <p>Eklediğin ya da Spark’ın kurduğu sahneler burada ve alttaki zaman çizelgesinde görünür.</p>
-                </div>
-              )}
+              <PlanList run={run} onPick={run.view} />
             </div>
           </div>
         </aside>
@@ -60,14 +61,8 @@ export function VariantCopilot({ run, onOpenPlan }: { run: LabRun; onOpenPlan: (
         </section>
 
         <aside className="right">
-          <Splitter id="editor-right" axis="x" edge="start" min={300} max={560} label="Asistan panelinin genişliği" />
+          <Splitter id="editor-right" axis="x" edge="start" min={300} max={560} label="Spark panelinin genişliği" />
           <div className="right-inner">
-            <div className="rp-head">
-              <div className="seg">
-                <button type="button" className="on"><Icon name="sparkles" />Asistan</button>
-                <button type="button"><Icon name="sliders" />Özellikler</button>
-              </div>
-            </div>
             <div className="pane">
               <Chat run={run} onOpenPlan={onOpenPlan} controls={false} />
               <div className="composer-wrap"><Composer run={run} /></div>

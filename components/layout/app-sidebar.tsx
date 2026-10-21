@@ -114,6 +114,10 @@ import {
   WalletCards,
   Wand2,
   Waypoints,
+  Workflow,
+  MonitorPlay,
+  Brain,
+  Plug,
   WandSparkles,
   Workflow as WorkflowIcon,
   Wrench,
@@ -224,7 +228,7 @@ export function AppSidebar({
   if (isSettingsMode) {
     return (
       <TooltipProvider delayDuration={0}>
-        <aside className={cn('workspace-sidebar flex h-full min-h-0 w-full flex-col border-r border-border bg-panel antialiased', className)}>
+        <aside className={cn('workspace-sidebar flex h-full min-h-0 w-full flex-col bg-sidebar antialiased', className)}>
           <SettingsSidebarNav
             active={settingsActiveSection}
             onCollapse={() => onCollapsedChange?.(true)}
@@ -237,7 +241,7 @@ export function AppSidebar({
   if (isLibraryMode) {
     return (
       <TooltipProvider delayDuration={0}>
-        <aside className={cn('workspace-sidebar flex h-full min-h-0 w-full flex-col border-r border-border bg-panel antialiased', className)}>
+        <aside className={cn('workspace-sidebar flex h-full min-h-0 w-full flex-col bg-sidebar antialiased', className)}>
           <LibrarySidebarNav
             channelName={selectedChannel?.name ?? tAuto('test_kanal_58fe45ee')}
             onCollapse={() => onCollapsedChange?.(true)}
@@ -250,7 +254,7 @@ export function AppSidebar({
   if (isBrandMode) {
     return (
       <TooltipProvider delayDuration={0}>
-        <aside className={cn('workspace-sidebar flex h-full min-h-0 w-full flex-col border-r border-border bg-panel antialiased', className)}>
+        <aside className={cn('workspace-sidebar flex h-full min-h-0 w-full flex-col bg-sidebar antialiased', className)}>
           <BrandSidebarNav
             active={previewModule === 'brand' ? 'kits' : searchParams.get('section') ?? 'kits'}
             channelName={selectedChannel?.name ?? tAuto('test_kanal_58fe45ee')}
@@ -265,7 +269,7 @@ export function AppSidebar({
   return (
     <TooltipProvider delayDuration={0}>
       <aside className={cn(
-        'workspace-sidebar flex h-full min-h-0 w-full flex-col border-r border-border bg-panel antialiased',
+        'workspace-sidebar flex h-full min-h-0 w-full flex-col bg-sidebar antialiased',
         className,
       )}>
         {/* Header */}
@@ -399,10 +403,10 @@ function SettingsSidebarNav({ active, onCollapse }: { active: string; onCollapse
   const tNav = useTranslations('Navigation')
   const sections = useSettingsSectionsWithDeveloper(settingsSidebarSections)
   return (
-    <div className="hg-scrollbar flex min-h-0 flex-1 flex-col overflow-y-auto bg-panel">
+    <div className="hg-scrollbar flex min-h-0 flex-1 flex-col overflow-y-auto">
       <div className="flex items-center justify-between border-b border-border/70 px-4 pb-3 pt-4">
         <div className="flex min-w-0 items-center gap-2.5">
-          <span className="flex size-9 shrink-0 items-center justify-center rounded-2xl border border-border bg-panel/60 text-foreground">
+          <span className="flex size-9 shrink-0 items-center justify-center rounded-lg border border-border bg-sidebar-accent text-foreground">
             <SettingsLucide className="size-[18px]" />
           </span>
           <div className="min-w-0">
@@ -437,7 +441,7 @@ function SettingsSidebarNav({ active, onCollapse }: { active: string; onCollapse
                     href={item.href}
                     aria-current={selected ? 'page' : undefined}
                     className={cn(
-                      'group flex items-center gap-3 rounded-xl px-2.5 py-2 text-sm font-medium transition-colors',
+                      'group flex items-center gap-3 rounded-lg px-2.5 py-2 text-sm font-medium transition-colors',
                       selected
                         ? 'bg-primary/10 text-foreground shadow-sm ring-1 ring-primary/25'
                         : 'text-muted-foreground hover:bg-accent/60 hover:text-foreground',
@@ -498,10 +502,10 @@ function BrandSidebarNav({ active, channelName, kitId, onCollapse }: { active: s
     ? brandSidebarSections
     : brandSidebarSections.filter((section) => section.titleKey === 'brand' || section.titleKey === 'talent')
   return (
-    <div className="hg-scrollbar flex min-h-0 flex-1 flex-col overflow-y-auto bg-panel">
+    <div className="hg-scrollbar flex min-h-0 flex-1 flex-col overflow-y-auto">
       <div className="flex items-center justify-between px-4 pb-2 pt-4">
         <div className="flex items-center gap-2.5">
-          <span className="flex size-8 items-center justify-center rounded-xl bg-gradient-to-br from-primary/80 to-primary text-primary-foreground">
+          <span className="flex size-8 items-center justify-center rounded-lg border border-border bg-sidebar-accent text-foreground">
             <Palette className="size-[18px]" />
           </span>
           <div>
@@ -545,7 +549,7 @@ function BrandSidebarNav({ active, channelName, kitId, onCollapse }: { active: s
                     }
                     aria-current={selected ? 'page' : undefined}
                     className={cn(
-                      'flex items-center gap-3 rounded-xl px-2.5 py-2 text-left transition-colors',
+                      'flex items-center gap-3 rounded-lg px-2.5 py-2 text-left transition-colors',
                       selected ? 'bg-accent' : 'hover:bg-accent/60',
                     )}
                   >
@@ -558,7 +562,7 @@ function BrandSidebarNav({ active, channelName, kitId, onCollapse }: { active: s
                       <item.icon className="size-[17px]" />
                     </span>
                     <span className="min-w-0">
-                      <span className={cn('block truncate text-sm', selected ? 'font-medium text-foreground' : 'text-foreground/90')}>
+                      <span className={cn('block truncate text-sm', selected ? 'font-medium text-foreground' : 'text-sidebar-foreground')}>
                         {tNav(item.labelKey)}
                       </span>
                       <span className="block truncate text-[11px] text-muted-foreground">{tNav(item.descriptionKey)}</span>
@@ -612,7 +616,7 @@ function SidebarTopContext({
             error={channelError}
             collapsed={collapsed}
             avatarClassName="size-7"
-            triggerClassName="h-auto gap-2 rounded-xl px-2 py-1.5"
+            triggerClassName="h-auto gap-2 rounded-lg px-2 py-1.5"
           />
           </div>
         )}
@@ -712,7 +716,7 @@ function SidebarToolsNav({
         href="/tools"
         aria-current={browseActive ? 'page' : undefined}
         className={cn(
-          'mb-1 flex w-full items-center gap-3 rounded-xl px-2.5 py-2 text-sm font-medium transition-colors',
+          'mb-1 flex w-full items-center gap-3 rounded-lg px-2.5 py-2 text-sm font-medium transition-colors',
           browseActive
             ? 'bg-accent text-foreground ring-1 ring-border'
             : 'text-muted-foreground hover:bg-accent/60 hover:text-foreground',
@@ -755,7 +759,7 @@ function SidebarToolNavItem({
     <Link href={tool.href} className="block">
       <div
         className={cn(
-        'group flex w-full items-center gap-3 rounded-xl px-2.5 py-2 text-sm font-medium transition-colors',
+        'group flex w-full items-center gap-3 rounded-lg px-2.5 py-2 text-sm font-medium transition-colors',
         active
             ? 'bg-accent text-foreground ring-1 ring-border'
             : 'text-muted-foreground hover:bg-accent/60 hover:text-foreground',
@@ -828,7 +832,7 @@ function SidebarToolsSectionLabel({
   if (collapsed) return null
 
   return (
-    <div className="flex items-center justify-between px-2 pb-1 pt-3 text-[11px] font-semibold uppercase leading-4 tracking-normal text-muted-foreground/72">
+    <div className="flex items-center justify-between px-2 pb-1 pt-3 text-[11px] font-semibold uppercase leading-4 tracking-normal text-muted-foreground">
       <span className="flex min-w-0 items-center gap-1.5">
         {Icon ? <Icon className="h-3.5 w-3.5" /> : null}
         <span className="truncate">{label}</span>
@@ -1563,7 +1567,7 @@ export function AccountMenu({
             className={cn(
               'flex items-center text-left text-foreground outline-none transition-colors',
               variant === 'rail'
-                ? 'size-10 justify-center rounded-full p-0 ring-2 ring-offset-2 ring-offset-panel hover:bg-accent'
+                ? 'size-10 justify-center rounded-full p-0 ring-2 ring-offset-2 ring-offset-sidebar hover:bg-accent'
                 : collapsed
                   ? 'h-10 w-full justify-center rounded-xl px-0 hover:bg-accent'
                   : 'w-full gap-3 rounded-xl px-2 py-2 hover:bg-accent',
@@ -1605,7 +1609,7 @@ export function AccountMenu({
             align="end"
             sideOffset={12}
             collisionPadding={12}
-            className="w-[316px] rounded-[22px] border border-border/70 bg-popover/94 p-2 text-popover-foreground shadow-[0_24px_70px_rgba(0,0,0,0.38)] backdrop-blur-2xl supports-[backdrop-filter]:bg-popover/84 dark:border-white/10 dark:bg-[#121212]/94"
+            className="w-[316px] rounded-[22px] border border-border/70 bg-popover/94 p-2 text-popover-foreground shadow-[0_24px_70px_rgba(0,0,0,0.38)] backdrop-blur-2xl supports-[backdrop-filter]:bg-popover/84 dark:border-white/10 dark:bg-popover/95"
           >
             <CreditPanelContent
               hideInviteEarn={hideInviteEarn}
@@ -1838,7 +1842,7 @@ function SidebarSection({ label, children }: { label: string; children: React.Re
         type="button"
         onClick={() => setOpen((current) => !current)}
         aria-expanded={open}
-        className="group flex w-full items-center justify-between rounded-lg px-3 pb-1.5 text-left text-[13px] font-medium text-muted-foreground transition-colors hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sidebar-ring"
+        className="group flex w-full items-center justify-between rounded-lg px-2.5 pb-1.5 text-left text-[13px] font-medium text-muted-foreground transition-colors hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sidebar-ring"
       >
         <span className="truncate">{label}</span>
         <ChevronDown className={cn('size-3.5 shrink-0 transition-[transform,opacity]', open ? 'opacity-0 group-hover:opacity-100 group-focus-visible:opacity-100' : '-rotate-90')} />
@@ -1878,15 +1882,15 @@ function SidebarRecentChats({ channelId, currentPath }: { channelId: string | nu
               href={href}
               aria-current={active ? 'page' : undefined}
               className={cn(
-                'truncate rounded-xl px-3 py-1.5 text-sm transition-colors',
-                active ? 'bg-accent font-medium text-foreground' : 'text-foreground/80 hover:bg-accent/60 hover:text-foreground',
+                'truncate rounded-lg px-2.5 py-1.5 text-sm transition-colors',
+                active ? 'bg-sidebar-accent font-medium text-foreground' : 'text-sidebar-foreground hover:bg-sidebar-accent/60 hover:text-foreground',
               )}
             >
               {conversation.title?.trim() || tNav('untitledWork')}
             </Link>
           )
         })}
-      <Link href="/chat" className="rounded-xl px-3 py-1.5 text-sm text-muted-foreground transition-colors hover:bg-accent/60 hover:text-foreground">
+      <Link href="/chat" className="rounded-lg px-2.5 py-1.5 text-sm text-muted-foreground transition-colors hover:bg-sidebar-accent/70 hover:text-foreground">
         {tNav('seeAllChats')}
       </Link>
     </SidebarSection>
@@ -1916,8 +1920,8 @@ function NavItemComponent({ item, currentPath, depth = 0, collapsed = false }: N
     if (collapsed) return null
 
     return (
-      <div className={cn('flex items-center justify-between px-3 pb-1 pt-4', depth > 0 && 'ml-4')}>
-        <span className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">{item.label}</span>
+      <div className={cn('flex items-center justify-between px-2.5 pb-1 pt-4', depth > 0 && 'ml-4')}>
+        <span className="text-[13px] font-medium text-muted-foreground">{item.label}</span>
         <ChevronDown className="size-3.5 text-muted-foreground" />
       </div>
     )
@@ -1940,12 +1944,12 @@ function NavItemComponent({ item, currentPath, depth = 0, collapsed = false }: N
   const content = (
     <div
       className={cn(
-        'group relative flex w-full items-center gap-3 rounded-xl px-3 py-2 text-sm font-medium transition-colors',
+        'group relative flex w-full items-center gap-2.5 rounded-lg px-2.5 py-[7px] text-sm font-medium transition-colors',
         isActive
-          ? 'bg-accent text-foreground'
+          ? 'bg-sidebar-accent text-foreground'
           : hasActiveChild
-            ? 'text-foreground hover:bg-accent/60'
-            : 'text-foreground/80 hover:bg-accent/60 hover:text-foreground',
+            ? 'text-foreground hover:bg-sidebar-accent/70'
+            : 'text-sidebar-foreground hover:bg-sidebar-accent/60 hover:text-foreground',
         isDisabled && 'cursor-default text-muted-foreground hover:bg-transparent',
         depth > 0 && !collapsed && 'text-[14px] font-medium',
         collapsed && 'min-h-9 justify-center gap-0 px-0'
@@ -1955,10 +1959,10 @@ function NavItemComponent({ item, currentPath, depth = 0, collapsed = false }: N
       {Icon && (
         <div
           className={cn(
-            'flex h-5 w-5 shrink-0 items-center justify-center text-current [&_svg]:h-[18px] [&_svg]:w-[18px] [&_svg]:stroke-[2]',
+            'flex h-5 w-5 shrink-0 items-center justify-center text-current [&_svg]:h-[18px] [&_svg]:w-[18px] [&_svg]:stroke-[1.8]',
             item.iconSurface && 'h-6 w-6 rounded-md bg-accent text-foreground [&_svg]:h-4 [&_svg]:w-4 [&_svg]:stroke-[2.3]',
             isActive && item.iconSurface && 'bg-background text-sidebar-foreground shadow-sm',
-            isActive && 'text-primary',
+            isActive ? 'text-foreground' : 'text-sidebar-icon group-hover:text-foreground',
             item.iconColor
           )}
         >
@@ -1972,7 +1976,7 @@ function NavItemComponent({ item, currentPath, depth = 0, collapsed = false }: N
       {/* Badge */}
       {item.badge !== undefined && !collapsed && (
         <span
-          className="ml-auto flex size-5 items-center justify-center rounded-full bg-primary/20 text-[11px] font-semibold text-primary"
+          className="ml-auto flex h-5 min-w-5 items-center justify-center rounded-full bg-foreground/[0.08] px-1.5 text-[11px] font-medium tabular-nums text-muted-foreground"
         >
           {item.badge}
         </span>
@@ -2131,8 +2135,8 @@ function NewTaskNavItem({
         prefetch={item.isExternal ? false : undefined}
         target={item.isExternal ? '_blank' : undefined}
         className={cn(
-          'group mb-1.5 flex min-w-0 items-center gap-3 rounded-xl border border-border px-3 py-2 text-sm font-medium text-foreground shadow-xs transition-colors',
-          isActive ? 'bg-accent' : 'bg-background/40 hover:bg-accent',
+          'group mb-2 flex min-w-0 items-center gap-2.5 rounded-lg border border-border px-2.5 py-[7px] text-sm font-medium text-foreground transition-colors',
+          isActive ? 'bg-sidebar-accent' : 'bg-background/60 hover:bg-sidebar-accent',
           depth > 0 && 'text-[14px]',
           isDisabled && 'pointer-events-none',
         )}
@@ -2140,10 +2144,9 @@ function NewTaskNavItem({
         {Icon && (
           <div
             className={cn(
-              'flex h-5 w-5 shrink-0 items-center justify-center text-current [&_svg]:h-[18px] [&_svg]:w-[18px] [&_svg]:stroke-[2]',
+              'flex h-5 w-5 shrink-0 items-center justify-center text-current [&_svg]:h-[18px] [&_svg]:w-[18px] [&_svg]:stroke-[1.8]',
               item.iconSurface && 'h-6 w-6 rounded-md bg-accent text-foreground [&_svg]:h-4 [&_svg]:w-4 [&_svg]:stroke-[2.3]',
               isActive && item.iconSurface && 'bg-background text-sidebar-foreground shadow-sm',
-              isActive && 'text-primary',
               item.iconColor,
             )}
           >
@@ -2277,6 +2280,10 @@ export function getIcon(iconName: string) {
     refresh: RefreshIcon,
     calendar: CalendarIcon,
     timeline: SlidersHorizontal,
+    workflow: Workflow,
+    channel: MonitorPlay,
+    memory: Brain,
+    plug: Plug,
     wrench: Wrench,
     truck: TruckIcon,
     bar: BarIcon,

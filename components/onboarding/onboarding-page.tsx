@@ -325,7 +325,7 @@ export function OnboardingPage() {
 
       {showReassurance && (
         <div className="fixed inset-0 z-30 flex items-center justify-center bg-black/72 px-5 backdrop-blur-md">
-          <div className="w-full max-w-2xl rounded-lg border border-white/10 bg-[#121416] p-7 text-center shadow-2xl sm:p-10">
+          <div className="w-full max-w-2xl rounded-lg border border-white/10 bg-[#121212] p-7 text-center shadow-2xl sm:p-10">
             <div className="mx-auto flex size-14 items-center justify-center rounded-full bg-[#c8ff16] text-black">
               <Check className="size-7" />
             </div>

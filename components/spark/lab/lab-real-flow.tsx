@@ -17,6 +17,8 @@ import { currentStep, isAdded, projectTitle, sceneStatus, type LabRun, type LabR
 // (`components/workflows/workflow-canvas.tsx`) with a workflow built from the plan, so the nodes, ports, edges,
 // zoom dock and toolbelt are the Flow product's, not a drawing of them. The run reaches it the way a Flow run
 // does: node statuses and the active node through the canvas props, node media through its field-change event.
+// It is a board of the project, not a Flow inside it: the canvas comes without the Flow editor's top bar (back,
+// Save, AI, Run), and the Plan's own approval bar ("Bu planla üret") starts the run.
 
 // The canvas is client-only on the Flow page too.
 const WorkflowCanvas = dynamic<WorkflowCanvasProps>(
@@ -200,18 +202,22 @@ export function RealFlowBoard({ run, onBack }: { run: LabRun; onBack: () => void
   React.useEffect(() => {
     const element = slot.current
     if (!element) return
+    // The box is the slot's place in the overlay, which covers the workspace: the window when the workspace is
+    // full-screen, the page panel when it is a tab in the shell.
     const measure = () => {
       const rect = element.getBoundingClientRect()
-      setBox({ left: rect.left, top: rect.top, width: rect.width, height: rect.height })
+      const origin = overlay?.getBoundingClientRect()
+      setBox({ left: rect.left - (origin?.left ?? 0), top: rect.top - (origin?.top ?? 0), width: rect.width, height: rect.height })
     }
     const observer = new ResizeObserver(measure)
     observer.observe(element)
+    if (overlay) observer.observe(overlay)
     window.addEventListener('resize', measure)
     return () => {
       observer.disconnect()
       window.removeEventListener('resize', measure)
     }
-  }, [])
+  }, [overlay])
 
   const runtime = runtimeOf(state)
   const statuses = React.useMemo(() => JSON.parse(runtime.key) as Record<string, WorkflowRunStatus>, [runtime.key])
@@ -236,8 +242,6 @@ export function RealFlowBoard({ run, onBack }: { run: LabRun; onBack: () => void
     return () => window.clearTimeout(late)
   }, [frameKey, state.phase])
 
-  const label = state.phase === 'plan' ? 'Bu planla üret' : state.phase === 'building' ? 'Üretiliyor' : state.phase === 'done' ? 'Önizleme hazır' : 'Plan yazılıyor'
-
   return (
     <>
       <div className="lb-b-board lb-flow-slot" ref={slot} />
@@ -248,13 +252,7 @@ export function RealFlowBoard({ run, onBack }: { run: LabRun; onBack: () => void
                 <WorkflowCanvas
                   workflow={workflow}
                   onBack={onBack}
-                  headerBackIcon="panel"
-                  showHeaderTitle={false}
-                  allowAiPrompt={false}
-                  onRun={run.approve}
-                  runLabel={label}
-                  runDisabled={state.phase !== 'plan'}
-                  runPending={state.phase === 'building'}
+                  chrome="embedded"
                   runtimeNodeStatuses={statuses}
                   runtimeActiveNodeId={runtime.active}
                 />

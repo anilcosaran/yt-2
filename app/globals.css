@@ -80,11 +80,14 @@
   --destructive: #DE350B;
   --destructive-foreground: #ffffff;
   --border: #dce2e9;
+  --border-strong: #c9d1db;
   --input: #ffffff;
   --ring: #60A5FA;
+  --subtle-foreground: #7a8699;
   --chart-1: #00B8D9;
   --chart-2: #6554C0;
-  --radius: 0.875rem;
+  /* Linear's radii: 6px rows, 8px controls, 10px panels (sm/md/lg below). */
+  --radius: 0.625rem;
   
   /* Youtorch Status Colors */
   --success: #36B37E;
@@ -97,6 +100,7 @@
   /* Sidebar */
   --sidebar: #eef1f4;
   --sidebar-foreground: #1F2328;
+  --sidebar-icon: #5b6b83;
   --sidebar-primary: #1D4ED8;
   --sidebar-primary-foreground: #ffffff;
   --sidebar-accent: #e0e6ed;
@@ -116,27 +120,32 @@
 }
 
 .dark {
+  /* Pure neutral greys (no blue cast): the window and sidebar (`--sidebar`) sit a step darker than the page panel
+     (`--background`, #181818), cards a step lighter; hairlines are white at low alpha, text is not pure white, and
+     the one accent is indigo (#5e6ad2) on focus rings and the sidebar's primary. */
   color-scheme: dark;
-  --background: oklch(0.145 0 0);
-  --foreground: oklch(0.985 0 0);
-  --card: oklch(0.205 0 0);
-  --card-foreground: oklch(0.985 0 0);
-  --panel: oklch(0.185 0.006 265);
-  --popover: oklch(0.205 0 0);
-  --popover-foreground: oklch(0.985 0 0);
+  --background: #181818;
+  --foreground: #f2f2f2;
+  --card: #1c1c1c;
+  --card-foreground: #ececec;
+  --panel: #1b1b1b;
+  --popover: #1c1c1c;
+  --popover-foreground: #ececec;
   --primary: oklch(0.922 0 0);
   --primary-foreground: oklch(0.205 0 0);
-  --secondary: oklch(0.269 0 0);
-  --secondary-foreground: oklch(0.985 0 0);
-  --muted: oklch(0.269 0 0);
-  --muted-foreground: oklch(0.708 0 0);
-  --accent: oklch(0.269 0 0);
-  --accent-foreground: oklch(0.985 0 0);
+  --secondary: #262626;
+  --secondary-foreground: #ececec;
+  --muted: #262626;
+  --muted-foreground: #a3a3a3;
+  --subtle-foreground: #737373;
+  --accent: #262626;
+  --accent-foreground: #ececec;
   --destructive: oklch(0.704 0.191 22.216);
   --destructive-foreground: oklch(0.985 0 0);
-  --border: oklch(1 0 0 / 10%);
-  --input: oklch(1 0 0 / 15%);
-  --ring: oklch(0.556 0 0);
+  --border: rgb(255 255 255 / 7%);
+  --border-strong: rgb(255 255 255 / 11%);
+  --input: rgb(255 255 255 / 11%);
+  --ring: #5e6ad2;
   --chart-1: oklch(0.87 0 0);
   --chart-2: oklch(0.556 0 0);
   --chart-3: oklch(0.439 0 0);
@@ -152,14 +161,15 @@
   --info-foreground: #121212;
   
   /* Sidebar - Dark */
-  --sidebar: oklch(0.205 0 0);
-  --sidebar-foreground: oklch(0.985 0 0);
-  --sidebar-primary: oklch(0.488 0.243 264.376);
+  --sidebar: #121212;
+  --sidebar-foreground: #d4d4d4;
+  --sidebar-icon: #a8a8a8;
+  --sidebar-primary: #5e6ad2;
   --sidebar-primary-foreground: oklch(0.985 0 0);
-  --sidebar-accent: oklch(0.269 0 0);
-  --sidebar-accent-foreground: oklch(0.985 0 0);
-  --sidebar-border: oklch(1 0 0 / 10%);
-  --sidebar-ring: oklch(0.556 0 0);
+  --sidebar-accent: #242424;
+  --sidebar-accent-foreground: #f2f2f2;
+  --sidebar-border: rgb(255 255 255 / 6%);
+  --sidebar-ring: #5e6ad2;
   
   /* Flow Builder Colors - Dark */
   --flow-trigger: #1C2B41;
@@ -189,14 +199,17 @@ html.paper {
   --secondary-foreground: #1f1e1d;
   --muted: #f1efe8;
   --muted-foreground: #5d5c57;
+  --subtle-foreground: #8c8a82;
   --accent: #ebe8df;
   --accent-foreground: #1f1e1d;
   --border: #e7e4da;
+  --border-strong: #d6d2c6;
   --input: #ffffff;
   --ring: #8c8a82;
 
   --sidebar: #f3f1ea;
   --sidebar-foreground: #1f1e1d;
+  --sidebar-icon: #5d5c57;
   --sidebar-accent: #e8e5db;
   --sidebar-accent-foreground: #1f1e1d;
   --sidebar-border: #e2dfd4;
@@ -214,7 +227,7 @@ html.paper {
 
 @theme inline {
   --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
-  --font-display: var(--font-space-grotesk), var(--font-inter), sans-serif;
+  --font-display: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
   --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
   --color-background: var(--background);
   --color-foreground: var(--foreground);
@@ -229,11 +242,13 @@ html.paper {
   --color-secondary-foreground: var(--secondary-foreground);
   --color-muted: var(--muted);
   --color-muted-foreground: var(--muted-foreground);
+  --color-subtle-foreground: var(--subtle-foreground);
   --color-accent: var(--accent);
   --color-accent-foreground: var(--accent-foreground);
   --color-destructive: var(--destructive);
   --color-destructive-foreground: var(--destructive-foreground);
   --color-border: var(--border);
+  --color-border-strong: var(--border-strong);
   --color-input: var(--input);
   --color-ring: var(--ring);
   --color-chart-1: var(--chart-1);
@@ -256,6 +271,7 @@ html.paper {
   --radius-4xl: calc(var(--radius) * 2.6);
   --color-sidebar: var(--sidebar);
   --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-icon: var(--sidebar-icon);
   --color-sidebar-primary: var(--sidebar-primary);
   --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
   --color-sidebar-accent: var(--sidebar-accent);
@@ -369,16 +385,22 @@ html[data-youtorch-sidebar-collapsed='true'] [data-workspace-sidebar-frame] {
   transition: none !important;
 }
 
+/* Headings: the body face, semibold and a little tight (no separate display face). */
 .font-display {
-  font-family: var(--font-space-grotesk), var(--font-inter), sans-serif;
-  font-weight: 700;
-  letter-spacing: -0.02em;
+  font-family: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+  font-weight: 600;
+  letter-spacing: -0.015em;
 }
 
 .hg-glow {
   background:
     radial-gradient(60% 45% at 50% 0%, oklch(0.5 0.12 210 / 22%), transparent 70%),
     radial-gradient(40% 40% at 85% 5%, oklch(0.5 0.16 300 / 14%), transparent 70%);
+}
+
+/* Dark pages stay flat, like Linear's: no coloured glow behind the page heading. */
+.dark .hg-glow {
+  background: none;
 }
 
 .chat-welcome-glow {
@@ -466,14 +488,6 @@ html[data-youtorch-sidebar-collapsed='true'] [data-workspace-sidebar-frame] {
 .hg-scrollbar::-webkit-scrollbar-thumb {
   border-radius: 999px;
   background: oklch(1 0 0 / 12%);
-}
-
-/* Workspace navigation (icon rail, sidebar, hover preview) in dark mode: a soft charcoal one step above the page
-   instead of the bluish near-black panel, so the menu reads clearly without looking heavy. */
-.dark [data-workspace-sidebar-frame],
-.dark .workspace-sidebar,
-.dark .workspace-icon-rail {
-  --panel: oklch(0.215 0.002 265);
 }
 
 /* A thin scrollbar that stays hidden until the pointer or focus is inside the scroll area. */
@@ -616,21 +630,32 @@ html[data-youtorch-sidebar-collapsed='true'] [data-workspace-sidebar-frame] {
   background-repeat: no-repeat;
 }
 
+.dark .theme-page-surface {
+  background: none;
+}
+
 @layer components {
+  /* The Flow canvas is always dark. In the dark theme it simply takes the theme's tokens; in the light themes it
+     carries the same dark values itself (keep them in step with `.dark` above). */
+  html:not(.dark) .workflow-flow-surface {
+    --background: #181818;
+    --foreground: #ececec;
+    --card: #1c1c1c;
+    --card-foreground: #ececec;
+    --popover: #1c1c1c;
+    --popover-foreground: #ececec;
+    --muted: #262626;
+    --muted-foreground: #a3a3a3;
+    --subtle-foreground: #737373;
+    --accent: #262626;
+    --accent-foreground: #ececec;
+    --border: rgb(255 255 255 / 7%);
+    --border-strong: rgb(255 255 255 / 11%);
+    --input: rgb(255 255 255 / 11%);
+    --ring: #5e6ad2;
+  }
+
   .workflow-flow-surface {
-    --background: oklch(0.16 0.006 265);
-    --foreground: oklch(0.985 0 0);
-    --card: oklch(0.205 0.006 265);
-    --card-foreground: oklch(0.985 0 0);
-    --popover: oklch(0.205 0.006 265);
-    --popover-foreground: oklch(0.985 0 0);
-    --muted: oklch(0.26 0.006 265);
-    --muted-foreground: oklch(0.68 0.01 265);
-    --accent: oklch(0.28 0.006 265);
-    --accent-foreground: oklch(0.985 0 0);
-    --border: oklch(1 0 0 / 9%);
-    --input: oklch(1 0 0 / 12%);
-    --ring: oklch(0.83 0.13 205 / 60%);
     --xy-background-color: var(--background);
     color: var(--foreground);
     background: var(--background);
@@ -864,52 +889,6 @@ html[data-youtorch-sidebar-collapsed='true'] [data-workspace-sidebar-frame] {
     box-shadow:
       0 14px 40px rgb(248 116 98 / 0.16),
       0 0 0 3px rgb(248 116 98 / 0.08);
-  }
-
-  .dark .tools-studio,
-  .tools-studio.dark,
-  .dark .dashboard-studio,
-  .dashboard-studio.dark {
-    --background: oklch(0.145 0 0);
-    --foreground: oklch(0.985 0 0);
-    --card: oklch(0.205 0 0);
-    --card-foreground: oklch(0.985 0 0);
-    --popover: oklch(0.205 0 0);
-    --popover-foreground: oklch(0.985 0 0);
-    --primary: oklch(0.922 0 0);
-    --primary-foreground: oklch(0.205 0 0);
-    --secondary: oklch(0.269 0 0);
-    --secondary-foreground: oklch(0.985 0 0);
-    --muted: oklch(0.269 0 0);
-    --muted-foreground: oklch(0.708 0 0);
-    --accent: oklch(0.269 0 0);
-    --accent-foreground: oklch(0.985 0 0);
-    --border: oklch(1 0 0 / 10%);
-    --input: oklch(1 0 0 / 15%);
-    --ring: oklch(0.556 0 0);
-    --success: oklch(0.75 0.15 155);
-  }
-
-  .dark .workspace-sidebar,
-  .workspace-sidebar.dark,
-  .dark .workspace-icon-rail,
-  .workspace-icon-rail.dark {
-    --background: oklch(0.145 0 0);
-    --foreground: oklch(0.985 0 0);
-    --muted: oklch(0.269 0 0);
-    --muted-foreground: oklch(0.708 0 0);
-    --accent: oklch(0.269 0 0);
-    --accent-foreground: oklch(0.985 0 0);
-    --border: oklch(1 0 0 / 10%);
-    --ring: oklch(0.556 0 0);
-    --sidebar: oklch(0.205 0 0);
-    --sidebar-foreground: oklch(0.985 0 0);
-    --sidebar-primary: oklch(0.488 0.243 264.376);
-    --sidebar-primary-foreground: oklch(0.985 0 0);
-    --sidebar-accent: oklch(0.269 0 0);
-    --sidebar-accent-foreground: oklch(0.985 0 0);
-    --sidebar-border: oklch(1 0 0 / 10%);
-    --sidebar-ring: oklch(0.556 0 0);
   }
 
   .tools-hero-scrim {

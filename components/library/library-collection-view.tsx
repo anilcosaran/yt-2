@@ -129,14 +129,11 @@ export function LibraryCollectionView({
 
   return (
     <div className="space-y-6">
-      {/* header: cover, icon, name, one meta line, the AI note */}
+      {/* header: icon, name, one meta line, the AI note */}
       <div className="overflow-hidden rounded-3xl border border-border bg-card">
-        <div className="relative h-20" style={{ background: hueGradient(collection.hue) }}>
-          <div className="absolute inset-0 bg-[radial-gradient(circle_at_85%_0%,rgba(255,255,255,0.25),transparent_55%)]" />
-        </div>
-        <div className="px-6 pb-6">
+        <div className="px-6 pb-6 pt-6">
           <div className="flex flex-wrap items-start justify-between gap-3">
-            <CollectionGlyph collection={{ ...collection, smart: false }} size="lg" className="-mt-8 ring-4 ring-card" />
+            <CollectionGlyph collection={{ ...collection, smart: false }} size="lg" />
             <div className="mt-3 flex items-center gap-2">
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>

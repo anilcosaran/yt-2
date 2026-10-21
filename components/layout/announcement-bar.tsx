@@ -18,11 +18,21 @@ import {
   type TopBannerAnnouncement,
 } from '@/lib/review/api'
 import { useTranslations } from 'next-intl'
+import { useTheme } from 'next-themes'
 
 const ANNOUNCEMENT_STALE_MS = 2 * 60_000
 const ANNOUNCEMENT_QUERY_GC_MS = 10 * 60_000
 const DISMISSED_STORAGE_KEY = 'youtorch:review-top-banner-dismissed'
 const MAX_LOCAL_DISMISSALS = 200
+// An announcement without colours of its own takes the shell's: the sidebar's surface and text (#121212 and #d4d4d4 in
+// the dark theme), so the banner reads as part of the window. The creative banner's frame is its own document and
+// cannot read the theme's variables, so it gets the same colours as values.
+const THEME_BANNER_BACKGROUND = 'var(--sidebar)'
+const THEME_BANNER_TEXT = 'var(--sidebar-foreground)'
+const THEME_BANNER_FRAME_COLORS = {
+  dark: { background: '#121212', text: '#d4d4d4' },
+  light: { background: '#f3f1ea', text: '#1f1e1d' },
+} as const
 
 export function MemberAnnouncementBar() {
   const query = useQuery({
@@ -247,6 +257,7 @@ function CreativeAnnouncementContent({
   positionLabel?: string
 }) {
   const tAuto = useTranslations('Auto')
+  const { resolvedTheme } = useTheme()
   const html = getPayloadString(announcement.payload.creative_html)
   const css = getPayloadString(announcement.payload.creative_css) ?? ''
   const creativeMode = getPayloadString(announcement.payload.creative_mode)
@@ -285,7 +296,7 @@ function CreativeAnnouncementContent({
           title={tAuto('youtorch_announcement_7df8c0a5')}
           sandbox="allow-popups allow-popups-to-escape-sandbox"
           allow="autoplay; fullscreen; picture-in-picture"
-          srcDoc={buildBannerSrcDoc(html, css, style)}
+          srcDoc={buildBannerSrcDoc(html, css, style, resolvedTheme === 'dark' ? 'dark' : 'light')}
           className="h-full w-full border-0 bg-transparent"
         />
       ) : (
@@ -382,7 +393,7 @@ function AnnouncementDismissButton({
       variant="ghost"
       size="icon-sm"
       className={cn(
-        'absolute right-2 top-1/2 z-20 h-8 w-8 -translate-y-1/2 text-current hover:bg-white/15',
+        'absolute right-2 top-1/2 z-20 h-8 w-8 -translate-y-1/2 text-current hover:bg-current/10',
         overlay && 'top-3 translate-y-0 bg-black/30 text-white backdrop-blur-sm hover:bg-black/45',
       )}
       onClick={onDismiss}
@@ -407,11 +418,11 @@ function AnnouncementStepper({
   const tAuto = useTranslations('Auto')
   return (
     <div className={cn('flex shrink-0 items-center gap-1', overlay && 'absolute left-2 top-2 z-20 rounded-md bg-black/35 px-1 text-white backdrop-blur-sm')}>
-      <Button type="button" variant="ghost" size="icon-sm" className="h-7 w-7 text-current hover:bg-white/15" onClick={showPrevious} aria-label={tAuto('previous_announcement_f65bd870')}>
+      <Button type="button" variant="ghost" size="icon-sm" className="h-7 w-7 text-current hover:bg-current/10" onClick={showPrevious} aria-label={tAuto('previous_announcement_f65bd870')}>
         <ChevronLeft className="h-4 w-4" />
       </Button>
       <span className="min-w-8 text-center text-xs font-medium">{label}</span>
-      <Button type="button" variant="ghost" size="icon-sm" className="h-7 w-7 text-current hover:bg-white/15" onClick={showNext} aria-label={tAuto('next_announcement_d78f600c')}>
+      <Button type="button" variant="ghost" size="icon-sm" className="h-7 w-7 text-current hover:bg-current/10" onClick={showNext} aria-label={tAuto('next_announcement_d78f600c')}>
         <ChevronRight className="h-4 w-4" />
       </Button>
     </div>
@@ -453,9 +464,9 @@ function getBannerStyle(payload: Record<string, unknown>) {
   const gradientTo = safeOptionalColor(style.background_gradient_to)
   const gradientAngle = clampNumber(getNumber(style.background_gradient_angle_deg), 0, 360, 90)
   return {
-    backgroundColor: safeColor(style.background_color, '#0b1324'),
+    backgroundColor: safeColor(style.background_color, THEME_BANNER_BACKGROUND),
     backgroundImage: gradientFrom && gradientTo ? `linear-gradient(${gradientAngle}deg, ${gradientFrom}, ${gradientTo})` : undefined,
-    textColor: safeColor(style.text_color, '#ffffff'),
+    textColor: safeColor(style.text_color, THEME_BANNER_TEXT),
     fontFamily: safeFontFamily(style.font_family, 'Inter, Arial, sans-serif'),
     fontSize: clampNumber(getNumber(style.font_size_px), 12, 20, 14),
     fontWeight: clampNumber(getNumber(style.font_weight), 400, 800, 500),
@@ -466,11 +477,14 @@ function getBannerStyle(payload: Record<string, unknown>) {
   }
 }
 
-function buildBannerSrcDoc(html: string, css: string, style: ReturnType<typeof getBannerStyle>) {
+function buildBannerSrcDoc(html: string, css: string, style: ReturnType<typeof getBannerStyle>, scheme: 'dark' | 'light') {
   const safeHtml = sanitizeCreativeHtml(html)
   const safeCss = sanitizeCreativeCss(css)
-  const background = style.backgroundImage ?? style.backgroundColor
-  return `<!doctype html><html><head><meta charset="utf-8"><base target="_blank"><style>html,body{width:100%;height:100%;margin:0;background:${background};color:${style.textColor};font-family:${style.fontFamily};font-size:${style.fontSize}px;font-weight:${style.fontWeight};overflow:hidden}body{min-height:100%;padding:0}*{box-sizing:border-box;min-width:0}a{color:inherit}img,video{max-width:100%;max-height:100%;object-fit:cover}.yt-banner,.yt-banner-root{width:100%;height:100%}.yt-banner-line{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}${safeCss}</style></head><body>${safeHtml}</body></html>`
+  const themeColors = THEME_BANNER_FRAME_COLORS[scheme]
+  const background = style.backgroundImage
+    ?? (style.backgroundColor === THEME_BANNER_BACKGROUND ? themeColors.background : style.backgroundColor)
+  const textColor = style.textColor === THEME_BANNER_TEXT ? themeColors.text : style.textColor
+  return `<!doctype html><html><head><meta charset="utf-8"><base target="_blank"><style>html,body{width:100%;height:100%;margin:0;background:${background};color:${textColor};font-family:${style.fontFamily};font-size:${style.fontSize}px;font-weight:${style.fontWeight};overflow:hidden}body{min-height:100%;padding:0}*{box-sizing:border-box;min-width:0}a{color:inherit}img,video{max-width:100%;max-height:100%;object-fit:cover}.yt-banner,.yt-banner-root{width:100%;height:100%}.yt-banner-line{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}${safeCss}</style></head><body>${safeHtml}</body></html>`
 }
 
 function sanitizeCreativeHtml(value: string) {

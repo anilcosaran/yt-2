@@ -266,6 +266,11 @@ export type WorkflowCanvasProps = {
   onBack: (workflow?: WorkflowCanvasSnapshot) => void
   onRename?: (name: string) => void
   mode?: WorkflowCanvasMode
+  /**
+   * `full` (the Flow editor) has the top bar: back, name, Save, AI and Run. `embedded` (the canvas inside another
+   * screen, like a Spark project's Plan › Akış) has none of it: that screen's own controls act on it.
+   */
+  chrome?: 'full' | 'embedded'
   headerBackIcon?: 'arrow' | 'panel'
   showHeaderTitle?: boolean
   showSave?: boolean
@@ -526,6 +531,7 @@ export function WorkflowCanvas({
   onBack,
   onRename,
   mode = 'editor',
+  chrome = 'full',
   headerBackIcon = 'arrow',
   showHeaderTitle = true,
   showSave = false,
@@ -1422,41 +1428,43 @@ export function WorkflowCanvas({
               }}
             />
           )}
-          <Panel position="top-left" className="!m-2 !right-0 !left-0">
-            <div className="pointer-events-auto flex w-full flex-wrap items-start justify-between gap-2">
-              <WorkflowCanvasHeader
-                workflow={workflow}
-                onBack={handleBack}
-                onRename={isPreview ? undefined : onRename}
-                backIcon={headerBackIcon}
-                showTitle={showHeaderTitle}
-                copy={copy}
-              />
-              <div className="ml-auto flex min-w-0 max-w-full flex-col items-end gap-2">
-                <WorkflowCanvasActionDock
-                  className="max-w-full flex-wrap justify-end"
-                  toolbarAccessory={toolbarAccessory}
-                  showSave={!isPreview || showSave}
-                  onSave={handleSave}
-                  savePending={savePending}
-                  saveConfirmed={saveConfirmed}
-                  saveLabel={resolvedSaveLabel}
-                  onOpenInFlows={onOpenInFlows ? handleOpenInFlows : undefined}
-                  allowAiPrompt={allowAiPrompt && !isPreview}
-                  aiChatOpen={aiChatOpen}
-                  onToggleAiChat={() => setAiChatOpen((current) => !current)}
-                  chatLabel={copy.chat}
-                  onRun={handleRun}
-                  runDisabled={runDisabled || runPending}
-                  runPending={runPending}
-                  runLabel={runLabel ?? (isPreview ? copy.start : copy.run)}
+          {chrome === 'full' && (
+            <Panel position="top-left" className="!m-2 !right-0 !left-0">
+              <div className="pointer-events-auto flex w-full flex-wrap items-start justify-between gap-2">
+                <WorkflowCanvasHeader
+                  workflow={workflow}
+                  onBack={handleBack}
+                  onRename={isPreview ? undefined : onRename}
+                  backIcon={headerBackIcon}
+                  showTitle={showHeaderTitle}
+                  copy={copy}
                 />
-                {aiChatOpen && allowAiPrompt && !isPreview && (
-                  <WorkflowCanvasAiChat onSubmitPrompt={addPromptNode} onClose={() => setAiChatOpen(false)} copy={copy} />
-                )}
+                <div className="ml-auto flex min-w-0 max-w-full flex-col items-end gap-2">
+                  <WorkflowCanvasActionDock
+                    className="max-w-full flex-wrap justify-end"
+                    toolbarAccessory={toolbarAccessory}
+                    showSave={!isPreview || showSave}
+                    onSave={handleSave}
+                    savePending={savePending}
+                    saveConfirmed={saveConfirmed}
+                    saveLabel={resolvedSaveLabel}
+                    onOpenInFlows={onOpenInFlows ? handleOpenInFlows : undefined}
+                    allowAiPrompt={allowAiPrompt && !isPreview}
+                    aiChatOpen={aiChatOpen}
+                    onToggleAiChat={() => setAiChatOpen((current) => !current)}
+                    chatLabel={copy.chat}
+                    onRun={handleRun}
+                    runDisabled={runDisabled || runPending}
+                    runPending={runPending}
+                    runLabel={runLabel ?? (isPreview ? copy.start : copy.run)}
+                  />
+                  {aiChatOpen && allowAiPrompt && !isPreview && (
+                    <WorkflowCanvasAiChat onSubmitPrompt={addPromptNode} onClose={() => setAiChatOpen(false)} copy={copy} />
+                  )}
+                </div>
               </div>
-            </div>
-          </Panel>
+            </Panel>
+          )}
           {contextMenu && (
             <CanvasContextMenu
               menu={contextMenu}

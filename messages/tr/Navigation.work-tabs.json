@@ -1,0 +1,9 @@
+{
+  "workTabs": {
+    "label": "Açık işler",
+    "close": "{title} sekmesini kapat",
+    "untitled": "Adsız proje",
+    "newTab": "Yeni sekme",
+    "add": "Yeni proje"
+  }
+}

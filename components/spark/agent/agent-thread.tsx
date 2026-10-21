@@ -57,9 +57,18 @@ export function AgentSpinner() {
   )
 }
 
+/** The fold mark of a quiet line: a small solid triangle that turns down when the line is open. */
+export function AgentCaret() {
+  return (
+    <svg className="lb-caret" viewBox="0 0 8 8" aria-hidden>
+      <path d="M2.5 1.25 6.25 4 2.5 6.75z" />
+    </svg>
+  )
+}
+
 /**
- * Reasoning: one line — while the agent works, what it is doing now, shimmering beside a turning indicator; when it is
- * done, how long it took (`doneLabel`). Its thoughts stay folded under it until the user opens them.
+ * Reasoning: one quiet line of text — while the agent works, what it is doing now, shimmering; when it is done, how
+ * long it took (`doneLabel`). Its thoughts stay folded under it (the caret) until the user opens them.
  */
 export function AgentThinking({ working, label, doneLabel, lines = [] }: {
   working: boolean
@@ -72,9 +81,8 @@ export function AgentThinking({ working, label, doneLabel, lines = [] }: {
   return (
     <div className={`lb-reason${open && foldable ? ' open' : ''}`}>
       <button type="button" className="lb-reason-head" aria-expanded={foldable ? open : undefined} disabled={!foldable} onClick={() => setOpen(!open)}>
-        {working ? <AgentSpinner /> : <Icon name="brain" />}
         <span className={working ? 'lb-shimmer' : 'lb-reason-label'}>{working ? label : doneLabel ?? label}</span>
-        {foldable ? <Icon name="down" size="sm" /> : null}
+        {foldable ? <AgentCaret /> : null}
       </button>
       {open && foldable ? (
         <div className="lb-reason-body">
@@ -123,10 +131,10 @@ export type AgentQueueSection = {
 }
 
 /**
- * Queue: the plan as to-dos, in sections that fold (a bar with the count and the label). Each item has a small circle
- * that fills when it is done (the text is then struck through), turns while it is being made and shows a clock while
- * it waits on the user; a description and previews may follow it, actions show on hover. `footer` closes the queue
- * (the plan's state and its buttons).
+ * Queue: the plan as to-dos, in sections that fold (a heading with the count and the label, the items in a hairline
+ * card under it). Each item has a small circle that fills when it is done (the text is then struck through), turns
+ * while it is being made and shows a clock while it waits on the user; a description and previews may follow it,
+ * actions show on hover. `footer` closes the queue (the plan's state and its buttons).
  */
 export function AgentQueue({ sections, footer }: { sections: AgentQueueSection[]; footer?: React.ReactNode }) {
   const [closed, setClosed] = React.useState<Record<string, boolean>>({})
@@ -137,8 +145,8 @@ export function AgentQueue({ sections, footer }: { sections: AgentQueueSection[]
         return (
           <section key={section.id} className={`lb-queue-sec${open ? ' open' : ''}`}>
             <button type="button" className="lb-queue-bar" aria-expanded={open} onClick={() => setClosed((current) => ({ ...current, [section.id]: open }))}>
-              <Icon name="down" size="sm" />
               <span className="lb-queue-label">{section.count !== undefined ? <b>{section.count}</b> : null}{section.label}</span>
+              <AgentCaret />
               {section.meta ? <span className="lb-queue-meta">{section.meta}</span> : null}
             </button>
             {open ? (
@@ -178,10 +186,10 @@ export type AgentChainStep = {
 }
 
 /**
- * Chain of Thought, folded to one line: while the agent works, the step it is on, shimmering beside a turning
- * indicator, with how far it has got (`meta`); when it is done, `title`. `preview` (what it is making now, e.g. four
- * frames side by side) shows under the line; the steps themselves — one under the other on a thin line, with a
- * description, tags and what each made — open from the line.
+ * Chain of Thought, a hairline card folded to one line: while the agent works, the step it is on, shimmering beside a
+ * turning indicator, with how far it has got (`meta`, at the end); when it is done, `title`. `preview` (what it is
+ * making now, e.g. four frames side by side) shows under the line; the steps themselves — one under the other on a
+ * thin line, with a description, tags and what each made — open from the line.
  */
 export function AgentChain({ title, working, current, meta, steps, preview, footer }: {
   title: React.ReactNode
@@ -199,8 +207,8 @@ export function AgentChain({ title, working, current, meta, steps, preview, foot
       <button type="button" className="lb-cot-head" aria-expanded={open} onClick={() => setOpen(!open)}>
         {working ? <AgentSpinner /> : <Icon name="check-c" />}
         <span className={`lb-cot-title${working ? ' lb-shimmer' : ''}`}>{working ? current ?? title : title}</span>
+        <AgentCaret />
         {meta ? <span className="lb-cot-meta">{meta}</span> : null}
-        <Icon name="down" size="sm" />
       </button>
       {open ? (
         <ol className="lb-cot-steps">
@@ -327,29 +335,39 @@ export function AgentQuestion({
   )
 }
 
-export type AgentSuggestion = { id: string; label: string }
+/** `icon`: a Spark sprite name for the chip (`sparkles` when left out). */
+export type AgentSuggestion = { id: string; label: string; icon?: string }
 
 /**
  * Suggestion: short next steps as chips over the composer; one click hands it to the composer or sends it.
  * `singleLine` keeps them on one row: what does not fit is scrolled into view sideways instead of wrapping.
+ * `layout="list"`: one per row with an arrow on hover, for a start screen's ideas.
  */
-export function AgentSuggestions({ items, onPick, label, singleLine = false }: { items: AgentSuggestion[]; onPick: (item: AgentSuggestion) => void; label?: string; singleLine?: boolean }) {
+export function AgentSuggestions({ items, onPick, label, singleLine = false, layout = 'chips' }: {
+  items: AgentSuggestion[]
+  onPick: (item: AgentSuggestion) => void
+  label?: string
+  singleLine?: boolean
+  layout?: 'chips' | 'list'
+}) {
   if (items.length === 0) return null
+  const list = layout === 'list'
   return (
     <div
-      className={singleLine ? 'sugg lb-suggest sugg-line' : 'sugg lb-suggest'}
+      className={list ? 'sugg lb-suggest sugg-list' : singleLine ? 'sugg lb-suggest sugg-line' : 'sugg lb-suggest'}
       role="group"
       aria-label={label}
       // A mouse wheel has no sideways axis: let it move the row while there is more to reach.
-      onWheel={singleLine ? (event) => {
+      onWheel={singleLine && !list ? (event) => {
         const row = event.currentTarget
         if (event.deltaX === 0 && row.scrollWidth > row.clientWidth) row.scrollLeft += event.deltaY
       } : undefined}
     >
       {items.map((item) => (
         <button key={item.id} type="button" onClick={() => onPick(item)}>
-          <Icon name="sparkles" size="sm" />
-          {item.label}
+          <Icon name={item.icon ?? 'sparkles'} size="sm" />
+          {list ? <span className="sugg-text">{item.label}</span> : item.label}
+          {list ? <span className="sugg-go"><Icon name="arrow-right" size="sm" /></span> : null}
         </button>
       ))}
     </div>

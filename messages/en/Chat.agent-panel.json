@@ -1,0 +1,35 @@
+{
+  "agentPanel": {
+    "region": "Spark panel",
+    "modelTitle": "Answering model",
+    "newChat": "New chat",
+    "minimize": "Minimize",
+    "restore": "Open panel",
+    "expand": "Open in chat",
+    "close": "Close",
+    "emptyTitle": "What shall we do today?",
+    "emptyHint": "Ask without leaving this page. The conversation is saved to your chat history too.",
+    "suggestionsLabel": "Suggestions",
+    "suggestions": {
+      "ideas": "Suggest 5 video ideas for this week",
+      "summary": "Summarize my channel's last 30 days",
+      "script": "Write a 60-second short video script"
+    },
+    "placeholder": "Ask Spark…",
+    "replyPlaceholder": "Reply…",
+    "skills": "Skills",
+    "skillsLoading": "Loading skills…",
+    "skillsEmpty": "No skills installed",
+    "skillsError": "Skills could not be loaded",
+    "skillRemove": "Remove skill",
+    "skillsManage": "Manage skills",
+    "contextAdded": "added to context",
+    "thinking": "Thinking",
+    "send": "Send",
+    "stop": "Stop",
+    "waitingShort": "Spark is waiting for you",
+    "stopped": "Stopped.",
+    "failed": "No answer came back. Try again or open the chat.",
+    "sendFailed": "Could not send: {reason}"
+  }
+}

@@ -1,0 +1,46 @@
+/* The agent panel (agent-panel.tsx): one soft surface floating over the page — a faint hairline and a deep, diffuse
+   shadow, no boxes inside it: the user's lines, the composer and the badges are quiet fills instead of borders. While
+   it is empty a faint glow of the "AI'a sor" orange lights its top. Unlayered and a class deeper than prompt-box.css
+   and lab.css, so these win over their rules and over Tailwind's utilities on the parts. */
+.agent-panel{
+  --ap-surface:var(--card);
+  --ap-line:rgb(16 16 24 / 8%);
+  --ap-fill:color-mix(in srgb,var(--muted) 72%,var(--card));
+  --ap-fill-strong:var(--muted);
+  --ap-focus:rgb(16 16 24 / 14%);
+  --ap-glow:rgb(249 115 22 / 7%);
+  background:var(--ap-surface);
+  border:1px solid var(--ap-line);
+  box-shadow:0 1px 2px rgb(16 16 24 / 5%),0 12px 28px -8px rgb(16 16 24 / 12%),0 36px 72px -20px rgb(16 16 24 / 22%);
+}
+.dark .agent-panel{
+  --ap-surface:color-mix(in srgb,var(--card),#fff 2%);
+  --ap-line:rgb(255 255 255 / 8%);
+  --ap-fill:rgb(255 255 255 / 5%);
+  --ap-fill-strong:rgb(255 255 255 / 8%);
+  --ap-focus:rgb(255 255 255 / 14%);
+  --ap-glow:rgb(251 146 60 / 9%);
+  box-shadow:inset 0 1px 0 rgb(255 255 255 / 4%),0 2px 6px rgb(0 0 0 / 30%),0 36px 80px -16px rgb(0 0 0 / 65%);
+}
+.agent-panel[data-empty]{background-image:radial-gradient(90% 60% at 50% 0%,var(--ap-glow),transparent 72%)}
+.agent-panel-fill{background:var(--ap-fill)}
+.agent-panel-mark{color:#ea580c;background:linear-gradient(180deg,rgb(249 115 22 / 16%),rgb(249 115 22 / 6%));box-shadow:inset 0 0 0 1px rgb(249 115 22 / 20%)}
+.dark .agent-panel-mark{color:#fb923c}
+
+/* the shared prompt box: a filled field with no line until it has the focus, round controls */
+.agent-panel .pb,.dark .agent-panel .pb{--pb-surface:var(--ap-fill);--pb-line:transparent;border-radius:14px;box-shadow:none}
+.agent-panel .pb:focus-within{border-color:var(--ap-focus);box-shadow:none}
+.agent-panel .pb .pb-chip{border-radius:999px;padding:0 10px}
+.agent-panel .pb .pb-chip:hover,.agent-panel .pb .pb-chip[data-state=open]{background:var(--ap-fill-strong)}
+.agent-panel .pb .pb-send{width:30px;height:30px;border-radius:999px}
+.agent-panel .pb .pb-send:disabled{background:var(--ap-fill-strong)}
+
+/* Spark's parts on this surface: their hover fill, their lines at the panel's size */
+.agent-panel .yt-studio.lb-root{--st-hover:var(--ap-fill)}
+.agent-panel .yt-studio.lb-inline .lb-reason-head{font-size:13px}
+.agent-panel .yt-studio.lb-inline .lb-reason-body{font-size:12.5px}
+
+/* the Chat's markdown a size down for the narrow column, a touch softer than the user's lines; inline code reads as
+   a quiet filled chip (a name, an id) */
+.agent-panel .chat-markdown{font-size:13.5px;line-height:1.6;color:color-mix(in srgb,var(--foreground) 88%,var(--muted-foreground))}
+.agent-panel .chat-markdown :not(pre) > code{padding:1px 6px;border-radius:6px;background:var(--ap-fill-strong);font-size:.9em}

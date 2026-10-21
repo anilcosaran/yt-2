@@ -27,6 +27,9 @@ import './lab-look.css'
  *
  * `look` picks the component shapes over the same markup (`calm`, or `spark` for the lab as it was before that
  * layer). Colours are not the lab's: they follow the app's theme setting (light, dark or paper).
+ *
+ * The project's canvas is Plan › Akış (`board=flow`). `contained` fills the parent (the shell's page panel, where a
+ * project is a tab) instead of the window.
  */
 export function SparkLab({
   variant: startVariant,
@@ -41,6 +44,7 @@ export function SparkLab({
   runKey,
   onStart,
   onPhase,
+  contained = false,
 }: {
   variant: LabVariant
   board?: LabBoard
@@ -55,9 +59,18 @@ export function SparkLab({
   runKey?: string
   onStart?: (start: { prompt: string; ratio: LabRatio }) => void
   onPhase?: (phase: LabPhase) => void
+  contained?: boolean
 }) {
   // There is nothing to plan before the first request, so a link to the Plan view of an empty project opens Sohbet.
-  const [variant, setVariant] = React.useState<LabVariant>(startVariant === 'b' && (phase ?? 'empty') === 'empty' ? 'c' : startVariant)
+  const opening: LabVariant = startVariant === 'b' && (phase ?? 'empty') === 'empty' ? 'c' : startVariant
+  const [variant, setVariant] = React.useState<LabVariant>(opening)
+  // The address names the view the workspace opened on, so a tab left right away comes back to it.
+  React.useEffect(() => {
+    const url = new URL(window.location.href)
+    if ((url.searchParams.get('v') ?? 'c') === opening) return
+    url.searchParams.set('v', opening)
+    window.history.replaceState(null, '', url)
+  }, [opening])
   const [board, setBoard] = React.useState(startBoard)
   const [planSeen, setPlanSeen] = React.useState(variant === 'b')
   const [overlay, setOverlay] = React.useState<HTMLDivElement | null>(null)
@@ -124,7 +137,7 @@ export function SparkLab({
   )
 
   return (
-    <div className={`fixed inset-0 overflow-hidden${look === 'calm' ? ' lb-calm' : ''}`}>
+    <div className={`${contained ? 'absolute lb-contained' : 'fixed'} inset-0 overflow-hidden${look === 'calm' ? ' lb-calm' : ''}`}>
       <ViewSwitchContext.Provider value={views}>
         <LabOverlayContext.Provider value={overlay}>
           <div className={`yt-studio lb-root ${instrumentSans.variable}`} data-ratio={ratio.id} onScrollCapture={showScrollbar} style={{ '--lb-ar': ratio.css, '--lb-r': ratio.value } as React.CSSProperties}>

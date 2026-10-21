@@ -26,6 +26,9 @@ import { agentDriving, applyingTo, currentStep, isAdded, notesOn, pickOf, sayOf,
 // it when the clip is on the top rows), and Shift, ⌘ or Ctrl adds clips to the pick, for one note on all of them. "Düzelt" fixes the pick now; a note put on the list waits with the
 // plan's until "Hepsini düzelt" sends them to Spark together as one edit.
 //
+// Before production there are no tracks, only the transport row, and no sentence about it: the chat is the one place
+// that says how a project starts.
+//
 // State classes are prefixed (`lb-picked`, `lb-held`): bare `sel` is the stage's selection box in studio.css and hides the element.
 
 type LaneId = 'video' | 'text' | 'shape' | 'audio' | 'captions'
@@ -585,9 +588,7 @@ export function LabDock({
             </div>
           </div>
         </div>
-      ) : (
-        <p className="lb-dock-empty">Zaman çizelgesi boş. Plan onaylanınca Spark burayı sahne sahne doldurur; istediğin an devralabilirsin.</p>
-      )}
+      ) : null}
 
       {menu
         ? createPortal(

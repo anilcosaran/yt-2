@@ -14,10 +14,11 @@ import { useActiveChannel } from '@/lib/channel/active-channel'
 import {
   listSparkProjects,
   mergeSparkProjectPages,
-  sparkProjectHref,
+  newSparkProjectHref,
   type SparkAspectRatio,
   type SparkProject,
 } from '@/lib/spark/api'
+import { openWorkTab, sparkProjectWorkHref } from '@/lib/work-tabs'
 
 const PAGE_SIZE = 24
 
@@ -27,9 +28,9 @@ type ListState =
   | { status: 'ready'; projects: SparkProject[]; nextCursor: string | null; loadingMore: boolean }
 
 /**
- * Spark entry: the user's projects in the active channel. Opening one leaves the shell for the full-screen
- * workspace. "New project" opens that workspace on Sohbet without making anything: the project is created with
- * the first sentence and named from it (`SparkNewProjectPage`).
+ * Spark entry: the user's projects in the active channel. Opening one opens it straight into its work, as a tab
+ * in the top bar, on the view it was left on (`lib/work-tabs.ts`). "New project" opens the workspace on Sohbet
+ * without making anything: the project is created with the first sentence and named from it (`SparkNewProjectPage`).
  */
 export function SparkProjectsPage() {
   const t = useTranslations('Spark')
@@ -37,7 +38,7 @@ export function SparkProjectsPage() {
   const { activeChannelId, workspaceReady } = useActiveChannel()
   const [reloadKey, setReloadKey] = React.useState(0)
   const openCreate = React.useCallback(() => {
-    if (activeChannelId) router.push(`/spark/new?channel=${encodeURIComponent(activeChannelId)}`)
+    if (activeChannelId) router.push(newSparkProjectHref(activeChannelId))
   }, [activeChannelId, router])
   // Results are keyed by channel and reload so a channel switch or retry shows loading until its own response.
   const requestKey = activeChannelId ? `${activeChannelId}:${reloadKey}` : null
@@ -85,8 +86,9 @@ export function SparkProjectsPage() {
     }
   }, [activeChannelId, requestKey, state])
 
-  const openProject = React.useCallback((projectId: string) => {
-    router.push(sparkProjectHref(projectId))
+  const openProject = React.useCallback((project: SparkProject) => {
+    openWorkTab({ kind: 'spark', id: project.id, title: project.title })
+    router.push(sparkProjectWorkHref(project.id))
   }, [router])
 
   if (!workspaceReady) return <WorkspaceRouteLoading />
@@ -169,13 +171,13 @@ export function SparkProjectsPage() {
   )
 }
 
-function ProjectCard({ project, onOpen }: { project: SparkProject; onOpen: (projectId: string) => void }) {
+function ProjectCard({ project, onOpen }: { project: SparkProject; onOpen: (project: SparkProject) => void }) {
   const t = useTranslations('Spark')
   const format = useFormatter()
   return (
     <button
       type="button"
-      onClick={() => onOpen(project.id)}
+      onClick={() => onOpen(project)}
       className="group flex w-full flex-col overflow-hidden rounded-xl border border-border bg-panel text-left transition-colors hover:border-foreground/30 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
     >
       <div className="flex h-32 items-center justify-center bg-muted/40">

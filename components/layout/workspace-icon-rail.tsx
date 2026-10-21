@@ -51,14 +51,14 @@ export function WorkspaceIconRail({
     <aside
       aria-label={tAuto('workspace_modules_f087f2d9')}
       className={cn(
-        'workspace-icon-rail flex h-full w-[76px] shrink-0 flex-col items-center gap-1 border-r border-border bg-panel py-3 text-foreground',
+        'workspace-icon-rail flex h-full w-[76px] shrink-0 flex-col items-center gap-1 bg-sidebar py-3 text-foreground',
         className,
       )}
     >
       <Link
         href="/dashboard"
         aria-label={tAuto('youtorch_overview_4e02ae39')}
-      className="mb-2 flex size-11 items-center justify-center rounded-2xl bg-gradient-to-br from-orange-500 to-rose-500 text-white shadow-lg shadow-orange-500/20 transition-transform hover:scale-105"
+        className="mb-2 flex size-11 items-center justify-center rounded-xl bg-gradient-to-br from-orange-500 to-rose-500 text-white transition-transform hover:scale-105"
       >
         <Flame className="size-5" strokeWidth={2.2} />
       </Link>
@@ -84,21 +84,21 @@ export function WorkspaceIconRail({
               onFocus={() => onModulePreview?.(item.module)}
               onClick={() => onModuleActivate?.(item.module)}
               className={cn(
-                'group flex w-16 flex-col items-center gap-1 rounded-xl px-1 py-2 text-[10px] font-medium leading-3 transition-colors',
+                'group flex w-16 flex-col items-center gap-1 rounded-lg px-1 py-2 text-[10.5px] leading-[13px] transition-colors',
                 active
-                  ? 'text-foreground'
-                  : 'text-muted-foreground hover:text-foreground',
+                  ? 'font-semibold text-foreground'
+                  : 'font-medium text-foreground/80 hover:text-foreground',
               )}
             >
               <span
                 className={cn(
-                  'flex size-9 items-center justify-center rounded-xl border transition-colors',
+                  'flex size-9 items-center justify-center rounded-lg border transition-colors',
                   active
-                    ? 'border-primary/40 bg-primary/15 text-primary'
-                    : 'border-transparent group-hover:border-border group-hover:bg-accent',
+                    ? 'border-border bg-sidebar-accent text-foreground'
+                    : 'border-transparent text-foreground/90 group-hover:bg-sidebar-accent group-hover:text-foreground',
                 )}
               >
-                <item.icon className="size-[18px]" strokeWidth={2} />
+                <item.icon className="size-[18px]" strokeWidth={active ? 2 : 1.8} />
               </span>
               <span className="max-w-full truncate whitespace-nowrap text-center">
                 {tNav(item.labelKey)}

@@ -181,7 +181,7 @@ export function ChatSidebar({ collapsed = false, onCollapsedChange }: ChatSideba
 
   if (collapsed) {
     return (
-      <aside className="flex h-full w-full flex-col items-center border-r border-border bg-panel py-3 text-foreground">
+      <aside className="flex h-full w-full flex-col items-center bg-sidebar py-3 text-foreground">
         <div className="flex w-full flex-col items-center gap-2 px-1">
           <CompactSidebarLink label={tAuto('back_to_dashboard_b3963db5')} href="/dashboard">
             <ArrowLeft className="size-4" />
@@ -224,7 +224,7 @@ export function ChatSidebar({ collapsed = false, onCollapsedChange }: ChatSideba
   }
 
   return (
-    <aside className="flex h-full w-full flex-col border-r border-border bg-panel text-foreground">
+    <aside className="flex h-full w-full flex-col bg-sidebar text-foreground">
       <div className="shrink-0 px-3 pt-3">
         <div className="flex items-center justify-between gap-2">
           <CompactSidebarLink label={tAuto('back_to_dashboard_b3963db5')} href="/dashboard">
@@ -355,7 +355,7 @@ function ConversationLink({
         'group relative flex min-h-9 animate-in items-center rounded-xl text-sm transition-colors fade-in slide-in-from-left-1 duration-150',
         active
           ? 'bg-accent text-foreground'
-          : 'text-foreground/80 hover:bg-accent/60 hover:text-foreground',
+          : 'text-sidebar-foreground hover:bg-sidebar-accent/60 hover:text-foreground',
         )}
       >
       <Link
@@ -366,7 +366,7 @@ function ConversationLink({
       </Link>
       <span
         className={cn(
-          'absolute right-2 top-1/2 flex h-7 min-w-8 -translate-y-1/2 items-center justify-end text-[11px] leading-none text-muted-foreground/75 transition-opacity',
+          'absolute right-2 top-1/2 flex h-7 min-w-8 -translate-y-1/2 items-center justify-end text-[11px] leading-none text-muted-foreground transition-opacity',
           showActions ? 'opacity-0' : 'group-hover:opacity-0',
         )}
       >
@@ -461,7 +461,7 @@ function SidebarTopLink({
         'flex items-center gap-3 rounded-xl px-3 py-2 text-sm font-medium outline-none transition-colors focus-visible:ring-2 focus-visible:ring-ring',
         primary
           ? 'mb-1.5 border border-border bg-background/40 text-foreground shadow-xs hover:bg-accent'
-          : 'text-foreground/80 hover:bg-accent/60 hover:text-foreground',
+          : 'text-sidebar-foreground hover:bg-sidebar-accent/60 hover:text-foreground',
         disabled && 'pointer-events-none opacity-50',
       )}
     >

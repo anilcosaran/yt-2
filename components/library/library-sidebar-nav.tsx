@@ -33,15 +33,15 @@ export function LibrarySidebarNav({ channelName, onCollapse }: { channelName: st
   const archived = collections.filter((collection) => collection.status === 'archived')
 
   return (
-    <div className="flex min-h-0 flex-1 flex-col bg-panel">
+    <div className="flex min-h-0 flex-1 flex-col">
       <div className="flex items-center justify-between px-4 pb-2 pt-4">
         <div className="flex items-center gap-2.5">
-          <span className="flex size-8 items-center justify-center rounded-xl bg-gradient-to-br from-primary/80 to-primary text-primary-foreground">
+          <span className="flex size-8 items-center justify-center rounded-lg border border-border bg-sidebar-accent text-foreground">
             <LibraryBig className="size-[18px]" />
           </span>
           <div>
             <p className="text-sm font-semibold text-foreground">{t('title')}</p>
-            <p className="text-[11px] text-muted-foreground">{channelName}</p>
+            <p className="text-xs text-muted-foreground">{channelName}</p>
           </div>
         </div>
         {onCollapse && (
@@ -78,7 +78,7 @@ export function LibrarySidebarNav({ channelName, onCollapse }: { channelName: st
               count={assets.filter((asset) => asset.collectionIds.includes(collection.id)).length}
             />
           ))}
-          <Link href="/library?new=1" className="flex items-center gap-2.5 rounded-lg px-2 py-1.5 text-sm text-muted-foreground transition-colors hover:bg-accent/60 hover:text-foreground">
+          <Link href="/library?new=1" className="flex items-center gap-2.5 rounded-lg px-2 py-1.5 text-sm text-muted-foreground transition-colors hover:bg-sidebar-accent/60 hover:text-foreground">
             <span className="flex size-6 items-center justify-center rounded-md border border-dashed border-border"><Plus className="size-3.5" /></span>
             {t('nav.addCollection')}
           </Link>
@@ -110,7 +110,7 @@ function NavGroup({ title, addHref, addLabel, children }: { title: string; addHr
   return (
     <div>
       <div className="flex items-center justify-between px-2 pb-1">
-        <p className="text-[11px] font-semibold uppercase tracking-wide text-muted-foreground">{title}</p>
+        <p className="text-[13px] font-medium text-muted-foreground">{title}</p>
         {addHref && (
           <Link href={addHref} aria-label={addLabel} className="flex size-6 items-center justify-center rounded-md text-muted-foreground hover:bg-accent hover:text-foreground">
             <Plus className="size-3.5" />
@@ -143,7 +143,7 @@ function NavLink({
       aria-current={active ? 'page' : undefined}
       className={cn(
         'flex items-center gap-2.5 rounded-lg px-2.5 py-1.5 text-sm transition-colors',
-        active ? 'bg-accent font-medium text-foreground' : 'text-foreground/85 hover:bg-accent/60',
+        active ? 'bg-sidebar-accent font-medium text-foreground' : 'text-sidebar-foreground hover:bg-sidebar-accent/60 hover:text-foreground',
       )}
     >
       <Icon className={cn('size-4 shrink-0', active ? 'text-foreground' : 'text-muted-foreground', iconClassName)} />
@@ -170,7 +170,7 @@ function CollectionLink({
       aria-current={active ? 'page' : undefined}
       className={cn(
         'flex items-center gap-2.5 rounded-lg px-2 py-1.5 text-sm transition-colors',
-        active ? 'bg-accent font-medium text-foreground' : 'text-foreground/85 hover:bg-accent/60',
+        active ? 'bg-sidebar-accent font-medium text-foreground' : 'text-sidebar-foreground hover:bg-sidebar-accent/60 hover:text-foreground',
         muted && 'opacity-60',
       )}
     >

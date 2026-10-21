@@ -138,6 +138,10 @@ export function AssetCoverView({
   )
 }
 
+/**
+ * A collection's mark: its icon in white on a flat, solid tile of the collection's colour (no gradient, no glow) with
+ * a hairline inner highlight — crisp at every size, and the colours stay apart in a list.
+ */
 export function CollectionGlyph({
   collection,
   size = 'md',
@@ -151,13 +155,13 @@ export function CollectionGlyph({
   return (
     <span
       className={cn(
-        'relative flex shrink-0 items-center justify-center text-white shadow-sm',
+        'relative flex shrink-0 items-center justify-center text-white ring-1 ring-inset ring-white/15 shadow-[inset_0_1px_0_rgba(255,255,255,0.18)]',
         size === 'sm' && 'size-6 rounded-md',
-        size === 'md' && 'size-9 rounded-xl',
-        size === 'lg' && 'size-14 rounded-2xl',
+        size === 'md' && 'size-9 rounded-lg',
+        size === 'lg' && 'size-14 rounded-xl',
         className,
       )}
-      style={{ background: hueGradient(collection.hue) }}
+      style={{ background: `hsl(${collection.hue} 66% 46%)` }}
     >
       <Icon className={cn(size === 'sm' ? 'size-3.5' : size === 'md' ? 'size-[18px]' : 'size-7')} strokeWidth={2} />
       {collection.smart && size !== 'sm' && (
@@ -173,7 +177,7 @@ export function KindChip({ kind, duration, className }: { kind: AssetKind; durat
   const Icon = KIND_ICONS[kind]
   const label = formatDuration(duration)
   return (
-    <span className={cn('inline-flex items-center gap-1 rounded-md bg-black/55 px-1.5 py-0.5 text-[10px] font-medium text-white backdrop-blur-sm', className)}>
+    <span className={cn('inline-flex items-center gap-1 rounded-md bg-black/55 px-1.5 py-0.5 text-[11px] font-medium text-white backdrop-blur-sm', className)}>
       <Icon className="size-3" />
       {label}
     </span>
@@ -196,7 +200,7 @@ export function AnalysisBadge({ state, compact = false }: { state: AnalysisState
       : 'bg-sky-500/90 text-white'
   const Icon = state === 'failed' ? CircleAlert : state === 'skipped' ? EyeOff : state === 'queued' ? Hourglass : Loader2
   return (
-    <span className={cn('inline-flex items-center gap-1 rounded-md px-1.5 py-0.5 text-[10px] font-medium backdrop-blur-sm', tone)}>
+    <span className={cn('inline-flex items-center gap-1 rounded-md px-1.5 py-0.5 text-[11px] font-medium backdrop-blur-sm', tone)}>
       <Icon className={cn('size-3', state === 'analyzing' && 'animate-spin')} />
       {t(state)}
     </span>
@@ -224,7 +228,7 @@ export function AvailabilityBadge({ availability, className }: { availability: A
       ? t('exhaustedCount', { used: availability.used, limit: availability.limit })
       : t(availability.state)
   return (
-    <span className={cn('inline-flex items-center gap-1 rounded-md px-1.5 py-0.5 text-[10px] font-semibold backdrop-blur-sm', tone, className)}>
+    <span className={cn('inline-flex items-center gap-1 rounded-md px-1.5 py-0.5 text-[11px] font-semibold backdrop-blur-sm', tone, className)}>
       <Icon className="size-3" />
       {label}
     </span>
@@ -250,9 +254,9 @@ export function TagList({ tags, max = 3, className }: { tags: string[]; max?: nu
   return (
     <div className={cn('flex flex-wrap gap-1', className)}>
       {tags.slice(0, max).map((tag) => (
-        <span key={tag} className="rounded-md border border-border bg-muted/50 px-1.5 py-0.5 text-[11px] text-muted-foreground">{tag}</span>
+        <span key={tag} className="rounded-md bg-foreground/[0.06] px-1.5 py-0.5 text-xs text-muted-foreground">{tag}</span>
       ))}
-      {rest > 0 && <span className="px-1 py-0.5 text-[11px] text-muted-foreground">+{rest}</span>}
+      {rest > 0 && <span className="px-1 py-0.5 text-xs text-muted-foreground">+{rest}</span>}
     </div>
   )
 }

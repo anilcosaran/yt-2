@@ -34,7 +34,8 @@ export const WORK_TABS_STORAGE_KEY = 'youtorch:work-tabs:v1'
 /** There is one new tab at most, so it has one id. */
 export const NEW_TAB_ID = 'new'
 export const NEW_TAB_PATH = '/new'
-const MAX_TABS = 8
+// The strip scrolls once it is full (`WorkTabStrip`), so the limit is only there to keep it from growing for ever.
+const MAX_TABS = 12
 /** An unsaved Flow's id (`createDraftWorkflowId` in the Flow page); saving gives it a real one. */
 const FLOW_DRAFT_PREFIX = 'wf-draft-'
 const EMPTY: WorkTabsState = { tabs: [], lastPage: null }

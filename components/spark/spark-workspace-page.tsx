@@ -2,7 +2,7 @@
 
 import * as React from 'react'
 import { useQuery } from '@tanstack/react-query'
-import { useRouter, useSearchParams } from 'next/navigation'
+import { usePathname, useRouter, useSearchParams } from 'next/navigation'
 import { useTranslations } from 'next-intl'
 import { ArrowLeft, Loader2 } from 'lucide-react'
 import { toast } from 'sonner'
@@ -131,14 +131,31 @@ export function SparkWorkspacePage({ projectId, view: linkedView }: { projectId:
   )
 }
 
+const NEW_PROJECT_PATH = '/spark/new'
+
 /**
- * "Yeni proje": the workspace on Sohbet before a project exists. Nothing is made until the first sentence. With
- * it the project is created in `channelId`, named from the sentence and in the format chosen in the composer;
- * the address then becomes the project's own without leaving the page, so the run goes on, and the project
- * opens as a tab, in the new tab's place when it was started from there. Leaving before the first sentence leaves
- * no project behind.
+ * "Yeni proje" at `/spark/new`. The page stays mounted once its project is made (only the address changes, see
+ * `NewProject`), so "+" coming back to `/spark/new` from there would find the same page with that project's run in
+ * it: each return starts the next project afresh.
  */
 export function SparkNewProjectPage({ channelId, view }: { channelId: string | null; view: LabView }) {
+  const pathname = usePathname()
+  const [round, setRound] = React.useState(0)
+  const [lastPath, setLastPath] = React.useState(pathname)
+  if (pathname !== lastPath) {
+    setLastPath(pathname)
+    if (pathname === NEW_PROJECT_PATH) setRound((count) => count + 1)
+  }
+  return <NewProject key={round} channelId={channelId} view={view} />
+}
+
+/**
+ * The workspace on Sohbet before a project exists. Nothing is made until the first sentence. With it the project
+ * is created in `channelId`, named from the sentence and in the format chosen in the composer; the address then
+ * becomes the project's own without leaving the page, so the run goes on, and the project opens as a tab, in the
+ * new tab's place when it was started from there. Leaving before the first sentence leaves no project behind.
+ */
+function NewProject({ channelId, view }: { channelId: string | null; view: LabView }) {
   const t = useTranslations('Spark')
   const router = useRouter()
   const requested = React.useRef(false)

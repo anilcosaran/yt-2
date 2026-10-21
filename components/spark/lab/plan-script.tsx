@@ -16,7 +16,7 @@ import {
   type LookOption,
 } from './lab-model'
 import { EditableText } from './lab-edit'
-import { NoteToolbar, NotesBar } from './lab-notes'
+import { NotesBar } from './lab-notes'
 import { FrameSlot, SourcePicker } from './lab-source'
 import { FormatPicker, Icon, LockButton, SceneDot, SceneThumb, presenceOf } from './lab-parts'
 import { applyingTo, assumptionsOf, notesOn, pickOf, revealed, sayOf, type AddedScene, type LabRun } from './use-lab-run'
@@ -56,43 +56,40 @@ const MENU: { group: string; items: { id: SectionId; label: string }[] }[] = [
   { group: 'Kararlar', items: [{ id: 'assumptions', label: 'Varsayımlar' }] },
 ]
 
-export function PlanScript({ run, scenes }: { run: LabRun; scenes: LabScene[] }) {
+export function PlanScript({ run, scenes, onAsk }: {
+  run: LabRun
+  scenes: LabScene[]
+  /** Opens Spark's panel: a row's ✦ hands the picked scenes to its chat. */
+  onAsk?: () => void
+}) {
   const { state } = run
   const doc = React.useRef<HTMLDivElement>(null)
   const [active, setActive] = React.useState<SectionId>('brief')
   // One choice is open at a time.
   const [choosing, setChoosing] = React.useState<string | null>(null)
-  // Scenes picked for a note; the toolbar opens under the one picked last.
-  const [picked, setPicked] = React.useState<string[]>([])
-  const [anchor, setAnchor] = React.useState<string | null>(null)
-  const [focusSignal, setFocusSignal] = React.useState(0)
-  const pickScene = (id: string, add: boolean, focus: boolean) => {
-    const next = add ? (picked.includes(id) ? picked.filter((entry) => entry !== id) : [...picked, id]) : [id]
-    setPicked(next)
-    setAnchor(next.includes(id) ? id : (next[next.length - 1] ?? null))
-    if (focus) setFocusSignal((count) => count + 1)
-  }
-  const closePick = React.useCallback(() => {
-    setPicked([])
-    setAnchor(null)
-  }, [])
   // Every row that can be picked, in order, by the name the user sees.
   const pickable = [
     ...scenes.map((scene) => ({ id: scene.id, role: scene.role })),
     ...state.added.scenes.map((scene) => ({ id: scene.id, role: addedRole(state, scene) || 'Yeni sahne' })),
   ]
-  const pickedRows = pickable.filter((row) => picked.includes(row.id))
-  const toolbarOn = (id: string) =>
-    anchor === id && pickedRows.length ? (
-      <NoteToolbar
-        run={run}
-        selection={{ targets: pickedRows.map((row) => row.id), labels: pickedRows.map((row) => row.role), noun: 'sahne' }}
-        onClose={closePick}
-        focusSignal={focusSignal}
-        keep=".lb-sel, .lb-fix, .lb-note-chip"
-        className="inline"
-      />
-    ) : null
+  // Scenes picked for Spark: the run's pick when it was made here, so the chat's composer carries it.
+  const picked = state.selection?.from === 'plan' ? state.selection.targets : []
+  /**
+   * The box on a row's number adds it to the pick or takes it out; its ✦ (`ask`) hands the pick to Spark's chat:
+   * the rows already picked with it, else this row alone (Shift, ⌘ or Ctrl adds it to them).
+   */
+  const pickScene = (id: string, add: boolean, ask: boolean) => {
+    const next = add ? (picked.includes(id) ? picked.filter((entry) => entry !== id) : [...picked, id]) : ask && picked.includes(id) ? picked : [id]
+    const rows = pickable.filter((row) => next.includes(row.id))
+    run.select(rows.length ? { targets: rows.map((row) => row.id), labels: rows.map((row) => row.role), noun: 'sahne', from: 'plan' } : null)
+    if (ask && rows.length) {
+      run.ask()
+      onAsk?.()
+    }
+  }
+  const closePick = () => {
+    if (picked.length) run.select(null)
+  }
 
   const written = <T extends { at: number }>(items: T[]) => items.filter((item) => revealed(state, item.at))
   const rows = (group: ContextGroup) => written(CONTEXT.filter((row) => row.group === group))
@@ -181,7 +178,6 @@ export function PlanScript({ run, scenes }: { run: LabRun; scenes: LabScene[] })
                   run={run}
                   picked={picked.includes(scene.id)}
                   onPick={pickScene}
-                  toolbar={toolbarOn(scene.id)}
                 />
               ))}
               {added.scenes.map((scene, index) => (
@@ -193,7 +189,6 @@ export function PlanScript({ run, scenes }: { run: LabRun; scenes: LabScene[] })
                   start={TOTAL_SECONDS + added.scenes.slice(0, index).reduce((sum, entry) => sum + entry.seconds, 0)}
                   picked={picked.includes(scene.id)}
                   onPick={pickScene}
-                  toolbar={toolbarOn(scene.id)}
                   onRemove={() => {
                     if (picked.includes(scene.id)) closePick()
                     run.removeAdded('scenes', index)
@@ -365,7 +360,6 @@ function AddedSceneRow({
   start,
   picked,
   onPick,
-  toolbar,
   onRemove,
 }: {
   scene: AddedScene
@@ -374,7 +368,6 @@ function AddedSceneRow({
   start: number
   picked: boolean
   onPick: (id: string, add: boolean, focus: boolean) => void
-  toolbar: React.ReactNode
   onRemove: () => void
 }) {
   const role = addedRole(run.state, scene)
@@ -385,7 +378,7 @@ function AddedSceneRow({
   const several = (event: React.MouseEvent) => event.shiftKey || event.metaKey || event.ctrlKey
   return (
     <div className={`lb-tr scene lb-in${note ? ' lb-noted' : ''}${picked ? ' lb-selected' : ''}`}>
-      <button type="button" role="checkbox" aria-checked={picked} className="lb-sel" onClick={() => onPick(scene.id, true, false)} aria-label={`${role || 'Yeni sahne'}: seç`} title="Seç (birden çok sahneye tek not)">
+      <button type="button" role="checkbox" aria-checked={picked} className="lb-sel" onClick={() => onPick(scene.id, true, false)} aria-label={`${role || 'Yeni sahne'}: seç`} title="Seç (birden çok sahneye tek istek)">
         <span className="n">{n}</span>
         <span className="box">{picked ? <Icon name="check" size="sm" /> : null}</span>
       </button>
@@ -426,7 +419,7 @@ function AddedSceneRow({
         {remaking ? <div className="lb-tr-screen">Spark bu sahneyi planlıyor…</div> : null}
         {note ? (
           <span className="lb-note-chip">
-            <button type="button" onClick={() => onPick(scene.id, false, true)} title="Listede · notu düzenle">
+            <button type="button" onClick={() => onPick(scene.id, false, true)} title="Listede bekliyor · Spark’a sor">
               <Icon name="note" size="sm" />
               <span>{note.text}</span>
             </button>
@@ -441,14 +434,13 @@ function AddedSceneRow({
           className={`lb-fix${picked ? ' on' : ''}`}
           onClick={(event) => onPick(scene.id, several(event), true)}
           disabled={remaking}
-          title="Düzelt: Spark’a ne değişeceğini yaz"
-          aria-label={`${role}: düzelt`}
+          title="Spark’a sor: ne değişeceğini sohbete yaz"
+          aria-label={`${role}: Spark’a sor`}
         >
-          <Icon name="wand" size="sm" />
+          <Icon name="sparkles" size="sm" />
         </button>
         <button type="button" className="ib xs" onClick={onRemove} title="Sahneyi kaldır" aria-label={`${role}: kaldır`}><Icon name="trash" size="sm" /></button>
       </div>
-      {toolbar}
     </div>
   )
 }
@@ -602,9 +594,9 @@ function Keep({ row, run }: { row: ContextRow; run: LabRun }) {
 // ---- the script ------------------------------------------------------------------------------------------------
 
 // A scene's row. Its line is rewritten in place (the pencil, or a click on it). Anything else about it — the picture,
-// the source, the pace — is told to Spark: "Düzelt" (or the box on its number, to pick several) opens the toolbar
-// under the row, where a note is kept for later or everything is made again at once. A kept note waits on the row;
-// what a remake changed stays there and can be taken back. The source and model of the scene's picture open from its
+// the source, the pace — is told to Spark in the chat: the row's ✦ (or the box on its number, to pick several) puts
+// the pick on the chat's composer and opens Spark's panel. A kept note waits on the row; what a remake changed stays
+// there and can be taken back. The source and model of the scene's picture open from its
 // tag. The frame is a low-resolution draft made with the model and source the final will use, so what is approved
 // here is what gets produced in full quality.
 function SceneRow({
@@ -612,13 +604,11 @@ function SceneRow({
   run,
   picked,
   onPick,
-  toolbar,
 }: {
   scene: LabScene
   run: LabRun
   picked: boolean
   onPick: (id: string, add: boolean, focus: boolean) => void
-  toolbar: React.ReactNode
 }) {
   const { here, doing, status } = presenceOf(run, scene)
   const uses = CONTEXT.filter((row) => scene.uses.includes(row.id))
@@ -632,7 +622,7 @@ function SceneRow({
   const several = (event: React.MouseEvent) => event.shiftKey || event.metaKey || event.ctrlKey
   return (
     <div className={`lb-tr scene lb-in ${status}${here ? ' lb-agent-on' : ''}${pending.length ? ' lb-noted' : ''}${picked ? ' lb-selected' : ''}`} data-agent-target={`card-${scene.id}`}>
-      <button type="button" role="checkbox" aria-checked={picked} className="lb-sel" onClick={() => onPick(scene.id, true, false)} aria-label={`${scene.role}: seç`} title="Seç (birden çok sahneye tek not)">
+      <button type="button" role="checkbox" aria-checked={picked} className="lb-sel" onClick={() => onPick(scene.id, true, false)} aria-label={`${scene.role}: seç`} title="Seç (birden çok sahneye tek istek)">
         <span className="n">{scene.n}</span>
         <span className="box">{picked ? <Icon name="check" size="sm" /> : null}</span>
       </button>
@@ -674,7 +664,7 @@ function SceneRow({
         ) : null}
         {note ? (
           <span className="lb-note-chip">
-            <button type="button" onClick={() => onPick(scene.id, false, true)} title="Listede · notu düzenle">
+            <button type="button" onClick={() => onPick(scene.id, false, true)} title="Listede bekliyor · Spark’a sor">
               <Icon name="note" size="sm" />
               <span>{note.text}</span>
             </button>
@@ -693,14 +683,13 @@ function SceneRow({
           className={`lb-fix${picked ? ' on' : ''}`}
           onClick={(event) => onPick(scene.id, several(event), true)}
           disabled={remaking}
-          title="Düzelt: Spark’a ne değişeceğini yaz"
-          aria-label={`${scene.role}: düzelt`}
+          title="Spark’a sor: ne değişeceğini sohbete yaz"
+          aria-label={`${scene.role}: Spark’a sor`}
         >
-          <Icon name="wand" size="sm" />
+          <Icon name="sparkles" size="sm" />
         </button>
         <LockButton run={run} scene={scene} />
       </div>
-      {toolbar}
     </div>
   )
 }

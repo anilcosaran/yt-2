@@ -63,7 +63,14 @@ export function VariantStoryboard({
     <div className={`app lb-b${spark.open ? ' chat-open' : ''}`} ref={scope}>
       <TopBar run={run} panel={<SparkPanelToggle panel={spark} />} />
       <div className="lb-b-main" style={right ? ({ '--lb-b-right': `${right}px` } as React.CSSProperties) : undefined}>
-        <PlanWork run={run} open={open} board={board} onBoard={onBoard} onPointerDown={covers ? () => spark.setOpen(false) : undefined} />
+        <PlanWork
+          run={run}
+          open={open}
+          board={board}
+          onBoard={onBoard}
+          onPointerDown={covers ? () => spark.setOpen(false) : undefined}
+          onAsk={() => spark.setOpen(true)}
+        />
 
         {/* Mounted only while open: a hidden question must not take the number keys that answer it. */}
         {spark.open ? (
@@ -88,6 +95,7 @@ function PlanWork({
   board = 'script',
   onBoard,
   onPointerDown,
+  onAsk,
 }: {
   run: LabRun
   open?: boolean
@@ -95,6 +103,8 @@ function PlanWork({
   onBoard: (board: LabBoard) => void
   /** A press on the plan while Spark's panel covers it closes the panel. */
   onPointerDown?: () => void
+  /** Opens Spark's panel for a pick handed to it (a ✦ on a picked scene or clip). */
+  onAsk?: () => void
 }) {
   const { state } = run
   const work = React.useRef<HTMLElement>(null)
@@ -130,12 +140,12 @@ function PlanWork({
       ) : board === 'strip' ? (
         <StripBoard run={run} scenes={scenes} />
       ) : (
-        <PlanScript run={run} scenes={scenes} />
+        <PlanScript run={run} scenes={scenes} onAsk={onAsk} />
       )}
 
       {state.phase === 'plan' ? <PlanApproveBar run={run} onApprove={run.approve} /> : null}
 
-      <PlanTimeline run={run} open={open} />
+      <PlanTimeline run={run} open={open} onAsk={onAsk} />
     </section>
   )
 }
@@ -144,11 +154,17 @@ function PlanWork({
  * The timeline under a plan: closed, a strip with the play head and the pace of the scenes; opened, the full timeline.
  * The Plan view and the main Chat's canvas show it under the plan (closed until the user opens it).
  */
-export function PlanTimeline({ run, open = false, sizeKey = 'plan-dock' }: { run: LabRun; open?: boolean; sizeKey?: string }) {
+export function PlanTimeline({ run, open = false, sizeKey = 'plan-dock', onAsk }: {
+  run: LabRun
+  open?: boolean
+  sizeKey?: string
+  /** Where Spark's panel is shut by default: a ✦ on the picked clip opens it with the pick. */
+  onAsk?: () => void
+}) {
   const [timelineOpen, setTimelineOpen] = React.useState(open)
   return (
     <footer className={`lb-b-foot${timelineOpen ? ' open' : ''}`} data-agent-target="board-foot">
-      {timelineOpen ? <LabDock run={run} compact sizeKey={sizeKey} notes={false} /> : (
+      {timelineOpen ? <LabDock run={run} compact sizeKey={sizeKey} notes={false} onAsk={onAsk} /> : (
         <div className="lb-b-strip">
           <button type="button" className="play" aria-label="Oynat"><Icon name="play" /></button>
           <span className="time">0:00<span className="tt"> / {formatClock(TOTAL_SECONDS)}</span></span>

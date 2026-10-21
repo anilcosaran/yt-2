@@ -607,6 +607,10 @@
 .yt-studio .lb-tl-fx .i{width:10px;height:10px}
 .yt-studio .lb-tl-fx:hover{background:rgba(0,0,0,.6)}
 .yt-studio .lb-tl-fx.set{background:#fff;color:#111}
+/* where Spark's panel is a click away, its ✦ beside it hands the pick to Spark */
+.yt-studio .lb-tl-ask{position:absolute;right:31px;top:50%;z-index:1;width:16px;height:16px;margin-top:-8px;display:grid;place-items:center;border-radius:4px;background:var(--lb-agent);color:#fff;cursor:pointer;transition:filter .12s}
+.yt-studio .lb-tl-ask .i{width:10px;height:10px}
+.yt-studio .lb-tl-ask:hover{filter:brightness(1.15)}
 /* the small menu of a cut or a clip, above what was clicked */
 .yt-studio .lb-menu-veil{position:fixed;inset:0;z-index:79}
 .yt-studio .lb-menu{position:fixed;z-index:80;transform:translate(-50%,-100%);min-width:176px;display:grid;gap:1px;padding:5px;border:1px solid var(--st-border-strong);border-radius:10px;background:var(--st-surface);box-shadow:var(--st-shadow-lg);animation:lb-fade .12s ease-out}
@@ -726,6 +730,15 @@
 .yt-studio .lb-queue-state > .i{color:var(--st-text-3)}
 /* A request in the thread: its bubble, "Öncesine dön" under it on hover, and the line where the project went back. */
 .yt-studio .lb-turn-note{display:block}
+.yt-studio .lb-turn-pick{display:flex;align-items:center;gap:5px;margin-bottom:3px;font-size:12px;font-weight:500;color:var(--st-text-2)}
+.yt-studio .lb-turn-pick .i{width:12px;height:12px;color:var(--lb-agent)}
+/* the pick riding on the composer: what the next request is about, and its ✕ */
+.yt-studio .lb-pick-chip{display:inline-flex;align-items:center;gap:6px;max-width:100%;height:26px;padding:0 3px 0 9px;border-radius:8px;background:var(--lb-agent-soft);font-size:12.5px;font-weight:500;color:var(--st-text);animation:lb-in .16s ease-out}
+.yt-studio .lb-pick-chip > .i{flex:none;width:13px;height:13px;color:var(--lb-agent)}
+.yt-studio .lb-pick-chip > span{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.yt-studio .lb-pick-chip button{flex:none;display:grid;place-items:center;width:20px;height:20px;border-radius:6px;color:var(--st-text-3)}
+.yt-studio .lb-pick-chip button .i{width:11px;height:11px}
+.yt-studio .lb-pick-chip button:hover{background:var(--st-hover);color:var(--st-text)}
 .yt-studio .lb-turn-note b{font-weight:600}
 .yt-studio .lb-turn-back{display:inline-flex;align-items:center;gap:5px;height:24px;padding:0 8px;border-radius:6px;font-size:12px;color:var(--st-text-3);opacity:0;transition:opacity .12s,color .12s,background .12s}
 .yt-studio .lb-turn-back .i{width:13px;height:13px}

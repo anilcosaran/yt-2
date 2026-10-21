@@ -326,12 +326,19 @@ export function Composer({ run, big, onEdit }: { run: LabRun; big?: boolean; onE
   const closing = closingChoices(run.state) !== null
   // Before production the estimate lives on the plan itself (job card, approval line).
   const estimated = run.state.phase === 'building' || run.state.phase === 'done'
-  // Once the video is made, what is written here is a request: one edit, one restore point in the thread. One at a
-  // time: the next waits until Spark has applied the last.
-  const requesting = run.state.phase === 'done'
+  // Once there is a plan, what is written here is a request: one edit, one restore point in the thread, sent to the
+  // pick on the chip when there is one. One at a time: the next waits until Spark has applied the last.
+  const requesting = run.state.phase === 'plan' || run.state.phase === 'done'
   const busy = run.state.applying !== null
+  const pick = run.state.selection
+  const pickName = pick ? (pick.labels.length === 1 ? pick.labels[0] : `${pick.labels.length} ${pick.noun}`) : null
   const [text, setText] = React.useState('')
   const input = React.useRef<HTMLTextAreaElement>(null)
+  // A pick handed over from its ✦ brings the focus here, ready to say what should change.
+  const { askedAt } = run.state
+  React.useEffect(() => {
+    if (askedAt && Date.now() - askedAt < 1500) input.current?.focus()
+  }, [askedAt])
   const send = () => {
     if (asking) {
       if (text.trim()) run.answer(asking.id, text.trim())
@@ -362,6 +369,13 @@ export function Composer({ run, big, onEdit }: { run: LabRun; big?: boolean; onE
       <PromptBox
         size={big ? 'big' : 'default'}
         className="lb-composer"
+        top={pick ? (
+          <span className="lb-pick-chip" title={pick.labels.join(', ')}>
+            <Icon name="sparkles" size="sm" />
+            <span>{pickName}</span>
+            <button type="button" onClick={() => run.select(null)} title="Seçimi kaldır" aria-label="Seçimi kaldır"><Icon name="x" size="sm" /></button>
+          </span>
+        ) : null}
         bar={(
           <>
             <AutonomyPicker run={run} />
@@ -376,7 +390,7 @@ export function Composer({ run, big, onEdit }: { run: LabRun; big?: boolean; onE
                 label="Gönder"
                 onClick={send}
                 disabled={asking ? !text.trim() : fresh ? false : !(requesting && text.trim() && !busy)}
-                title={asking ? 'Cevabını gönder' : fresh || (requesting && !busy) ? 'Gönder' : requesting ? 'Spark son isteğini uyguluyor' : 'Video bitince buradan istek gönderebilirsin'}
+                title={asking ? 'Cevabını gönder' : fresh || (requesting && !busy) ? 'Gönder' : requesting ? 'Spark son isteğini uyguluyor' : 'Plan hazır olunca buradan istek gönderebilirsin'}
               />
             )}
           </>
@@ -386,7 +400,7 @@ export function Composer({ run, big, onEdit }: { run: LabRun; big?: boolean; onE
           ref={input}
           rows={big ? 2 : 1}
           value={text}
-          placeholder={asking ? 'Kendi cevabını yaz…' : fresh ? 'Tek cümleyle anlat: ne yapıyoruz?' : 'Spark’a söyle: “4. sahnede fiyatı büyüt”…'}
+          placeholder={asking ? 'Kendi cevabını yaz…' : fresh ? 'Tek cümleyle anlat: ne yapıyoruz?' : pickName ? `${pickName}: ne değişsin?` : 'Spark’a söyle: “4. sahnede fiyatı büyüt”…'}
           onChange={(event) => setText(event.target.value)}
           onSend={send}
         />
@@ -833,11 +847,17 @@ function Requests({ run }: { run: LabRun }) {
         ) : null}
         <div className={`m-user lb-in${off}`}>
           <div className="bubble">
-            {turn.from === 'chat'
-              ? turn.notes[0]?.text
-              : turn.notes.map((note, at) => (
+            {turn.from === 'notes'
+              ? turn.notes.map((note, at) => (
                 <span key={at} className="lb-turn-note"><b>{note.labels.join(', ')}</b>{note.text ? `: ${note.text}` : ' · yeniden üret'}</span>
-              ))}
+              ))
+              : (
+                <>
+                  {/* A request sent to a pick says what it was about, the way its chip did. */}
+                  {turn.from === 'pick' ? <span className="lb-turn-pick"><Icon name="sparkles" size="sm" />{turn.notes[0]?.labels.join(', ')}</span> : null}
+                  {turn.notes[0]?.text}
+                </>
+              )}
           </div>
           {status === 'rewound' ? null : (
             <button type="button" className="lb-turn-back" onClick={() => run.rewind(turn.id)} title="Projeyi bu istekten önceki haline döndürür; sonra geri getirebilirsin">

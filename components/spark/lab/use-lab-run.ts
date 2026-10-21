@@ -100,16 +100,29 @@ export type LabRunState = {
    * request replaces them. `redo` is the project as it was, for "Geri getir".
    */
   rewound: { at: number; redo: LabSlice } | null
+  /**
+   * What is picked for Spark, in any view (clips on the timeline, scenes in the plan): the chat's composer carries it
+   * as a chip and sends the next request to it. One pick at a time; picking elsewhere replaces it.
+   */
+  selection: LabSelection | null
+  /** When the pick was last handed to Spark (its ✦): the composer takes the focus for it. */
+  askedAt: number
 }
+
+/** A pick: its targets (scene ids, or clips as `<lane>:<sceneId>`), named for the user, and where it was made. */
+export type LabSelection = { targets: string[]; labels: string[]; noun: string; from: 'timeline' | 'plan' }
 
 /** What a request can change, kept whole for each restore point (the reducer never mutates, so these are references). */
 export type LabSlice = Pick<LabRunState, 'undone' | 'skipped' | 'locked' | 'dropped' | 'edits' | 'picks' | 'added' | 'media' | 'refs' | 'asks'>
 
-/** One request: what was said (a note's targets and words, or the chat's own sentence), its batch and the project before it. */
+/**
+ * One request: what was said (a note's targets and words, or the chat's own sentence), its batch and the project
+ * before it. `pick` is a chat request sent to a pick (its chip), `chat` one Spark aimed itself.
+ */
 export type LabTurn = {
   id: string
   batch: number
-  from: 'notes' | 'chat'
+  from: 'notes' | 'chat' | 'pick'
   notes: { labels: string[]; text: string }[]
   before: LabSlice
 }
@@ -176,6 +189,8 @@ type Action =
   | { type: 'undoBatch'; batch: number }
   | { type: 'rewind'; id: string }
   | { type: 'restore' }
+  | { type: 'select'; selection: LabSelection | null }
+  | { type: 'ask'; at: number }
 
 const FIRST_SCENE = SCENES[0]!.id
 
@@ -213,6 +228,8 @@ function base(prompt = ''): LabRunState {
     applyingLeft: [],
     turns: [],
     rewound: null,
+    selection: null,
+    askedAt: 0,
   }
 }
 
@@ -355,14 +372,21 @@ function reducer(state: LabRunState, action: Action): LabRunState {
       return { ...state, asks, notes: waiting, batches: batch, applying: batch, applyingLeft: sent, turns, rewound: null }
     }
     case 'request': {
-      // A request typed in the chat once the video is made: Spark applies it to the scene it names ("4. sahnede"),
-      // else to the scene on screen, as one edit like a sending of notes.
-      const named = /(\d+)\.\s*sahne/i.exec(action.text)
-      const scene = (named ? SCENES.find((entry) => entry.n === Number(named[1])) : undefined) ?? sceneById(shownSceneId(state)) ?? SCENES[0]!
       const text = action.text.trim()
       if (!text) return state
-      return reducer(state, { type: 'sendNotes', with: { targets: [scene.id], labels: [`${scene.role} sahnesi`], text }, only: true, from: 'chat' })
+      // A request typed in the chat goes to what is picked (the composer's chip), else to the scene it names
+      // ("4. sahnede"), else to the scene on screen. It is one edit, like a sending of notes, and the pick goes with it.
+      const picked = state.selection
+      const named = /(\d+)\.\s*sahne/i.exec(text)
+      const scene = (named ? SCENES.find((entry) => entry.n === Number(named[1])) : undefined) ?? sceneById(shownSceneId(state)) ?? SCENES[0]!
+      const note = picked ? { targets: picked.targets, labels: picked.labels, text } : { targets: [scene.id], labels: [`${scene.role} sahnesi`], text }
+      const sent = reducer(state, { type: 'sendNotes', with: note, only: true, from: picked ? 'pick' : 'chat' })
+      return sent === state ? state : { ...sent, selection: null }
     }
+    case 'select':
+      return { ...state, selection: action.selection?.targets.length ? action.selection : null }
+    case 'ask':
+      return state.selection ? { ...state, askedAt: action.at } : state
     case 'rewind': {
       const at = state.turns.findIndex((turn) => turn.id === action.id)
       if (at === -1) return state
@@ -461,6 +485,10 @@ export type LabRun = {
   rewind: (id: string) => void
   /** Brings back what going back took back ("Geri getir"). */
   restore: () => void
+  /** Picks what the next request is about (`null` drops the pick). */
+  select: (selection: LabSelection | null) => void
+  /** Hands the pick to Spark (its ✦): the composer takes the focus for it. */
+  ask: () => void
 }
 
 // ---- the run's store ---------------------------------------------------------------------------------------
@@ -620,6 +648,8 @@ export function useLabRun(init: LabRunInit = {}, runKey?: string): LabRun {
       request: (text) => dispatch({ type: 'request', text }),
       rewind: (id) => dispatch({ type: 'rewind', id }),
       restore: () => dispatch({ type: 'restore' }),
+      select: (selection) => dispatch({ type: 'select', selection }),
+      ask: () => dispatch({ type: 'ask', at: Date.now() }),
     }),
     [state, init.title, dispatch],
   )

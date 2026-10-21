@@ -5,7 +5,7 @@ import { createPortal } from 'react-dom'
 
 import { Icon } from '../tools/studio-parts'
 import { LOOK_OPTIONS, SCENES, STEPS, TOTAL_SECONDS, assetById, formatClock, sceneById, type AssetKind, type LabScene, type SceneLayer } from './lab-model'
-import { NoteToolbar, NotesBar } from './lab-notes'
+import { NotesBar } from './lab-notes'
 import { fixedOrigin } from './lab-place'
 import { Splitter, useSplitSize } from './lab-split'
 import { agentDriving, applyingTo, currentStep, isAdded, notesOn, pickOf, sayOf, shownSceneId, type LabRun } from './use-lab-run'
@@ -23,10 +23,10 @@ import { agentDriving, applyingTo, currentStep, isAdded, notesOn, pickOf, sayOf,
 // offers its entrance animation. The playhead is dragged by its handle or along the ruler. All of this is the
 // user's own layer over the agent's work, with its own undo.
 //
-// What the user wants Spark to change is a note. A click picks a clip and nothing more; Shift, ⌘ or Ctrl adds clips to
-// the pick, for one note on all of them. "Spark’a sor" in the tool row opens the note's field in its place, on the pick
-// or, with nothing picked, on the scene on screen, and it follows the pick until it is closed. "Düzelt" fixes the pick
-// now; a note put on the list waits with the plan's until "Hepsini düzelt" sends them to Spark together as one edit.
+// What the user wants Spark to change is said in the chat. A click picks a clip and nothing more; Shift, ⌘ or Ctrl adds
+// clips to the pick, for one request on all of them. The pick is the run's (`select`), so the chat's composer carries
+// it as a chip and its next request goes to it. Where Spark's panel is a click away (Plan, Editör) a ✦ on the picked
+// clip hands the pick over and opens the panel; in Sohbet the composer is already beside the timeline.
 //
 // Before production there are no tracks, only the transport row, and no sentence about it: the chat is the one place
 // that says how a project starts.
@@ -95,8 +95,8 @@ type Hand =
   | { kind: 'music'; from: number; to: number }
 type Grab = { key: string; mode: 'move' | 'start' | 'end'; x: number; span: Span; moved: boolean }
 type Menu = { kind: 'transition' | 'animation'; id: string; left: number; top: number; shell: Element }
-/** What may be clicked while clips are picked without dropping the pick: the tracks and the tools. */
-const KEEPS_PICK = '.lb-tlw, .lb-transport, .lb-menu, .lb-menu-veil'
+/** What may be clicked while clips are picked without dropping the pick: the tracks, the tools, and the way to Spark. */
+const KEEPS_PICK = '.lb-tlw, .lb-transport, .lb-menu, .lb-menu-veil, .lb-compose, .lb-spark-toggle'
 
 const within = (value: number, low: number, high: number) => Math.min(Math.max(value, low), Math.max(low, high))
 const byStart = (a: Span, b: Span) => a.from - b.from
@@ -170,12 +170,15 @@ export function LabDock({
   compact,
   sizeKey,
   notes = true,
+  onAsk,
 }: {
   run: LabRun
   compact?: boolean
   sizeKey: string
   /** Whether the dock shows what notes wait and what Spark makes of them (the Plan view has its own bar for it). */
   notes?: boolean
+  /** Opens Spark's panel, where it is shut by default: a ✦ on the picked clip then hands the pick to it. */
+  onAsk?: () => void
 }) {
   const { state } = run
   const height = useSplitSize(sizeKey)
@@ -192,11 +195,10 @@ export function LabDock({
   const [snap, setSnap] = React.useState(true)
   const [history, setHistory] = React.useState<EditHistory>({ past: [], now: UNTOUCHED, future: [] })
   const [picked, setPicked] = React.useState<string | null>(null)
-  /** The clips picked together for a note; the picked clip is one of them. */
-  const [marked, setMarked] = React.useState<string[]>([])
-  /** Whether the note's field is open in the tool row; each pick while it is moves the focus to it. */
-  const [asking, setAsking] = React.useState(false)
-  const [askFocus, setAskFocus] = React.useState(0)
+  /** The clips picked together for Spark: the run's pick when it was made here. The picked clip is one of them. */
+  const marked = state.selection?.from === 'timeline' ? state.selection.targets : []
+  // The clip the tools work on, while it is still in the pick (the chat may have sent or dropped it).
+  const pickedKey = picked !== null && marked.includes(picked) ? picked : null
   const [hand, setHand] = React.useState<Hand | null>(null)
   const [menu, setMenu] = React.useState<Menu | null>(null)
   // The playhead sits at the start of the scene on screen until it is put somewhere by hand in that scene.
@@ -283,7 +285,7 @@ export function LabDock({
   const landing = carried ? items.find((item) => item.id === carried) : undefined
 
   // ---- the tools
-  const pickedItem = edits.items.find((item) => item.id === picked) ?? null
+  const pickedItem = edits.items.find((item) => item.id === pickedKey) ?? null
   const cutsThrough = (item: Item) => time > item.from && time < item.to
   // The cut goes through the picked clip when the playhead is on it, else through the picture under the playhead.
   const under = (pickedItem && cutsThrough(pickedItem) ? pickedItem : null) ?? settledFilm.find(cutsThrough) ?? null
@@ -293,16 +295,15 @@ export function LabDock({
     change({ ...edits, serial: edits.serial + 1, items: [...edits.items.map((item) => (item.id === under.id ? { ...item, to: time } : item)), half] })
   }
   const pickedPicture = pickedItem?.lane === 'video' ? pickedItem.id : null
-  const canRemove = picked !== null && (pickedPicture === null || settledFilm.length > 1)
+  const canRemove = pickedKey !== null && (pickedPicture === null || settledFilm.length > 1)
   const remove = () => {
-    if (!picked || !canRemove) return
+    if (!pickedKey || !canRemove) return
     // A picture leaves the main track and the ones after it close the gap; anything else just goes.
-    change(picked === MUSIC ? { ...edits, noMusic: true } : { ...edits, items: pack(edits.items.filter((item) => item.id !== picked)) })
-    setPicked(null)
-    setMarked([])
+    change(pickedKey === MUSIC ? { ...edits, noMusic: true } : { ...edits, items: pack(edits.items.filter((item) => item.id !== pickedKey)) })
+    closePick()
   }
 
-  // ---- notes on the picked clips
+  // ---- the pick, for Spark
   /** A clip as the user knows it: its scene and its track. */
   const clipName = (key: string) => {
     if (key === MUSIC) return 'Müzik'
@@ -310,36 +311,40 @@ export function LabDock({
     const lane = LANES.find((entry) => key.startsWith(`${entry.id}:`))
     return scene ? `${scene.role} · ${lane?.label ?? ''}` : (lane?.label ?? key)
   }
+  const setMarked = (next: string[]) => run.select(next.length ? { targets: next, labels: next.map(clipName), noun: 'parça', from: 'timeline' } : null)
+  const { select } = run
+  const hasPick = marked.length > 0
   const closePick = React.useCallback(() => {
     setPicked(null)
-    setMarked([])
-  }, [])
-  // A click away from the timeline and its tools drops the pick.
+    if (hasPick) select(null)
+  }, [hasPick, select])
+  // A click away from the timeline, its tools and the composer drops the pick.
   React.useEffect(() => {
-    if (!marked.length) return
+    if (!hasPick) return
     const away = (event: PointerEvent) => {
       const target = event.target as Element | null
       if (target && !target.closest(KEEPS_PICK)) closePick()
     }
     document.addEventListener('pointerdown', away)
     return () => document.removeEventListener('pointerdown', away)
-  }, [marked.length, closePick])
-  /** What the note is about: the picked clips, else the scene on screen. */
-  const asked = marked.length
-    ? { targets: marked, labels: marked.map(clipName), noun: 'parça' }
-    : { targets: [shown.id], labels: [`${shown.role} sahnesi`], noun: 'sahne' }
+  }, [hasPick, closePick])
   const pickFor = (key: string, add: boolean) => {
-    if (asking) setAskFocus((count) => count + 1)
     if (add) {
-      // Shift, ⌘ or Ctrl adds the clip to the picked ones (or takes it out of them), for one note on all of them.
+      // Shift, ⌘ or Ctrl adds the clip to the picked ones (or takes it out of them), for one request on all of them.
       const next = marked.includes(key) ? marked.filter((entry) => entry !== key) : [...marked, key]
       setMarked(next)
       setPicked(next.includes(key) ? key : (next[next.length - 1] ?? null))
       return
     }
-    const next = picked === key ? null : key
+    const next = pickedKey === key ? null : key
     setPicked(next)
     setMarked(next ? [next] : [])
+  }
+  /** Hands the pick to Spark: its panel opens with the pick on the composer. */
+  const askSpark = (event: React.SyntheticEvent) => {
+    event.stopPropagation()
+    run.ask()
+    onAsk?.()
   }
 
   // ---- a clip in the hand
@@ -465,21 +470,6 @@ export function LabDock({
             <button type="button" className="ib sm" onClick={remove} disabled={!canRemove} title="Seçili parçayı sil" aria-label="Sil"><Icon name="trash" /></button>
           </div>
         )}
-        {/* Spark is asked from the tool row: the button opens the note's field in its own place. */}
-        {live && asking ? (
-          <NoteToolbar run={run} selection={asked} onClose={() => setAsking(false)} focusSignal={askFocus} docked />
-        ) : live ? (
-          <button
-            type="button"
-            className="btn sm ghost lb-tl-spark"
-            title={marked.length ? 'Seçili parçaları Spark’a sor' : 'Ekrandaki sahneyi Spark’a sor; önce parça seçebilirsin'}
-            onClick={() => setAsking(true)}
-          >
-            <Icon name="sparkles" size="sm" />
-            Spark’a sor
-            {marked.length > 1 ? <b>{marked.length}</b> : null}
-          </button>
-        ) : null}
         <span className="grow" />
         {notes ? <NotesBar run={run} variant="inline" /> : null}
         <div className="lb-tools end">
@@ -533,7 +523,7 @@ export function LabDock({
                       if (!clip.label) {
                         return lane.id === 'video' ? <span key={clip.key} className="lb-tl lb-slot" style={place(clip)} {...(clip.target && { 'data-agent-target': clip.target })} /> : null
                       }
-                      const chosen = picked === clip.key
+                      const chosen = pickedKey === clip.key
                       const inNote = !chosen && marked.includes(clip.key)
                       const note = notesOn(state, clip.key)[0]
                       const held = clip.floating || (hand?.kind === 'music' && lane.id === 'audio')
@@ -565,6 +555,26 @@ export function LabDock({
                               onClick={open('animation', clip.key)}
                             >
                               <Icon name="animate" />
+                            </i>
+                          ) : null}
+                          {chosen && onAsk ? (
+                            // Beside the entrance animation's mark, which a picked clip always shows.
+                            <i
+                              className="lb-tl-ask"
+                              role="button"
+                              tabIndex={0}
+                              title={marked.length > 1 ? `Seçili ${marked.length} parçayı Spark’a sor` : 'Spark’a sor'}
+                              aria-label="Spark’a sor"
+                              onPointerDown={(event) => event.stopPropagation()}
+                              onPointerUp={(event) => event.stopPropagation()}
+                              onClick={askSpark}
+                              onKeyDown={(event) => {
+                                if (event.key !== 'Enter' && event.key !== ' ') return
+                                event.preventDefault()
+                                askSpark(event)
+                              }}
+                            >
+                              <Icon name="sparkles" />
                             </i>
                           ) : null}
                           <i className="lb-tl-h l" {...hold(clip, 'start')} />

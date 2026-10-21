@@ -90,7 +90,7 @@ export function VariantCopilot({ run, onOpenPlan }: { run: LabRun; onOpenPlan: (
         <section className="center" onPointerDown={drawerCovers || panelCovers ? closeCovers : undefined}>
           <div className="lb-bar-slot"><AgentBar run={run} /></div>
           <LabStage run={run} />
-          <LabDock run={run} sizeKey="editor-dock" />
+          <LabDock run={run} sizeKey="editor-dock" onAsk={() => spark.setOpen(true)} />
         </section>
 
         {/* Mounted only while open: a hidden question must not take the number keys that answer it. */}

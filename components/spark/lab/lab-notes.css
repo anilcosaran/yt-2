@@ -1,8 +1,8 @@
-/* Notes for Spark and in-place editing (lab-notes.tsx, lab-source.tsx, lab-edit.tsx): the toolbar of a pick, the pick
-   box on a scene's number, the fix button, kept notes, the source and model popup, the notes bar, notes on the timeline
-   and the text edited where it stands. Loaded by those components themselves, on top of lab.css. */
-/* Notes for Spark (lab-notes.tsx). A scene is picked by the box on its number or by "Düzelt"; the toolbar opens
-   under the row picked last. A kept note waits on its row as a chip; what a remake changed stays on the row. */
+/* Notes for Spark and in-place editing (lab-notes.tsx, lab-source.tsx, lab-edit.tsx): the pick box on a scene's number,
+   the ✦ that hands a pick to Spark, kept notes, the source and model popup, the notes bar, notes on the timeline and the
+   text edited where it stands. Loaded by those components themselves, on top of lab.css. */
+/* Picks for Spark. A scene is picked by the box on its number; its ✦ hands the pick to Spark's chat. A kept note waits
+   on its row as a chip; what a remake changed stays on the row. */
 .yt-studio.lb-root{--lb-note:var(--lb-amber);--lb-note-soft:color-mix(in srgb,var(--lb-amber) 12%,transparent);--lb-note-border:color-mix(in srgb,var(--lb-amber) 40%,transparent)}
 .yt-studio .lb-tr.scene{position:relative}
 .yt-studio .lb-tr.scene.lb-noted{box-shadow:inset 2px 0 0 var(--lb-note)}
@@ -15,7 +15,7 @@
 .yt-studio .lb-tr:hover .lb-sel .box,.yt-studio .lb-sel:focus-visible .box,.yt-studio .lb-script.picking .lb-sel .box,.yt-studio .lb-sel[aria-checked=true] .box{opacity:1}
 .yt-studio .lb-sel:hover .box{border-color:var(--st-text)}
 .yt-studio .lb-sel[aria-checked=true] .box{background:var(--st-accent);border-color:var(--st-accent);color:#fff}
-/* the row's own actions: Düzelt over the take-over lock */
+/* the row's own actions: its ✦ (lit while the row is picked) over the take-over lock */
 .yt-studio .lb-row-acts{display:flex;flex-direction:column;align-items:center;gap:4px}
 .yt-studio .lb-fix{display:grid;place-items:center;width:26px;height:26px;border-radius:8px;color:var(--st-text-3);transition:background .12s,color .12s,box-shadow .12s}
 .yt-studio .lb-fix .i{width:15px;height:15px}
@@ -32,41 +32,8 @@
 .yt-studio .lb-note-chip button:last-child .i{width:11px;height:11px;color:var(--st-text-3)}
 .yt-studio .lb-note-chip button:last-child:hover{background:var(--st-hover)}
 .yt-studio .lb-note-chip button:last-child:hover .i{color:var(--st-text)}
-/* the toolbar of a pick: a near-black pill in every theme, one colour: the AI mark, the field, Listeye ekle, Düzelt and ✕ */
-.yt-studio .lb-ntb{display:flex;align-items:center;gap:2px;height:34px;padding:0 3px 0 12px;border:1px solid rgba(255,255,255,.09);border-radius:999px;background:rgba(14,14,16,.96);box-shadow:inset 0 1px 0 rgba(255,255,255,.05),0 10px 28px rgba(0,0,0,.38);backdrop-filter:blur(10px);font-size:12.5px;color:#f4f4f5}
-/* in the plan it opens inside its row, under the text, and pushes the next row down (it covers nothing) */
-.yt-studio .lb-ntb.inline{grid-column:4/-1;justify-self:start;width:100%;max-width:480px;margin-top:-4px;animation:lb-ntb-in .16s cubic-bezier(.2,.8,.2,1)}
-/* on the timeline it opens in the tool row out of "Spark’a sor", names its pick, and covers nothing */
-.yt-studio .lb-ntb.docked{flex:0 1 520px;min-width:0;height:30px;padding-left:10px;box-shadow:inset 0 1px 0 rgba(255,255,255,.05);animation:lb-ntb-open .18s cubic-bezier(.2,.8,.2,1)}
-.yt-studio .lb-ntb.docked .lb-ntb-mark{flex:0 1 auto;min-width:0;gap:6px}
-.yt-studio .lb-ntb.docked .lb-ntb-mark .i{flex:none;color:var(--lb-agent)}
-.yt-studio .lb-ntb-name{min-width:0;max-width:170px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;padding:2px 8px;border-radius:999px;background:rgba(255,255,255,.08);font-size:11.5px;font-weight:500;color:#f4f4f5}
-.yt-studio .lb-ntb.docked .lb-ntb-list,.yt-studio .lb-ntb.docked .lb-ntb-go{height:24px}
-.yt-studio .lb-ntb.docked .lb-ntb-close{width:24px;height:24px}
+/* the source popup opens with this */
 @keyframes lb-ntb-in{from{opacity:0;transform:translateY(-4px)}}
-@keyframes lb-ntb-open{from{opacity:0;clip-path:inset(0 100% 0 0 round 999px)}}
-/* the button it opens from: Spark's mark, and how many clips are picked once there is more than one */
-.yt-studio .lb-tl-spark{flex:none;gap:6px;padding:0 9px}
-.yt-studio .lb-tl-spark .i{width:13px;height:13px;color:var(--lb-agent)}
-.yt-studio .lb-tl-spark b{min-width:16px;height:16px;padding:0 4px;border-radius:999px;background:var(--lb-agent-soft);font-size:10.5px;font-weight:600;line-height:16px;font-variant-numeric:tabular-nums;color:var(--lb-agent-text)}
-.yt-studio .lb-ntb input{flex:1;min-width:60px;height:26px;padding:0 6px;border:0;background:none;font-size:12.5px;color:#f4f4f5;outline:0}
-.yt-studio .lb-ntb input::placeholder{color:rgba(255,255,255,.38)}
-.yt-studio .lb-ntb-mark{flex:none;display:inline-flex;align-items:center;gap:4px;color:rgba(255,255,255,.5)}
-.yt-studio .lb-ntb-mark .i{width:13px;height:13px}
-.yt-studio .lb-ntb-mark b{font-size:11px;font-weight:600;font-variant-numeric:tabular-nums;color:#f4f4f5}
-/* the quiet way on: keep the note on the list for "Hepsini düzelt" */
-.yt-studio .lb-ntb-list{flex:none;display:inline-flex;align-items:center;gap:4px;height:26px;margin-right:2px;padding:0 9px 0 7px;border-radius:999px;font-size:12px;font-weight:500;color:rgba(255,255,255,.72);white-space:nowrap;animation:lb-fade .12s ease-out;transition:background .12s,color .12s}
-.yt-studio .lb-ntb-list .i{width:12px;height:12px}
-.yt-studio .lb-ntb-list:hover{background:rgba(255,255,255,.08);color:#fff}
-.yt-studio .lb-ntb-go{flex:none;display:inline-flex;align-items:center;gap:5px;height:26px;padding:0 11px 0 9px;white-space:nowrap;border-radius:999px;background:#f4f4f5;font-size:12px;font-weight:600;color:#0b0b0c;transition:background .12s,opacity .12s}
-.yt-studio .lb-ntb-go:hover:not(:disabled){background:#fff}
-.yt-studio .lb-ntb-go:disabled{opacity:.5}
-.yt-studio .lb-ntb-go .i{width:12px;height:12px}
-/* its ✕: right after Üret, behind a thin rule */
-.yt-studio .lb-ntb-close{flex:none;position:relative;display:grid;place-items:center;width:28px;height:28px;margin-left:5px;border-radius:50%;color:rgba(255,255,255,.62);transition:background .12s,color .12s}
-.yt-studio .lb-ntb-close::before{content:'';position:absolute;left:-3px;top:7px;bottom:7px;width:1px;background:rgba(255,255,255,.12)}
-.yt-studio .lb-ntb-close .i{width:13px;height:13px}
-.yt-studio .lb-ntb-close:hover{background:rgba(255,255,255,.1);color:#fff}
 /* the source of a scene's picture: its tag opens a small popup for the source and the model */
 .yt-studio .lb-src{position:relative;display:inline-flex;min-width:0}
 .yt-studio .lb-tr-title .lb-src-btn{height:22px;padding:0 8px;font-weight:500;color:var(--st-text-2)}
@@ -155,7 +122,7 @@
 .yt-studio .lb-notes-bar .btn .i{width:13px;height:13px}
 .yt-studio .lb-notes-bar.inline .btn{height:24px}
 .yt-studio .lb-notes-bar .lb-act{flex:none;height:26px}
-/* notes on the timeline: clips picked together (Shift, ⌘ or Ctrl), a note for all of them, the clips that wait on one */
+/* picks on the timeline: clips picked together (Shift, ⌘ or Ctrl) for one request, the clips that wait on a note */
 .yt-studio .lb-tl.lb-marked{box-shadow:0 0 0 2px var(--st-text);z-index:1}
 .yt-studio .lb-tl.lb-has-note{outline:1.5px solid var(--lb-note);outline-offset:-1.5px}
 .yt-studio .lb-tl-note{position:absolute;top:0;right:0;z-index:1;width:9px;height:9px;background:linear-gradient(225deg,var(--lb-note) 50%,transparent 50%);pointer-events:none}

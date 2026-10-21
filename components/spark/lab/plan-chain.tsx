@@ -23,10 +23,10 @@ import {
   type OnConnectEnd,
 } from '@xyflow/react'
 import '@xyflow/react/dist/base.css'
-import { Copy, Frame as FrameIcon, Hand, MousePointer2, Plus, SlidersHorizontal, Sparkles, StickyNote, Trash2 } from 'lucide-react'
+import { Copy, Frame as FrameIcon, Hand, History as HistoryIcon, MousePointer2, Plus, SlidersHorizontal, Sparkles, StickyNote, Trash2, Type } from 'lucide-react'
 
 import { PromptBox, PromptBoxChip, PromptBoxInput, PromptBoxNote, PromptBoxSend, PromptBoxSpacer } from '../agent/prompt-box'
-import { FRAME_HANDLE, FrameNodeView, NoteNodeView, type FrameNode, type NoteNode } from './chain-annotations'
+import { FRAME_HANDLE, FrameNodeView, LabelNodeView, NoteNodeView, type FrameColor, type FrameNode, type LabelNode, type NoteNode } from './chain-annotations'
 import { ProgressRing, QueuePill, ZoomPill, type QueueItem } from './chain-chrome'
 import { MODEL_METERS, ModelMenu, type ModelOption } from './chain-model-menu'
 import { NODE_SETTINGS, SettingsPanel, settingKey, settingOf } from './chain-settings'
@@ -41,8 +41,8 @@ import './lab-chain.css'
 // own (its picture chain, then its line and voice), and makes them when the plan is approved. The user moves anything
 // by grabbing it anywhere, links one node's output to another, adds nodes (a node's "+", the tools, a double click),
 // notes and frames, and makes any node on its own from its composer: what to do, the model and the size at hand, the
-// rest behind its settings button. A node made shows what it made in place, with its versions under it; the one picked
-// is what goes on. Making waits in the queue ("Kuyruk", top right); nothing runs everything at once here. The engine is
+// rest behind its settings button. A node made shows what it made in place; its other versions wait behind a history
+// button on it, and the one picked is what it shows and hands on (a new making shows the newest). Making waits in the queue ("Kuyruk", top right); nothing runs everything at once here. The engine is
 // React Flow; the look is the lab's own, so it never reads as Flow, the automation product.
 
 /** A node's box by kind, in canvas px. */
@@ -93,11 +93,12 @@ type StepData = {
   agent?: string
 }
 type StepNode = Node<StepData, 'step'>
-type CanvasNode = StepNode | FrameNode | NoteNode
+type CanvasNode = StepNode | FrameNode | NoteNode | LabelNode
 type ChainEdge = Edge<{ passing: boolean }, 'chain'>
 
 const sizeOf = (stage: ChainStage) => (stage.id === 'all/cut' ? SIZE.cut : SIZE[stage.kind])
-const ANNOTATIONS = new Set(['frame', 'note'])
+const ANNOTATIONS = new Set(['frame', 'note', 'label'])
+const LABEL_W = 320
 
 /** What a model makes rather than what is already there (the user's media, the Brand Kit, a clip's own voice, the plan's text). */
 function generated(stage: ChainStage) {
@@ -105,11 +106,15 @@ function generated(stage: ChainStage) {
   return !['Brand Kit', 'Klibin kendi sesi'].includes(stage.how)
 }
 
+/** The words a text node had at a version: what it started as, then what Spark wrote each time it was made (demo). */
+function textVersion(stage: ChainStage, own: boolean, index: number) {
+  if (!own && index === 0) return stage.text?.first ?? ''
+  return TEXT_SAMPLES[(index - (own ? 0 : 1)) % TEXT_SAMPLES.length]!
+}
+
 /** A node the user added, as a step of the chain. */
 function ownStage(state: LabRunState, node: CanvasOwnNode): ChainStage {
   const kind = (node.kind in STAGE_KIND ? node.kind : 'image') as StageKind
-  const made = state.canvas.made[node.id] ?? 0
-  const sample = TEXT_SAMPLES[(made - 1 + TEXT_SAMPLES.length) % TEXT_SAMPLES.length]!
   return {
     id: node.id,
     kind,
@@ -119,8 +124,8 @@ function ownStage(state: LabRunState, node: CanvasOwnNode): ChainStage {
     briefKey: `brief:${node.id}`,
     credits: kind === 'voice' ? 2 : 0,
     seconds: kind === 'video' ? 5 : undefined,
-    // A text node takes what the user types into it as it is; once made, Spark's text stands there until rewritten.
-    text: kind === 'text' ? { value: state.edits[`text:${node.id}`] ?? (made ? sample : ''), key: `text:${node.id}` } : undefined,
+    // A text node takes what the user types into it as it is; making it puts Spark's words there.
+    text: kind === 'text' ? { value: state.edits[`text:${node.id}`] ?? '', key: `text:${node.id}`, first: '' } : undefined,
   }
 }
 
@@ -197,8 +202,8 @@ function graphOf(run: LabRun, lanes: ChainLane[], statuses: Map<string, StageSta
   const removed = new Set(canvas.removed)
   const seed = seedLayout(lanes)
 
-  const annotations: (FrameNode | NoteNode)[] = []
-  const frame = (id: string, at: { x: number; y: number }, size: { w: number; h: number }, title: string, desc: string): FrameNode => ({
+  const annotations: (FrameNode | NoteNode | LabelNode)[] = []
+  const frame = (id: string, at: { x: number; y: number }, size: { w: number; h: number }, title: string): FrameNode => ({
     id,
     type: 'frame',
     position: canvas.moved[id] ?? at,
@@ -209,19 +214,35 @@ function graphOf(run: LabRun, lanes: ChainLane[], statuses: Map<string, StageSta
     connectable: false,
     data: {
       title: state.edits[`title:${id}`] ?? title,
-      desc: state.edits[`desc:${id}`] ?? desc,
+      color: (state.picks[`color:${id}`] ?? 'none') as FrameColor,
       onTitle: (text) => run.edit(`title:${id}`, text),
-      onDesc: (text) => run.edit(`desc:${id}`, text),
+      onColor: (color) => run.pick(`color:${id}`, color),
       onRemove: () => run.canvas.remove([id]),
     },
   })
   for (const lane of lanes) {
     const id = `frame:${lane.id}`
     const box = seed.frames.get(lane.id)!
-    if (!removed.has(id)) annotations.push(frame(id, box, box, lane.role, lane.id === 'all' ? 'Müzik ve son kurgu' : `${lane.seconds} sn`))
+    if (!removed.has(id)) annotations.push(frame(id, box, box, lane.role))
   }
   for (const own of canvas.added) {
-    if (own.kind === 'frame') annotations.push(frame(own.id, own, { w: 560, h: 380 }, 'Çerçeve', ''))
+    if (own.kind === 'frame') annotations.push(frame(own.id, own, { w: 560, h: 380 }, 'Çerçeve'))
+    if (own.kind === 'label') {
+      annotations.push({
+        id: own.id,
+        type: 'label',
+        position: canvas.moved[own.id] ?? own,
+        width: LABEL_W,
+        connectable: false,
+        data: {
+          text: state.edits[`label:${own.id}`] ?? '',
+          size: state.picks[`size:${own.id}`] === 'title' ? 'title' : 'body',
+          onText: (text) => run.edit(`label:${own.id}`, text),
+          onSize: (size) => run.pick(`size:${own.id}`, size),
+          onRemove: () => run.canvas.remove([own.id]),
+        },
+      })
+    }
     if (own.kind === 'note') {
       annotations.push({
         id: own.id,
@@ -267,15 +288,19 @@ function graphOf(run: LabRun, lanes: ChainLane[], statuses: Map<string, StageSta
 
   const sparkWorks = agentDriving(state) && currentStep(state) !== null
   const head = canvas.queue[0]
-  const nodes: CanvasNode[] = [...annotations]
+  // Frames lie under everything; notes and free texts over the nodes (React Flow draws in this order).
+  const nodes: CanvasNode[] = annotations.filter((node) => node.type === 'frame')
   for (const [id, { stage, lane, position }] of steps) {
     const status = statusOf.get(id)!
     const made = madeOf(id)
     // Spark made it in its own run (the plan's version), then each making from the canvas adds its count.
     const byPlan = lane && (statuses.get(id) === 'done' || statuses.get(id) === 'yours') ? 1 : 0
     const count = Number(settingsOf(state, stage).values.count ?? 1)
-    const variants = generated(stage) ? byPlan + made * count : made ? 1 : 0
-    const picked = Number(state.picks[`ver:${id}`] ?? Number.NaN)
+    // A text has the words it started with (the plan's, or none) and one more each time it is made; what the user (or
+    // the plan) already has, its original and each remake; what a model makes, as many as it was made.
+    const variants = stage.kind === 'text' ? (lane ? 1 : 0) + made : generated(stage) ? byPlan + made * count : 1 + made
+    // The version picked holds until the node is made again; then it shows the newest.
+    const [picked, pickedAt] = (state.picks[`ver:${id}`] ?? '').split('@').map(Number)
     const spark = lane && sparkWorks && status === 'running' && statuses.get(id) === 'running'
     const size = sizeOf(stage)
     nodes.push({
@@ -289,7 +314,7 @@ function graphOf(run: LabRun, lanes: ChainLane[], statuses: Map<string, StageSta
         status,
         shows: !generated(stage) || variants > 0,
         variants,
-        active: Number.isNaN(picked) || picked >= variants ? Math.max(0, variants - 1) : picked,
+        active: pickedAt === variants && picked! < variants ? picked! : Math.max(0, variants - 1),
         progress: head?.id === id && head.startedAt ? Math.min(1, Math.max(0, (now - head.startedAt) / head.ms)) : undefined,
         own: !lane,
         art: artOf(stage),
@@ -309,6 +334,7 @@ function graphOf(run: LabRun, lanes: ChainLane[], statuses: Map<string, StageSta
     data: { passing: statusOf.get(link.target) === 'running' && made(statusOf.get(link.source)) },
   }))
   const agentNode = nodes.find((node) => node.type === 'step' && node.data.agent)?.id ?? null
+  nodes.push(...annotations.filter((node) => node.type !== 'frame'))
   return { nodes, edges, steps, agentNode }
 }
 
@@ -379,7 +405,7 @@ type CanvasApi = {
 const CanvasContext = React.createContext<CanvasApi | null>(null)
 const useCanvas = () => React.useContext(CanvasContext)!
 
-const nodeTypes = { step: StepNodeView, frame: FrameNodeView, note: NoteNodeView }
+const nodeTypes = { step: StepNodeView, frame: FrameNodeView, note: NoteNodeView, label: LabelNodeView }
 const edgeTypes = { chain: ChainEdgeView }
 
 export function ChainBoard(props: { run: LabRun; scenes: LabScene[]; onAsk?: () => void }) {
@@ -441,11 +467,18 @@ function ChainCanvas({ run, scenes, onAsk }: { run: LabRun; scenes: LabScene[]; 
     flow.setCenter(node.position.x + (node.width ?? 280) / 2, node.position.y + (node.height ?? 300) / 2, { zoom: flow.getZoom(), duration: 500 })
   }, [graph.agentNode, state.follow, flow])
 
-  const make = (ids: string[]) =>
+  const make = (ids: string[]) => {
+    // A text is rewritten by Spark: its new words take the field (the progress covers them until it is done).
+    for (const id of ids) {
+      const step = graph.steps.get(id)
+      const node = graph.nodes.find((entry) => entry.id === id)
+      if (step?.stage.text && node?.type === 'step') run.edit(step.stage.text.key, textVersion(step.stage, !step.lane, node.data.variants))
+    }
     run.canvas.run(ids.flatMap((id) => {
       const step = graph.steps.get(id)
       return step ? [{ id, ms: MAKE_MS[step.stage.kind] }] : []
     }))
+  }
   const pick = (ids: string[]) => {
     const steps = ids.filter((id) => graph.steps.has(id))
     if (steps.length) run.select({ targets: steps, labels: steps.map(nameOf), noun: 'düğüm', from: 'chain' })
@@ -604,6 +637,10 @@ function ChainCanvas({ run, scenes, onAsk }: { run: LabRun; scenes: LabScene[]; 
     const at = center()
     run.canvas.add('note', Math.round(at.x - NOTE_W / 2), Math.round(at.y - 60))
   }
+  const addText = () => {
+    const at = center()
+    run.canvas.add('label', Math.round(at.x - LABEL_W / 2), Math.round(at.y - 20))
+  }
   const addFrame = () => {
     const at = center()
     run.canvas.add('frame', Math.round(at.x - 280), Math.round(at.y - 190), undefined, { w: 560, h: 380 })
@@ -725,6 +762,7 @@ function ChainCanvas({ run, scenes, onAsk }: { run: LabRun; scenes: LabScene[]; 
             <Plus aria-hidden />
           </button>
           <button type="button" onClick={addNote} title="Not ekle" aria-label="Not ekle"><StickyNote aria-hidden /></button>
+          <button type="button" onClick={addText} title="Yazı ekle: başlık ya da açıklama" aria-label="Yazı ekle"><Type aria-hidden /></button>
           <button type="button" onClick={addFrame} title="Çerçeve ekle" aria-label="Çerçeve ekle"><FrameIcon aria-hidden /></button>
           <i />
           <button type="button" className={tool === 'select' ? 'on' : ''} onClick={() => setTool('select')} title="Seç: sürükleyerek birden çok öğe seç" aria-pressed={tool === 'select'}>
@@ -861,26 +899,26 @@ function Output({ id, data, aspect }: { id: string; data: StepData; aspect?: str
       </div>
     )
   }
-  if (stage.kind === 'text') return <TextOutput data={data} />
+  if (stage.kind === 'text') return <TextOutput id={id} data={data} />
   if (stage.kind === 'media') return <MediaOutput data={data} />
   if (stage.kind === 'voice' || stage.kind === 'music') {
     return (
       <div className={`lb-cv-out wave${data.shows ? '' : ' empty'}`}>
-        {data.shows || working ? <span className="lb-cv-bars">{waveOf(stage.id).map((height, index) => <i key={index} style={{ height: `${height}%` }} />)}</span> : <Empty data={data} />}
+        {data.shows || working ? <span className="lb-cv-bars">{waveOf(data.active ? `${stage.id}:${data.active}` : stage.id).map((height, index) => <i key={index} style={{ height: `${height}%` }} />)}</span> : <Empty data={data} />}
         {data.shows ? (
           <small>
             {data.said ? <q>{data.said}</q> : <span>{stage.how}</span>}
             {stage.seconds ? <span>{formatClock(stage.seconds)}</span> : null}
           </small>
         ) : null}
+        <Versions id={id} data={data} />
         {progress}
       </div>
     )
   }
   const art = data.art
-  const versions = data.variants > 1 ? Array.from({ length: Math.min(data.variants, 6) }, (_, index) => data.variants - Math.min(data.variants, 6) + index) : []
   return (
-    <div className={`lb-cv-out${data.shows && art ? '' : ' empty'}${versions.length ? ' versions' : ''}`}>
+    <div className={`lb-cv-out${data.shows && art ? '' : ' empty'}`}>
       {data.shows && art ? (
         <span className="lb-cv-pic" style={ratio}>
           <span className="lb-thumb"><span className={`lb-art ${art}`} style={variantStyle(data.active)} /></span>
@@ -891,24 +929,56 @@ function Output({ id, data, aspect }: { id: string; data: StepData; aspect?: str
       ) : working ? null : (
         <Empty data={data} />
       )}
-      {versions.length ? (
-        <span className="lb-cv-versions" role="radiogroup" aria-label="Sürümler">
-          {versions.map((index) => (
-            <button
-              key={index}
-              type="button"
-              role="radio"
-              aria-checked={index === data.active}
-              className={index === data.active ? 'on' : ''}
-              onClick={() => run.pick(`ver:${id}`, String(index))}
-              title={`Sürüm ${index + 1}`}
-            >
-              {art ? <span className="lb-thumb"><span className={`lb-art ${art}`} style={variantStyle(index)} /></span> : index + 1}
-            </button>
-          ))}
-        </span>
-      ) : null}
+      <Versions id={id} data={data} ratio={ratio} />
       {progress}
+    </div>
+  )
+}
+
+/**
+ * A node's outputs so far, behind one button on what it shows (only once there is more than one): pictures and clips
+ * as thumbnails, sounds as their waves, texts as their lines. The one picked is what the node shows and hands on.
+ */
+function Versions({ id, data, ratio }: { id: string; data: StepData; ratio?: React.CSSProperties }) {
+  const { run } = useCanvas()
+  const [open, setOpen] = React.useState(false)
+  const box = React.useRef<HTMLDivElement>(null)
+  const close = React.useCallback(() => setOpen(false), [setOpen])
+  useDismiss(open, box, close)
+  if (data.variants < 2) return null
+  const { stage } = data
+  const picture = Boolean(data.art) && stage.kind !== 'voice' && stage.kind !== 'music' && stage.kind !== 'text'
+  const newestFirst = Array.from({ length: data.variants }, (_, index) => data.variants - 1 - index)
+  const choose = (index: number) => {
+    run.pick(`ver:${id}`, `${index}@${data.variants}`)
+    if (stage.text) run.edit(stage.text.key, textVersion(stage, data.own, index))
+    setOpen(false)
+  }
+  return (
+    <div className={`lb-cv-history${open ? ' open' : ''}`} ref={box}>
+      <button type="button" className="lb-cv-history-btn" onClick={() => setOpen(!open)} aria-expanded={open} title="Sürümler">
+        <HistoryIcon aria-hidden />
+        {data.active + 1}/{data.variants}
+      </button>
+      {open ? (
+        <div className={`lb-cv-menu history ${picture ? 'grid' : 'rows'}`} role="listbox" aria-label="Sürümler">
+          <small>Sürümler · seçtiğin sonrakine geçer</small>
+          <div className="lb-cv-history-list">
+            {newestFirst.map((index) => (
+              <button key={index} type="button" role="option" aria-selected={index === data.active} className={index === data.active ? 'on' : ''} onClick={() => choose(index)}>
+                {picture ? (
+                  <span className="lb-cv-pic" style={ratio}><span className="lb-thumb"><span className={`lb-art ${data.art}`} style={variantStyle(index)} /></span></span>
+                ) : stage.kind === 'text' ? (
+                  <span className="line">{textVersion(stage, data.own, index) || 'Boş'}</span>
+                ) : (
+                  <span className="lb-cv-bars">{waveOf(index ? `${stage.id}:${index}` : stage.id, 24).map((height, bar) => <i key={bar} style={{ height: `${height}%` }} />)}</span>
+                )}
+                <small>v{index + 1}</small>
+              </button>
+            ))}
+          </div>
+        </div>
+      ) : null}
     </div>
   )
 }
@@ -931,7 +1001,7 @@ function Empty({ data }: { data: StepData }) {
 }
 
 /** A text node's text: what Spark (or the user) wrote, rewritten in place (a scene's line is Senaryo's too). */
-function TextOutput({ data }: { data: StepData }) {
+function TextOutput({ id, data }: { id: string; data: StepData }) {
   const { run } = useCanvas()
   const text = data.stage.text
   const value = text?.value ?? ''
@@ -956,6 +1026,7 @@ function TextOutput({ data }: { data: StepData }) {
           if (event.key === 'Escape') setDraft(null)
         }}
       />
+      <Versions id={id} data={data} />
       {data.status === 'running' ? <span className="lb-cv-progress"><ProgressRing value={data.progress} size={30} stroke={2} /></span> : null}
     </div>
   )

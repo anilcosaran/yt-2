@@ -1,7 +1,8 @@
-/* Plan › Üretim's notes on the canvas (`chain-annotations.tsx`): a frame that groups nodes and a sticky note. A frame is
-   a faint rounded box edged by a hairline, its name above it like a node's; it is moved by that name, and its box lets
-   every press through to the canvas (React Flow marks a draggable node "nopan", so the box takes no pointer at all).
-   A note is a warm slip of paper. Both live on `.lb-cv` and use its tokens (`lab-chain.css`); their toolbars are
+/* Plan › Üretim's notes on the canvas (`chain-annotations.tsx`): a frame that groups nodes, a sticky note and a free
+   text. A frame is a faint rounded box edged by a hairline (or tinted in the colour the user gave it), its name above it
+   like a node's; it is moved by that name, resized by any edge or corner, and its box lets every other press through to
+   the canvas (React Flow marks a draggable node "nopan", so the box takes no pointer at all). A note is a warm slip of
+   paper; a free text is words alone, a heading or a line. Both live on `.lb-cv` and use its tokens (`lab-chain.css`); their toolbars are
    `.lb-cv-bar`. */
 
 /* ---------- frame: the box ---------- */
@@ -10,29 +11,35 @@
   box-shadow:inset 0 0 0 1px var(--cv-line-strong);transition:box-shadow .15s}
 .yt-studio .lb-an-frame:not(.selected):has(> .lb-an-frame-head:hover){box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--cv-line-strong),var(--cv-on) 30%)}
 .yt-studio .lb-an-frame.selected{box-shadow:inset 0 0 0 1.5px var(--cv-on)}
+/* a colour: a faint wash of it and its hairline */
+.yt-studio .lb-an-frame.tinted{background:color-mix(in srgb,var(--fc) 6%,transparent);box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--fc) 45%,transparent)}
+.dark .yt-studio .lb-an-frame.tinted{background:color-mix(in srgb,var(--fc) 8%,transparent)}
+.yt-studio .lb-an-frame.tinted.selected{box-shadow:inset 0 0 0 1.5px var(--fc)}
+.yt-studio .lb-an-frame-dot{flex:none;width:8px;height:8px;margin-right:2px;border-radius:50%;background:var(--fc);align-self:center}
 
-/* its head: the name, then its line after a dot, above the box; the one place it is held by */
+/* its head: the name above the box; the one place it is held by */
 .yt-studio .lb-an-frame-head{position:absolute;left:6px;bottom:calc(100% + 8px);display:flex;align-items:baseline;gap:6px;max-width:calc(100% - 12px);
   height:20px;line-height:20px;white-space:nowrap;pointer-events:auto;cursor:grab;user-select:none}
 .yt-studio .react-flow__node.dragging .lb-an-frame-head{cursor:grabbing}
 .yt-studio .lb-an-frame-t{flex:0 1 auto;min-width:0;overflow:hidden;text-overflow:ellipsis;font-size:13.5px;font-weight:600;color:var(--st-text)}
-.yt-studio .lb-an-frame-head > i{flex:none;font-style:normal;font-size:12.5px;color:var(--st-text-3)}
-/* the line gives way first when the head runs out of room */
-.yt-studio .lb-an-frame-d{flex:0 100 auto;min-width:0;overflow:hidden;text-overflow:ellipsis;font-size:12.5px;color:var(--st-text-3)}
-.yt-studio .lb-an-frame-d.empty{opacity:.7}
 
 /* in place: the same text, no box, a line under it */
 .yt-studio .lb-an-frame-in{min-width:6ch;max-width:100%;height:20px;margin:0;padding:0;border:0;border-bottom:1px solid var(--cv-on);border-radius:0;outline:0;
   background:none;font-family:inherit;line-height:19px;cursor:text;user-select:text;field-sizing:content}
 .yt-studio .lb-an-frame-in::placeholder{color:var(--st-text-3);opacity:.7}
 
-/* resizing, while selected: small light squares at the corners and sides; the edges between them are held, unseen */
-.yt-studio .react-flow__resize-control.lb-an-handle{width:8px;height:8px;border:0;border-radius:2px;background:#fff;
-  box-shadow:0 0 0 1px var(--cv-line-strong),0 1px 2px rgba(31,30,29,.12);pointer-events:auto}
-.dark .yt-studio .react-flow__resize-control.lb-an-handle{background:#f1f1f0;box-shadow:0 0 0 1px rgba(0,0,0,.55)}
-.yt-studio .react-flow__resize-control.line.lb-an-line{border:0;pointer-events:auto}
-.yt-studio .react-flow__resize-control.line.lb-an-line:is(.left,.right){width:10px}
-.yt-studio .react-flow__resize-control.line.lb-an-line:is(.top,.bottom){height:10px}
+/* resizing, at any time: every edge is held (unseen, with a resize pointer) and so is every corner; the corners show
+   as small light squares while the frame is selected */
+/* React Flow names its resize controls by side (`.top`, `.right`…), and the studio's layout uses the same names for its
+   panels (`studio.css`: padding, a panel background, a border, pinned right/bottom): none of that applies here. React
+   Flow places the controls by top/left only. */
+.yt-studio .lb-cv .react-flow__resize-control{position:absolute;display:block;gap:0;min-width:0;padding:0;right:auto;bottom:auto;overflow:visible;border-left:0;border-bottom:0;box-shadow:none;z-index:auto;grid-column:auto;grid-row:auto}
+.yt-studio .react-flow__resize-control.lb-an-handle{width:12px;height:12px;border:0;border-radius:3px;background:transparent;pointer-events:auto}
+.yt-studio .lb-an-frame.selected .react-flow__resize-control.lb-an-handle{width:9px;height:9px;background:#fff;box-shadow:0 0 0 1px var(--cv-line-strong),0 1px 2px rgba(31,30,29,.12)}
+.dark .yt-studio .lb-an-frame.selected .react-flow__resize-control.lb-an-handle{background:#f1f1f0;box-shadow:0 0 0 1px rgba(0,0,0,.55)}
+.yt-studio .react-flow__resize-control.line.lb-an-line{border:0;background:transparent;pointer-events:auto}
+.yt-studio .react-flow__resize-control.line.lb-an-line:is(.left,.right){width:12px}
+.yt-studio .react-flow__resize-control.line.lb-an-line:is(.top,.bottom){height:12px}
 
 /* ---------- note ---------- */
 .yt-studio .lb-an-note{display:flex;flex-direction:column;box-sizing:border-box;width:100%;min-height:112px;padding:14px 16px;border-radius:14px;
@@ -50,5 +57,22 @@
   background:none;color:inherit;cursor:text;field-sizing:content}
 .yt-studio .lb-an-note textarea::placeholder{color:color-mix(in srgb,currentColor 45%,transparent);opacity:1}
 
-/* ---------- toolbars: an icon-only button sits square ---------- */
+/* ---------- free text: words alone, a heading or a line of description ---------- */
+.yt-studio .lb-an-label{display:flex;flex-direction:column;box-sizing:border-box;width:100%;padding:4px 6px;border-radius:8px;color:var(--st-text);transition:box-shadow .15s}
+.yt-studio .lb-an-label .lb-an-note-field::after,.yt-studio .lb-an-label .lb-an-note-field > *{font-size:14px;line-height:1.5;color:var(--st-text-2)}
+.yt-studio .lb-an-label.title .lb-an-note-field::after,.yt-studio .lb-an-label.title .lb-an-note-field > *{font-size:22px;line-height:1.25;font-weight:600;letter-spacing:-.01em;color:var(--st-text)}
+.yt-studio .lb-an-label.selected{box-shadow:0 0 0 1.5px var(--cv-on)}
+.yt-studio .lb-an-label textarea{display:block;width:100%;min-height:100%;border:0;border-radius:0;outline:0;resize:none;overflow:hidden;background:none;cursor:text;field-sizing:content}
+.yt-studio .lb-an-label .lb-an-note-field p.empty,.yt-studio .lb-an-label textarea::placeholder{color:var(--st-text-3);opacity:1}
+
+/* ---------- toolbars: an icon-only button sits square; colour swatches; a hairline between groups ---------- */
 .yt-studio .lb-cv-bar .lb-an-icon{justify-content:center;width:28px;padding:0}
+.yt-studio .lb-cv-bar button.on{background:var(--cv-fill);color:var(--st-text)}
+.yt-studio .lb-an-sep{flex:none;width:1px;height:16px;margin:0 3px;background:var(--cv-line-strong)}
+.yt-studio .lb-an-swatches{display:flex;align-items:center;gap:4px;padding:0 4px}
+.yt-studio .lb-cv-bar button.lb-an-swatch{width:18px;height:18px;padding:0;border-radius:50%;background:var(--fc);box-shadow:inset 0 0 0 1px rgba(0,0,0,.12)}
+.yt-studio .lb-cv-bar button.lb-an-swatch.none{background:transparent;box-shadow:inset 0 0 0 1.5px var(--cv-line-strong)}
+.yt-studio .lb-cv-bar button.lb-an-swatch:hover{transform:scale(1.12);background:var(--fc)}
+.yt-studio .lb-cv-bar button.lb-an-swatch.none:hover{background:transparent}
+.yt-studio .lb-cv-bar button.lb-an-swatch.on{box-shadow:0 0 0 2px var(--cv-node),0 0 0 3.5px var(--fc,var(--cv-on))}
+.yt-studio .lb-cv-bar button.lb-an-swatch.none.on{box-shadow:inset 0 0 0 1.5px var(--cv-line-strong),0 0 0 2px var(--cv-node),0 0 0 3.5px var(--cv-on)}

@@ -48,8 +48,8 @@ export type ChainStage = {
   art?: SceneArt
   /** A clip's or a voice's length. */
   seconds?: number
-  /** What a text node holds, and where a rewrite of it is kept (a scene's line is shared with Senaryo). */
-  text?: { value: string; key: string }
+  /** What a text node holds, where a rewrite of it is kept (a scene's line is shared with Senaryo), and what it started as. */
+  text?: { value: string; key: string; first: string }
 }
 
 export type ChainLane = {
@@ -165,10 +165,10 @@ function pictureStages(state: LabRunState, lane: string, input: {
 }
 
 /** A scene's words: Spark writes its line, then it is voiced (a line in quotes is said in the scene's own clip). */
-function wordStages(state: LabRunState, lane: string, line: string, seconds: number, ownClip: boolean): ChainStage[] {
+function wordStages(state: LabRunState, lane: string, line: string, first: string, seconds: number, ownClip: boolean): ChainStage[] {
   if (!line) return []
   return [
-    stageOf(lane, 'say', { kind: 'text', title: 'Anlatım', how: 'Spark yazar', brief: '', credits: 0, text: { value: line, key: `say:${lane}` } }),
+    stageOf(lane, 'say', { kind: 'text', title: 'Anlatım', how: 'Spark yazar', brief: '', credits: 0, text: { value: line, key: `say:${lane}`, first } }),
     stageOf(lane, 'voice', {
       kind: 'voice',
       title: ownClip ? 'Konuşma · klipten' : 'Seslendirme',
@@ -202,14 +202,14 @@ function sceneLane(state: LabRunState, scene: LabScene, previous: ChainLane | nu
   const planned = asset?.kind ?? 'kit'
   const picture = pictureStages(state, scene.id, { role: scene.role, seconds, planned, art: scene.art, asset, previous: endOf(previous) })
   const ownClip = scene.narration.startsWith('“') && sourceOf(state, scene.id, planned) === 'library'
-  const words = wordStages(state, scene.id, sayOf(state, scene), seconds, ownClip)
+  const words = wordStages(state, scene.id, sayOf(state, scene), scene.narration, seconds, ownClip)
   return laneOf({ id: scene.id, n: scene.n, role: scene.role, seconds, scene }, picture, words, previous)
 }
 
 function addedLane(state: LabRunState, scene: AddedScene, n: number, previous: ChainLane | null): ChainLane {
   const role = state.edits[`role:${scene.id}`] || scene.role || 'Yeni sahne'
   const picture = pictureStages(state, scene.id, { role, seconds: scene.seconds, planned: 'generate', art: 'hook', asset: null, previous: endOf(previous) })
-  const words = wordStages(state, scene.id, state.edits[`say:${scene.id}`] ?? scene.say, scene.seconds, false)
+  const words = wordStages(state, scene.id, state.edits[`say:${scene.id}`] ?? scene.say, scene.say, scene.seconds, false)
   return laneOf({ id: scene.id, n, role, seconds: scene.seconds, scene: null }, picture, words, previous)
 }
 

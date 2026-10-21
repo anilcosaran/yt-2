@@ -91,14 +91,27 @@
 .yt-studio .lb-cv-empty{display:grid;justify-items:center;gap:10px;max-width:190px;font-size:12px;line-height:1.45;text-align:center;color:var(--st-text-3)}
 .yt-studio .lb-cv-empty .i{width:20px;height:20px;opacity:.45}
 
-/* versions: the outputs made so far, under the picture; the picked one is what goes on */
-.yt-studio .lb-cv-out.versions{flex-direction:column;gap:8px}
-.yt-studio .lb-cv-out.versions .lb-cv-pic{flex:1 1 0;min-height:0;height:auto}
-.yt-studio .lb-cv-versions{display:flex;gap:5px;flex:none}
-.yt-studio .lb-cv-versions button{position:relative;width:24px;height:24px;border-radius:7px;overflow:hidden;font-size:10.5px;color:var(--st-text-3);background:var(--cv-fill);box-shadow:inset 0 0 0 1px var(--cv-line);opacity:.65;transition:opacity .12s,box-shadow .12s}
-.yt-studio .lb-cv-versions button:hover{opacity:1}
-.yt-studio .lb-cv-versions button.on{opacity:1;box-shadow:0 0 0 1.5px var(--cv-on)}
-.yt-studio .lb-cv-versions .lb-thumb{border-radius:inherit}
+/* versions: one button on what the node shows (once it has more than one), quiet until the node is pointed at; it opens
+   the outputs so far, newest first, and the one picked is what the node shows and hands on */
+.yt-studio .lb-cv-history{position:absolute;top:18px;right:18px;z-index:3}
+.yt-studio .lb-cv-out.text .lb-cv-history,.yt-studio .lb-cv-out.wave .lb-cv-history{top:10px;right:12px}
+.yt-studio .lb-cv-history-btn{display:inline-flex;align-items:center;gap:4px;height:22px;padding:0 7px;border-radius:7px;background:rgba(0,0,0,.55);color:#fff;
+  font-size:11px;font-weight:600;font-variant-numeric:tabular-nums;backdrop-filter:blur(4px);opacity:0;transition:opacity .12s}
+.yt-studio .lb-cv-out:is(.text,.wave) .lb-cv-history-btn{background:var(--cv-fill);color:var(--st-text-2);backdrop-filter:none;box-shadow:inset 0 0 0 1px var(--cv-line)}
+.yt-studio .lb-cv-node:is(:hover,.selected) .lb-cv-history-btn,.yt-studio .lb-cv-history.open .lb-cv-history-btn{opacity:1}
+.yt-studio .lb-cv-history-btn svg{width:12px;height:12px}
+.yt-studio .lb-cv-menu.history{top:28px;right:0;width:264px;max-height:320px;overflow-y:auto;scrollbar-width:thin}
+.yt-studio .lb-cv-menu.history.grid .lb-cv-history-list{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:4px;padding:2px}
+.yt-studio .lb-cv-menu.history.grid button{display:grid;justify-items:center;gap:5px;padding:6px 4px;border-radius:10px}
+.yt-studio .lb-cv-menu.history.grid .lb-cv-pic{height:96px;border-radius:7px}
+.yt-studio .lb-cv-menu.history.grid button.on .lb-cv-pic{box-shadow:0 0 0 1.5px var(--cv-on)}
+.yt-studio .lb-cv-menu.history.rows .lb-cv-history-list{display:grid;gap:2px}
+.yt-studio .lb-cv-menu.history.rows button{display:flex;align-items:center;gap:10px}
+.yt-studio .lb-cv-menu.history.rows button.on{background:var(--cv-fill)}
+.yt-studio .lb-cv-menu.history .line{flex:1;min-width:0;font-size:12.5px;line-height:1.4;color:var(--st-text);display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.yt-studio .lb-cv-menu.history .lb-cv-bars{flex:1;height:26px}
+.yt-studio .lb-cv-menu.history button > small{flex:none;font-size:11px;color:var(--st-text-3);font-variant-numeric:tabular-nums}
+.yt-studio .lb-cv-menu.history button.on > small{color:var(--st-text)}
 
 /* while it is made: its progress over what it showed before */
 .yt-studio .lb-cv-progress{position:absolute;inset:12px 12px 0;z-index:2;display:grid;place-content:center;justify-items:center;gap:8px;border-radius:12px;font-size:11.5px;font-variant-numeric:tabular-nums;color:var(--lb-agent-text);
@@ -186,6 +199,7 @@
 .yt-studio .lb-cv .react-flow__minimap.lb-cv-map{margin:0 0 58px 14px;border-radius:14px;overflow:hidden;box-shadow:0 0 0 1px var(--cv-line),var(--cv-shadow);animation:lb-in .16s ease-out}
 .yt-studio .lb-cv .react-flow__minimap.lb-cv-map svg{display:block;width:180px;height:116px}
 .yt-studio .lb-cv .lb-cv-map-step,.yt-studio .lb-cv .lb-cv-map-note{fill:var(--cv-line-strong)}
+.yt-studio .lb-cv .lb-cv-map-label{fill:transparent}
 .yt-studio .lb-cv .lb-cv-map-frame{fill:var(--cv-fill);stroke:var(--cv-line);stroke-width:2}
 .yt-studio .lb-cv-queue{position:absolute;top:12px;right:14px;z-index:6}
 .yt-studio .lb-cv-zoom{position:absolute;left:14px;bottom:14px;z-index:6}

@@ -62,30 +62,18 @@
 .yt-studio .k-text{--k:var(--st-text-2)}
 .yt-studio .k-media{--k:var(--st-text-2)}
 
-/* ---------- a scene's name, at the start of its row ---------- */
-.yt-studio .lb-cv-scene{display:flex;align-items:flex-start;gap:10px;width:100%;padding-top:4px}
-.yt-studio .lb-cv-scene .lb-plan-n{flex:none}
-.yt-studio .lb-cv-scene .lb-plan-n.all .i{width:12px;height:12px}
-.yt-studio .lb-cv-scene-t{display:grid;gap:3px;min-width:0;flex:1}
-.yt-studio .lb-cv-scene-t b{font-size:13.5px;font-weight:600;line-height:18px;color:var(--st-text);overflow-wrap:anywhere}
-.yt-studio .lb-cv-scene-t small{display:flex;align-items:center;gap:7px;font-size:12px;color:var(--st-text-3);font-variant-numeric:tabular-nums}
-.yt-studio .lb-cv-scene-t .lb-dot{width:6px;height:6px}
-.yt-studio .lb-cv-scene .lb-lock{opacity:0;transition:opacity .12s}
-.yt-studio .lb-cv-scene:hover .lb-lock,.yt-studio .lb-cv-scene .lb-lock.on{opacity:1}
-
 /* ---------- a node: its name above, one surface below ---------- */
 .yt-studio .lb-cv-node{position:relative;width:100%;height:100%}
 .yt-studio .lb-cv-node.lb-agent-on{box-shadow:none}
 .yt-studio .lb-cv-label{position:absolute;left:6px;right:6px;bottom:calc(100% + 9px);display:flex;align-items:center;gap:6px;height:18px;font-size:12px;line-height:18px;color:var(--st-text-3);white-space:nowrap}
 .yt-studio .lb-cv-label > .i{width:13px;height:13px;flex:none;color:var(--k)}
 .yt-studio .lb-cv-label > span{min-width:0;overflow:hidden;text-overflow:ellipsis;font-weight:500;color:var(--st-text-2)}
-.yt-studio .lb-cv-label > small{flex:none;font-size:12px;color:var(--st-text-3)}
-.yt-studio .lb-cv-label > small::before{content:'·';margin-right:6px}
-.yt-studio .lb-cv-label > em{display:inline-flex;align-items:center;gap:6px;margin-left:auto;padding-left:8px;font-style:normal;font-size:11.5px;font-variant-numeric:tabular-nums}
+.yt-studio .lb-cv-label > em{display:inline-flex;align-items:center;gap:5px;margin-left:auto;padding-left:8px;font-style:normal;font-size:11.5px;font-variant-numeric:tabular-nums}
 .yt-studio .lb-cv-node.running .lb-cv-label > em{color:var(--lb-agent-text)}
 .yt-studio .lb-cv-node.yours .lb-cv-label > em{color:var(--lb-you-text,var(--lb-you))}
 
-.yt-studio .lb-cv-box{display:flex;flex-direction:column;height:100%;border-radius:22px;background:var(--cv-node);box-shadow:0 0 0 1px var(--cv-line);overflow:hidden;transition:box-shadow .15s}
+/* not clipped: the composer's model menu opens over the node and past its edges */
+.yt-studio .lb-cv-box{display:flex;flex-direction:column;height:100%;border-radius:22px;background:var(--cv-node);box-shadow:0 0 0 1px var(--cv-line);transition:box-shadow .15s}
 .yt-studio .lb-cv-node:hover .lb-cv-box{box-shadow:0 0 0 1px var(--cv-line-strong)}
 .yt-studio .lb-cv-node.selected .lb-cv-box{box-shadow:0 0 0 1.5px var(--cv-on)}
 .yt-studio .lb-cv-node.running .lb-cv-box{box-shadow:0 0 0 1.5px var(--lb-agent),0 0 0 6px var(--lb-agent-soft)}
@@ -96,14 +84,26 @@
 .yt-studio .lb-cv-out{position:relative;flex:1 1 0;min-height:0;display:flex;align-items:center;justify-content:center;padding:12px 12px 0}
 .yt-studio .lb-cv-pic{position:relative;height:100%;max-width:100%;aspect-ratio:var(--lb-ar);border-radius:12px;overflow:hidden;flex:none}
 .yt-studio .lb-cv-pic .lb-thumb{border-radius:inherit}
-.yt-studio .lb-cv-node.running .lb-cv-pic .lb-art{animation:lb-cv-develop 1.6s ease-out both}
-@keyframes lb-cv-develop{from{filter:saturate(.2) brightness(.55) blur(4px)}to{filter:none}}
 .yt-studio .lb-cv-play{position:absolute;inset:0;display:grid;place-items:center;pointer-events:none}
 .yt-studio .lb-cv-play .i{width:26px;height:26px;padding:7px 6px 7px 8px;border-radius:50%;background:rgba(0,0,0,.45);color:#fff;fill:#fff}
 .yt-studio .lb-cv-tag{position:absolute;right:6px;bottom:6px;height:18px;padding:0 6px;border-radius:5px;background:rgba(0,0,0,.55);color:#fff;font-size:10.5px;font-weight:600;line-height:18px;font-variant-numeric:tabular-nums}
 .yt-studio .lb-cv-tag.start{right:auto;left:6px}
-.yt-studio .lb-cv-empty{display:grid;justify-items:center;gap:10px;max-width:190px;font-size:12.5px;line-height:1.45;text-align:center;color:var(--st-text-3)}
-.yt-studio .lb-cv-empty .i{width:22px;height:22px;opacity:.55}
+.yt-studio .lb-cv-empty{display:grid;justify-items:center;gap:10px;max-width:190px;font-size:12px;line-height:1.45;text-align:center;color:var(--st-text-3)}
+.yt-studio .lb-cv-empty .i{width:20px;height:20px;opacity:.45}
+
+/* versions: the outputs made so far, under the picture; the picked one is what goes on */
+.yt-studio .lb-cv-out.versions{flex-direction:column;gap:8px}
+.yt-studio .lb-cv-out.versions .lb-cv-pic{flex:1 1 0;min-height:0;height:auto}
+.yt-studio .lb-cv-versions{display:flex;gap:5px;flex:none}
+.yt-studio .lb-cv-versions button{position:relative;width:24px;height:24px;border-radius:7px;overflow:hidden;font-size:10.5px;color:var(--st-text-3);background:var(--cv-fill);box-shadow:inset 0 0 0 1px var(--cv-line);opacity:.65;transition:opacity .12s,box-shadow .12s}
+.yt-studio .lb-cv-versions button:hover{opacity:1}
+.yt-studio .lb-cv-versions button.on{opacity:1;box-shadow:0 0 0 1.5px var(--cv-on)}
+.yt-studio .lb-cv-versions .lb-thumb{border-radius:inherit}
+
+/* while it is made: its progress over what it showed before */
+.yt-studio .lb-cv-progress{position:absolute;inset:12px 12px 0;z-index:2;display:grid;place-content:center;justify-items:center;gap:8px;border-radius:12px;font-size:11.5px;font-variant-numeric:tabular-nums;color:var(--lb-agent-text);
+  background:color-mix(in srgb,var(--cv-node) 55%,transparent);backdrop-filter:blur(2px)}
+.yt-studio .lb-cv-out.text .lb-cv-progress{inset:8px}
 
 .yt-studio .lb-cv-out.cut{gap:5px;padding:14px 14px 0}
 .yt-studio .lb-cv-out.cut .lb-cv-pic{flex:1 1 0;height:auto;max-height:100%;border-radius:6px}
@@ -142,6 +142,9 @@
 .yt-studio .lb-cv-compose .pb.lb-cv-pb .pb-send{width:26px;height:26px;border-radius:99px}
 .yt-studio .lb-cv-compose .pb.lb-cv-pb .pb-send > svg{width:14px;height:14px}
 
+/* the model menu opens over the composer (`chain-model-menu.css`); the settings open under the node */
+.yt-studio .lb-cv-settings{position:absolute;left:0;right:0;top:calc(100% + 10px);z-index:50}
+
 /* ---------- ports: a dot for an input, a "+" for an output when the node is pointed at ---------- */
 .yt-studio .lb-cv .react-flow__handle.lb-cv-port{display:grid;place-items:center;width:9px;height:9px;min-width:0;min-height:0;border:1.5px solid var(--cv-wire);border-radius:50%;background:var(--cv-bg);color:var(--st-text-2);
   transition:width .12s,height .12s,border-color .12s,background .12s}
@@ -164,7 +167,7 @@
 .yt-studio .lb-cv-bar button{display:inline-flex;align-items:center;gap:6px;height:28px;padding:0 9px;border-radius:8px;font-size:12px;font-weight:500;color:var(--st-text-2);white-space:nowrap;transition:background .12s,color .12s}
 .yt-studio .lb-cv-bar button:hover{background:var(--cv-fill);color:var(--st-text)}
 .yt-studio .lb-cv-bar button svg,.yt-studio .lb-cv-bar button .i{width:14px;height:14px;stroke-width:1.7}
-.yt-studio .lb-cv-bar button:first-of-type .i{color:var(--lb-agent)}
+.yt-studio .lb-cv-bar button.spark .i{color:var(--lb-agent)}
 .yt-studio .lb-cv-bar-t{padding:0 8px 0 6px;font-size:12px;color:var(--st-text-3)}
 
 /* ---------- the tools on the left ---------- */
@@ -179,19 +182,13 @@
 .yt-studio .lb-cv-tools svg{width:17px;height:17px;stroke-width:1.6}
 .yt-studio .lb-cv-tools > i{width:18px;height:1px;margin:3px 0;background:var(--cv-line)}
 
-/* ---------- the minimap ---------- */
-.yt-studio .lb-cv .react-flow__minimap.lb-cv-map{margin:14px;border-radius:14px;overflow:hidden;box-shadow:0 0 0 1px var(--cv-line),var(--cv-shadow)}
-.yt-studio .lb-cv .react-flow__minimap.lb-cv-map svg{display:block;width:168px;height:108px}
-.yt-studio .lb-cv .lb-cv-map-node{fill:var(--cv-line-strong)}
-.yt-studio .lb-cv .lb-cv-map-scene{fill:transparent}
-
-/* ---------- the queue ---------- */
-.yt-studio .lb-cv-queue{position:absolute;right:14px;bottom:14px;z-index:5}
-.yt-studio .lb-cv-queue-btn{display:inline-flex;align-items:center;gap:8px;height:38px;padding:0 10px 0 14px;border-radius:12px;background:var(--cv-node);box-shadow:0 0 0 1px var(--cv-line),var(--cv-shadow);font-size:12.5px;color:var(--st-text-3)}
-.yt-studio .lb-cv-queue-btn b{font-weight:600;color:var(--st-text)}
-.yt-studio .lb-cv-queue-btn.live span{color:var(--lb-agent-text)}
-.yt-studio .lb-cv-queue-btn svg{width:14px;height:14px}
-.yt-studio .lb-cv-queue-btn:hover{box-shadow:0 0 0 1px var(--cv-line-strong),var(--cv-shadow)}
+/* ---------- the minimap (on request, over the zoom pill), the queue (top right), the zoom (bottom left) ---------- */
+.yt-studio .lb-cv .react-flow__minimap.lb-cv-map{margin:0 0 58px 14px;border-radius:14px;overflow:hidden;box-shadow:0 0 0 1px var(--cv-line),var(--cv-shadow);animation:lb-in .16s ease-out}
+.yt-studio .lb-cv .react-flow__minimap.lb-cv-map svg{display:block;width:180px;height:116px}
+.yt-studio .lb-cv .lb-cv-map-step,.yt-studio .lb-cv .lb-cv-map-note{fill:var(--cv-line-strong)}
+.yt-studio .lb-cv .lb-cv-map-frame{fill:var(--cv-fill);stroke:var(--cv-line);stroke-width:2}
+.yt-studio .lb-cv-queue{position:absolute;top:12px;right:14px;z-index:6}
+.yt-studio .lb-cv-zoom{position:absolute;left:14px;bottom:14px;z-index:6}
 
 /* ---------- menus on the canvas: one soft surface, rows with fills ---------- */
 .yt-studio .lb-cv-menu{position:absolute;z-index:40;display:grid;gap:1px;width:264px;padding:6px;border-radius:14px;background:var(--cv-node);box-shadow:0 0 0 1px var(--cv-line-strong),var(--cv-shadow);cursor:default;animation:lb-in .14s ease-out}
@@ -204,19 +201,10 @@
 .yt-studio .lb-cv-menu small{font-size:11.5px;color:var(--st-text-3);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .yt-studio .lb-cv-menu button > .i{width:14px;height:14px;flex:none}
 .yt-studio .lb-cv-menu.add{transform:translate(10px,-24px)}
-.yt-studio .lb-cv-menu.models{left:10px;bottom:calc(100% - 4px);width:236px}
-.yt-studio .lb-cv-menu.queue{right:0;bottom:46px;width:280px;gap:2px}
-.yt-studio .lb-cv-menu.queue .row{display:flex;align-items:center;gap:10px;margin:0;padding:7px 10px}
-.yt-studio .lb-cv-menu.queue .row > span{display:grid;gap:1px;min-width:0;font-size:11.5px;color:var(--st-text-3)}
-.yt-studio .lb-cv-menu.queue .row b{font-size:12.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.yt-studio .lb-cv-menu.queue .empty{margin:0;padding:10px;font-size:12.5px;color:var(--st-text-3)}
-.yt-studio .lb-cv-menu.queue .stop{justify-content:center;margin-top:4px;font-size:12.5px;font-weight:500}
 .yt-studio .lb-cv-glyph{display:grid;place-items:center;width:28px;height:28px;border-radius:8px;flex:none;background:var(--cv-fill);color:var(--k)}
 .yt-studio .lb-cv-glyph .i{width:14px;height:14px}
 
-.yt-studio .lb-cv-spin{width:10px;height:10px;border-radius:50%;flex:none;border:1.5px solid color-mix(in srgb,var(--lb-agent) 30%,transparent);border-top-color:var(--lb-agent);animation:st-spin .8s linear infinite}
-.yt-studio .lb-cv-wait{width:8px;height:8px;margin:0 1px;border-radius:50%;flex:none;box-shadow:inset 0 0 0 1.5px var(--st-text-3)}
 
 @media (prefers-reduced-motion:reduce){
-  .yt-studio .lb-cv .react-flow__edge-path.lb-cv-edge.passing,.yt-studio .lb-cv-lines i,.yt-studio .lb-cv-node.running .lb-cv-pic .lb-art{animation:none}
+  .yt-studio .lb-cv .react-flow__edge-path.lb-cv-edge.passing,.yt-studio .lb-cv-lines i{animation:none}
 }

@@ -1,0 +1,47 @@
+/* The model menu a node's composer opens on Plan › Üretim (`chain-model-menu.tsx`): one soft surface like the canvas's
+   other menus, rows with a fill under the pointer (or the keyboard), no boxes inside. A row is a letter badge, a name
+   with a line under it and, for models, three meters of five small dashes that line up under a small-caps header.
+   A voice or music list has no meters and is narrower. The `--cv-*` tokens come from the canvas (`lab-chain.css`),
+   light and dark; the fallbacks keep it readable anywhere else. */
+
+.yt-studio .lb-mm{
+  --lb-mm-cols:22px minmax(0,1fr);
+  position:absolute;left:0;z-index:50;box-sizing:border-box;display:grid;gap:1px;width:240px;padding:6px;border-radius:14px;
+  background:var(--cv-node,var(--st-surface));
+  box-shadow:0 0 0 1px var(--cv-line-strong,rgba(127,127,127,.28)),var(--cv-shadow,0 10px 30px rgba(0,0,0,.14));
+  text-align:left;cursor:default;user-select:none;outline:none
+}
+.yt-studio .lb-mm.metered{--lb-mm-cols:22px minmax(0,1fr) repeat(3,48px);width:380px}
+.yt-studio .lb-mm.up{bottom:calc(100% + 6px);animation:lb-mm-in-up .14s ease-out}
+.yt-studio .lb-mm.down{top:calc(100% + 6px);animation:lb-mm-in-down .14s ease-out}
+@keyframes lb-mm-in-up{from{opacity:0;transform:translateY(4px)}}
+@keyframes lb-mm-in-down{from{opacity:0;transform:translateY(-4px)}}
+
+/* the header: "MODEL", then a column per meter (the same columns as the rows) */
+.yt-studio .lb-mm-head{display:grid;grid-template-columns:var(--lb-mm-cols);column-gap:8px;align-items:center;padding:6px 8px 4px;
+  font-size:10.5px;font-weight:500;line-height:14px;letter-spacing:.04em;color:var(--st-text-3)}
+.yt-studio .lb-mm-head > span{display:flex;justify-content:center;white-space:nowrap}
+.yt-studio .lb-mm-head > .lb-mm-head-name{grid-column:1 / 3;justify-content:flex-start}
+
+/* a row */
+.yt-studio .lb-mm-row{display:grid;grid-template-columns:var(--lb-mm-cols);column-gap:8px;align-items:center;padding:7px 8px;border-radius:8px;cursor:pointer;transition:background .1s}
+.yt-studio .lb-mm-row.active{background:var(--cv-fill,color-mix(in srgb,var(--st-text) 5%,transparent))}
+.yt-studio .lb-mm-badge{box-sizing:border-box;display:grid;place-items:center;width:22px;height:22px;border:1px solid var(--cv-line-strong,rgba(127,127,127,.28));border-radius:6px;
+  font-size:11px;font-weight:600;line-height:1;color:var(--st-text-2)}
+.yt-studio .lb-mm-badge .i{width:12px;height:12px}
+.yt-studio .lb-mm-row.auto .lb-mm-badge{color:var(--lb-agent,var(--st-text-2))}
+.yt-studio .lb-mm-text{display:grid;gap:1px;min-width:0;padding-left:2px}
+.yt-studio .lb-mm-name{display:flex;align-items:center;gap:5px;min-width:0}
+.yt-studio .lb-mm-label{min-width:0;font-size:13px;font-weight:500;line-height:18px;color:var(--st-text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.yt-studio .lb-mm-name .i{width:12px;height:12px;flex:none;stroke-width:2.2;color:var(--st-text)}
+.yt-studio .lb-mm-sub{font-size:11.5px;line-height:15px;color:var(--st-text-3);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+
+/* a meter: five dashes, the filled ones brighter */
+.yt-studio .lb-mm-meter{display:flex;justify-content:center;gap:2px}
+.yt-studio .lb-mm-meter i{display:block;width:6px;height:2px;border-radius:1px;background:var(--cv-line-strong,rgba(127,127,127,.28))}
+.yt-studio .lb-mm-meter i.on{background:var(--st-text-2)}
+.yt-studio .lb-mm-varies{grid-column:3 / -1;font-size:11.5px;line-height:15px;text-align:center;color:var(--st-text-3)}
+
+@media (prefers-reduced-motion:reduce){
+  .yt-studio .lb-mm.up,.yt-studio .lb-mm.down{animation:none}
+}

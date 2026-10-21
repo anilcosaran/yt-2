@@ -147,16 +147,17 @@ export type LabAsk = { text: string; batch: number }
 export type CanvasOwnNode = { id: string; kind: string; x: number; y: number }
 /** A link the user drew from one node's output to another node. */
 export type CanvasLink = { id: string; source: string; target: string }
-/** A node waiting to be made, and how long making it takes. */
-export type CanvasJob = { id: string; ms: number }
+/** A node waiting to be made, how long making it takes, and when it started (once it is the one being made). */
+export type CanvasJob = { id: string; ms: number; startedAt?: number }
 /**
- * Plan › Üretim's canvas, over the chain Spark draws from the plan: where nodes were moved, the nodes and links the user
- * added, the planned nodes and links they removed, how many times each node was made from the canvas, the nodes waiting
- * to be made (the first one is being made: "Kuyruk") and the last view. Not part of restore points: going back to
+ * Plan › Üretim's canvas, over the chain Spark draws from the plan: where nodes were moved and frames resized, the nodes
+ * (and notes, frames) and links the user added, the planned ones they removed, how many times each node was made from the
+ * canvas, the nodes waiting to be made (the first one is being made: "Kuyruk") and the last view. Not part of restore points: going back to
  * before a request does not move the canvas.
  */
 export type LabCanvas = {
   moved: Record<string, { x: number; y: number }>
+  sizes: Record<string, { w: number; h: number }>
   added: CanvasOwnNode[]
   links: CanvasLink[]
   removed: string[]
@@ -166,7 +167,7 @@ export type LabCanvas = {
   view: { x: number; y: number; zoom: number } | null
 }
 
-const EMPTY_CANVAS: LabCanvas = { moved: {}, added: [], links: [], removed: [], made: {}, queue: [], serial: 1, view: null }
+const EMPTY_CANVAS: LabCanvas = { moved: {}, sizes: {}, added: [], links: [], removed: [], made: {}, queue: [], serial: 1, view: null }
 /** A scene the user added by hand: its name, its line and its length. Spark plans the rest. */
 export type AddedScene = { id: string; role: string; say: string; seconds: number }
 /** A picture or clip of the user's (from Storage, or uploaded there), given to a scene as it is or as a reference. */
@@ -204,12 +205,13 @@ type Action =
   | { type: 'addScene'; scene: Omit<AddedScene, 'id'> }
   | { type: 'removeAdded'; kind: AddedKind; index: number }
   | { type: 'canvasMove'; moved: Record<string, { x: number; y: number }> }
-  | { type: 'canvasAdd'; kind: string; x: number; y: number; from?: string }
+  | { type: 'canvasAdd'; kind: string; x: number; y: number; from?: string; size?: { w: number; h: number } }
+  | { type: 'canvasResize'; id: string; w: number; h: number }
   | { type: 'canvasRemove'; ids: string[] }
   | { type: 'canvasLink'; source: string; target: string }
   | { type: 'canvasUnlink'; ids: string[] }
-  | { type: 'canvasRun'; jobs: CanvasJob[] }
-  | { type: 'canvasMade' }
+  | { type: 'canvasRun'; jobs: CanvasJob[]; at: number }
+  | { type: 'canvasMade'; at?: number }
   | { type: 'canvasStop' }
   | { type: 'canvasView'; view: LabCanvas['view'] }
   | { type: 'setMedia'; id: string; media: LabMedia | null }
@@ -369,8 +371,11 @@ function reducer(state: LabRunState, action: Action): LabRunState {
       const { canvas } = state
       const id = `own/${canvas.serial}`
       const links = action.from ? [...canvas.links, { id: `${action.from}→${id}`, source: action.from, target: id }] : canvas.links
-      return { ...state, canvas: { ...canvas, added: [...canvas.added, { id, kind: action.kind, x: action.x, y: action.y }], links, serial: canvas.serial + 1 } }
+      const sizes = action.size ? { ...canvas.sizes, [id]: action.size } : canvas.sizes
+      return { ...state, canvas: { ...canvas, added: [...canvas.added, { id, kind: action.kind, x: action.x, y: action.y }], links, sizes, serial: canvas.serial + 1 } }
     }
+    case 'canvasResize':
+      return { ...state, canvas: { ...state.canvas, sizes: { ...state.canvas.sizes, [action.id]: { w: action.w, h: action.h } } } }
     case 'canvasRemove': {
       const { canvas } = state
       const gone = new Set(action.ids)
@@ -400,11 +405,16 @@ function reducer(state: LabRunState, action: Action): LabRunState {
     case 'canvasRun': {
       const waiting = new Set(state.canvas.queue.map((job) => job.id))
       const jobs = action.jobs.filter((job) => !waiting.has(job.id))
-      return jobs.length ? { ...state, canvas: { ...state.canvas, queue: [...state.canvas.queue, ...jobs] } } : state
+      if (!jobs.length) return state
+      // With nothing waiting, the first one starts now.
+      const queue = state.canvas.queue.length ? [...state.canvas.queue, ...jobs] : jobs.map((job, index) => (index ? job : { ...job, startedAt: action.at }))
+      return { ...state, canvas: { ...state.canvas, queue } }
     }
     case 'canvasMade': {
-      const [job, ...queue] = state.canvas.queue
+      const [job, ...rest] = state.canvas.queue
       if (!job) return state
+      // The next one starts as this one is made.
+      const queue = rest.map((next, index) => (index ? next : { ...next, startedAt: action.at }))
       return { ...state, canvas: { ...state.canvas, queue, made: { ...state.canvas.made, [job.id]: (state.canvas.made[job.id] ?? 0) + 1 } } }
     }
     case 'canvasStop':
@@ -549,8 +559,9 @@ export type LabRun = {
   /** Plan › Üretim's canvas: what the user does on it (see `LabCanvas`). */
   canvas: {
     move: (moved: Record<string, { x: number; y: number }>) => void
-    /** Puts a node of `kind` at (x, y); with `from`, linked from that node's output. */
-    add: (kind: string, x: number, y: number, from?: string) => void
+    /** Puts a node of `kind` at (x, y); with `from`, linked from that node's output; `size` for a frame. */
+    add: (kind: string, x: number, y: number, from?: string, size?: { w: number; h: number }) => void
+    resize: (id: string, w: number, h: number) => void
     remove: (ids: string[]) => void
     link: (source: string, target: string) => void
     unlink: (ids: string[]) => void
@@ -652,7 +663,8 @@ function createLabRunStore(init: LabRunInit): LabRunStore {
     timer = window.setTimeout(() => {
       timer = null
       scheduledFor = ''
-      dispatch(next.action)
+      // A node made on the canvas hands over to the next one now: it is stamped with when that one starts.
+      dispatch(next.action.type === 'canvasMade' ? { ...next.action, at: Date.now() } : next.action)
     }, next.delay)
   }
   const dispatch = (action: Action) => {
@@ -741,11 +753,12 @@ export function useLabRun(init: LabRunInit = {}, runKey?: string): LabRun {
       removeAdded: (kind, index) => dispatch({ type: 'removeAdded', kind, index }),
       canvas: {
         move: (moved) => dispatch({ type: 'canvasMove', moved }),
-        add: (kind, x, y, from) => dispatch({ type: 'canvasAdd', kind, x, y, from }),
+        add: (kind, x, y, from, size) => dispatch({ type: 'canvasAdd', kind, x, y, from, size }),
+        resize: (id, w, h) => dispatch({ type: 'canvasResize', id, w, h }),
         remove: (ids) => dispatch({ type: 'canvasRemove', ids }),
         link: (source, target) => dispatch({ type: 'canvasLink', source, target }),
         unlink: (ids) => dispatch({ type: 'canvasUnlink', ids }),
-        run: (jobs) => dispatch({ type: 'canvasRun', jobs }),
+        run: (jobs) => dispatch({ type: 'canvasRun', jobs, at: Date.now() }),
         stop: () => dispatch({ type: 'canvasStop' }),
         view: (view) => dispatch({ type: 'canvasView', view }),
       },

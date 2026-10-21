@@ -1,0 +1,75 @@
+/* Plan › Üretim's floating chrome (`chain-chrome.tsx`): the queue pill and its panel, the zoom pill, the progress ring.
+   Each is one soft surface edged by a hairline, like the canvas tools; rows and buttons take a fill when pointed at,
+   never a frame of their own. Spark's violet marks only what is being made. The canvas's tokens (`--cv-*`) come from
+   `.lb-cv` in lab-chain.css and Spark's (`--lb-agent*`) from the lab root; the canvas places these, they never do. */
+
+/* ---------- the progress ring ---------- */
+.yt-studio .lb-cc-ring{display:block;flex:none;overflow:visible}
+.yt-studio .lb-cc-ring circle{fill:none}
+.yt-studio .lb-cc-ring .track{stroke:var(--cv-line-strong,color-mix(in srgb,currentColor 22%,transparent))}
+.yt-studio .lb-cc-ring .arc{stroke:var(--lb-agent,currentColor);stroke-linecap:round;transition:stroke-dashoffset .3s ease}
+.yt-studio .lb-cc-ring.spin{transform-origin:50% 50%;animation:lb-cc-spin .8s linear infinite}
+@keyframes lb-cc-spin{to{transform:rotate(360deg)}}
+
+/* ---------- the queue: a pill, and a panel below it ---------- */
+.yt-studio .lb-cc-queue{position:relative;display:inline-flex}
+.yt-studio .lb-cc-queue-btn{display:inline-flex;align-items:center;gap:7px;box-sizing:border-box;height:34px;padding:0 10px;border-radius:12px;
+  background:var(--cv-node);box-shadow:0 0 0 1px var(--cv-line),var(--cv-shadow);font-size:12.5px;line-height:1;color:var(--st-text-3);white-space:nowrap;transition:box-shadow .12s}
+.yt-studio .lb-cc-queue-btn:hover,.yt-studio .lb-cc-queue-btn[aria-expanded="true"]{box-shadow:0 0 0 1px var(--cv-line-strong),var(--cv-shadow)}
+.yt-studio .lb-cc-queue-btn b{font-weight:500;color:var(--st-text-2)}
+.yt-studio .lb-cc-queue-btn.live b{color:var(--st-text)}
+.yt-studio .lb-cc-n{font-variant-numeric:tabular-nums;color:var(--st-text-3)}
+.yt-studio .lb-cc-n::before{content:'·';margin-right:5px;color:var(--st-text-3)}
+.yt-studio .lb-cc-queue-btn.live .lb-cc-n{font-weight:500;color:var(--lb-agent-text)}
+.yt-studio .lb-cc-chev{width:14px;height:14px;flex:none;margin-left:-1px;color:var(--st-text-3);stroke-width:1.8;transition:transform .15s ease}
+.yt-studio .lb-cc-queue-btn[aria-expanded="true"] .lb-cc-chev{transform:rotate(180deg)}
+
+.yt-studio .lb-cc-panel{position:absolute;top:calc(100% + 8px);right:0;z-index:40;display:flex;flex-direction:column;gap:1px;box-sizing:border-box;
+  width:300px;max-width:calc(100vw - 32px);max-height:360px;padding:6px;overflow-y:auto;overscroll-behavior:contain;scrollbar-width:thin;
+  border-radius:14px;background:var(--cv-node);box-shadow:0 0 0 1px var(--cv-line),var(--cv-shadow);cursor:default;animation:lb-cc-in .14s ease-out}
+@keyframes lb-cc-in{from{opacity:0;transform:translateY(-4px)}}
+
+.yt-studio .lb-cc-row{display:flex;align-items:center;gap:10px;flex:none;width:100%;box-sizing:border-box;padding:8px 10px;border-radius:10px;text-align:left;color:var(--st-text-2)}
+.yt-studio button.lb-cc-row{transition:background .12s}
+.yt-studio button.lb-cc-row:hover{background:var(--cv-fill)}
+.yt-studio .lb-cc-row-t{display:grid;grid-template-columns:minmax(0,1fr);gap:1px;min-width:0;flex:1}
+.yt-studio .lb-cc-row-t b{font-size:12.5px;font-weight:500;line-height:17px;color:var(--st-text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.yt-studio .lb-cc-row-t small{font-size:11.5px;line-height:15px;color:var(--st-text-3);font-variant-numeric:tabular-nums;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+
+/* the kind's glyph: a soft square, the kind's tint on the icon only (`.k-<kind>` sets `--k`) */
+.yt-studio .lb-cc-glyph{display:grid;place-items:center;width:28px;height:28px;flex:none;border-radius:8px;background:var(--cv-fill);color:var(--k,var(--st-text-2))}
+.yt-studio .lb-cc-glyph .i{width:14px;height:14px}
+.yt-studio .lb-cc-glyph.spark{background:var(--lb-agent-soft);color:var(--lb-agent)}
+
+/* how far a running row is: a hairline bar under its words; it slides while that is not known */
+.yt-studio .lb-cc-bar{position:relative;display:block;height:2px;margin-top:6px;border-radius:2px;background:var(--cv-line);overflow:hidden}
+.yt-studio .lb-cc-bar i{position:absolute;left:0;top:0;bottom:0;width:0;border-radius:inherit;background:var(--lb-agent);transition:width .3s ease}
+.yt-studio .lb-cc-bar.busy i{width:35%;animation:lb-cc-slide 1.2s ease-in-out infinite}
+@keyframes lb-cc-slide{from{transform:translateX(-100%)}to{transform:translateX(290%)}}
+
+.yt-studio .lb-cc-empty{margin:0;padding:10px;font-size:12.5px;line-height:1.45;color:var(--st-text-3)}
+.yt-studio .lb-cc-stop{position:relative;display:flex;align-items:center;justify-content:center;flex:none;height:32px;margin-top:7px;border-radius:10px;
+  font-size:12.5px;font-weight:500;color:var(--st-text-2);transition:background .12s,color .12s}
+.yt-studio .lb-cc-stop::before{content:'';position:absolute;left:4px;right:4px;top:-4px;height:1px;background:var(--cv-line)}
+.yt-studio .lb-cc-stop:hover{background:var(--cv-fill);color:var(--st-text)}
+
+/* ---------- the zoom pill ---------- */
+.yt-studio .lb-cc-zoom{display:inline-flex;align-items:center;gap:2px;box-sizing:border-box;height:34px;padding:3px;border-radius:12px;
+  background:var(--cv-node);box-shadow:0 0 0 1px var(--cv-line),var(--cv-shadow)}
+.yt-studio .lb-cc-zoom button{display:grid;place-items:center;flex:none;width:28px;height:28px;border-radius:9px;color:var(--st-text-2);transition:background .12s,color .12s}
+.yt-studio .lb-cc-zoom button:hover{background:var(--cv-fill);color:var(--st-text)}
+.yt-studio .lb-cc-zoom button.on{background:color-mix(in srgb,var(--st-text) 9%,transparent);color:var(--st-text)}
+.yt-studio .lb-cc-zoom button svg{width:15px;height:15px;stroke-width:1.7}
+.yt-studio .lb-cc-zoom button.lb-cc-pct{width:auto;min-width:46px;padding:0 6px;font-size:12px;font-weight:500;font-variant-numeric:tabular-nums}
+.yt-studio .lb-cc-zoom > i{width:1px;height:16px;margin:0 3px;flex:none;background:var(--cv-line)}
+
+/* ---------- focus from the keyboard ---------- */
+.yt-studio .lb-cc-queue-btn:focus-visible{outline:1.5px solid var(--cv-on);outline-offset:2px}
+.yt-studio :is(.lb-cc-row,.lb-cc-stop,.lb-cc-zoom button):focus-visible{outline:1.5px solid var(--cv-on);outline-offset:-1.5px}
+
+@media (prefers-reduced-motion:reduce){
+  .yt-studio .lb-cc-ring.spin{animation-duration:2.4s}
+  .yt-studio .lb-cc-bar.busy i{animation-duration:3.6s}
+  .yt-studio .lb-cc-panel{animation:none}
+  .yt-studio .lb-cc-chev,.yt-studio .lb-cc-ring .arc,.yt-studio .lb-cc-bar i{transition:none}
+}

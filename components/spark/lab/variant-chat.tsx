@@ -3,7 +3,7 @@
 import * as React from 'react'
 
 import { STEPS, type LabVariant } from './lab-model'
-import { AgentCursor, Chat, Composer, DriveButtons, Icon, LabDock, LabStage, StartHero, TopBar } from './lab-parts'
+import { AgentCursor, Chat, Composer, DriveButtons, LabDock, LabStage, StartHero, TopBar } from './lab-parts'
 import { Splitter, useSplitSize } from './lab-split'
 import { currentStep, progress, stepStatus, type LabRun } from './use-lab-run'
 
@@ -64,9 +64,11 @@ export function SparkScreen({ run, onEdit, dockKey = 'chat-dock', head = true }:
   head?: boolean
 }) {
   const screen = React.useRef<HTMLDivElement>(null)
+  // The bar is there while Spark builds; a finished video gets its room (the Editör is a tab away).
+  const bar = head && run.state.phase === 'building'
   return (
-    <div className={`lb-screen${head ? '' : ' no-head'}`}>
-      {head ? <ScreenHead run={run} onEdit={onEdit} /> : null}
+    <div className={`lb-screen${bar ? '' : ' no-head'}`}>
+      {bar ? <ScreenHead run={run} onEdit={onEdit} /> : null}
       <div className="lb-screen-body" ref={screen}>
         <LabStage run={run} />
         <LabDock run={run} compact sizeKey={dockKey} />
@@ -91,18 +93,13 @@ export function ScreenLine({ run }: { run: LabRun }) {
   )
 }
 
-/** The screen's own bar: who drives, and taking over. Pausing is the send button of the chat beside it. */
+/** The screen's own bar while Spark builds: who drives, and taking over. Pausing is the send button of the chat beside it. */
 function ScreenHead({ run, onEdit }: { run: LabRun; onEdit: () => void }) {
-  const live = run.state.phase === 'building'
   return (
     <div className="lb-screen-head">
       <ScreenLine run={run} />
       <span className="grow" />
-      {live ? (
-        <DriveButtons run={run} small pause={false} onTakeOver={onEdit} />
-      ) : (
-        <button type="button" className="btn sm" onClick={onEdit}><Icon name="expand" size="sm" />Editörde aç</button>
-      )}
+      <DriveButtons run={run} small pause={false} onTakeOver={onEdit} />
     </div>
   )
 }

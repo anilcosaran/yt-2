@@ -11,6 +11,7 @@ import {
   SCENES,
   STEPS,
   SUGGESTIONS,
+  sceneById,
   titleFromPrompt,
   type AgentStep,
   type Autonomy,
@@ -89,6 +90,33 @@ export type LabRunState = {
   applying: number | null
   /** The targets of the batch being applied that are not ready yet; they get ready one by one. */
   applyingLeft: string[]
+  /**
+   * The user's requests after the first sentence, oldest first: every sending of notes and every request typed in the
+   * chat, each with the project as it was just before it (where "Öncesine dön" goes back to).
+   */
+  turns: LabTurn[]
+  /**
+   * The project was taken back to before request `at`: it and the ones after it read as taken back until the next
+   * request replaces them. `redo` is the project as it was, for "Geri getir".
+   */
+  rewound: { at: number; redo: LabSlice } | null
+}
+
+/** What a request can change, kept whole for each restore point (the reducer never mutates, so these are references). */
+export type LabSlice = Pick<LabRunState, 'undone' | 'skipped' | 'locked' | 'dropped' | 'edits' | 'picks' | 'added' | 'media' | 'refs' | 'asks'>
+
+/** One request: what was said (a note's targets and words, or the chat's own sentence), its batch and the project before it. */
+export type LabTurn = {
+  id: string
+  batch: number
+  from: 'notes' | 'chat'
+  notes: { labels: string[]; text: string }[]
+  before: LabSlice
+}
+
+function sliceOf(state: LabRunState): LabSlice {
+  const { undone, skipped, locked, dropped, edits, picks, added, media, refs, asks } = state
+  return { undone, skipped, locked, dropped, edits, picks, added, media, refs, asks }
 }
 
 /**
@@ -141,10 +169,13 @@ type Action =
   | { type: 'saveNote'; note: NoteDraft }
   | { type: 'dropNote'; id: string }
   | { type: 'clearNotes' }
-  | { type: 'sendNotes'; with?: NoteDraft; only?: boolean }
+  | { type: 'sendNotes'; with?: NoteDraft; only?: boolean; from?: LabTurn['from'] }
+  | { type: 'request'; text: string }
   | { type: 'notesApplied' }
   | { type: 'undoAsk'; target: string }
   | { type: 'undoBatch'; batch: number }
+  | { type: 'rewind'; id: string }
+  | { type: 'restore' }
 
 const FIRST_SCENE = SCENES[0]!.id
 
@@ -180,6 +211,8 @@ function base(prompt = ''): LabRunState {
     batches: 0,
     applying: null,
     applyingLeft: [],
+    turns: [],
+    rewound: null,
   }
 }
 
@@ -309,8 +342,36 @@ function reducer(state: LabRunState, action: Action): LabRunState {
       }
       for (const note of pending) note.targets.forEach((target) => send(target, note.text))
       bare.forEach((target) => send(target, ''))
-      return { ...state, asks, notes: waiting, batches: batch, applying: batch, applyingLeft: sent }
+      const remade = bare.map((target) => action.with?.labels[action.with.targets.indexOf(target)] ?? target)
+      const turn: LabTurn = {
+        id: `turn-${batch}`,
+        batch,
+        from: action.from ?? 'notes',
+        notes: [...pending.map((note) => ({ labels: note.labels, text: note.text })), ...(remade.length ? [{ labels: remade, text: '' }] : [])],
+        before: sliceOf(state),
+      }
+      // A new request after going back replaces the requests that were taken back.
+      const turns = [...(state.rewound ? state.turns.slice(0, state.rewound.at) : state.turns), turn]
+      return { ...state, asks, notes: waiting, batches: batch, applying: batch, applyingLeft: sent, turns, rewound: null }
     }
+    case 'request': {
+      // A request typed in the chat once the video is made: Spark applies it to the scene it names ("4. sahnede"),
+      // else to the scene on screen, as one edit like a sending of notes.
+      const named = /(\d+)\.\s*sahne/i.exec(action.text)
+      const scene = (named ? SCENES.find((entry) => entry.n === Number(named[1])) : undefined) ?? sceneById(shownSceneId(state)) ?? SCENES[0]!
+      const text = action.text.trim()
+      if (!text) return state
+      return reducer(state, { type: 'sendNotes', with: { targets: [scene.id], labels: [`${scene.role} sahnesi`], text }, only: true, from: 'chat' })
+    }
+    case 'rewind': {
+      const at = state.turns.findIndex((turn) => turn.id === action.id)
+      if (at === -1) return state
+      // Back to before this request: it and the ones after it are taken back, and one still being applied stops. The
+      // project as it was stays at hand until the next request ("Geri getir").
+      return { ...state, ...state.turns[at]!.before, applying: null, applyingLeft: [], rewound: { at, redo: state.rewound?.redo ?? sliceOf(state) } }
+    }
+    case 'restore':
+      return state.rewound ? { ...state, ...state.rewound.redo, rewound: null } : state
     case 'notesApplied': {
       if (state.applying === null) return state
       const applyingLeft = state.applyingLeft.slice(1)
@@ -318,11 +379,11 @@ function reducer(state: LabRunState, action: Action): LabRunState {
     }
     case 'undoAsk':
       return { ...state, asks: { ...state.asks, [action.target]: (state.asks[action.target] ?? []).slice(0, -1) } }
-    case 'undoBatch':
-      return {
-        ...state,
-        asks: Object.fromEntries(Object.entries(state.asks).map(([target, list]) => [target, list.filter((ask) => ask.batch !== action.batch)])),
-      }
+    case 'undoBatch': {
+      const asks = Object.fromEntries(Object.entries(state.asks).map(([target, list]) => [target, list.filter((ask) => ask.batch !== action.batch)]))
+      // Taking back the batch Spark is still applying stops it.
+      return state.applying === action.batch ? { ...state, asks, applying: null, applyingLeft: [] } : { ...state, asks }
+    }
     case 'toggleLock': {
       const locking = !state.locked.includes(action.sceneId)
       const locked = toggle(state.locked, action.sceneId)
@@ -394,6 +455,12 @@ export type LabRun = {
   undoAsk: (target: string) => void
   /** Takes back everything one sending of notes changed. */
   undoBatch: (batch: number) => void
+  /** A request typed in the chat once the video is made; Spark applies it as one edit. */
+  request: (text: string) => void
+  /** Goes back to the project as it was before the request `id` (and the ones after it). */
+  rewind: (id: string) => void
+  /** Brings back what going back took back ("Geri getir"). */
+  restore: () => void
 }
 
 // ---- the run's store ---------------------------------------------------------------------------------------
@@ -550,6 +617,9 @@ export function useLabRun(init: LabRunInit = {}, runKey?: string): LabRun {
       sendNotes: (note, options) => dispatch({ type: 'sendNotes', with: note, only: options?.only }),
       undoAsk: (target) => dispatch({ type: 'undoAsk', target }),
       undoBatch: (batch) => dispatch({ type: 'undoBatch', batch }),
+      request: (text) => dispatch({ type: 'request', text }),
+      rewind: (id) => dispatch({ type: 'rewind', id }),
+      restore: () => dispatch({ type: 'restore' }),
     }),
     [state, init.title, dispatch],
   )
@@ -602,6 +672,17 @@ export function notesOn(state: LabRunState, target: string) {
 /** Whether Spark is applying a note to `target` right now. */
 export function applyingTo(state: LabRunState, target: string) {
   return state.applying !== null && state.applyingLeft.includes(target)
+}
+
+/**
+ * Where a request stands: Spark is applying it, it is done, its change was taken back (from the timeline), or the
+ * project went back to before it ("Öncesine dön").
+ */
+export function turnStatus(state: LabRunState, index: number): 'applying' | 'done' | 'undone' | 'rewound' {
+  const turn = state.turns[index]
+  if (!turn || (state.rewound && index >= state.rewound.at)) return 'rewound'
+  if (state.applying === turn.batch) return 'applying'
+  return Object.values(state.asks).some((list) => list.some((ask) => ask.batch === turn.batch)) ? 'done' : 'undone'
 }
 
 /** The targets the last sending of notes changed and that still carry that change. */

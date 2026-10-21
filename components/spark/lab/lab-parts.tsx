@@ -53,6 +53,7 @@ import {
   sceneStatus,
   shownSceneId,
   stepStatus,
+  turnStatus,
   type LabRun,
   type SceneStatus,
 } from './use-lab-run'
@@ -325,6 +326,10 @@ export function Composer({ run, big, onEdit }: { run: LabRun; big?: boolean; onE
   const closing = closingChoices(run.state) !== null
   // Before production the estimate lives on the plan itself (job card, approval line).
   const estimated = run.state.phase === 'building' || run.state.phase === 'done'
+  // Once the video is made, what is written here is a request: one edit, one restore point in the thread. One at a
+  // time: the next waits until Spark has applied the last.
+  const requesting = run.state.phase === 'done'
+  const busy = run.state.applying !== null
   const [text, setText] = React.useState('')
   const input = React.useRef<HTMLTextAreaElement>(null)
   const send = () => {
@@ -332,6 +337,8 @@ export function Composer({ run, big, onEdit }: { run: LabRun; big?: boolean; onE
       if (text.trim()) run.answer(asking.id, text.trim())
     } else if (fresh) {
       run.submit(text)
+    } else if (requesting && text.trim() && !busy) {
+      run.request(text)
     } else {
       return
     }
@@ -368,8 +375,8 @@ export function Composer({ run, big, onEdit }: { run: LabRun; big?: boolean; onE
                 type="button"
                 label="Gönder"
                 onClick={send}
-                disabled={asking ? !text.trim() : !fresh}
-                title={asking ? 'Cevabını gönder' : fresh ? 'Gönder' : 'Prototipte yalnız ilk istek canlandırılır'}
+                disabled={asking ? !text.trim() : fresh ? false : !(requesting && text.trim() && !busy)}
+                title={asking ? 'Cevabını gönder' : fresh || (requesting && !busy) ? 'Gönder' : requesting ? 'Spark son isteğini uyguluyor' : 'Video bitince buradan istek gönderebilirsin'}
               />
             )}
           </>
@@ -517,10 +524,10 @@ export function JobCard({ run, onOpenPlan, controls = true, credits, actions, pl
   })
   const sceneItems: AgentQueueItem[] = SCENES.map((scene) => {
     const status = sceneStatus(state, scene.id)
+    // No lengths on the rows: the timeline beside the chat shows them.
     return {
       id: scene.id,
       text: scene.role,
-      meta: `${scene.end - scene.start} sn`,
       state: !producing ? 'pending' : status === 'ready' ? 'done' : status === 'working' ? 'current' : status === 'yours' ? 'skipped' : 'pending',
       onClick: producing ? () => run.view(scene.id) : undefined,
     }
@@ -587,7 +594,8 @@ export function JobCard({ run, onOpenPlan, controls = true, credits, actions, pl
       <AgentQueue
         sections={[drafting
           ? { id: 'draft', count: DRAFT_PARTS.length, label: 'parça yazılıyor', items: draftItems }
-          : { id: 'plan', count: `${SCENES.length} sahne`, label: `· ${formatClock(TOTAL_SECONDS)}`, meta: estimate, items: sceneItems }]}
+          // The estimate is a decision only before production; after it the composer keeps it.
+          : { id: 'plan', count: `${SCENES.length} sahne`, label: `· ${formatClock(TOTAL_SECONDS)}`, meta: producing ? undefined : estimate, items: sceneItems }]}
         footer={planFooter}
       />
       {producing ? (
@@ -795,8 +803,60 @@ export function Chat({ run, onOpenPlan, controls, detail }: { run: LabRun; onOpe
           {keptForChannel(state).length ? <ClosingSuggestions run={run} /> : null}
         </div>
       ) : null}
+      <Requests run={run} />
     </div>
   )
+}
+
+/**
+ * The requests after the first sentence, each a turn of the thread: what the user asked (in the chat, or as notes
+ * from the plan and the timeline), then Spark's line on it. Every request is a restore point: "Öncesine dön" on its
+ * bubble takes the project back to before it. What that took back stays in the thread, quiet, until a new request
+ * replaces it; "Geri getir" brings it back. There is no version list: the thread is the history.
+ */
+function Requests({ run }: { run: LabRun }) {
+  const { state } = run
+  return state.turns.map((turn, index) => {
+    const status = turnStatus(state, index)
+    const off = status === 'rewound' ? ' lb-turn-off' : ''
+    const names = [...new Set(turn.notes.flatMap((note) => note.labels))].join(', ')
+    return (
+      <React.Fragment key={turn.id}>
+        {state.rewound?.at === index ? (
+          <div className="lb-rewound lb-in">
+            <span>Bu isteğin öncesine dönüldü</span>
+            <button type="button" className="btn sm ghost" onClick={run.restore}>
+              <Icon name="redo" size="sm" />
+              Geri getir
+            </button>
+          </div>
+        ) : null}
+        <div className={`m-user lb-in${off}`}>
+          <div className="bubble">
+            {turn.from === 'chat'
+              ? turn.notes[0]?.text
+              : turn.notes.map((note, at) => (
+                <span key={at} className="lb-turn-note"><b>{note.labels.join(', ')}</b>{note.text ? `: ${note.text}` : ' · yeniden üret'}</span>
+              ))}
+          </div>
+          {status === 'rewound' ? null : (
+            <button type="button" className="lb-turn-back" onClick={() => run.rewind(turn.id)} title="Projeyi bu istekten önceki haline döndürür; sonra geri getirebilirsin">
+              <Icon name="undo" size="sm" />
+              Öncesine dön
+            </button>
+          )}
+        </div>
+        <div className={`m-ai lb-in${off}`}>
+          <span className={`lb-queue-state${status === 'undone' ? ' muted' : ''}`}>
+            <AgentStepIcon state={status === 'applying' ? 'current' : status === 'undone' ? 'undone' : 'done'} done={<Icon name="check-c" />} />
+            {status === 'applying'
+              ? <span className="lb-shimmer">{names} yeniden yapılıyor…</span>
+              : status === 'undone' ? `${names} · değişiklik geri alındı` : `${names} güncellendi`}
+          </span>
+        </div>
+      </React.Fragment>
+    )
+  })
 }
 
 // ---- the editor surface ------------------------------------------------------------------------------------
@@ -818,10 +878,7 @@ export function LabStage({ run }: { run: LabRun }) {
           {generating ? <span className="lb-frame-empty shimmer">{assetById(scene.assetId)?.kind === 'generate' ? 'Üretiliyor…' : 'Yerleştiriliyor…'}</span> : null}
         </div>
       </div>
-      <div className="stage-foot">
-        {live ? <span className="pill">Sahne {scene.n} · {scene.role}</span> : <span />}
-        <span className="pill">{state.ratio}</span>
-      </div>
+      {/* No labels under the frame: the scene on screen is marked on the timeline, the ratio is the frame's shape. */}
     </div>
   )
 }
@@ -1048,7 +1105,7 @@ export function useEscapeToClose(active: boolean, close: () => void) {
  */
 function SaveMark({ run }: { run: LabRun }) {
   const { state } = run
-  const revision = [state.phase, state.tick, state.step, state.ratio, state.undone.length, state.dropped.length, state.promoted.length, state.locked.length].join(':')
+  const revision = [state.phase, state.tick, state.step, state.ratio, state.undone.length, state.dropped.length, state.promoted.length, state.locked.length, state.turns.length, state.rewound?.at ?? '-'].join(':')
   return (
     <span key={revision} className="lb-save" role="status" aria-label="Kaydedildi" title="Değişiklikler kaydedildi">
       <Icon name="refresh" size="sm" />

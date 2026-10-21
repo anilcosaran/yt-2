@@ -13,10 +13,10 @@ import { LAB_SYMBOLS, instrumentSans } from '../lab/lab-frame'
  *
  * They follow AI Elements (elements.ai-sdk.dev): `AgentThinking` is Reasoning (one shimmering line while the agent
  * works, its thoughts as plain paragraphs, folded to "6 sn düşündü" after), `AgentQueue` is Queue (the plan as to-dos in
- * sections: a circle per item, struck through when done), `AgentChain` is Chain of Thought (the steps the agent takes,
- * one under the other on a thin line, with what each one makes), `AgentMedia` shows outputs side by side (four images
- * in a row while they render), `AgentQuestion` is the question the agent asks before it plans and `AgentSuggestions`
- * the Suggestion chips. Copy comes from the caller.
+ * sections: a ring per item, a circled tick when done), `AgentChain` is Chain of Thought (a quiet line that opens to the
+ * steps the agent takes, one under the other on a thin line, with what each one makes), `AgentMedia` shows outputs
+ * side by side (four images in a row while they render), `AgentQuestion` is the question the agent asks before it
+ * plans and `AgentSuggestions` the Suggestion chips. Copy comes from the caller.
  */
 
 /** Spark's style scope inline, for parts shown outside a Spark page (the main Chat's thread and composer). */
@@ -96,8 +96,12 @@ export function AgentThinking({ working, label, doneLabel, lines = [] }: {
 export type AgentStepState = 'done' | 'current' | 'waiting' | 'pending' | 'undone' | 'skipped' | 'failed'
 
 /** The mark of a step or item: a tick, a turning circle, a clock (waits on the user), a cross, or what is still to come. */
-export function AgentStepIcon({ state, pending = <span className="lb-pending" /> }: { state: AgentStepState; pending?: React.ReactNode }) {
-  if (state === 'done') return <Icon name="check" />
+export function AgentStepIcon({ state, pending = <span className="lb-pending" />, done = <Icon name="check" /> }: {
+  state: AgentStepState
+  pending?: React.ReactNode
+  done?: React.ReactNode
+}) {
+  if (state === 'done') return done
   if (state === 'current') return <AgentSpinner />
   if (state === 'waiting') return <span className="lb-waiting"><Icon name="clock" /></span>
   if (state === 'undone') return <Icon name="undo" />
@@ -132,9 +136,10 @@ export type AgentQueueSection = {
 
 /**
  * Queue: the plan as to-dos, in sections that fold (a heading with the count and the label, the items in a hairline
- * card under it). Each item has a small circle that fills when it is done (the text is then struck through), turns
- * while it is being made and shows a clock while it waits on the user; a description and previews may follow it,
- * actions show on hover. `footer` closes the queue (the plan's state and its buttons).
+ * card under it), read like a coding agent's task list. Each item has a ring that becomes a circled tick when it is
+ * done (the text goes quiet), turns while it is being made (the text stays bright) and shows a clock while it waits
+ * on the user; a description and previews may follow it, actions show on hover. `footer` closes the queue (the
+ * plan's state and its buttons).
  */
 export function AgentQueue({ sections, footer }: { sections: AgentQueueSection[]; footer?: React.ReactNode }) {
   const [closed, setClosed] = React.useState<Record<string, boolean>>({})
@@ -153,8 +158,8 @@ export function AgentQueue({ sections, footer }: { sections: AgentQueueSection[]
               <ul className="lb-queue-list">
                 {section.items.map((item) => (
                   <li key={item.id} className={`lb-queue-item ${item.state}${item.onClick ? ' go' : ''}`} onClick={item.onClick}>
-                    <span className="lb-queue-ind"><AgentStepIcon state={item.state} pending={<i className="lb-queue-dot" />} /></span>
-                    <span className={`lb-queue-text${item.state === 'current' ? ' lb-shimmer' : ''}`}>{item.text}</span>
+                    <span className="lb-queue-ind"><AgentStepIcon state={item.state} pending={<i className="lb-queue-dot" />} done={<Icon name="check-c" />} /></span>
+                    <span className="lb-queue-text">{item.text}</span>
                     {item.actions ? <span className="lb-queue-acts">{item.actions}</span> : null}
                     {item.meta ? <span className="lb-queue-end">{item.meta}</span> : null}
                     {item.description ? <span className="lb-queue-desc">{item.description}</span> : null}
@@ -186,7 +191,7 @@ export type AgentChainStep = {
 }
 
 /**
- * Chain of Thought, a hairline card folded to one line: while the agent works, the step it is on, shimmering beside a
+ * Chain of Thought, folded to one quiet line (no card): while the agent works, the step it is on, shimmering beside a
  * turning indicator, with how far it has got (`meta`, at the end); when it is done, `title`. `preview` (what it is
  * making now, e.g. four frames side by side) shows under the line; the steps themselves — one under the other on a
  * thin line, with a description, tags and what each made — open from the line.

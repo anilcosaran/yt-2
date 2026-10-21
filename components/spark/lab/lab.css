@@ -183,7 +183,7 @@
 .yt-studio .lb-closing-list li .btn{flex:none}
 
 /* ---------- shared: the editor surface ---------- */
-.yt-studio .lb-stage-in{position:absolute;inset:0;display:grid;place-items:center;padding:22px 24px 52px;container-type:size}
+.yt-studio .lb-stage-in{position:absolute;inset:0;display:grid;place-items:center;padding:22px 24px;container-type:size}
 .yt-studio .lb-frame{width:min(100cqw,calc(min(100cqh,620px)*var(--lb-r)));aspect-ratio:var(--lb-ar);border-radius:10px;background:#0b0b0c;display:grid;place-items:center;transition:box-shadow .2s}
 .yt-studio .lb-frame-empty{position:relative;z-index:1;color:rgba(255,255,255,.42);font-size:12.5px}
 .yt-studio .lb-frame-empty.shimmer{background:linear-gradient(90deg,rgba(255,255,255,.35) 0,#fff 40%,rgba(255,255,255,.35) 80%);background-size:200% 100%;-webkit-background-clip:text;background-clip:text;color:transparent;animation:st-shimmer 1.4s linear infinite}
@@ -700,19 +700,19 @@
 .yt-studio .lb-queue-item.go{cursor:pointer}
 .yt-studio .lb-queue-item.go:hover{background:var(--st-hover)}
 .yt-studio .lb-queue-ind{display:grid;place-items:center;width:16px;height:16px}
-.yt-studio .lb-queue-ind .i{width:13px;height:13px;color:var(--st-ok)}
+.yt-studio .lb-queue-ind .i{width:14px;height:14px;color:var(--st-text-3)}
 .yt-studio .lb-queue-ind .spin{width:12px;height:12px}
 .yt-studio .lb-queue-ind .lb-waiting .i{color:var(--lb-amber)}
-.yt-studio .lb-queue-dot{display:block;width:10px;height:10px;border-radius:50%;border:1.5px solid color-mix(in srgb,var(--st-text-2) 55%,transparent)}
+.yt-studio .lb-queue-dot{display:block;width:12px;height:12px;border-radius:50%;border:1.5px solid color-mix(in srgb,var(--st-text-2) 55%,transparent);box-sizing:border-box}
 .yt-studio .lb-queue-text{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.yt-studio .lb-queue-item.done .lb-queue-text{color:var(--st-text-3);text-decoration:line-through;text-decoration-color:color-mix(in srgb,var(--st-text-3) 70%,transparent)}
+.yt-studio .lb-queue-item.done .lb-queue-text{color:var(--st-text-3)}
 .yt-studio .lb-queue-item.current .lb-queue-text{font-weight:500}
 .yt-studio .lb-queue-item.skipped .lb-queue-text{color:var(--st-text-3);font-style:italic}
 .yt-studio .lb-queue-end{color:var(--st-text-3);font-size:12px;font-weight:400;font-variant-numeric:tabular-nums;white-space:nowrap}
 .yt-studio .lb-queue-acts{display:flex;gap:4px;opacity:0;transition:opacity .12s}
 .yt-studio .lb-queue-item:hover .lb-queue-acts,.yt-studio .lb-queue-acts:focus-within{opacity:1}
 .yt-studio .lb-queue-desc{grid-column:2/-1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:12px;font-weight:400;color:var(--st-text-3)}
-.yt-studio .lb-queue-item.done .lb-queue-desc{text-decoration:line-through;opacity:.7}
+.yt-studio .lb-queue-item.done .lb-queue-desc{opacity:.7}
 .yt-studio .lb-queue-files{grid-column:2/-1;display:flex;gap:6px;margin-top:4px}
 .yt-studio .lb-queue-thumb{position:relative;display:block;width:22px;height:32px;border-radius:5px;overflow:hidden;border:1px solid var(--st-border)}
 .yt-studio .lb-queue-thumb .lb-thumb,.yt-studio .lb-queue-thumb .lb-art{display:block}
@@ -720,17 +720,29 @@
 .yt-studio .lb-queue-state{display:inline-flex;align-items:center;gap:8px;font-size:12.5px;font-weight:500;color:var(--st-text)}
 .yt-studio .lb-queue-state .i{width:14px;height:14px}
 .yt-studio .lb-queue-state .lb-waiting .i{color:var(--lb-amber)}
+.yt-studio .lb-queue-state.muted{color:var(--st-text-3)}
+.yt-studio .lb-queue-state > .i{color:var(--st-text-3)}
+/* A request in the thread: its bubble, "Öncesine dön" under it on hover, and the line where the project went back. */
+.yt-studio .lb-turn-note{display:block}
+.yt-studio .lb-turn-note b{font-weight:600}
+.yt-studio .lb-turn-back{display:inline-flex;align-items:center;gap:5px;height:24px;padding:0 8px;border-radius:6px;font-size:12px;color:var(--st-text-3);opacity:0;transition:opacity .12s,color .12s,background .12s}
+.yt-studio .lb-turn-back .i{width:13px;height:13px}
+.yt-studio .m-user:hover .lb-turn-back,.yt-studio .lb-turn-back:focus-visible{opacity:1}
+.yt-studio .lb-turn-back:hover{color:var(--st-text);background:var(--st-hover)}
+@media (hover:none){.yt-studio .lb-turn-back{opacity:1}}
+.yt-studio .lb-turn-off{opacity:.42}
+.yt-studio .lb-rewound{display:flex;align-items:center;gap:10px;font-size:12.5px;color:var(--st-text-2)}
+.yt-studio .lb-rewound::before,.yt-studio .lb-rewound::after{content:'';flex:1;height:1px;background:var(--st-border)}
 
-/* Chain of Thought: a hairline card — the folded line (indicator, step, caret, the count at the end), then what it
-   is making or, open, the steps; the footer under a hairline. */
-.yt-studio .lb-cot{display:grid;border:1px solid var(--st-border);border-radius:10px;background:color-mix(in srgb,var(--st-surface) 45%,transparent);overflow:hidden}
-.dark .yt-studio .lb-cot{border-color:oklch(1 0 0 / 9%)}
-.yt-studio .lb-cot-head{display:flex;align-items:center;gap:8px;width:100%;min-height:40px;padding:0 12px;font-size:13px;color:var(--st-text-2);text-align:left;transition:color .12s,background .12s}
-.yt-studio .lb-cot-head:hover{color:var(--st-text);background:color-mix(in srgb,var(--st-hover) 60%,transparent)}
+/* Chain of Thought: a quiet line, no card — the folded line (indicator, step, caret, the count at the end), then what
+   it is making or, open, the steps under it; the footer after them. */
+.yt-studio .lb-cot{display:grid;gap:4px}
+.yt-studio .lb-cot-head{display:flex;align-items:center;gap:8px;width:100%;min-height:28px;padding:0 2px;font-size:13px;color:var(--st-text-2);text-align:left;transition:color .12s}
+.yt-studio .lb-cot-head:hover{color:var(--st-text)}
 .yt-studio .lb-cot-head:hover .lb-caret{opacity:1}
 .yt-studio .lb-cot-head > .i{width:14px;height:14px;flex:none;color:var(--st-text-3)}
 .yt-studio .lb-cot-title{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.yt-studio .lb-cot-steps{list-style:none;margin:0;padding:12px;display:grid;border-top:1px solid var(--st-border)}
+.yt-studio .lb-cot-steps{list-style:none;margin:0;padding:6px 0 4px 2px;display:grid}
 .yt-studio .lb-cot-step{position:relative;display:grid;grid-template-columns:16px minmax(0,1fr);column-gap:10px;padding-bottom:14px;font-size:13px;line-height:1.45;color:var(--st-text-2);animation:st-pop .25s ease-out}
 .yt-studio .lb-cot-step:last-child{padding-bottom:0}
 .yt-studio .lb-cot-step::before{content:'';position:absolute;left:7.5px;top:20px;bottom:2px;width:1px;background:var(--st-border-strong)}
@@ -740,7 +752,7 @@
 .yt-studio .lb-cot-step.pending{color:var(--st-text-3)}
 .yt-studio .lb-cot-step.undone .lb-cot-label{text-decoration:line-through;color:var(--st-text-3)}
 .yt-studio .lb-cot-ico{display:grid;place-items:center;width:16px;height:19px}
-.yt-studio .lb-cot-ico .i{width:14px;height:14px;color:var(--st-ok)}
+.yt-studio .lb-cot-ico .i{width:14px;height:14px;color:var(--st-text-3)}
 .yt-studio .lb-cot-step.undone .lb-cot-ico .i{color:var(--st-text-3)}
 .yt-studio .lb-cot-ico .spin{width:12px;height:12px}
 .yt-studio .lb-cot-ico .lb-waiting .i{color:var(--lb-amber)}
@@ -755,7 +767,7 @@
 .yt-studio .lb-cot-badges{display:flex;flex-wrap:wrap;gap:6px}
 .yt-studio .lb-cot-badges span{display:inline-flex;align-items:center;height:20px;padding:0 7px;border-radius:6px;background:var(--st-hover);font-size:11.5px;color:var(--st-text-2)}
 .yt-studio .lb-cot-media{padding:8px;border-radius:10px;background:color-mix(in srgb,var(--st-hover) 60%,transparent);justify-self:start}
-.yt-studio .lb-cot-foot{display:flex;align-items:center;flex-wrap:wrap;gap:6px;min-height:40px;padding:6px 8px 6px 12px;border-top:1px solid var(--st-border)}
+.yt-studio .lb-cot-foot{display:flex;align-items:center;flex-wrap:wrap;gap:6px;padding:0 0 0 2px}
 @media (prefers-reduced-motion:reduce){.yt-studio .lb-shimmer{animation:none;color:var(--st-text);background:none}}
 .yt-studio .lb-screen.no-head{grid-template-rows:minmax(0,1fr) auto}
 .yt-studio .lb-canvas-live{display:flex;align-items:center;gap:8px}
@@ -767,7 +779,7 @@
 @keyframes lb-spokes{to{transform:rotate(360deg)}}
 .yt-studio .lb-queue-ind .lb-activity,.yt-studio .lb-cot-ico .lb-activity{width:13px;height:13px}
 .yt-studio .lb-cot-meta{flex:none;margin-left:auto;font-size:12px;color:var(--st-text-3);font-variant-numeric:tabular-nums}
-.yt-studio .lb-cot-preview{padding:0 12px 12px 34px}
+.yt-studio .lb-cot-preview{padding:2px 0 4px 24px}
 .yt-studio .lb-cot-preview .lb-media{padding:6px;border-radius:8px;background:color-mix(in srgb,var(--st-hover) 60%,transparent);box-sizing:content-box}
 /* In the main Chat the agent's lines sit beside 15 px chat text: a size up. */
 .yt-studio.lb-inline .ai-who{font-size:13px}

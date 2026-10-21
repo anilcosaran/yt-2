@@ -47,7 +47,7 @@ function readLeftAt(projectId: string): LabPhase | undefined {
 
 /**
  * The view a project opens on. A link from when projects had a Flow mode (`?mode=flow`) opens its canvas where it
- * is now, Plan › Akış, and its address is put right without a navigation.
+ * is now, Plan › Üretim, and its address is put right without a navigation.
  */
 function useProjectView(view: LabView) {
   const searchParams = useSearchParams()
@@ -70,7 +70,7 @@ function useProjectView(view: LabView) {
 
 /**
  * One Spark project, as a tab of the shell (`lib/work-tabs.ts`): the workspace (`./lab`: Sohbet, Plan and Editör;
- * its canvas is Plan › Akış). The project loads behind a spinner and the workspace opens once it exists and the user
+ * its canvas is Plan › Üretim). The project loads behind a spinner and the workspace opens once it exists and the user
  * can open it; its name and format are the project's own, and its tab is opened (or named) then. A project that is
  * gone closes its tab. It opens on the view its tab was left on; a project with nothing in it yet opens on Sohbet's
  * start, where it is described in one sentence.

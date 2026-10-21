@@ -4,7 +4,7 @@ import * as React from 'react'
 
 import { STUDIO_ICON_SPRITE } from '../studio/studio-icons'
 import { Icon } from '../tools/studio-parts'
-import { LabOverlayContext, ViewSwitchContext } from './lab-context'
+import { ViewSwitchContext } from './lab-context'
 import { LAB_SYMBOLS, instrumentSans, useLabScrollbars } from './lab-frame'
 import { LAB_VARIANTS, ratioOf, type LabBoard, type LabLook, type LabPhase, type LabRatio, type LabVariant } from './lab-model'
 import { useLabRun } from './use-lab-run'
@@ -28,7 +28,7 @@ import './lab-look.css'
  * `look` picks the component shapes over the same markup (`calm`, or `spark` for the lab as it was before that
  * layer). Colours are not the lab's: they follow the app's theme setting (light, dark or paper).
  *
- * The project's canvas is Plan › Akış (`board=flow`). `contained` fills the parent (the shell's page panel, where a
+ * The project's canvas is Plan › Üretim (`board=flow`). `contained` fills the parent (the shell's page panel, where a
  * project is a tab) instead of the window.
  */
 export function SparkLab({
@@ -71,7 +71,6 @@ export function SparkLab({
   }, [opening])
   const [board, setBoard] = React.useState(startBoard)
   const [planSeen, setPlanSeen] = React.useState(variant === 'b')
-  const [overlay, setOverlay] = React.useState<HTMLDivElement | null>(null)
   const run = useLabRun({ phase, step, hold, ratio: startRatio, title }, runKey)
   const livePhase = run.state.phase
   React.useEffect(() => onPhase?.(livePhase), [livePhase, onPhase])
@@ -137,21 +136,18 @@ export function SparkLab({
   return (
     <div className={`${contained ? 'absolute lb-contained' : 'fixed'} inset-0 overflow-hidden${look === 'calm' ? ' lb-calm' : ''}`}>
       <ViewSwitchContext.Provider value={views}>
-        <LabOverlayContext.Provider value={overlay}>
-          <div className={`yt-studio lb-root ${instrumentSans.variable}`} data-ratio={ratio.id} onScrollCapture={showScrollbar} style={{ '--lb-ar': ratio.css, '--lb-r': ratio.value } as React.CSSProperties}>
-            <svg aria-hidden style={{ display: 'none' }} dangerouslySetInnerHTML={{ __html: STUDIO_ICON_SPRITE + LAB_SYMBOLS }} />
-            <div className="st-shell lb-shell">
-              {variant === 'a' ? (
-                <VariantCopilot run={run} onOpenPlan={() => choose('b')} />
-              ) : variant === 'b' ? (
-                <VariantStoryboard run={run} board={board} onBoard={chooseBoard} />
-              ) : (
-                <VariantChat run={run} onView={choose} />
-              )}
-            </div>
+        <div className={`yt-studio lb-root ${instrumentSans.variable}`} data-ratio={ratio.id} onScrollCapture={showScrollbar} style={{ '--lb-ar': ratio.css, '--lb-r': ratio.value } as React.CSSProperties}>
+          <svg aria-hidden style={{ display: 'none' }} dangerouslySetInnerHTML={{ __html: STUDIO_ICON_SPRITE + LAB_SYMBOLS }} />
+          <div className="st-shell lb-shell">
+            {variant === 'a' ? (
+              <VariantCopilot run={run} onOpenPlan={() => choose('b')} />
+            ) : variant === 'b' ? (
+              <VariantStoryboard run={run} board={board} onBoard={chooseBoard} />
+            ) : (
+              <VariantChat run={run} onView={choose} />
+            )}
           </div>
-          <div className="lb-overlay" ref={setOverlay} />
-        </LabOverlayContext.Provider>
+        </div>
       </ViewSwitchContext.Provider>
     </div>
   )

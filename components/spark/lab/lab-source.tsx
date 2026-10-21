@@ -44,7 +44,7 @@ function useDismiss(open: boolean, box: React.RefObject<HTMLElement | null>, clo
  * `element` is to be rendered by a component that stays mounted while the dialog is open. The dialog draws in place,
  * so it is put on the page's body: inside the lab it would take the lab's styles.
  */
-function useStorageMediaPicker(onPick: (media: LabMedia) => void) {
+export function useStorageMediaPicker(onPick: (media: LabMedia) => void) {
   const channelId = useOptionalActiveChannel()?.activeChannelId ?? LAB_STORAGE_CHANNEL
   const [open, setOpen] = React.useState(false)
   const [uploadState, setUploadState] = React.useState<UploadState | null>(null)
@@ -111,7 +111,7 @@ function useStorageMediaPicker(onPick: (media: LabMedia) => void) {
 }
 
 /** A picture or clip as a small frame: the file itself, the demo's drawing of it, or (no preview yet) what kind it is. */
-function MediaThumb({ media }: { media: LabMedia }) {
+export function MediaThumb({ media }: { media: LabMedia }) {
   if (!media.url && media.art) return <span className={`lb-art ${media.art}`} />
   if (!media.url) return <span className="lb-media-none"><Icon name={media.video ? 'video' : 'image'} size="sm" /></span>
   if (media.video) return <video src={media.url} muted loop autoPlay playsInline />

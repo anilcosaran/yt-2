@@ -268,7 +268,7 @@ export type WorkflowCanvasProps = {
   mode?: WorkflowCanvasMode
   /**
    * `full` (the Flow editor) has the top bar: back, name, Save, AI and Run. `embedded` (the canvas inside another
-   * screen, like a Spark project's Plan › Akış) has none of it: that screen's own controls act on it.
+   * screen) has none of it: that screen's own controls act on it.
    */
   chrome?: 'full' | 'embedded'
   headerBackIcon?: 'arrow' | 'panel'

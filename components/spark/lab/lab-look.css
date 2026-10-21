@@ -33,17 +33,6 @@
   --lb-agent-soft:rgba(109,79,230,.11); --lb-agent-border:rgba(109,79,230,.42);
   --lb-you:#2f6fed; --lb-you-text:#2f6fed; --lb-shade:31,30,29;
 }
-/* The Flow canvas is the product's own component and sets a dark palette of its own (`.workflow-flow-surface`,
-   globals.css). Inside the lab it takes the paper palette, so it is not a dark block in a paper page. */
-.light .lb-flow-host.workflow-flow-surface,.paper .lb-flow-host.workflow-flow-surface,
-.light .lb-flow-host .workflow-flow-surface,.paper .lb-flow-host .workflow-flow-surface{
-  --background:#f1efe8; --foreground:#1f1e1d;
-  --card:#fff; --card-foreground:#1f1e1d;
-  --popover:#fff; --popover-foreground:#1f1e1d;
-  --muted:#f1efe8; --muted-foreground:#5d5c57;
-  --accent:#e8e5db; --accent-foreground:#1f1e1d;
-  --border:#d6d2c6; --input:#d6d2c6; --ring:#8c8a82;
-}
 .light .lb-calm .yt-studio.lb-root{--lb-key:#3b82f6;--lb-key-hover:#2f74e8}
 
 /* ---------- buttons: flat, outlined; the primary keeps the theme's accent ---------- */

@@ -334,12 +334,6 @@
 .yt-studio .lb-insert .i{width:12px;height:12px;stroke-width:2.4}
 .yt-studio .lb-card:hover .lb-insert,.yt-studio .lb-insert:focus-visible{opacity:1}
 .yt-studio .lb-insert:hover{transform:scale(1.12)}
-/* Plan · Akış: the Flow editor's own canvas. It is app-themed (Tailwind) and the Spark scope resets paddings and
-   borders, so it is mounted in a layer beside `.yt-studio`, over this slot (see `lab-real-flow.tsx`). */
-.yt-studio .lb-flow-slot{overflow:hidden}
-.lb-overlay{position:absolute;inset:0;pointer-events:none}
-.lb-flow-host{position:absolute;overflow:hidden;pointer-events:auto;background:var(--background)}
-.lb-flow-loading{height:100%;display:grid;place-items:center;font-size:13px;color:var(--muted-foreground)}
 .yt-studio .lb-b-foot{position:relative;border-top:1px solid var(--st-border);background:var(--st-panel)}
 .yt-studio .lb-b-strip{display:flex;align-items:center;gap:12px;padding:10px 210px 10px 14px}
 .yt-studio .lb-b-strip .play{width:30px;height:30px}

@@ -5,7 +5,7 @@ import * as React from 'react'
 // Open work, as tabs in the page panel's top bar: a Spark project or a saved Flow automation, each opened straight
 // into its work, and at most one new tab ("+", a new project at `/spark/new`), in the order the user dragged them
 // to. Everything else is
-// a page (the sidebar's, a chat, Plan › Akış inside a project); an unsaved Flow draft is the new tab's, like
+// a page (the sidebar's, a chat, Plan › Üretim inside a project); an unsaved Flow draft is the new tab's, like
 // `/spark/new`, until it is saved. A tab keeps the address it was left at (a project's view), so coming back lands
 // there. Work that is open already is focused where it is, never opened twice. Pinned tabs lead the strip. At most
 // `MAX_TABS` are open: one more drops the oldest that is neither pinned nor on screen. The bar's first item is the
@@ -204,7 +204,7 @@ export function workTabFromPath(pathname: string | null, search?: string | null)
 }
 
 /**
- * A project's query without the Flow mode projects used to have (`mode=flow`): its canvas is Plan › Akış now
+ * A project's query without the Flow mode projects used to have (`mode=flow`): its canvas is Plan › Üretim now
  * (`v=b&board=flow`). Any other query comes back as it was.
  */
 export function projectSearchWithoutMode(search: string): string {

@@ -905,16 +905,17 @@ export function LabStage({ run }: { run: LabRun }) {
 
 /**
  * The agent's cursor: a named pointer that travels to the element the current step changes. `targetOf` lets a
- * variant point at its own elements (a scene card instead of a timeline clip).
+ * variant point at its own elements (a scene card instead of a timeline clip). `scrolls`: following Spark scrolls its
+ * target into view; a canvas that moves to it by itself (Plan › Üretim) turns that off.
  */
-export function AgentCursor({ scope, run, targetOf }: { scope: React.RefObject<HTMLElement | null>; run: LabRun; targetOf?: (step: AgentStep) => string }) {
+export function AgentCursor({ scope, run, targetOf, scrolls = true }: { scope: React.RefObject<HTMLElement | null>; run: LabRun; targetOf?: (step: AgentStep) => string; scrolls?: boolean }) {
   const { state } = run
   const step = currentStep(state)
   const target = step ? (targetOf ? targetOf(step) : step.target) : null
   const [spot, setSpot] = React.useState<{ x: number; y: number } | null>(null)
   const shown = shownSceneId(state)
 
-  const follow = state.follow && Boolean(targetOf)
+  const follow = state.follow && Boolean(targetOf) && scrolls
   React.useEffect(() => {
     const root = scope.current
     if (!root || !target) return

@@ -14,7 +14,7 @@ export type SourceKind = 'video' | 'channel' | 'template' | 'preference' | 'sugg
 /** The three views of a project, from talking to hands-on. The ids are the `?v=` values. */
 export const LAB_VARIANTS: { id: LabVariant; name: string; icon: string; line: string }[] = [
   { id: 'c', name: 'Sohbet', icon: 'chat', line: 'Projenin sohbeti: ne istediğini söylersin, Spark çalışırken ekranını izlersin.' },
-  { id: 'b', name: 'Plan', icon: 'scenes', line: 'Plan çalışma alanıdır: sahneler şerit, akış ya da senaryo olarak.' },
+  { id: 'b', name: 'Plan', icon: 'scenes', line: 'Plan çalışma alanıdır: sahneler senaryo, şerit ya da üretim zinciri olarak.' },
   { id: 'a', name: 'Editör', icon: 'video', line: 'Tam editör: tuval, zaman çizelgesi ve proje dosyası.' },
 ]
 
@@ -27,15 +27,18 @@ export const LAB_RATIOS: { id: LabRatio; name: string; css: string; value: numbe
 ]
 export const ratioOf = (id: LabRatio) => LAB_RATIOS.find((entry) => entry.id === id) ?? LAB_RATIOS[0]!
 
-/** The views of the plan; the first one is the default. */
 /** The component shapes over the lab's markup: `calm` (`lab-look.css`), or `spark` for the lab without them. */
 export type LabLook = 'calm' | 'spark'
 
+/**
+ * The views of the plan; the first one is the default. `flow` is Üretim, the production chain (`plan-chain.tsx`): the
+ * id is kept from when that view showed the plan on the Flow canvas, so saved tabs and links (`board=flow`) still open it.
+ */
 export type LabBoard = 'strip' | 'flow' | 'script'
 export const LAB_BOARDS: { id: LabBoard; name: string; good: string }[] = [
   { id: 'script', name: 'Senaryo', good: 'Planın tamamı: brief, sahne sahne anlatım, Spark’ın dayandığı bellek ve kendi kararları.' },
   { id: 'strip', name: 'Şerit', good: 'Kareler yan yana: videonun bütününe bir bakışta bak.' },
-  { id: 'flow', name: 'Akış', good: 'Aynı plan Flow tuvalinde, Flow’un kendi düğümleriyle.' },
+  { id: 'flow', name: 'Üretim', good: 'Her sahnenin üretimi bir tuvalde: düğümleri bağla, istediğini tek tek üret.' },
 ]
 
 /** The moments of a run, in order; `?phase=` opens one of them. */

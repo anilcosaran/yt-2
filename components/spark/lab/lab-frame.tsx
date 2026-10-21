@@ -4,7 +4,6 @@ import * as React from 'react'
 import localFont from 'next/font/local'
 
 import { STUDIO_ICON_SPRITE } from '../studio/studio-icons'
-import { LabOverlayContext } from './lab-context'
 import { ratioOf, type LabRatio } from './lab-model'
 import '../studio/studio.css'
 import './lab.css'
@@ -42,22 +41,17 @@ export function useLabScrollbars() {
 
 /**
  * The Spark workspace's style scope for its parts shown somewhere else (the plan canvas of the main Chat): the calm
- * shapes, the studio root with the format's ratio, the icon sprite and the overlay layer the Flow board mounts in.
- * It fills its parent, which gives it its size.
+ * shapes, the studio root with the format's ratio and the icon sprite. It fills its parent, which gives it its size.
  */
 export function LabFrame({ ratio, className, children }: { ratio: LabRatio; className?: string; children: React.ReactNode }) {
-  const [overlay, setOverlay] = React.useState<HTMLDivElement | null>(null)
   const showScrollbar = useLabScrollbars()
   const shape = ratioOf(ratio)
   return (
     <div className={`lb-calm relative h-full overflow-hidden${className ? ` ${className}` : ''}`}>
-      <LabOverlayContext.Provider value={overlay}>
-        <div className={`yt-studio lb-root ${instrumentSans.variable}`} data-ratio={shape.id} onScrollCapture={showScrollbar} style={{ '--lb-ar': shape.css, '--lb-r': shape.value } as React.CSSProperties}>
-          <svg aria-hidden style={{ display: 'none' }} dangerouslySetInnerHTML={{ __html: STUDIO_ICON_SPRITE + LAB_SYMBOLS }} />
-          <div className="st-shell lb-shell">{children}</div>
-        </div>
-        <div className="lb-overlay" ref={setOverlay} />
-      </LabOverlayContext.Provider>
+      <div className={`yt-studio lb-root ${instrumentSans.variable}`} data-ratio={shape.id} onScrollCapture={showScrollbar} style={{ '--lb-ar': shape.css, '--lb-r': shape.value } as React.CSSProperties}>
+        <svg aria-hidden style={{ display: 'none' }} dangerouslySetInnerHTML={{ __html: STUDIO_ICON_SPRITE + LAB_SYMBOLS }} />
+        <div className="st-shell lb-shell">{children}</div>
+      </div>
     </div>
   )
 }

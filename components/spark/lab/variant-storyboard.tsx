@@ -22,8 +22,8 @@ import {
   useEscapeToClose,
   useSparkPanel,
 } from './lab-parts'
-import { RealFlowBoard } from './lab-real-flow'
 import { Splitter, useSplitSize } from './lab-split'
+import { ChainBoard } from './plan-chain'
 import { PlanScript } from './plan-script'
 import { revealed, sayOf, type LabRun } from './use-lab-run'
 
@@ -34,13 +34,16 @@ import { revealed, sayOf, type LabRun } from './use-lab-run'
 // Spark's panel ("Spark" at the end of the top bar) is shut unless opened, and opens by itself for its questions.
 //
 // The plan has three views (`board`). Senaryo is the plan in full and the default (`plan-script.tsx`). Şerit
-// shows the frames side by side. Akış is the same plan on the Flow canvas.
+// shows the frames side by side. Üretim is how each scene is made, as nodes on a canvas the user works on
+// (`plan-chain.tsx`); it is the project's own canvas, not Flow's.
 
 /**
  * Where the agent's cursor goes in the plan: the scene a step works on. A step of the whole video (music, captions)
  * has nothing to point at here, so the cursor rests.
  */
 const cardTarget = (step: AgentStep) => (step.sceneId ? `card-${step.sceneId}` : 'none')
+/** On Üretim a step of the whole video (music, captions, the cut) has its own lane to point at. */
+const chainTarget = (step: AgentStep) => `card-${step.sceneId ?? 'all'}`
 /** The container width at and under which Spark's panel covers the plan instead of standing beside it (lab.css). */
 const PLAN_PANEL_OVER = 1020
 
@@ -84,7 +87,7 @@ export function VariantStoryboard({
           </aside>
         ) : null}
       </div>
-      <AgentCursor scope={scope} run={run} targetOf={cardTarget} />
+      <AgentCursor scope={scope} run={run} targetOf={board === 'flow' ? chainTarget : cardTarget} scrolls={board !== 'flow'} />
     </div>
   )
 }
@@ -138,7 +141,7 @@ function PlanWork({
       </header>
 
       {board === 'flow' ? (
-        <RealFlowBoard key={state.ratio} run={run} onBack={() => onBoard('script')} />
+        <ChainBoard run={run} scenes={scenes} onAsk={onAsk} />
       ) : board === 'strip' ? (
         <StripBoard run={run} scenes={scenes} />
       ) : (

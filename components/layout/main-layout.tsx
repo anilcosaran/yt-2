@@ -15,6 +15,7 @@ import {
 } from 'lucide-react'
 import { AppHeader } from './app-header'
 import type { AgentPanelState } from './agent-panel'
+import { AskAiButton } from './ask-ai-button'
 import { AppSidebar, type SidebarPreviewModule } from './app-sidebar'
 import { WorkspaceIconRail, type WorkspaceRailModule } from './workspace-icon-rail'
 import { ActionCenterAlertBar, type ActionCenterAlert } from './action-center-alert-bar'
@@ -705,11 +706,6 @@ export function MainLayout({
                 onToggleDesktopSidebar={() => updateSidebarCollapsed((current) => !current)}
                 onOpenMobileSidebar={() => setMobileOpen(true)}
                 sidebarCollapsed={effectiveSidebarCollapsed}
-                askAiOpen={agentPanel !== 'closed'}
-                onAskAi={() => {
-                  setAgentPanelLoaded(true)
-                  setAgentPanel((current) => (current === 'open' ? 'closed' : 'open'))
-                }}
               />
             )}
             {showActionCenterAlerts && <ActionCenterAlertBar alerts={actionCenterAlerts} />}
@@ -728,6 +724,15 @@ export function MainLayout({
 
             {/* The agent panel floats over the page's right side; it stays mounted once opened (its conversation too). */}
             {showHeader && agentPanelLoaded && <AgentPanel state={agentPanel} onStateChange={setAgentPanel} />}
+            {/* Its launcher sits where it opens, in the bottom right corner, while it is closed. */}
+            {showHeader && agentPanel === 'closed' && (
+              <AskAiButton
+                onOpen={() => {
+                  setAgentPanelLoaded(true)
+                  setAgentPanel('open')
+                }}
+              />
+            )}
           </div>
         </div>
         <ChannelSlotSelectionDialog

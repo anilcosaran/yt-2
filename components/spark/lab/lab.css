@@ -118,6 +118,17 @@
 .yt-studio .lb-start .lb-composer{width:100%;margin-top:10px}
 .yt-studio .lb-start .lb-ideas{margin-top:2px}
 .yt-studio .lb-start .lb-inherit{margin-top:8px;background:transparent}
+/* The start's backdrop (StartHero): a dot grid fading out from the middle, a slow light drifting across the top, and the
+   grid lit in the agent's colour around the pointer (`--mx`/`--my`, shown with `--spot`). Still with reduced motion. */
+.yt-studio .lb-start{isolation:isolate}
+.yt-studio .lb-start-in{position:relative;z-index:1}
+.yt-studio .lb-start-bg{position:absolute;inset:0;z-index:0;overflow:hidden;pointer-events:none}
+.yt-studio .lb-start-bg::before,.yt-studio .lb-start-bg::after{content:"";position:absolute;inset:0;background-size:22px 22px;background-position:center}
+.yt-studio .lb-start-bg::before{background-image:radial-gradient(color-mix(in srgb,var(--st-text) 13%,transparent) 1px,transparent 1.3px);-webkit-mask-image:radial-gradient(62% 58% at 50% 42%,#000 10%,transparent 78%);mask-image:radial-gradient(62% 58% at 50% 42%,#000 10%,transparent 78%)}
+.yt-studio .lb-start-bg::after{background-image:radial-gradient(var(--lb-agent) 1.3px,transparent 1.6px);-webkit-mask-image:radial-gradient(200px circle at var(--mx,50%) var(--my,40%),#000,transparent 72%);mask-image:radial-gradient(200px circle at var(--mx,50%) var(--my,40%),#000,transparent 72%);opacity:var(--spot,0);transition:opacity .5s ease}
+.yt-studio .lb-start-glow{position:absolute;left:50%;top:-180px;width:min(980px,120%);height:460px;margin-left:calc(min(980px,120%) / -2);border-radius:50%;background:radial-gradient(closest-side,color-mix(in srgb,var(--lb-agent) 16%,transparent),transparent),radial-gradient(closest-side at 30% 60%,color-mix(in srgb,var(--st-accent) 10%,transparent),transparent);filter:blur(36px);animation:lb-drift 22s ease-in-out infinite alternate}
+@keyframes lb-drift{from{transform:translate3d(-7%,0,0) scale(1)}to{transform:translate3d(7%,30px,0) scale(1.1)}}
+@media (prefers-reduced-motion:reduce){.yt-studio .lb-start-glow{animation:none}.yt-studio .lb-start-bg::after{transition:none}}
 .yt-studio .lb-skel{display:inline-block;width:62%;height:18px;border-radius:6px;background:var(--st-hover);vertical-align:middle}
 
 /* ---------- shared: job card, driving bar, closing suggestion ---------- */
@@ -194,7 +205,12 @@
 
 /* ---------- Plan view ---------- */
 .yt-studio .lb-b{position:relative}
-.yt-studio .lb-b-main{display:grid;grid-template-columns:minmax(0,1fr) var(--lb-b-right,360px);min-height:0}
+.yt-studio .lb-b-main{position:relative;display:grid;grid-template-columns:minmax(0,1fr);min-height:0}
+.yt-studio .lb-b.chat-open .lb-b-main{grid-template-columns:minmax(0,1fr) var(--lb-b-right,360px)}
+/* Spark's panel switch (SparkPanelToggle), last in the top bar. */
+.yt-studio .lb-spark-toggle{position:relative}
+.yt-studio .lb-spark-toggle.on{background:var(--st-hover);color:var(--st-text)}
+.yt-studio .lb-spark-toggle .lb-views-dot{top:3px;right:3px}
 .yt-studio .lb-b-work{display:grid;grid-template-rows:auto minmax(0,1fr) auto;min-width:0;min-height:0;background:var(--st-bg);overflow:hidden}
 .yt-studio .lb-b-brief{padding:16px 28px 14px;border-bottom:1px solid var(--st-border);background:var(--st-panel);display:grid;gap:10px;min-width:0}
 .yt-studio .lb-b-line{display:flex;align-items:center;gap:12px;min-width:0}
@@ -365,8 +381,14 @@
 
 /* The lab is laid out for a desktop editor width; below it the side surfaces give way to the main one. */
 @container studio (max-width:1020px){
-.yt-studio .lb-b-main,.yt-studio .lb-c.watching .lb-c-main{grid-template-columns:minmax(0,1fr)}
-.yt-studio .lb-b-right,.yt-studio .lb-c-side{display:none}
+.yt-studio .lb-b.chat-open .lb-b-main,.yt-studio .lb-c.watching .lb-c-main{grid-template-columns:minmax(0,1fr)}
+.yt-studio .lb-c-side{display:none}
+/* Spark's panel over the plan, from the right, when the user (or a question of Spark's) opens it. */
+.yt-studio .lb-b-right{position:absolute;right:0;top:0;bottom:0;z-index:35;width:min(var(--lb-b-right,360px),calc(100% - 48px));box-shadow:var(--st-shadow-lg)}
+.yt-studio .lb-b-right > .rz{display:none}
+}
+@container studio (max-width:900px){
+.yt-studio .lb-a .right > .rz{display:none}
 }
 @media (prefers-reduced-motion:reduce){
 .yt-studio .lb-in,.yt-studio .lb-layer,.yt-studio .lb-cursor,.yt-studio .lb-bar{animation:none}

@@ -35,6 +35,7 @@ import {
   type LabScene,
 } from './lab-model'
 import { ClosingQuestion, QuestionCard } from './lab-ask'
+import { usePaneOpen } from './lab-split'
 import {
   agentDriving,
   askedQuestions,
@@ -405,11 +406,30 @@ export function PromptIdeas({ run }: { run: LabRun }) {
 
 /**
  * The start of a project, centered: one question, the composer, a few openers, and the channel memory the
- * agent will draw on. A project starts here and nowhere else.
+ * agent will draw on. A project starts here and nowhere else. Behind it, a quiet backdrop (`.lb-start-bg`): a dot
+ * grid fading out from the middle, a slow drifting light, and the grid lit in the agent's colour around the pointer.
  */
 export function StartHero({ run }: { run: LabRun }) {
+  const root = React.useRef<HTMLDivElement>(null)
+  const frame = React.useRef(0)
+  React.useEffect(() => () => cancelAnimationFrame(frame.current), [])
+  // The pointer's light follows it once a frame; it fades when the pointer leaves.
+  const light = (event: React.PointerEvent<HTMLDivElement>) => {
+    if (event.pointerType === 'touch') return
+    const { clientX, clientY } = event
+    cancelAnimationFrame(frame.current)
+    frame.current = requestAnimationFrame(() => {
+      const element = root.current
+      if (!element) return
+      const box = element.getBoundingClientRect()
+      element.style.setProperty('--mx', `${clientX - box.left}px`)
+      element.style.setProperty('--my', `${clientY - box.top + element.scrollTop}px`)
+      element.style.setProperty('--spot', '1')
+    })
+  }
   return (
-    <div className="lb-start">
+    <div ref={root} className="lb-start" onPointerMove={light} onPointerLeave={() => root.current?.style.setProperty('--spot', '0')}>
+      <div className="lb-start-bg" aria-hidden><span className="lb-start-glow" /></div>
       <div className="lb-start-in">
         <span className="lb-start-orb"><Icon name="sparkles" /></span>
         <h1>Ne yapıyoruz?</h1>
@@ -837,6 +857,10 @@ export function AgentCursor({ scope, run, targetOf }: { scope: React.RefObject<H
     const settle = [250, 900].map((delay) => window.setTimeout(measure, delay))
     const observer = new ResizeObserver(measure)
     observer.observe(root)
+    // A side panel opening or closing moves the target without resizing the root: watch the work it sits in.
+    const element = root.querySelector<HTMLElement>(`[data-agent-target="${target}"]`)
+    const work = element?.closest('section')
+    if (work) observer.observe(work)
     window.addEventListener('resize', measure)
     root.addEventListener('scroll', measure, true)
     return () => {
@@ -924,6 +948,100 @@ export function ToolRail({ lead }: { lead?: React.ReactNode }) {
   )
 }
 
+/** Whether `scope` is at most `px` wide: where a side panel stops being a column and covers the work instead. */
+export function useNarrow(scope: React.RefObject<HTMLElement | null>, px: number) {
+  const [narrow, setNarrow] = React.useState(false)
+  React.useEffect(() => {
+    const element = scope.current
+    if (!element) return
+    const observer = new ResizeObserver(() => setNarrow(element.clientWidth <= px))
+    observer.observe(element)
+    return () => observer.disconnect()
+  }, [scope, px])
+  return narrow
+}
+
+/**
+ * A moment Spark cannot go on without the user: the first sentence of an empty project, a question it asked, and
+ * (where `approval`) a plan waiting for "Bu planla üret".
+ */
+function blockingMoment(state: LabRun['state'], approval: boolean): string | null {
+  if (state.phase === 'empty') return 'start'
+  const asking = pendingQuestion(state)
+  if (asking) return `question:${asking.id}`
+  if (approval && state.phase === 'plan' && state.autonomy === 'ask') return 'plan'
+  return null
+}
+
+export type SparkPanel = { id: string; open: boolean; narrow: boolean; waiting: boolean; setOpen: (open: boolean) => void }
+
+/**
+ * Spark's panel beside the work (Plan, Editör): closed unless the user opened it, which is kept per browser (`id`).
+ * It opens by itself when Spark cannot go on without the user (`blockingMoment`), once per moment, and stays open
+ * until it is closed. Where it covers the work (`narrowAt` and narrower) it never opens from the kept choice, so a
+ * small window never starts with the work hidden. Closed, `waiting` says something is waiting for the user there.
+ */
+export function useSparkPanel(
+  run: LabRun,
+  id: string,
+  { scope, narrowAt, approval = false }: { scope: React.RefObject<HTMLElement | null>; narrowAt: number; approval?: boolean },
+): SparkPanel {
+  const [kept, keep] = usePaneOpen(id, false)
+  const narrow = useNarrow(scope, narrowAt)
+  // Opened on a narrow window: for this visit only.
+  const [here, setHere] = React.useState(false)
+  const moment = blockingMoment(run.state, approval)
+  const [openedFor, setOpenedFor] = React.useState<string | null>(null)
+  const [opened, setOpened] = React.useState(false)
+  // A new blocking moment opens the panel (during render, so it is open in the same paint as the question).
+  if (moment && moment !== openedFor) {
+    setOpenedFor(moment)
+    setOpened(true)
+  }
+  const open = (narrow ? here : kept) || opened
+  const setOpen = (next: boolean) => {
+    setOpened(false)
+    if (narrow) setHere(next)
+    else keep(next)
+  }
+  const waiting = !open && (moment !== null || closingChoices(run.state) !== null || run.state.paused)
+  return { id, open, narrow, waiting, setOpen }
+}
+
+/** Spark's panel switch at the end of the top bar, over the panel it opens; a dot while something waits there. */
+export function SparkPanelToggle({ panel }: { panel: SparkPanel }) {
+  return (
+    <button
+      type="button"
+      className={`btn sm ghost lb-spark-toggle${panel.open ? ' on' : ''}`}
+      aria-pressed={panel.open}
+      aria-controls={panel.id}
+      title={panel.open ? 'Spark panelini kapat' : panel.waiting ? 'Spark seni bekliyor' : 'Spark panelini aç'}
+      onClick={() => panel.setOpen(!panel.open)}
+    >
+      <Icon name="sparkles" size="sm" />
+      Spark
+      {panel.waiting ? <i className="lb-views-dot" aria-hidden /> : null}
+    </button>
+  )
+}
+
+/** Closes a panel that covers the work (`active`) with Escape. */
+export function useEscapeToClose(active: boolean, close: () => void) {
+  const latest = React.useRef(close)
+  React.useEffect(() => {
+    latest.current = close
+  })
+  React.useEffect(() => {
+    if (!active) return
+    const onKey = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') latest.current()
+    }
+    window.addEventListener('keydown', onKey)
+    return () => window.removeEventListener('keydown', onKey)
+  }, [active])
+}
+
 /**
  * Save state as one icon: it spins while a change is being written and settles into a check. Every change of
  * the run is a new revision, so the mark is remounted and plays again; while the agent keeps writing it keeps
@@ -943,9 +1061,10 @@ function SaveMark({ run }: { run: LabRun }) {
 /**
  * The project's top bar, the same in every view: the project by its name (the mark leads back to the projects)
  * and its save mark, the view switch in the exact middle, the actions. "Dışa aktar" opens the shared schedule
- * dialog (Şimdi yayınla / Planla); the project stays on screen, the toast leads to the calendar.
+ * dialog (Şimdi yayınla / Planla); the project stays on screen, the toast leads to the calendar. `panel` (Spark's
+ * panel switch) comes last, over the panel it opens.
  */
-export function TopBar({ run, children }: { run: LabRun; children?: React.ReactNode }) {
+export function TopBar({ run, children, panel }: { run: LabRun; children?: React.ReactNode; panel?: React.ReactNode }) {
   const fresh = run.state.phase === 'empty'
   const views = React.useContext(ViewSwitchContext)
   const [exporting, setExporting] = React.useState(false)
@@ -963,6 +1082,7 @@ export function TopBar({ run, children }: { run: LabRun; children?: React.ReactN
       <div className="lb-top-r">
         {children}
         <button type="button" className="btn primary" disabled={run.state.phase !== 'done'} aria-haspopup="dialog" onClick={() => setExporting(true)}>Dışa aktar</button>
+        {panel}
       </div>
       <ScheduleDialog
         open={exporting}

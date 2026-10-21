@@ -54,6 +54,47 @@ export function useSplitSize(id: string) {
   )
 }
 
+// Whether a pane is open (the editor's scenes drawer, Spark's panel), kept per browser like the sizes.
+const openListeners = new Set<() => void>()
+const opens = new Map<string, boolean>()
+const openKey = (id: string) => `yt2_spark_pane_${id}`
+
+function readOpen(id: string, fallback: boolean): boolean {
+  if (!opens.has(id)) {
+    let stored: boolean | null = null
+    try {
+      const raw = window.localStorage.getItem(openKey(id))
+      stored = raw === '1' ? true : raw === '0' ? false : null
+    } catch {
+      // Without storage the pane starts as the layout has it.
+    }
+    if (stored !== null) opens.set(id, stored)
+  }
+  return opens.get(id) ?? fallback
+}
+
+function subscribeOpen(listener: () => void) {
+  openListeners.add(listener)
+  return () => {
+    openListeners.delete(listener)
+  }
+}
+
+/** Whether pane `id` is open: what the user last chose in this browser, else `fallback`; and the setter that keeps it. */
+export function usePaneOpen(id: string, fallback: boolean) {
+  const open = React.useSyncExternalStore(subscribeOpen, () => readOpen(id, fallback), () => fallback)
+  const setOpen = React.useCallback((next: boolean) => {
+    opens.set(id, next)
+    try {
+      window.localStorage.setItem(openKey(id), next ? '1' : '0')
+    } catch {
+      // The choice still holds for this visit.
+    }
+    openListeners.forEach((listener) => listener())
+  }, [id])
+  return [open, setOpen] as const
+}
+
 const KEY_STEP = 16
 
 /**

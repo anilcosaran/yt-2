@@ -4,7 +4,24 @@ import * as React from 'react'
 
 import { BRIEF, LAB_BOARDS, SCENES, TOTAL_SECONDS, formatClock, type AgentStep, type LabBoard, type LabScene } from './lab-model'
 import { EditableText } from './lab-edit'
-import { AgentCursor, ChannelLayer, Chat, Composer, EstimateLine, Icon, LabDock, LockButton, PaceBar, SceneDot, SceneThumb, TopBar, presenceOf } from './lab-parts'
+import {
+  AgentCursor,
+  ChannelLayer,
+  Chat,
+  Composer,
+  EstimateLine,
+  Icon,
+  LabDock,
+  LockButton,
+  PaceBar,
+  SceneDot,
+  SceneThumb,
+  SparkPanelToggle,
+  TopBar,
+  presenceOf,
+  useEscapeToClose,
+  useSparkPanel,
+} from './lab-parts'
 import { RealFlowBoard } from './lab-real-flow'
 import { Splitter, useSplitSize } from './lab-split'
 import { PlanScript } from './plan-script'
@@ -14,11 +31,14 @@ import { revealed, sayOf, type LabRun } from './use-lab-run'
 // to show; a project starts in Sohbet. The agent's presence shows on the scene it is working on, and holding a
 // scene takes it over while the agent goes on with the others. The timeline is a detail opened from the bottom.
 // A plan that waits for the user is approved here, on a bar under it: the chat only leads here ("Planı gör").
+// Spark's panel ("Spark" at the end of the top bar) is shut unless opened, and opens by itself for its questions.
 //
 // The plan has three views (`board`). Senaryo is the plan in full and the default (`plan-script.tsx`). Şerit
 // shows the frames side by side. Akış is the same plan on the Flow canvas.
 
 const cardTarget = (step: AgentStep) => (step.sceneId ? `card-${step.sceneId}` : 'board-foot')
+/** The container width at and under which Spark's panel covers the plan instead of standing beside it (lab.css). */
+const PLAN_PANEL_OVER = 1020
 
 export function VariantStoryboard({
   run,
@@ -33,20 +53,28 @@ export function VariantStoryboard({
 }) {
   const scope = React.useRef<HTMLDivElement>(null)
   const right = useSplitSize('plan-right')
+  // Spark's panel is shut unless opened: the plan is worked on its own rows (notes, the approval bar), and Spark
+  // opens the panel itself when it asks something.
+  const spark = useSparkPanel(run, 'plan-chat', { scope, narrowAt: PLAN_PANEL_OVER })
+  const covers = spark.narrow && spark.open
+  useEscapeToClose(covers, () => spark.setOpen(false))
 
   return (
-    <div className="app lb-b" ref={scope}>
-      <TopBar run={run} />
+    <div className={`app lb-b${spark.open ? ' chat-open' : ''}`} ref={scope}>
+      <TopBar run={run} panel={<SparkPanelToggle panel={spark} />} />
       <div className="lb-b-main" style={right ? ({ '--lb-b-right': `${right}px` } as React.CSSProperties) : undefined}>
-        <PlanWork run={run} open={open} board={board} onBoard={onBoard} />
+        <PlanWork run={run} open={open} board={board} onBoard={onBoard} onPointerDown={covers ? () => spark.setOpen(false) : undefined} />
 
-        <aside className="lb-b-right">
-          <Splitter id="plan-right" axis="x" edge="start" min={300} max={(pane) => Math.min(620, (pane.parentElement?.clientWidth ?? 1280) - 520)} label="Sohbet panelinin genişliği" />
-          <div className="pane">
-            <Chat run={run} />
-            <div className="composer-wrap"><Composer run={run} /></div>
-          </div>
-        </aside>
+        {/* Mounted only while open: a hidden question must not take the number keys that answer it. */}
+        {spark.open ? (
+          <aside className="lb-b-right" id={spark.id}>
+            <Splitter id="plan-right" axis="x" edge="start" min={300} max={(pane) => Math.min(620, (pane.parentElement?.clientWidth ?? 1280) - 520)} label="Spark panelinin genişliği" />
+            <div className="pane">
+              <Chat run={run} />
+              <div className="composer-wrap"><Composer run={run} /></div>
+            </div>
+          </aside>
+        ) : null}
       </div>
       <AgentCursor scope={scope} run={run} targetOf={cardTarget} />
     </div>
@@ -59,11 +87,14 @@ function PlanWork({
   open = false,
   board = 'script',
   onBoard,
+  onPointerDown,
 }: {
   run: LabRun
   open?: boolean
   board?: LabBoard
   onBoard: (board: LabBoard) => void
+  /** A press on the plan while Spark's panel covers it closes the panel. */
+  onPointerDown?: () => void
 }) {
   const { state } = run
   const work = React.useRef<HTMLElement>(null)
@@ -79,7 +110,7 @@ function PlanWork({
   }
 
   return (
-    <section className="lb-b-work" ref={work}>
+    <section className="lb-b-work" ref={work} onPointerDown={onPointerDown}>
       <header className="lb-b-brief">
         <div className="lb-b-line">
           <p>{revealed(state, message.at) ? message.value : <span className="lb-skel" />}</p>

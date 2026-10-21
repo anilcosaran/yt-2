@@ -16,13 +16,11 @@ import {
   Menu,
   Palette,
   Puzzle,
-  Sparkles,
   Video,
   Workflow,
   Wrench,
   type LucideIcon,
 } from 'lucide-react'
-import { UiText } from '@/components/i18n/ui-text'
 import { useTranslations } from 'next-intl'
 import { SidebarToggleIcon } from './sidebar-toggle-icon'
 import { WORK_TAB_TRANSITION } from '@/lib/page-transitions'
@@ -35,9 +33,6 @@ interface AppHeaderProps {
   onToggleDesktopSidebar?: () => void
   onOpenMobileSidebar?: () => void
   sidebarCollapsed?: boolean
-  /** "AI'a sor": opens or closes the agent panel. */
-  onAskAi?: () => void
-  askAiOpen?: boolean
   className?: string
 }
 
@@ -59,13 +54,10 @@ const PAGE_TITLES: Array<{ prefix: string; labelKey: string; icon: LucideIcon }>
 const pageFor = (path: string | null) =>
   path ? PAGE_TITLES.find((entry) => path === entry.prefix || path.startsWith(`${entry.prefix}/`)) : undefined
 
-/** Quiet round-ended controls on the bar's right: a hairline, no fill until hovered. */
-const barControl = 'h-8 shrink-0 gap-1.5 rounded-full border border-border bg-transparent px-3 text-[13px] font-medium text-foreground shadow-none hover:bg-accent'
-
 /**
- * The page panel's top bar: `[page item] | [tabs…] [+] ……… [AI'a sor]`. The page item is pinned first: the sidebar
- * page on screen, or while work is on screen the page the user came from (`lastPage` in `lib/work-tabs.ts`).
- * "AI'a sor" is offered on pages only.
+ * The page panel's top bar: `[page item] | [tabs…] [+]`. The page item is pinned first: the sidebar page on screen,
+ * or while work is on screen the page the user came from (`lastPage` in `lib/work-tabs.ts`). "AI'a sor" is not
+ * here: it is the agent panel's own launcher, in the page panel's bottom right corner (`ask-ai-button.tsx`).
  */
 export function AppHeader(props: AppHeaderProps) {
   // An unsaved Flow is told from the automation list by its query, which is read on the client: until then the
@@ -88,8 +80,6 @@ function HeaderBar({
   onToggleDesktopSidebar,
   onOpenMobileSidebar,
   sidebarCollapsed = false,
-  onAskAi,
-  askAiOpen = false,
   className,
   search,
 }: AppHeaderProps & { search: string }) {
@@ -108,8 +98,6 @@ function HeaderBar({
   React.useEffect(() => {
     if (pagePrefix) rememberLastPage(pagePrefix)
   }, [pagePrefix])
-  // "AI'a sor" is for pages: never on work (a project's or an automation's tab, the new tab and the work it starts).
-  const onPage = work === null
 
   return (
     <header
@@ -167,21 +155,6 @@ function HeaderBar({
         <NewTabButton />
       </div>
 
-      {onPage && (
-        <Button
-          type="button"
-          size="sm"
-          variant="ghost"
-          data-ask-ai-trigger
-          aria-expanded={askAiOpen}
-          aria-controls={askAiOpen ? 'agent-panel' : undefined}
-          onClick={onAskAi}
-          className={cn(barControl, 'hidden sm:inline-flex', askAiOpen && 'bg-accent')}
-        >
-          <Sparkles className="size-3.5 text-orange-500" />
-          <UiText id="ask_ai_8dbaeb8e" />
-        </Button>
-      )}
     </header>
   )
 }

@@ -97,9 +97,9 @@ export function AgentPanel({ state, onStateChange }: { state: AgentPanelState; o
 
   const close = React.useCallback(() => {
     onStateChange('closed')
-    // Back to the control that opened it, when focus was in the panel.
+    // Back to the control that opened it, when focus was in the panel (it is drawn again once the panel is closed).
     if (panelRef.current?.contains(document.activeElement)) {
-      document.querySelector<HTMLElement>('[data-ask-ai-trigger]')?.focus()
+      window.requestAnimationFrame(() => document.querySelector<HTMLElement>('[data-ask-ai-trigger]')?.focus())
     }
   }, [onStateChange])
 

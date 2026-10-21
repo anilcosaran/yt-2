@@ -100,6 +100,7 @@ import {
   ListChecks,
   SlidersHorizontal,
   Settings as SettingsLucide,
+  Shapes,
   ShieldCheck,
   Sparkles,
   Stamp,
@@ -2323,6 +2324,7 @@ export function getIcon(iconName: string) {
     puzzle: Waypoints,
     video: Video,
     clapperboard: Clapperboard,
+    canvas: Shapes,
   }
   return icons[iconName] || null
 }

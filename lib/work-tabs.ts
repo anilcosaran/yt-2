@@ -2,9 +2,9 @@
 
 import * as React from 'react'
 
-// Open work, as tabs in the page panel's top bar: a Spark project or a saved Flow automation, each opened straight
-// into its work, and at most one new tab ("+", a new project at `/spark/new`), in the order the user dragged them
-// to. Everything else is
+// Open work, as tabs in the page panel's top bar: a Spark project, a saved Flow automation or a canvas (`/canvas/<id>`,
+// a project of its own), each opened straight into its work, and at most one new tab ("+", a new project at
+// `/spark/new`), in the order the user dragged them to. Everything else is
 // a page (the sidebar's, a chat, Plan › Üretim inside a project); an unsaved Flow draft is the new tab's, like
 // `/spark/new`, until it is saved. A tab keeps the address it was left at (a project's view), so coming back lands
 // there. Work that is open already is focused where it is, never opened twice. Pinned tabs lead the strip. At most
@@ -12,7 +12,7 @@ import * as React from 'react'
 // page the user came from (`lastPage`), kept while work is on screen. Kept per browser and cleared when another
 // account signs in (`WORK_TABS_STORAGE_KEY` is principal-bound).
 
-export type WorkTabKind = 'spark' | 'flow' | 'new'
+export type WorkTabKind = 'spark' | 'flow' | 'canvas' | 'new'
 /** The work a tab can hold; the new tab turns into one of these (`replaceWorkTab`). */
 export type WorkKind = Exclude<WorkTabKind, 'new'>
 
@@ -54,7 +54,7 @@ function parse(raw: string | null): WorkTabsState {
       ? value.tabs
           .filter((tab): tab is WorkTab =>
             Boolean(tab)
-            && (tab.kind === 'spark' || tab.kind === 'flow' || tab.kind === 'new')
+            && (tab.kind === 'spark' || tab.kind === 'flow' || tab.kind === 'canvas' || tab.kind === 'new')
             && typeof tab.id === 'string'
             && tab.id.length > 0
             && typeof tab.title === 'string'
@@ -164,9 +164,12 @@ function withinLimit(tabs: WorkTab[], keep?: WorkTab): WorkTab[] {
   return kept
 }
 
+/** The list each kind of work is opened from; a piece of work's own address is under it. */
+const WORK_LISTS: Record<WorkKind, string> = { spark: '/spark', flow: '/workflows', canvas: '/canvas' }
+
 export function workTabPath(kind: WorkTabKind, id: string) {
   if (kind === 'new') return NEW_TAB_PATH
-  return kind === 'spark' ? `/spark/${encodeURIComponent(id)}` : `/workflows/${encodeURIComponent(id)}`
+  return `${WORK_LISTS[kind]}/${encodeURIComponent(id)}`
 }
 
 export function workTabHref(tab: Pick<WorkTab, 'kind' | 'id' | 'search'>) {
@@ -174,10 +177,11 @@ export function workTabHref(tab: Pick<WorkTab, 'kind' | 'id' | 'search'>) {
 }
 
 /**
- * The tab an address belongs to: `/spark/<projectId>`, `/workflows/<workflowId>`, or the new tab's `/new`. Work
- * not made yet is the new tab's too, and becomes its own tab in the same spot once it is: a new project before its
- * first sentence (`/spark/new`) and an unsaved Flow (`/workflows?draftId=wf-draft-…`, `/workflows?new=1`). `search`
- * is the address's query, with or without `?`; without it a draft reads as the automation list.
+ * The tab an address belongs to: `/spark/<projectId>`, `/workflows/<workflowId>`, `/canvas/<canvasId>`, or the new
+ * tab's `/new`. Work not made yet is the new tab's too, and becomes its own tab in the same spot once it is: a new
+ * project before its first sentence (`/spark/new`) and an unsaved Flow (`/workflows?draftId=wf-draft-…`,
+ * `/workflows?new=1`). `search` is the address's query, with or without `?`; without it a draft reads as the
+ * automation list. A list (`/canvas`) is a page, not a tab.
  */
 export function workTabFromPath(pathname: string | null, search?: string | null): { kind: WorkTabKind; id: string } | null {
   const newTab = { kind: 'new' as const, id: NEW_TAB_ID }
@@ -187,9 +191,9 @@ export function workTabFromPath(pathname: string | null, search?: string | null)
     if (params.get('new') === '1' || params.get('draftId')?.startsWith(FLOW_DRAFT_PREFIX)) return newTab
     return null
   }
-  const match = pathname?.match(/^\/(spark|workflows)\/([^/]+)\/?$/)
+  const match = pathname?.match(/^\/(spark|workflows|canvas)\/([^/]+)\/?$/)
   if (!match) return null
-  const kind: WorkTabKind = match[1] === 'spark' ? 'spark' : 'flow'
+  const kind: WorkTabKind = match[1] === 'spark' ? 'spark' : match[1] === 'canvas' ? 'canvas' : 'flow'
   let id: string
   try {
     id = decodeURIComponent(match[2]!)
@@ -319,7 +323,7 @@ export function rememberLastPage(path: string) {
 export function closeWorkTab(kind: WorkTabKind, id: string): string {
   const state = read()
   const index = state.tabs.findIndex((tab) => same(tab, kind, id))
-  const fallback = kind === 'spark' ? '/spark' : kind === 'flow' ? '/workflows' : state.lastPage ?? '/dashboard'
+  const fallback = kind === 'new' ? state.lastPage ?? '/dashboard' : WORK_LISTS[kind]
   if (index === -1) return fallback
   const tabs = state.tabs.filter((_, position) => position !== index)
   write({ ...state, tabs })

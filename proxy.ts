@@ -17,6 +17,7 @@ const protectedPathPrefixes = [
   '/automation',
   '/brand',
   '/calendar',
+  '/canvas',
   '/chat',
   '/channels',
   '/components',

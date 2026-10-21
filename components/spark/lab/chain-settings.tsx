@@ -40,6 +40,7 @@ export const NODE_SETTINGS: Partial<Record<StageKind, SettingRow[]>> = {
     { id: 'fade', label: 'Sonda kıs', options: [OFF, ON], def: ON },
   ],
   text: [
+    { id: 'mode', label: 'Ne yazsın', options: ['Görsel istemi', 'Video istemi', 'Seslendirme', 'Başlık'], def: 'Görsel istemi' },
     { id: 'length', label: 'Uzunluk', options: ['Kısa', 'Orta', 'Uzun'], def: 'Kısa' },
     { id: 'tone', label: 'Ton', options: ['Samimi', 'Kurumsal', 'Esprili'], def: 'Samimi' },
   ],

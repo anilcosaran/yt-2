@@ -6,6 +6,8 @@ export function createMainSidebarItems(t: (key: string) => string): SidebarNavIt
     { id: 'new-task', label: t('newVideo'), icon: 'plus', href: '/new' },
     { id: 'inbox', label: t('inbox'), icon: 'inbox', href: '/inbox', badge: 1 },
     { id: 'projects', label: t('projects'), icon: 'clapperboard', href: '/spark' },
+    // A canvas is a project of its own: a free node canvas, opened as its own tab like a project.
+    { id: 'canvas', label: t('canvas'), icon: 'canvas', href: '/canvas' },
     { id: 'calendar', label: t('calendar'), icon: 'calendar', href: '/calendar' },
     { id: 'workspace-section', label: t('workspace'), type: 'section' },
     { id: 'channel-settings', label: t('channel'), icon: 'channel', href: '/channels?view=settings' },

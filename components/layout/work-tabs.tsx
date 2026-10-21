@@ -4,7 +4,7 @@ import * as React from 'react'
 import Link from 'next/link'
 import { usePathname, useRouter, useSearchParams } from 'next/navigation'
 import { useTranslations } from 'next-intl'
-import { ChevronLeft, ChevronRight, Clapperboard, Pin, Plus, SquarePlus, Workflow, X, type LucideIcon } from 'lucide-react'
+import { ChevronLeft, ChevronRight, Clapperboard, Pin, Plus, Shapes, SquarePlus, Workflow, X, type LucideIcon } from 'lucide-react'
 
 import {
   ContextMenu,
@@ -33,8 +33,8 @@ import {
   type WorkTabKind,
 } from '@/lib/work-tabs'
 
-/** A tab's mark is its kind: a project, an automation, or the new tab. */
-const KIND_ICONS: Record<WorkTabKind, LucideIcon> = { spark: Clapperboard, flow: Workflow, new: SquarePlus }
+/** A tab's mark is its kind: a project, an automation, a canvas, or the new tab. */
+const KIND_ICONS: Record<WorkTabKind, LucideIcon> = { spark: Clapperboard, flow: Workflow, canvas: Shapes, new: SquarePlus }
 
 const tabKey = (tab: Pick<WorkTab, 'kind' | 'id'>) => `${tab.kind}:${tab.id}`
 
@@ -319,7 +319,7 @@ function useNewTabHref() {
 }
 
 /**
- * The open work in the top bar: one quiet tab per project or automation (its icon and name), and the new tab, the
+ * The open work in the top bar: one quiet tab per project, automation or canvas (its icon and name), and the new tab, the
  * one on screen filled (an unsaved Flow is on the new tab, `workTabFromPath`). A tab opens where it was left, at
  * once, with no motion; its cross (or a middle click) closes it, and closing the one on screen moves to its
  * neighbour. Tabs are dragged to a new place, the others making room as it passes their middle. A right click opens a

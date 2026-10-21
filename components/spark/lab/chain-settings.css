@@ -3,14 +3,14 @@
    An on/off setting is a small switch; the rest a quiet segmented control, the picked choice lifted by a soft fill and
    a hairline. No boxes inside, no rules between the rows. The `--cv-*` tokens come from the canvas (`lab-chain.css`). */
 
-.yt-studio .lb-ns{display:grid;width:100%;padding:6px;border-radius:14px;background:var(--cv-node);box-shadow:0 0 0 1px var(--cv-line-strong),var(--cv-shadow);cursor:default;animation:lb-in .14s ease-out}
+.yt-studio .lb-ns{display:grid;width:100%;padding:6px;border-radius:10px;background:var(--cv-node);box-shadow:0 0 0 1px var(--cv-line-strong),var(--cv-shadow);cursor:default;animation:lb-in .14s ease-out}
 
 .yt-studio .lb-ns-row{display:flex;align-items:center;justify-content:space-between;gap:12px;height:38px;padding:0 10px}
 .yt-studio .lb-ns-label{min-width:0;font-size:12.5px;color:var(--st-text-2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 
 /* ---------- a few choices: a quiet segmented control ---------- */
 .yt-studio .lb-ns-seg{display:flex;align-items:center;gap:2px;flex:none}
-.yt-studio .lb-ns-seg button{height:22px;padding:0 7px;border-radius:6px;font-size:11.5px;line-height:22px;color:var(--st-text-3);white-space:nowrap;font-variant-numeric:tabular-nums;
+.yt-studio .lb-ns-seg button{height:22px;padding:0 7px;border-radius:5px;font-size:11.5px;line-height:22px;color:var(--st-text-3);white-space:nowrap;font-variant-numeric:tabular-nums;
   transition:background .12s,color .12s,box-shadow .12s}
 .yt-studio .lb-ns-seg button:hover{color:var(--st-text-2)}
 .yt-studio .lb-ns-seg button.on{background:var(--cv-fill);box-shadow:0 0 0 1px var(--cv-line-strong);color:var(--st-text)}

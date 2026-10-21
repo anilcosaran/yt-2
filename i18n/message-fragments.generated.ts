@@ -12,6 +12,7 @@ import en_BrandAvatar_filters from '@/messages/en/BrandAvatar.filters.json'
 import en_BrandAvatar_shot_dock from '@/messages/en/BrandAvatar.shot-dock.json'
 import en_BrandVoice_library from '@/messages/en/BrandVoice.library.json'
 import en_Calendar from '@/messages/en/Calendar.json'
+import en_Canvas from '@/messages/en/Canvas.json'
 import en_Channels_google_connect from '@/messages/en/Channels.google-connect.json'
 import en_Chat_agent_panel from '@/messages/en/Chat.agent-panel.json'
 import en_Chat_ai_elements from '@/messages/en/Chat.ai-elements.json'
@@ -62,6 +63,7 @@ import en_Memory_skill_history from '@/messages/en/Memory.skill-history.json'
 import en_MemoryPage from '@/messages/en/MemoryPage.json'
 import en_Navigation_approvals from '@/messages/en/Navigation.approvals.json'
 import en_Navigation_calendar from '@/messages/en/Navigation.calendar.json'
+import en_Navigation_canvas from '@/messages/en/Navigation.canvas.json'
 import en_Navigation_developer from '@/messages/en/Navigation.developer.json'
 import en_Navigation_recent_chats from '@/messages/en/Navigation.recent-chats.json'
 import en_Navigation_work_tabs from '@/messages/en/Navigation.work-tabs.json'
@@ -92,6 +94,7 @@ import tr_BrandAvatar_filters from '@/messages/tr/BrandAvatar.filters.json'
 import tr_BrandAvatar_shot_dock from '@/messages/tr/BrandAvatar.shot-dock.json'
 import tr_BrandVoice_library from '@/messages/tr/BrandVoice.library.json'
 import tr_Calendar from '@/messages/tr/Calendar.json'
+import tr_Canvas from '@/messages/tr/Canvas.json'
 import tr_Channels_google_connect from '@/messages/tr/Channels.google-connect.json'
 import tr_Chat_agent_panel from '@/messages/tr/Chat.agent-panel.json'
 import tr_Chat_ai_elements from '@/messages/tr/Chat.ai-elements.json'
@@ -142,6 +145,7 @@ import tr_Memory_skill_history from '@/messages/tr/Memory.skill-history.json'
 import tr_MemoryPage from '@/messages/tr/MemoryPage.json'
 import tr_Navigation_approvals from '@/messages/tr/Navigation.approvals.json'
 import tr_Navigation_calendar from '@/messages/tr/Navigation.calendar.json'
+import tr_Navigation_canvas from '@/messages/tr/Navigation.canvas.json'
 import tr_Navigation_developer from '@/messages/tr/Navigation.developer.json'
 import tr_Navigation_recent_chats from '@/messages/tr/Navigation.recent-chats.json'
 import tr_Navigation_work_tabs from '@/messages/tr/Navigation.work-tabs.json'
@@ -181,6 +185,7 @@ export const messageFragments: Readonly<Record<string, readonly MessageFragment[
     { file: 'en/BrandAvatar.shot-dock.json', namespace: 'BrandAvatar', messages: en_BrandAvatar_shot_dock },
     { file: 'en/BrandVoice.library.json', namespace: 'BrandVoice', messages: en_BrandVoice_library },
     { file: 'en/Calendar.json', namespace: 'Calendar', messages: en_Calendar },
+    { file: 'en/Canvas.json', namespace: 'Canvas', messages: en_Canvas },
     { file: 'en/Channels.google-connect.json', namespace: 'Channels', messages: en_Channels_google_connect },
     { file: 'en/Chat.agent-panel.json', namespace: 'Chat', messages: en_Chat_agent_panel },
     { file: 'en/Chat.ai-elements.json', namespace: 'Chat', messages: en_Chat_ai_elements },
@@ -231,6 +236,7 @@ export const messageFragments: Readonly<Record<string, readonly MessageFragment[
     { file: 'en/MemoryPage.json', namespace: 'MemoryPage', messages: en_MemoryPage },
     { file: 'en/Navigation.approvals.json', namespace: 'Navigation', messages: en_Navigation_approvals },
     { file: 'en/Navigation.calendar.json', namespace: 'Navigation', messages: en_Navigation_calendar },
+    { file: 'en/Navigation.canvas.json', namespace: 'Navigation', messages: en_Navigation_canvas },
     { file: 'en/Navigation.developer.json', namespace: 'Navigation', messages: en_Navigation_developer },
     { file: 'en/Navigation.recent-chats.json', namespace: 'Navigation', messages: en_Navigation_recent_chats },
     { file: 'en/Navigation.work-tabs.json', namespace: 'Navigation', messages: en_Navigation_work_tabs },
@@ -263,6 +269,7 @@ export const messageFragments: Readonly<Record<string, readonly MessageFragment[
     { file: 'tr/BrandAvatar.shot-dock.json', namespace: 'BrandAvatar', messages: tr_BrandAvatar_shot_dock },
     { file: 'tr/BrandVoice.library.json', namespace: 'BrandVoice', messages: tr_BrandVoice_library },
     { file: 'tr/Calendar.json', namespace: 'Calendar', messages: tr_Calendar },
+    { file: 'tr/Canvas.json', namespace: 'Canvas', messages: tr_Canvas },
     { file: 'tr/Channels.google-connect.json', namespace: 'Channels', messages: tr_Channels_google_connect },
     { file: 'tr/Chat.agent-panel.json', namespace: 'Chat', messages: tr_Chat_agent_panel },
     { file: 'tr/Chat.ai-elements.json', namespace: 'Chat', messages: tr_Chat_ai_elements },
@@ -313,6 +320,7 @@ export const messageFragments: Readonly<Record<string, readonly MessageFragment[
     { file: 'tr/MemoryPage.json', namespace: 'MemoryPage', messages: tr_MemoryPage },
     { file: 'tr/Navigation.approvals.json', namespace: 'Navigation', messages: tr_Navigation_approvals },
     { file: 'tr/Navigation.calendar.json', namespace: 'Navigation', messages: tr_Navigation_calendar },
+    { file: 'tr/Navigation.canvas.json', namespace: 'Navigation', messages: tr_Navigation_canvas },
     { file: 'tr/Navigation.developer.json', namespace: 'Navigation', messages: tr_Navigation_developer },
     { file: 'tr/Navigation.recent-chats.json', namespace: 'Navigation', messages: tr_Navigation_recent_chats },
     { file: 'tr/Navigation.work-tabs.json', namespace: 'Navigation', messages: tr_Navigation_work_tabs },

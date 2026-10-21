@@ -1,0 +1,18 @@
+{
+  "title": "Canvas",
+  "newCanvas": "Yeni canvas",
+  "untitled": "Adsız canvas",
+  "updated": "Güncellendi · {time}",
+  "emptyTitle": "Henüz canvas yok",
+  "emptyDescription": "Görsel, video ve sesi tek tuvalde kurgula.",
+  "editor": {
+    "rename": "Adını değiştir",
+    "titleLabel": "Canvas adı",
+    "running": "Üretiliyor · {title}",
+    "queued": "{count} sırada",
+    "recent": "Son üretilenler",
+    "recentEmpty": "Henüz üretim yok",
+    "notFound": "Bu canvas bulunamadı.",
+    "back": "Canvas’lara dön"
+  }
+}

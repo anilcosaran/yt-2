@@ -1,0 +1,106 @@
+/* Plan › Üretim, what a node has made (`chain-generations.tsx`): a quiet row of small rounded squares under the node,
+   and the gallery beside it. The row has no box of its own; the gallery is one soft surface edged by a hairline, like
+   the canvas's menus, with fills and rings inside it rather than frames. Small corners throughout. The picked output is
+   ringed in `--cv-on`; Spark's violet marks only what is being made. The canvas's tokens (`--cv-*`) come from `.lb-cv`
+   in lab-chain.css, Spark's (`--lb-agent*`) from the lab root, a kind's tint (`--k`) from `.k-<kind>`; the canvas
+   places both parts, they never do. */
+
+/* ---------- the strip under a node ---------- */
+.yt-studio .lb-gn-strip{display:flex;align-items:center;gap:6px;cursor:default}
+.yt-studio .lb-gn-row{display:flex;align-items:center;gap:6px}
+.yt-studio .lb-gn-sq{position:relative;display:grid;place-items:center;flex:none;box-sizing:border-box;width:30px;height:30px;margin:0;padding:0;border:0;border-radius:6px;overflow:hidden;
+  background:var(--cv-fill);color:var(--k,var(--st-text-2));font:inherit;transition:box-shadow .12s}
+/* a hairline over the edge, so a dark drawing and an empty square both read on the canvas */
+.yt-studio .lb-gn-sq::after{content:'';position:absolute;inset:0;border-radius:inherit;box-shadow:inset 0 0 0 1px var(--cv-line);pointer-events:none}
+.yt-studio .lb-gn-sq:hover{box-shadow:0 0 0 1px var(--cv-line-strong)}
+.yt-studio .lb-gn-sq.on{box-shadow:0 0 0 1.5px var(--cv-on)}
+.yt-studio .lb-gn-sq.queued{background:none}
+.yt-studio .lb-gn-sq.queued::after{box-shadow:none;border:1px dashed var(--cv-line-strong)}
+.yt-studio .lb-gn-sq > svg{position:relative}
+.yt-studio .lb-gn-sq .lb-gn-veil{background:color-mix(in srgb,var(--cv-node) 55%,transparent)}
+
+/* a sound's tiny wave: five bars in the kind's tint */
+.yt-studio .lb-gn-mini{display:flex;align-items:center;gap:1.5px;height:12px}
+.yt-studio .lb-gn-mini i{width:2px;border-radius:1px;background:var(--k,var(--st-text-2))}
+
+.yt-studio .lb-gn-more{font-size:11px;font-weight:600;line-height:1;color:var(--st-text-2);font-variant-numeric:tabular-nums}
+.yt-studio .lb-gn-more:hover{color:var(--st-text)}
+.yt-studio .lb-gn-all{flex:none;height:30px;margin:0 0 0 2px;padding:0 4px;border:0;border-radius:6px;background:none;font:inherit;font-size:11.5px;line-height:30px;
+  color:var(--st-text-3);white-space:nowrap;transition:color .12s}
+.yt-studio .lb-gn-all:hover{color:var(--st-text)}
+
+/* while an output is made: its ring over a dimmed face */
+.yt-studio .lb-gn-veil{position:absolute;inset:0;z-index:1;display:grid;place-items:center;pointer-events:none}
+
+/* ---------- the gallery beside a node ---------- */
+.yt-studio .lb-gn-gallery{display:flex;flex-direction:column;box-sizing:border-box;width:320px;max-width:calc(100vw - 32px);max-height:520px;padding:10px;border-radius:12px;
+  background:var(--cv-node);box-shadow:0 0 0 1px var(--cv-line-strong),var(--cv-shadow);color:var(--st-text);cursor:default;outline:none;animation:lb-gn-in .14s ease-out}
+@keyframes lb-gn-in{from{opacity:0;transform:translateX(-4px)}}
+.yt-studio .lb-gn-head{display:flex;align-items:center;gap:6px;flex:none;padding:0 0 8px 4px}
+.yt-studio .lb-gn-head b{font-size:13px;font-weight:600;line-height:24px;color:var(--st-text)}
+.yt-studio .lb-gn-count{font-size:12px;line-height:24px;color:var(--st-text-3);font-variant-numeric:tabular-nums}
+.yt-studio .lb-gn-close{display:grid;place-items:center;flex:none;width:24px;height:24px;margin:0 0 0 auto;padding:0;border:0;border-radius:6px;background:none;color:var(--st-text-3);transition:background .12s,color .12s}
+.yt-studio .lb-gn-close:hover{background:var(--cv-fill);color:var(--st-text)}
+
+/* its own scroll; a little room around the list so the picked one's ring is never cut */
+.yt-studio .lb-gn-body{position:relative;flex:1 1 auto;min-height:0;margin:0 -4px;padding:2px 4px 4px;overflow-y:auto;overscroll-behavior:contain;scrollbar-width:thin}
+.yt-studio .lb-gn-list.picture{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px 8px;align-items:start}
+.yt-studio .lb-gn-list.sound{display:grid;gap:4px}
+.yt-studio .lb-gn-list.text{display:grid;gap:8px}
+.yt-studio .lb-gn-empty{margin:0;padding:18px 4px;font-size:12.5px;line-height:1.45;text-align:center;color:var(--st-text-3)}
+
+.yt-studio .lb-gn-item{position:relative;display:grid;gap:6px;box-sizing:border-box;width:100%;min-width:0;margin:0;padding:0;border:0;background:none;font:inherit;text-align:left;color:inherit}
+
+/* a picture or clip: a large thumbnail at the node's size */
+.yt-studio .lb-gn-pic{position:relative;display:block;width:100%;border-radius:8px;overflow:hidden;background:var(--cv-fill);transition:box-shadow .12s}
+.yt-studio .lb-gn-pic::after{content:'';position:absolute;inset:0;z-index:2;border-radius:inherit;box-shadow:inset 0 0 0 1px var(--cv-line);pointer-events:none}
+.yt-studio .lb-gn-item.pic:hover .lb-gn-pic{box-shadow:0 0 0 1px var(--cv-line-strong)}
+.yt-studio .lb-gn-item.pic.on .lb-gn-pic{box-shadow:0 0 0 1.5px var(--cv-on)}
+.yt-studio .lb-gn-item.pic.queued .lb-gn-pic{background:none}
+.yt-studio .lb-gn-item.pic.queued .lb-gn-pic::after{box-shadow:none;border:1px dashed var(--cv-line-strong)}
+.yt-studio .lb-gn-pic .lb-gn-veil{background:color-mix(in srgb,var(--cv-node) 55%,transparent);backdrop-filter:blur(2px)}
+.yt-studio .lb-gn-chip{position:absolute;left:6px;bottom:6px;z-index:1;display:inline-flex;align-items:center;gap:4px;height:18px;padding:0 5px;border-radius:5px;
+  background:rgba(0,0,0,.55);color:#fff;font-size:10.5px;font-weight:600;line-height:18px;font-variant-numeric:tabular-nums}
+.yt-studio .lb-gn-chip svg{flex:none;fill:currentColor}
+
+/* the caption: the version, then what state it is in */
+.yt-studio .lb-gn-cap{display:flex;align-items:center;gap:8px;min-width:0;padding:0 2px;font-size:11.5px;line-height:15px;color:var(--st-text-3);font-variant-numeric:tabular-nums;white-space:nowrap}
+.yt-studio .lb-gn-v{min-width:0;overflow:hidden;text-overflow:ellipsis}
+.yt-studio .lb-gn-item.on .lb-gn-v{color:var(--st-text-2)}
+.yt-studio .lb-gn-state{display:inline-flex;align-items:center;gap:5px;flex:none;margin-left:auto;font-style:normal}
+.yt-studio .lb-gn-state.done{font-weight:500;color:var(--st-text)}
+.yt-studio .lb-gn-state.running{color:var(--lb-agent-text)}
+
+/* a sound: its wave across the row, the caption at its end */
+.yt-studio .lb-gn-item.row{display:flex;align-items:center;gap:12px;padding:8px 10px;border-radius:8px;transition:background .12s,box-shadow .12s}
+.yt-studio .lb-gn-item.row:hover{background:var(--cv-fill)}
+.yt-studio .lb-gn-item.row.on{background:var(--cv-fill);box-shadow:0 0 0 1.5px var(--cv-on)}
+.yt-studio .lb-gn-item.row .lb-gn-cap{flex:none;padding:0}
+.yt-studio .lb-gn-wave{display:flex;align-items:center;gap:2px;flex:1;min-width:0;height:28px;overflow:hidden}
+.yt-studio .lb-gn-wave i{flex:1;min-width:1px;max-width:4px;border-radius:2px;background:color-mix(in srgb,var(--k,var(--st-text-2)) 78%,transparent)}
+.yt-studio .lb-gn-item.row:is(.running,.queued) .lb-gn-wave i{background:var(--cv-line-strong)}
+
+/* a text: a card of its first lines */
+.yt-studio .lb-gn-item.card{gap:8px;padding:10px 11px 9px;border-radius:8px;background:var(--cv-fill);transition:box-shadow .12s}
+.yt-studio .lb-gn-item.card:hover{box-shadow:0 0 0 1px var(--cv-line-strong)}
+.yt-studio .lb-gn-item.card.on{box-shadow:0 0 0 1.5px var(--cv-on)}
+.yt-studio .lb-gn-item.card .lb-gn-cap{padding:0}
+.yt-studio .lb-gn-text{display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden;font-size:12.5px;line-height:1.45;color:var(--st-text);overflow-wrap:anywhere}
+.yt-studio .lb-gn-text.empty{color:var(--st-text-3)}
+.yt-studio .lb-gn-lines{display:grid;gap:8px;padding:3px 0 2px}
+.yt-studio .lb-gn-lines i{height:7px;border-radius:4px;background:var(--cv-line)}
+.yt-studio .lb-gn-lines i:nth-child(2){width:82%}
+.yt-studio .lb-gn-lines i:nth-child(3){width:56%}
+.yt-studio .lb-gn-lines.busy i{background:linear-gradient(90deg,var(--cv-fill) 0,var(--cv-line-strong) 50%,var(--cv-fill) 100%) 0 0/200% 100%;animation:st-shimmer 1.6s linear infinite}
+
+/* one waiting its turn: a dashed outline, nothing inside yet */
+.yt-studio .lb-gn-item:is(.row,.card).queued{background:none}
+.yt-studio .lb-gn-item:is(.row,.card).queued::after{content:'';position:absolute;inset:0;border-radius:inherit;border:1px dashed var(--cv-line-strong);pointer-events:none}
+
+/* ---------- focus from the keyboard ---------- */
+.yt-studio :is(.lb-gn-sq,.lb-gn-all,.lb-gn-close,.lb-gn-item):focus-visible{outline:1.5px solid var(--cv-on);outline-offset:2px}
+
+@media (prefers-reduced-motion:reduce){
+  .yt-studio .lb-gn-gallery,.yt-studio .lb-gn-lines.busy i{animation:none}
+  .yt-studio :is(.lb-gn-sq,.lb-gn-pic,.lb-gn-item,.lb-gn-all,.lb-gn-close){transition:none}
+}

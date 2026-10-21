@@ -17,6 +17,7 @@ const workspaceShellPrefixes = [
   '/apps',
   '/brand',
   '/calendar',
+  '/canvas',
   '/channels',
   '/chat',
   '/customers',

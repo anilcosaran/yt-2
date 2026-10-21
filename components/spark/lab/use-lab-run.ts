@@ -145,8 +145,8 @@ export type LabAsk = { text: string; batch: number }
 
 /** A node the user put on the canvas: its kind (`STAGE_KIND` in `lab-chain.ts`) and where. */
 export type CanvasOwnNode = { id: string; kind: string; x: number; y: number }
-/** A link the user drew from one node's output to another node. */
-export type CanvasLink = { id: string; source: string; target: string }
+/** A link the user drew from one node's output to an input of another node (`handle`: which input, as `lab-chain.ts` names them). */
+export type CanvasLink = { id: string; source: string; target: string; handle?: string }
 /** A node waiting to be made, how long making it takes, and when it started (once it is the one being made). */
 export type CanvasJob = { id: string; ms: number; startedAt?: number }
 /**
@@ -163,11 +163,16 @@ export type LabCanvas = {
   removed: string[]
   made: Record<string, number>
   queue: CanvasJob[]
+  /** What was made from the canvas, newest first (the last 40), with when it was done. */
+  log: { id: string; at: number }[]
   serial: number
   view: { x: number; y: number; zoom: number } | null
 }
 
-const EMPTY_CANVAS: LabCanvas = { moved: {}, sizes: {}, added: [], links: [], removed: [], made: {}, queue: [], serial: 1, view: null }
+/** What a canvas of its own keeps between visits (the Canvas editor): its canvas, and the words and choices on it. */
+export type CanvasSnapshot = { canvas: Omit<LabCanvas, 'queue'>; edits: Record<string, string>; picks: Record<string, string | null> }
+
+const EMPTY_CANVAS: LabCanvas = { moved: {}, sizes: {}, added: [], links: [], removed: [], made: {}, queue: [], log: [], serial: 1, view: null }
 /** A scene the user added by hand: its name, its line and its length. Spark plans the rest. */
 export type AddedScene = { id: string; role: string; say: string; seconds: number }
 /** A picture or clip of the user's (from Storage, or uploaded there), given to a scene as it is or as a reference. */
@@ -208,12 +213,13 @@ type Action =
   | { type: 'canvasAdd'; kind: string; x: number; y: number; from?: string; size?: { w: number; h: number } }
   | { type: 'canvasResize'; id: string; w: number; h: number }
   | { type: 'canvasRemove'; ids: string[] }
-  | { type: 'canvasLink'; source: string; target: string }
+  | { type: 'canvasLink'; source: string; target: string; handle?: string }
   | { type: 'canvasUnlink'; ids: string[] }
   | { type: 'canvasRun'; jobs: CanvasJob[]; at: number }
   | { type: 'canvasMade'; at?: number }
   | { type: 'canvasStop' }
   | { type: 'canvasView'; view: LabCanvas['view'] }
+  | { type: 'canvasLoad'; snapshot: CanvasSnapshot }
   | { type: 'setMedia'; id: string; media: LabMedia | null }
   | { type: 'setRef'; id: string; media: LabMedia | null }
   | { type: 'saveNote'; note: NoteDraft }
@@ -390,11 +396,11 @@ function reducer(state: LabRunState, action: Action): LabRunState {
     }
     case 'canvasLink': {
       const { canvas } = state
-      const id = `${action.source}→${action.target}`
+      const id = `${action.source}→${action.target}${action.handle ? `:${action.handle}` : ''}`
       if (action.source === action.target || canvas.links.some((link) => link.id === id)) return state
       // A planned link the user removed comes back as it was.
       if (canvas.removed.includes(id)) return { ...state, canvas: { ...canvas, removed: canvas.removed.filter((entry) => entry !== id) } }
-      return { ...state, canvas: { ...canvas, links: [...canvas.links, { id, source: action.source, target: action.target }] } }
+      return { ...state, canvas: { ...canvas, links: [...canvas.links, { id, source: action.source, target: action.target, handle: action.handle }] } }
     }
     case 'canvasUnlink': {
       const { canvas } = state
@@ -415,12 +421,18 @@ function reducer(state: LabRunState, action: Action): LabRunState {
       if (!job) return state
       // The next one starts as this one is made.
       const queue = rest.map((next, index) => (index ? next : { ...next, startedAt: action.at }))
-      return { ...state, canvas: { ...state.canvas, queue, made: { ...state.canvas.made, [job.id]: (state.canvas.made[job.id] ?? 0) + 1 } } }
+      const log = [{ id: job.id, at: action.at ?? 0 }, ...state.canvas.log].slice(0, 40)
+      return { ...state, canvas: { ...state.canvas, queue, log, made: { ...state.canvas.made, [job.id]: (state.canvas.made[job.id] ?? 0) + 1 } } }
     }
     case 'canvasStop':
       return { ...state, canvas: { ...state.canvas, queue: [] } }
     case 'canvasView':
       return { ...state, canvas: { ...state.canvas, view: action.view } }
+    case 'canvasLoad': {
+      // Nothing was being made when it was kept (the queue is not kept); fields a newer canvas has fall back to empty.
+      const { canvas, edits, picks } = action.snapshot
+      return { ...state, canvas: { ...EMPTY_CANVAS, ...canvas, queue: [] }, edits: { ...state.edits, ...edits }, picks: { ...state.picks, ...picks } }
+    }
     case 'saveNote': {
       const { id, ...note } = action.note
       const text = note.text.trim()
@@ -563,13 +575,15 @@ export type LabRun = {
     add: (kind: string, x: number, y: number, from?: string, size?: { w: number; h: number }) => void
     resize: (id: string, w: number, h: number) => void
     remove: (ids: string[]) => void
-    link: (source: string, target: string) => void
+    link: (source: string, target: string, handle?: string) => void
     unlink: (ids: string[]) => void
     /** Makes these nodes, one after another, after the ones already waiting. */
     run: (jobs: CanvasJob[]) => void
     /** Empties the queue (the node being made stops too). */
     stop: () => void
     view: (view: LabCanvas['view']) => void
+    /** Puts back what a canvas of its own kept (`CanvasSnapshot`). */
+    load: (snapshot: CanvasSnapshot) => void
   }
   /** Gives a scene the user's own media (`null` takes it back). */
   setMedia: (id: string, media: LabMedia | null) => void
@@ -756,11 +770,12 @@ export function useLabRun(init: LabRunInit = {}, runKey?: string): LabRun {
         add: (kind, x, y, from, size) => dispatch({ type: 'canvasAdd', kind, x, y, from, size }),
         resize: (id, w, h) => dispatch({ type: 'canvasResize', id, w, h }),
         remove: (ids) => dispatch({ type: 'canvasRemove', ids }),
-        link: (source, target) => dispatch({ type: 'canvasLink', source, target }),
+        link: (source, target, handle) => dispatch({ type: 'canvasLink', source, target, handle }),
         unlink: (ids) => dispatch({ type: 'canvasUnlink', ids }),
         run: (jobs) => dispatch({ type: 'canvasRun', jobs, at: Date.now() }),
         stop: () => dispatch({ type: 'canvasStop' }),
         view: (view) => dispatch({ type: 'canvasView', view }),
+        load: (snapshot) => dispatch({ type: 'canvasLoad', snapshot }),
       },
       setMedia: (id, media) => dispatch({ type: 'setMedia', id, media }),
       setRef: (id, media) => dispatch({ type: 'setRef', id, media }),

@@ -7,7 +7,7 @@
 
 /* ---------- frame: the box ---------- */
 .yt-studio .lb-cv .react-flow__node-frame{pointer-events:none !important}
-.yt-studio .lb-an-frame{position:relative;width:100%;height:100%;border-radius:24px;background:color-mix(in srgb,var(--st-text) 2.5%,transparent);
+.yt-studio .lb-an-frame{position:relative;width:100%;height:100%;border-radius:12px;background:color-mix(in srgb,var(--st-text) 2.5%,transparent);
   box-shadow:inset 0 0 0 1px var(--cv-line-strong);transition:box-shadow .15s}
 .yt-studio .lb-an-frame:not(.selected):has(> .lb-an-frame-head:hover){box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--cv-line-strong),var(--cv-on) 30%)}
 .yt-studio .lb-an-frame.selected{box-shadow:inset 0 0 0 1.5px var(--cv-on)}
@@ -42,7 +42,7 @@
 .yt-studio .react-flow__resize-control.line.lb-an-line:is(.top,.bottom){height:12px}
 
 /* ---------- note ---------- */
-.yt-studio .lb-an-note{display:flex;flex-direction:column;box-sizing:border-box;width:100%;min-height:112px;padding:14px 16px;border-radius:14px;
+.yt-studio .lb-an-note{display:flex;flex-direction:column;box-sizing:border-box;width:100%;min-height:112px;padding:14px 16px;border-radius:8px;
   background:#fbf3d5;color:#3d3523;box-shadow:0 1px 2px rgba(0,0,0,.06);transition:box-shadow .15s}
 .dark .yt-studio .lb-an-note{background:rgba(250,204,21,.1);color:var(--st-text)}
 .yt-studio .lb-an-note.selected{box-shadow:0 0 0 1.5px var(--cv-on)}
@@ -58,7 +58,7 @@
 .yt-studio .lb-an-note textarea::placeholder{color:color-mix(in srgb,currentColor 45%,transparent);opacity:1}
 
 /* ---------- free text: words alone, a heading or a line of description ---------- */
-.yt-studio .lb-an-label{display:flex;flex-direction:column;box-sizing:border-box;width:100%;padding:4px 6px;border-radius:8px;color:var(--st-text);transition:box-shadow .15s}
+.yt-studio .lb-an-label{display:flex;flex-direction:column;box-sizing:border-box;width:100%;padding:4px 6px;border-radius:6px;color:var(--st-text);transition:box-shadow .15s}
 .yt-studio .lb-an-label .lb-an-note-field::after,.yt-studio .lb-an-label .lb-an-note-field > *{font-size:14px;line-height:1.5;color:var(--st-text-2)}
 .yt-studio .lb-an-label.title .lb-an-note-field::after,.yt-studio .lb-an-label.title .lb-an-note-field > *{font-size:22px;line-height:1.25;font-weight:600;letter-spacing:-.01em;color:var(--st-text)}
 .yt-studio .lb-an-label.selected{box-shadow:0 0 0 1.5px var(--cv-on)}

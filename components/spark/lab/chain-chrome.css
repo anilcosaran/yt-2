@@ -13,7 +13,7 @@
 
 /* ---------- the queue: a pill, and a panel below it ---------- */
 .yt-studio .lb-cc-queue{position:relative;display:inline-flex}
-.yt-studio .lb-cc-queue-btn{display:inline-flex;align-items:center;gap:7px;box-sizing:border-box;height:34px;padding:0 10px;border-radius:12px;
+.yt-studio .lb-cc-queue-btn{display:inline-flex;align-items:center;gap:7px;box-sizing:border-box;height:34px;padding:0 10px;border-radius:9px;
   background:var(--cv-node);box-shadow:0 0 0 1px var(--cv-line),var(--cv-shadow);font-size:12.5px;line-height:1;color:var(--st-text-3);white-space:nowrap;transition:box-shadow .12s}
 .yt-studio .lb-cc-queue-btn:hover,.yt-studio .lb-cc-queue-btn[aria-expanded="true"]{box-shadow:0 0 0 1px var(--cv-line-strong),var(--cv-shadow)}
 .yt-studio .lb-cc-queue-btn b{font-weight:500;color:var(--st-text-2)}
@@ -26,10 +26,10 @@
 
 .yt-studio .lb-cc-panel{position:absolute;top:calc(100% + 8px);right:0;z-index:40;display:flex;flex-direction:column;gap:1px;box-sizing:border-box;
   width:300px;max-width:calc(100vw - 32px);max-height:360px;padding:6px;overflow-y:auto;overscroll-behavior:contain;scrollbar-width:thin;
-  border-radius:14px;background:var(--cv-node);box-shadow:0 0 0 1px var(--cv-line),var(--cv-shadow);cursor:default;animation:lb-cc-in .14s ease-out}
+  border-radius:10px;background:var(--cv-node);box-shadow:0 0 0 1px var(--cv-line),var(--cv-shadow);cursor:default;animation:lb-cc-in .14s ease-out}
 @keyframes lb-cc-in{from{opacity:0;transform:translateY(-4px)}}
 
-.yt-studio .lb-cc-row{display:flex;align-items:center;gap:10px;flex:none;width:100%;box-sizing:border-box;padding:8px 10px;border-radius:10px;text-align:left;color:var(--st-text-2)}
+.yt-studio .lb-cc-row{display:flex;align-items:center;gap:10px;flex:none;width:100%;box-sizing:border-box;padding:8px 10px;border-radius:7px;text-align:left;color:var(--st-text-2)}
 .yt-studio button.lb-cc-row{transition:background .12s}
 .yt-studio button.lb-cc-row:hover{background:var(--cv-fill)}
 .yt-studio .lb-cc-row-t{display:grid;grid-template-columns:minmax(0,1fr);gap:1px;min-width:0;flex:1}
@@ -37,7 +37,7 @@
 .yt-studio .lb-cc-row-t small{font-size:11.5px;line-height:15px;color:var(--st-text-3);font-variant-numeric:tabular-nums;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 
 /* the kind's glyph: a soft square, the kind's tint on the icon only (`.k-<kind>` sets `--k`) */
-.yt-studio .lb-cc-glyph{display:grid;place-items:center;width:28px;height:28px;flex:none;border-radius:8px;background:var(--cv-fill);color:var(--k,var(--st-text-2))}
+.yt-studio .lb-cc-glyph{display:grid;place-items:center;width:28px;height:28px;flex:none;border-radius:6px;background:var(--cv-fill);color:var(--k,var(--st-text-2))}
 .yt-studio .lb-cc-glyph .i{width:14px;height:14px}
 .yt-studio .lb-cc-glyph.spark{background:var(--lb-agent-soft);color:var(--lb-agent)}
 
@@ -48,15 +48,15 @@
 @keyframes lb-cc-slide{from{transform:translateX(-100%)}to{transform:translateX(290%)}}
 
 .yt-studio .lb-cc-empty{margin:0;padding:10px;font-size:12.5px;line-height:1.45;color:var(--st-text-3)}
-.yt-studio .lb-cc-stop{position:relative;display:flex;align-items:center;justify-content:center;flex:none;height:32px;margin-top:7px;border-radius:10px;
+.yt-studio .lb-cc-stop{position:relative;display:flex;align-items:center;justify-content:center;flex:none;height:32px;margin-top:7px;border-radius:7px;
   font-size:12.5px;font-weight:500;color:var(--st-text-2);transition:background .12s,color .12s}
 .yt-studio .lb-cc-stop::before{content:'';position:absolute;left:4px;right:4px;top:-4px;height:1px;background:var(--cv-line)}
 .yt-studio .lb-cc-stop:hover{background:var(--cv-fill);color:var(--st-text)}
 
 /* ---------- the zoom pill ---------- */
-.yt-studio .lb-cc-zoom{display:inline-flex;align-items:center;gap:2px;box-sizing:border-box;height:34px;padding:3px;border-radius:12px;
+.yt-studio .lb-cc-zoom{display:inline-flex;align-items:center;gap:2px;box-sizing:border-box;height:34px;padding:3px;border-radius:9px;
   background:var(--cv-node);box-shadow:0 0 0 1px var(--cv-line),var(--cv-shadow)}
-.yt-studio .lb-cc-zoom button{display:grid;place-items:center;flex:none;width:28px;height:28px;border-radius:9px;color:var(--st-text-2);transition:background .12s,color .12s}
+.yt-studio .lb-cc-zoom button{display:grid;place-items:center;flex:none;width:28px;height:28px;border-radius:6px;color:var(--st-text-2);transition:background .12s,color .12s}
 .yt-studio .lb-cc-zoom button:hover{background:var(--cv-fill);color:var(--st-text)}
 .yt-studio .lb-cc-zoom button.on{background:color-mix(in srgb,var(--st-text) 9%,transparent);color:var(--st-text)}
 .yt-studio .lb-cc-zoom button svg{width:15px;height:15px;stroke-width:1.7}

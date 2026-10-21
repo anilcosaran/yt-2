@@ -1,0 +1,18 @@
+{
+  "title": "Canvas",
+  "newCanvas": "New canvas",
+  "untitled": "Untitled canvas",
+  "updated": "Updated · {time}",
+  "emptyTitle": "No canvases yet",
+  "emptyDescription": "Arrange images, video and sound on one canvas.",
+  "editor": {
+    "rename": "Rename",
+    "titleLabel": "Canvas name",
+    "running": "Making · {title}",
+    "queued": "{count} queued",
+    "recent": "Recently made",
+    "recentEmpty": "Nothing made yet",
+    "notFound": "This canvas wasn’t found.",
+    "back": "Back to canvases"
+  }
+}

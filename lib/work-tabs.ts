@@ -7,10 +7,10 @@ import * as React from 'react'
 // to. Everything else is
 // a page (the sidebar's, a chat, Plan › Akış inside a project); an unsaved Flow draft is the new tab's, like
 // `/spark/new`, until it is saved. A tab keeps the address it was left at (a project's view), so coming back lands
-// there. Work that is open already is focused where it is, never opened twice. At most `MAX_TABS` are open: one
-// more drops the oldest that is not on screen. The bar's first item is the page the user came from (`lastPage`),
-// kept while work is on screen. Kept per browser and cleared when another account signs in
-// (`WORK_TABS_STORAGE_KEY` is principal-bound).
+// there. Work that is open already is focused where it is, never opened twice. Pinned tabs lead the strip. At most
+// `MAX_TABS` are open: one more drops the oldest that is neither pinned nor on screen. The bar's first item is the
+// page the user came from (`lastPage`), kept while work is on screen. Kept per browser and cleared when another
+// account signs in (`WORK_TABS_STORAGE_KEY` is principal-bound).
 
 export type WorkTabKind = 'spark' | 'flow' | 'new'
 /** The work a tab can hold; the new tab turns into one of these (`replaceWorkTab`). */
@@ -22,6 +22,8 @@ export type WorkTab = {
   title: string
   /** The query the tab was left at, without `?`. */
   search: string
+  /** Kept at the start of the strip, and never closed to make room or by closing the others. */
+  pinned?: boolean
 }
 
 type WorkTabsState = {
@@ -35,7 +37,7 @@ export const WORK_TABS_STORAGE_KEY = 'youtorch:work-tabs:v1'
 export const NEW_TAB_ID = 'new'
 export const NEW_TAB_PATH = '/new'
 // The strip scrolls once it is full (`WorkTabStrip`), so the limit is only there to keep it from growing for ever.
-const MAX_TABS = 12
+const MAX_TABS = 15
 /** An unsaved Flow's id (`createDraftWorkflowId` in the Flow page); saving gives it a real one. */
 const FLOW_DRAFT_PREFIX = 'wf-draft-'
 const EMPTY: WorkTabsState = { tabs: [], lastPage: null }
@@ -64,11 +66,15 @@ function parse(raw: string | null): WorkTabsState {
             return true
           })
           .map((tab) => (tab.kind === 'new'
-            ? { ...tab, id: NEW_TAB_ID, search: '' }
-            : tab.kind === 'spark' ? { ...tab, search: projectSearchWithoutMode(tab.search) } : tab))
+            ? { ...tab, id: NEW_TAB_ID, search: '', pinned: undefined }
+            : {
+                ...tab,
+                search: tab.kind === 'spark' ? projectSearchWithoutMode(tab.search) : tab.search,
+                pinned: tab.pinned === true || undefined,
+              }))
       : []
     const lastPage = typeof value.lastPage === 'string' && value.lastPage.startsWith('/') ? value.lastPage : null
-    return { tabs: withinLimit(tabs), lastPage }
+    return { tabs: withinLimit(pinnedFirst(tabs)), lastPage }
   } catch {
     return EMPTY
   }
@@ -136,18 +142,23 @@ export function useWorkTabs() {
 
 const same = (tab: WorkTab, kind: WorkTabKind, id: string) => tab.kind === kind && tab.id === id
 
+/** Pinned tabs lead the strip; each part keeps its own order. */
+function pinnedFirst(tabs: WorkTab[]) {
+  return [...tabs.filter((tab) => tab.pinned), ...tabs.filter((tab) => !tab.pinned)]
+}
+
 /**
  * At most `MAX_TABS`, without asking: past it the first tabs in the strip go (it is in the order work was opened,
- * unless tabs were dragged; a pick in the new tab takes that tab's spot), skipping the one on screen and `keep`
- * (the one just opened).
+ * unless tabs were dragged; a pick in the new tab takes that tab's spot), skipping the pinned ones, the one on
+ * screen and `keep` (the one just opened). With nothing else left to close, the strip holds more.
  */
 function withinLimit(tabs: WorkTab[], keep?: WorkTab): WorkTab[] {
   if (tabs.length <= MAX_TABS) return tabs
   const onScreen = typeof window === 'undefined' ? null : workTabFromPath(window.location.pathname, window.location.search)
   const kept = [...tabs]
   while (kept.length > MAX_TABS) {
-    const oldest = kept.findIndex((tab) => tab !== keep && !(onScreen && same(tab, onScreen.kind, onScreen.id)))
-    if (oldest === -1) return kept.slice(-MAX_TABS)
+    const oldest = kept.findIndex((tab) => !tab.pinned && tab !== keep && !(onScreen && same(tab, onScreen.kind, onScreen.id)))
+    if (oldest === -1) return kept
     kept.splice(oldest, 1)
   }
   return kept
@@ -268,12 +279,18 @@ export function replaceWorkTab(next: { kind: WorkKind; id: string; title: string
   write({ ...state, tabs: state.tabs.map((entry, position) => (position === index ? tab : entry)) })
 }
 
-/** Moves a tab to `index` in the strip (dragged there); the others keep their order. */
+/**
+ * Moves a tab to `index` in the strip (dragged there), within its part: a pinned tab among the pinned ones, the
+ * others after them. The others keep their order.
+ */
 export function moveWorkTab(kind: WorkTabKind, id: string, index: number) {
   const state = read()
   const from = state.tabs.findIndex((tab) => same(tab, kind, id))
-  const to = Math.max(0, Math.min(index, state.tabs.length - 1))
-  if (from === -1 || from === to) return
+  if (from === -1) return
+  const pinned = state.tabs.filter((tab) => tab.pinned).length
+  const [first, last] = state.tabs[from]!.pinned ? [0, pinned - 1] : [pinned, state.tabs.length - 1]
+  const to = Math.max(first, Math.min(index, last))
+  if (from === to) return
   const tabs = [...state.tabs]
   const [tab] = tabs.splice(from, 1)
   tabs.splice(to, 0, tab!)
@@ -308,4 +325,31 @@ export function closeWorkTab(kind: WorkTabKind, id: string): string {
   write({ ...state, tabs })
   const neighbour = tabs[index] ?? tabs[index - 1]
   return neighbour ? workTabHref(neighbour) : fallback
+}
+
+/** Pins a tab (after the pinned ones) or unpins it (first after them). The new tab is not pinned. */
+export function setWorkTabPinned(kind: WorkTabKind, id: string, pinned: boolean) {
+  if (kind === 'new') return
+  const state = read()
+  const tab = state.tabs.find((entry) => same(entry, kind, id))
+  if (!tab || Boolean(tab.pinned) === pinned) return
+  const rest = state.tabs.filter((entry) => entry !== tab)
+  const at = rest.filter((entry) => entry.pinned).length
+  write({ ...state, tabs: [...rest.slice(0, at), { ...tab, pinned: pinned || undefined }, ...rest.slice(at)] })
+}
+
+/** Closes every tab but this one and the pinned ones. */
+export function closeOtherWorkTabs(kind: WorkTabKind, id: string) {
+  const state = read()
+  const tabs = state.tabs.filter((tab) => tab.pinned || same(tab, kind, id))
+  if (tabs.length !== state.tabs.length) write({ ...state, tabs })
+}
+
+/** Closes the tabs after this one in the strip, except the pinned ones. */
+export function closeWorkTabsAfter(kind: WorkTabKind, id: string) {
+  const state = read()
+  const index = state.tabs.findIndex((tab) => same(tab, kind, id))
+  if (index === -1) return
+  const tabs = state.tabs.filter((tab, position) => position <= index || tab.pinned)
+  if (tabs.length !== state.tabs.length) write({ ...state, tabs })
 }

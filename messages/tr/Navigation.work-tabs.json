@@ -4,6 +4,14 @@
     "close": "{title} sekmesini kapat",
     "untitled": "Adsız proje",
     "newTab": "Yeni sekme",
-    "add": "Yeni proje"
+    "add": "Yeni proje",
+    "scrollStart": "Önceki sekmeleri göster",
+    "scrollEnd": "Sonraki sekmeleri göster",
+    "pin": "Sabitle",
+    "unpin": "Sabitlemeyi kaldır",
+    "pinned": "Sabitlenmiş sekme",
+    "closeTab": "Kapat",
+    "closeOthers": "Diğerlerini kapat",
+    "closeRight": "Sağdakileri kapat"
   }
 }

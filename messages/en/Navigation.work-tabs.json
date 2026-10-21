@@ -4,6 +4,14 @@
     "close": "Close {title}",
     "untitled": "Untitled project",
     "newTab": "New tab",
-    "add": "New project"
+    "add": "New project",
+    "scrollStart": "Show earlier tabs",
+    "scrollEnd": "Show later tabs",
+    "pin": "Pin",
+    "unpin": "Unpin",
+    "pinned": "Pinned tab",
+    "closeTab": "Close",
+    "closeOthers": "Close other tabs",
+    "closeRight": "Close tabs to the right"
   }
 }

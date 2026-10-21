@@ -136,7 +136,8 @@ import {
   listWorkflowNodeFavoriteTypes,
 } from '@/lib/workflows/node-favorites'
 import { UiText } from '@/components/i18n/ui-text'
-import { ASSISTANT_CONVERSATIONS_QUERY_KEY, listAssistantConversations } from '@/lib/assistant/api'
+import { listSparkProjects } from '@/lib/spark/api'
+import { openWorkTab, sparkProjectWorkHref } from '@/lib/work-tabs'
 import { useFormatter, useTranslations } from 'next-intl'
 import { SidebarToggleIcon } from './sidebar-toggle-icon'
 
@@ -349,7 +350,7 @@ export function AppSidebar({
                 items={items}
                 currentPath={currentPath}
                 collapsed={collapsed}
-                recentChatsChannelId={showWorkspaceSwitcher ? selectedChannel?.id ?? null : undefined}
+                recentWorkChannelId={showWorkspaceSwitcher ? selectedChannel?.id ?? null : undefined}
               />
             )}
           </nav>
@@ -1790,11 +1791,11 @@ interface SidebarNavigationItemsProps {
   items: SidebarNavItem[]
   currentPath: string
   collapsed: boolean
-  /** The channel whose recent chats are listed under the sections; undefined hides the list (non-workspace menus). */
-  recentChatsChannelId?: string | null
+  /** The channel whose recent projects are listed under the sections; undefined hides the list (non-workspace menus). */
+  recentWorkChannelId?: string | null
 }
 
-function SidebarNavigationItems({ items, currentPath, collapsed, recentChatsChannelId }: SidebarNavigationItemsProps) {
+function SidebarNavigationItems({ items, currentPath, collapsed, recentWorkChannelId }: SidebarNavigationItemsProps) {
   const leadingItems: SidebarNavItem[] = []
   const sections: Array<{ section: SidebarNavItem; items: SidebarNavItem[] }> = []
   let currentSection: { section: SidebarNavItem; items: SidebarNavItem[] } | null = null
@@ -1826,8 +1827,8 @@ function SidebarNavigationItems({ items, currentPath, collapsed, recentChatsChan
           <SidebarSection key={section.id} label={section.label}>{renderItems(sectionItems)}</SidebarSection>
         )
       ))}
-      {!collapsed && recentChatsChannelId !== undefined && (
-        <SidebarRecentChats channelId={recentChatsChannelId} currentPath={currentPath} />
+      {!collapsed && recentWorkChannelId !== undefined && (
+        <SidebarRecentProjects channelId={recentWorkChannelId} currentPath={currentPath} />
       )}
     </>
   )
@@ -1852,46 +1853,71 @@ function SidebarSection({ label, children }: { label: string; children: React.Re
   )
 }
 
-const SIDEBAR_RECENT_CHATS = 5
+const SIDEBAR_RECENT_PROJECTS = 5
 
-/** The channel's latest chats (like a chat app's history), with a link to the full list on /chat. */
-function SidebarRecentChats({ channelId, currentPath }: { channelId: string | null; currentPath: string }) {
+/**
+ * The channel's latest projects, newest first: a new video is a project ("Yeni video"), so recent work is here. A
+ * project opens as its work tab, where it was left, like a card on the projects page; "Tümünü gör" is that page.
+ */
+function SidebarRecentProjects({ channelId, currentPath }: { channelId: string | null; currentPath: string }) {
   const tNav = useTranslations('Navigation')
-  const conversationsQuery = useQuery({
-    queryKey: [...ASSISTANT_CONVERSATIONS_QUERY_KEY, channelId, 'sidebar-recent'],
-    queryFn: ({ signal }) => listAssistantConversations({ channelId, limit: SIDEBAR_RECENT_CHATS, offset: 0 }, { signal }),
+  const router = useRouter()
+  const projectsQuery = useQuery({
+    queryKey: ['spark-projects', channelId, 'sidebar-recent'],
+    queryFn: ({ signal }) => listSparkProjects(channelId ?? '', { limit: SIDEBAR_RECENT_PROJECTS, signal }),
     enabled: Boolean(channelId),
     staleTime: 15_000,
   })
-  const conversations = (conversationsQuery.data?.conversations ?? [])
-    .filter((conversation) => !conversation.archived_at && !conversation.deleted_at)
-    .slice(0, SIDEBAR_RECENT_CHATS)
+  const loaded = projectsQuery.data?.projects
+  const projects = (loaded ?? [])
+    .filter((project) => (project.lifecycleState ?? 'active') === 'active')
+    .sort((a, b) => Date.parse(b.updatedAt) - Date.parse(a.updatedAt))
+    .slice(0, SIDEBAR_RECENT_PROJECTS)
+  const openPath = currentPath.split('?')[0] ?? ''
 
-  if (!channelId || (!conversationsQuery.isPending && conversations.length === 0)) return null
+  // A project made since the list was read (named from its first sentence) is looked up once it is on screen.
+  const openId = /^\/spark\/([^/]+)$/.exec(openPath)?.[1]
+  const unknown = openId && openId !== 'new' && openId !== 'lab' && loaded && !loaded.some((project) => encodeURIComponent(project.id) === openId) ? openId : null
+  const lookedUp = React.useRef<string | null>(null)
+  const { refetch } = projectsQuery
+  React.useEffect(() => {
+    if (!unknown || lookedUp.current === unknown) return
+    lookedUp.current = unknown
+    void refetch()
+  }, [unknown, refetch])
+
+  if (!channelId || (!projectsQuery.isPending && projects.length === 0)) return null
 
   return (
-    <SidebarSection label={tNav('recentChats')}>
-      {conversationsQuery.isPending
+    <SidebarSection label={tNav('recentWork')}>
+      {projectsQuery.isPending
         ? Array.from({ length: 3 }, (_, index) => <Skeleton key={index} className="mx-3 my-1.5 h-4 rounded-md" />)
-        : conversations.map((conversation) => {
-          const href = `/chat?id=${encodeURIComponent(conversation.id)}`
-          const active = currentPath === href
+        : projects.map((project) => {
+          const href = `/spark/${encodeURIComponent(project.id)}`
+          const active = openPath === href
           return (
             <Link
-              key={conversation.id}
+              key={project.id}
               href={href}
               aria-current={active ? 'page' : undefined}
+              onClick={(event) => {
+                // A plain click opens it as its tab, where it was left; a modified one is the browser's.
+                if (event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return
+                event.preventDefault()
+                openWorkTab({ kind: 'spark', id: project.id, title: project.title })
+                router.push(sparkProjectWorkHref(project.id))
+              }}
               className={cn(
                 'truncate rounded-md px-2.5 py-1.5 text-[14px] transition-colors',
                 active ? 'bg-sidebar-accent font-medium text-foreground' : 'text-muted-foreground hover:bg-sidebar-accent/60 hover:text-foreground',
               )}
             >
-              {conversation.title?.trim() || tNav('untitledWork')}
+              {project.title.trim() || tNav('untitledWork')}
             </Link>
           )
         })}
-      <Link href="/chat" className="rounded-md px-2.5 py-1.5 text-[14px] text-muted-foreground/70 transition-colors hover:bg-sidebar-accent/70 hover:text-foreground">
-        {tNav('seeAllChats')}
+      <Link href="/spark" className="rounded-md px-2.5 py-1.5 text-[14px] text-muted-foreground/70 transition-colors hover:bg-sidebar-accent/70 hover:text-foreground">
+        {tNav('seeAllWork')}
       </Link>
     </SidebarSection>
   )

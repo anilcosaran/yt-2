@@ -98,7 +98,7 @@
 .yt-studio .lb-cv-node.yours .lb-cv-label > em{color:var(--lb-you-text,var(--lb-you))}
 
 /* not clipped: the composer's model menu opens over the node and past its edges */
-.yt-studio .lb-cv-box{display:flex;flex-direction:column;height:100%;border-radius:10px;background:linear-gradient(180deg,var(--cv-node-top),var(--cv-node) 64px);
+.yt-studio .lb-cv-box{position:relative;display:flex;flex-direction:column;height:100%;border-radius:10px;background:linear-gradient(180deg,var(--cv-node-top),var(--cv-node) 64px);
   box-shadow:0 0 0 1px var(--cv-line),var(--cv-lift);transition:box-shadow .15s}
 .yt-studio .lb-cv-node:hover .lb-cv-box{box-shadow:0 0 0 1px var(--cv-line-strong),var(--cv-lift)}
 .yt-studio .lb-cv-node.selected .lb-cv-box{box-shadow:0 0 0 1.5px var(--cv-on),var(--cv-lift)}
@@ -121,41 +121,36 @@
 .yt-studio .lb-cv-empty{display:grid;place-items:center;color:var(--st-text-3);opacity:.45}
 .yt-studio .lb-cv-empty .i{width:30px;height:30px;stroke-width:1.2}
 
-/* the settings at hand, on the viewer's bottom left: a press steps to the next value; the last opens them all */
-.yt-studio .lb-cv-chips{position:absolute;left:8px;right:8px;bottom:8px;z-index:4;display:flex;align-items:center;gap:4px;pointer-events:none}
-.yt-studio .lb-cv-chip{position:relative;display:flex}
-.yt-studio .lb-cv-chips button{display:inline-flex;align-items:center;gap:3px;height:22px;padding:0 5px 0 7px;border-radius:6px;background:var(--cv-chip);color:var(--cv-chip-text);font-size:11px;font-weight:600;
-  line-height:22px;font-variant-numeric:tabular-nums;pointer-events:auto;transition:background .12s}
-.yt-studio .lb-cv-chips button svg{width:11px;height:11px;opacity:.6}
-.yt-studio .lb-cv-chips button:hover,.yt-studio .lb-cv-chips button.on{background:color-mix(in srgb,var(--cv-chip),var(--cv-chip-text) 16%)}
-.yt-studio .lb-cv-chips button.more{display:grid;place-items:center;width:22px;padding:0;margin-left:auto;opacity:0;transition:opacity .12s,background .12s}
-.yt-studio .lb-cv-node:is(:hover,.selected) .lb-cv-chips button.more,.yt-studio .lb-cv-chips button.more.on{opacity:1}
-.yt-studio .lb-cv-chips button.more svg{width:12px;height:12px;opacity:1}
-/* a chip's choices: a short list over the picture, rising from the chip (falling, in a writer) */
-.yt-studio .lb-cv-chipmenu{position:absolute;left:0;bottom:calc(100% + 6px);z-index:6;display:grid;gap:1px;min-width:132px;padding:4px;border-radius:9px;background:var(--cv-node);
-  box-shadow:0 0 0 1px var(--cv-line-strong),var(--cv-shadow);pointer-events:auto;cursor:default;animation:lb-in .12s ease-out}
-.yt-studio .lb-cv-chipmenu > small{padding:4px 8px 3px;font-size:11px;font-weight:500;color:var(--st-text-3)}
-.yt-studio .lb-cv-chips .lb-cv-chipmenu button{display:flex;justify-content:space-between;gap:12px;width:100%;height:28px;padding:0 8px;border-radius:6px;background:none;color:var(--st-text-2);
-  font-size:12px;font-weight:500;text-align:left}
-.yt-studio .lb-cv-chips .lb-cv-chipmenu button:hover{background:var(--cv-fill);color:var(--st-text)}
-.yt-studio .lb-cv-chips .lb-cv-chipmenu button.on{color:var(--st-text)}
-.yt-studio .lb-cv-chips .lb-cv-chipmenu button svg{width:13px;height:13px;opacity:1}
-/* in a writer: a row at the top of its text, the first chip (what it writes) a little stronger */
-.yt-studio .lb-cv-chips.inline{position:static;flex:none;margin:0 -4px 8px;pointer-events:auto}
-.yt-studio .lb-cv-chips.inline > .lb-cv-chip > button,.yt-studio .lb-cv-chips.inline > button.more{background:var(--cv-fill);color:var(--st-text-2);font-weight:500}
-.yt-studio .lb-cv-chips.inline > .lb-cv-chip > button:hover,.yt-studio .lb-cv-chips.inline > .lb-cv-chip > button.on{background:color-mix(in srgb,var(--cv-fill),var(--st-text) 8%);color:var(--st-text)}
-.yt-studio .lb-cv-chips.inline > .lb-cv-chip:first-child > button{color:var(--st-text);font-weight:600}
-.yt-studio .lb-cv-chips.inline .lb-cv-chipmenu{top:calc(100% + 6px);bottom:auto}
+/* before it is made: a picture or clip shows the outline of what it will be, at its size, dashed, its size in it */
+.yt-studio .lb-cv-aspect{position:relative;display:grid;place-items:end center;height:62%;max-width:72%;padding-bottom:8px;border:1px dashed var(--cv-line-strong);border-radius:7px;
+  color:var(--st-text-3);font-size:11px;font-weight:500;font-variant-numeric:tabular-nums;transition:border-color .15s}
+.yt-studio .lb-cv-node:is(:hover,.selected) .lb-cv-aspect{border-color:color-mix(in srgb,var(--cv-line-strong),var(--st-text) 18%)}
+.yt-studio .lb-cv-out.working .lb-cv-aspect{border-color:color-mix(in srgb,var(--lb-agent) 60%,transparent);animation:lb-cv-breathe 1.6s ease-in-out infinite}
+@keyframes lb-cv-breathe{50%{opacity:.45}}
 
-/* while it is made: its progress over what it showed before */
-.yt-studio .lb-cv-progress{position:absolute;inset:0;z-index:3;display:grid;place-content:center;justify-items:center;gap:8px;font-size:11.5px;font-variant-numeric:tabular-nums;color:var(--lb-agent-text);
-  background:color-mix(in srgb,var(--cv-node) 62%,transparent)}
+/* its settings: one quiet chip over the top left of what it shows ("9:16 · 1× · Standart"), all of them under it */
+.yt-studio .lb-cv-spec{position:absolute;left:8px;top:8px;z-index:4;display:inline-flex;align-items:center;gap:4px;max-width:calc(100% - 16px);height:24px;padding:0 6px 0 8px;border-radius:7px;
+  background:var(--cv-chip);color:var(--cv-chip-text);font-size:11.5px;font-weight:600;font-variant-numeric:tabular-nums;white-space:nowrap;transition:background .12s}
+.yt-studio .lb-cv-spec > span{min-width:0;overflow:hidden;text-overflow:ellipsis}
+.yt-studio .lb-cv-spec svg{width:12px;height:12px;flex:none;opacity:.6;transition:transform .15s}
+.yt-studio .lb-cv-spec:hover,.yt-studio .lb-cv-spec.on{background:color-mix(in srgb,var(--cv-chip),var(--cv-chip-text) 16%)}
+.yt-studio .lb-cv-spec.on svg{transform:rotate(180deg)}
+/* a writer's text and a sound sit on the node's own surface: the chip there is a soft fill */
+.yt-studio .lb-cv-node:is(.k-text,.k-voice,.k-music) .lb-cv-spec{background:var(--cv-fill);color:var(--st-text)}
+.yt-studio .lb-cv-node:is(.k-text,.k-voice,.k-music) .lb-cv-spec:is(:hover,.on){background:color-mix(in srgb,var(--cv-fill),var(--st-text) 8%)}
+.yt-studio .lb-cv-spec-pop{position:absolute;left:8px;top:38px;z-index:50;width:min(300px,calc(100% + 40px))}
+
+/* while it is made: a thin line along its top edge fills up (or runs, when there is no measure) */
+.yt-studio .lb-cv-line{position:absolute;left:10px;right:10px;top:0;z-index:5;height:2px;border-radius:2px;overflow:hidden;background:color-mix(in srgb,var(--lb-agent) 22%,transparent)}
+.yt-studio .lb-cv-line::after{content:'';position:absolute;inset:0;transform-origin:left;transform:scaleX(var(--p,0));background:var(--lb-agent);transition:transform .2s linear}
+.yt-studio .lb-cv-line.loose::after{width:35%;transform:none;animation:lb-cv-run 1.2s ease-in-out infinite}
+@keyframes lb-cv-run{from{left:-35%}to{left:100%}}
 
 .yt-studio .lb-cv-out.cut{gap:4px;padding:10px}
 .yt-studio .lb-cv-out.cut .lb-cv-pic{flex:1 1 0;width:auto;border-radius:4px}
 
 /* a sound: a small player (▶, who says it and the line, the length) over its wave; the played part lights as it plays */
-.yt-studio .lb-cv-out.wave{flex-direction:column;align-items:stretch;justify-content:flex-start;gap:8px;padding:10px 10px 32px}
+.yt-studio .lb-cv-out.wave{flex-direction:column;align-items:stretch;justify-content:flex-start;gap:8px;padding:42px 10px 12px}
 .yt-studio .lb-cv-out.wave.empty{justify-content:center}
 .yt-studio .lb-cv-player{display:flex;align-items:center;gap:9px;min-width:0;flex:none}
 .yt-studio .lb-cv-playbtn{display:grid;place-items:center;flex:none;width:28px;height:28px;border-radius:50%;background:var(--k);color:#fff;
@@ -192,21 +187,16 @@
 .yt-studio .lb-cv-drop .i{width:20px;height:20px;margin-bottom:4px}
 .yt-studio .lb-cv-drop:hover,.yt-studio .lb-cv-out.media.over .lb-cv-drop{background:var(--cv-fill);color:var(--st-text-2)}
 
-/* its composer: the shared prompt box, as a soft fill inside the node, "Üret" at its bottom right */
-.yt-studio .lb-cv-compose{position:relative;flex:none;padding:8px;cursor:default}
-.yt-studio .lb-cv-compose .pb.lb-cv-pb{border:0;border-radius:8px;background:var(--cv-fill);box-shadow:none}
-.yt-studio .lb-cv-compose .pb.lb-cv-pb:focus-within{box-shadow:0 0 0 1px var(--cv-line-strong)}
-.yt-studio .lb-cv-compose .pb.lb-cv-pb .pb-input{min-height:32px;max-height:66px;padding:8px 10px 0;font-size:12.5px}
+/* its composer: the shared prompt box laid straight on the node, under a hairline; the cost and Spark's send at its right */
+.yt-studio .lb-cv-compose{position:relative;flex:none;padding:2px 4px 4px;border-top:1px solid var(--cv-line);cursor:default}
+.yt-studio .lb-cv-compose .pb.lb-cv-pb{border:0;border-radius:0;background:transparent;box-shadow:none}
+.yt-studio .lb-cv-compose .pb.lb-cv-pb .pb-input{min-height:32px;max-height:66px;padding:9px 8px 0;font-size:12.5px}
 .yt-studio .lb-cv-compose .pb.lb-cv-pb .pb-bar{padding:2px 4px 4px}
 .yt-studio .lb-cv-compose .pb.lb-cv-pb .pb-chip{height:24px;padding:0 6px;border-radius:6px;font-size:11.5px}
-.yt-studio .lb-cv-compose .pb.lb-cv-pb .pb-chip.pb-on{background:var(--cv-node);box-shadow:0 0 0 1px var(--cv-line-strong)}
-/* making it: a small button with the price, not an icon */
-.yt-studio .lb-cv-go{display:inline-flex;align-items:center;gap:5px;height:24px;padding:0 9px 0 8px;border-radius:6px;background:var(--st-text);color:var(--cv-node);font-size:11.5px;font-weight:600;white-space:nowrap;transition:opacity .12s}
-.yt-studio .lb-cv-go:hover:not(:disabled){opacity:.88}
-.yt-studio .lb-cv-go:disabled{background:var(--cv-fill);color:var(--st-text-3);cursor:default}
-.yt-studio .lb-cv-go svg{width:12px;height:12px}
-.yt-studio .lb-cv-go small{font-size:11px;font-weight:500;opacity:.6;font-variant-numeric:tabular-nums}
-.yt-studio .lb-cv-go small::before{content:'·';margin-right:5px}
+.yt-studio .lb-cv-compose .pb.lb-cv-pb .pb-chip.pb-on{background:var(--cv-fill);box-shadow:0 0 0 1px var(--cv-line-strong)}
+.yt-studio .lb-cv-compose .pb.lb-cv-pb .pb-note{font-size:11px;color:var(--st-text-3)}
+.yt-studio .lb-cv-compose .pb.lb-cv-pb .pb-send{width:26px;height:26px;border-radius:7px}
+.yt-studio .lb-cv-compose .pb.lb-cv-pb .pb-send > svg{width:14px;height:14px}
 
 /* a text node: Spark as a writer, its two faces in the name row, who writes and "Yaz" under its text */
 .yt-studio .lb-cv-tabs{display:inline-flex;gap:2px;margin-left:auto;padding:2px;border-radius:7px;background:var(--cv-fill)}
@@ -214,12 +204,16 @@
 .yt-studio .lb-cv-tabs button.on{background:var(--cv-node);color:var(--st-text);box-shadow:0 0 0 1px var(--cv-line)}
 .yt-studio .lb-cv-tabs + em{margin-left:6px}
 .yt-studio .lb-cv-writer{display:flex;flex-direction:column;height:100%}
-.yt-studio .lb-cv-writer .lb-cv-out.text{padding:10px 12px}
-.yt-studio .lb-cv-writer-bar{display:flex;align-items:center;gap:4px;height:38px;flex:none;padding:0 6px 0 10px}
+.yt-studio .lb-cv-writer .lb-cv-out.text{padding:42px 12px 10px}
+.yt-studio .lb-cv-writer-bar{display:flex;align-items:center;gap:4px;height:40px;flex:none;padding:0 7px 0 12px;border-top:1px solid var(--cv-line)}
+.yt-studio .lb-cv-writer-bar .pb-send{display:grid;place-items:center;flex:none;width:26px;height:26px;padding:0;border:0;border-radius:7px;background:var(--st-text);color:var(--cv-node);cursor:pointer;transition:opacity .12s}
+.yt-studio .lb-cv-writer-bar .pb-send:hover:not(:disabled){opacity:.88}
+.yt-studio .lb-cv-writer-bar .pb-send:disabled{background:var(--cv-fill);color:var(--st-text-3);cursor:default}
+.yt-studio .lb-cv-writer-bar .pb-send > svg{width:14px;height:14px;stroke-width:2.2}
 .yt-studio .lb-cv-who{display:inline-flex;align-items:center;gap:5px;min-width:0;margin-right:auto;font-size:11.5px;color:var(--st-text-3);white-space:nowrap}
 .yt-studio .lb-cv-who > .i{width:12px;height:12px;color:var(--lb-agent)}
 .yt-studio .lb-cv-who small{font-size:11px;font-variant-numeric:tabular-nums}
-.yt-studio .lb-cv-who small::before{content:'·';margin:0 5px 0 2px}
+.yt-studio .lb-cv-who .lb-cv-from + small::before{content:'·';margin:0 5px 0 2px}
 .yt-studio .lb-cv-from{display:grid;place-items:center;width:18px;height:18px;border-radius:5px;background:color-mix(in srgb,var(--k) 14%,transparent);color:var(--k)}
 .yt-studio .lb-cv-from .i{width:11px;height:11px}
 .yt-studio .lb-cv-icon{display:grid;place-items:center;width:24px;height:24px;border-radius:6px;color:var(--st-text-3)}
@@ -313,5 +307,6 @@
 .yt-studio .lb-cv-glyph .i{width:14px;height:14px}
 
 @media (prefers-reduced-motion:reduce){
-  .yt-studio .lb-cv .react-flow__edge-path.lb-cv-edge.passing,.yt-studio .lb-cv-lines i{animation:none}
+  .yt-studio .lb-cv .react-flow__edge-path.lb-cv-edge.passing,.yt-studio .lb-cv-lines i,.yt-studio .lb-cv-out.working .lb-cv-aspect{animation:none}
+  .yt-studio .lb-cv-line.loose::after{animation:none;width:100%;opacity:.5}
 }

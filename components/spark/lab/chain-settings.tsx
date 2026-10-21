@@ -1,13 +1,14 @@
 'use client'
 
 import * as React from 'react'
+import { Check, ChevronDown } from 'lucide-react'
 
 import type { StageKind } from './lab-chain'
 import './chain-settings.css'
 
-// A node's detail settings ("Ayarlar") on Plan › Üretim: the sliders in a node's composer open them under the node, as
-// list tiles: a picture's size, count, quality and look, a clip's length and camera, a voice's pace, and so on. Each is a
-// few fixed choices; one that is only on or off is a switch. What is picked lives in the run's picks, by node
+// A node's detail settings ("Ayarlar") on Plan › Üretim: the sliders on a node open them beside it, as list tiles: a
+// picture's size, count, quality and look, a clip's length and camera, a voice's pace, and so on. Each is a few fixed
+// choices, opened as a short list under its tile; one that is only on or off is a switch. What is picked lives in the run's picks, by node
 // (`settingKey`), so the panel keeps nothing of its own. See `plan-chain.tsx` for the node and its composer.
 
 export type SettingRow = { id: string; label: string; options: string[]; def: string; hint?: string }
@@ -81,6 +82,8 @@ export function SettingsPanel({ rows, values, onChange, onClose }: {
 }): React.JSX.Element {
   const box = React.useRef<HTMLDivElement>(null)
   const uid = React.useId()
+  // One setting's choices open at a time, as a short list under its tile (inside the panel, so nothing spills out).
+  const [open, setOpen] = React.useState<string | null>(null)
 
   React.useEffect(() => {
     // Captured, so a press React Flow keeps to itself (on the pane, a node, a handle) still closes the panel.
@@ -119,22 +122,37 @@ export function SettingsPanel({ rows, values, onChange, onClose }: {
                 onClick={() => onChange(row.id, value === ON ? OFF : ON)}
               />
             ) : (
-              <span className="lb-ns-seg" role="group" aria-labelledby={labelId}>
+              <button
+                type="button"
+                className={`lb-ns-value${open === row.id ? ' on' : ''}`}
+                aria-labelledby={labelId}
+                aria-expanded={open === row.id}
+                onClick={() => setOpen(open === row.id ? null : row.id)}
+              >
+                {value}
+                <ChevronDown aria-hidden />
+              </button>
+            )}
+            {open === row.id ? (
+              <span className="lb-ns-options" role="listbox" aria-labelledby={labelId}>
                 {row.options.map((option) => (
                   <button
                     key={option}
                     type="button"
-                    aria-pressed={option === value}
+                    role="option"
+                    aria-selected={option === value}
                     className={option === value ? 'on' : ''}
                     onClick={() => {
                       if (option !== value) onChange(row.id, option)
+                      setOpen(null)
                     }}
                   >
                     {option}
+                    {option === value ? <Check aria-hidden /> : null}
                   </button>
                 ))}
               </span>
-            )}
+            ) : null}
           </div>
         )
       })}

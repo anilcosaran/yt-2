@@ -1,30 +1,38 @@
-/* A node's detail settings on Plan › Üretim (`chain-settings.tsx`), opened under the node from its composer's sliders:
-   one soft surface like the canvas's menus, a list tile per setting, its name on the left and its choice on the right.
-   An on/off setting is a small switch; the rest a quiet segmented control, the picked choice lifted by a soft fill and
-   a hairline. No boxes inside, no rules between the rows. The `--cv-*` tokens come from the canvas (`lab-chain.css`). */
+/* A node's detail settings on Plan › Üretim (`chain-settings.tsx`), opened beside the node from its sliders: one soft
+   surface like the canvas's menus, a list tile per setting, its name on the left and its value on the right. A value
+   opens its choices as a short list under its tile, inside the panel, so long choices never spill out of it; an on/off
+   setting is a small switch. No boxes inside, no rules between the rows. The `--cv-*` tokens come from the canvas
+   (`lab-chain.css`). */
 
 .yt-studio .lb-ns{display:grid;width:100%;padding:6px;border-radius:10px;background:var(--cv-node);box-shadow:0 0 0 1px var(--cv-line-strong),var(--cv-shadow);cursor:default;animation:lb-in .14s ease-out}
 
-.yt-studio .lb-ns-row{display:flex;align-items:center;justify-content:space-between;gap:12px;height:38px;padding:0 10px}
-.yt-studio .lb-ns-label{min-width:0;font-size:12.5px;color:var(--st-text-2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.yt-studio .lb-ns-row{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;column-gap:12px;min-height:38px;padding:0 4px 0 10px}
+.yt-studio .lb-ns-label{min-width:0;flex:1 1 auto;font-size:12.5px;color:var(--st-text-2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 
-/* ---------- a few choices: a quiet segmented control ---------- */
-.yt-studio .lb-ns-seg{display:flex;align-items:center;gap:2px;flex:none}
-.yt-studio .lb-ns-seg button{height:22px;padding:0 7px;border-radius:5px;font-size:11.5px;line-height:22px;color:var(--st-text-3);white-space:nowrap;font-variant-numeric:tabular-nums;
-  transition:background .12s,color .12s,box-shadow .12s}
-.yt-studio .lb-ns-seg button:hover{color:var(--st-text-2)}
-.yt-studio .lb-ns-seg button.on{background:var(--cv-fill);box-shadow:0 0 0 1px var(--cv-line-strong);color:var(--st-text)}
+/* ---------- a value: what is picked, opening its choices ---------- */
+.yt-studio .lb-ns-value{display:inline-flex;align-items:center;gap:4px;flex:none;max-width:60%;height:26px;padding:0 6px 0 9px;border-radius:6px;font-size:12px;font-weight:500;color:var(--st-text);
+  white-space:nowrap;font-variant-numeric:tabular-nums;transition:background .12s}
+.yt-studio .lb-ns-value svg{width:12px;height:12px;flex:none;color:var(--st-text-3);transition:transform .15s}
+.yt-studio .lb-ns-value:hover,.yt-studio .lb-ns-value.on{background:var(--cv-fill)}
+.yt-studio .lb-ns-value.on svg{transform:rotate(180deg)}
+
+/* its choices: a full-width list under the tile */
+.yt-studio .lb-ns-options{display:grid;gap:1px;flex:1 0 100%;margin:2px -4px 6px -10px;padding:3px;border-radius:8px;background:var(--cv-fill);animation:lb-in .12s ease-out}
+.yt-studio .lb-ns-options button{display:flex;align-items:center;justify-content:space-between;gap:12px;height:28px;padding:0 9px;border-radius:6px;font-size:12px;color:var(--st-text-2);text-align:left}
+.yt-studio .lb-ns-options button:hover{background:var(--cv-fill);color:var(--st-text)}
+.yt-studio .lb-ns-options button.on{color:var(--st-text);font-weight:500}
+.yt-studio .lb-ns-options button svg{width:13px;height:13px}
 
 /* ---------- on or off: a small switch ---------- */
-.yt-studio .lb-ns-switch{position:relative;flex:none;width:28px;height:16px;padding:0;border-radius:99px;background:var(--cv-line-strong);transition:background .15s}
+.yt-studio .lb-ns-switch{position:relative;flex:none;width:28px;height:16px;margin-right:6px;padding:0;border-radius:99px;background:var(--cv-line-strong);transition:background .15s}
 .yt-studio .lb-ns-switch::after{content:'';position:absolute;left:2px;top:2px;width:12px;height:12px;border-radius:50%;background:#fff;box-shadow:0 1px 2px rgba(0,0,0,.18);transition:transform .15s,background .15s}
 .yt-studio .lb-ns-switch.on{background:var(--st-text)}
 .yt-studio .lb-ns-switch.on::after{background:var(--cv-node);transform:translateX(12px)}
 
 /* keyboard focus: the canvas's own ring, a hairline in the selection tone */
-.yt-studio .lb-ns-seg button:focus-visible,.yt-studio .lb-ns-switch:focus-visible{outline:none;box-shadow:0 0 0 1.5px var(--cv-on)}
+.yt-studio :is(.lb-ns-value,.lb-ns-options button,.lb-ns-switch):focus-visible{outline:none;box-shadow:0 0 0 1.5px var(--cv-on)}
 
 @media (prefers-reduced-motion:reduce){
-  .yt-studio .lb-ns{animation:none}
-  .yt-studio .lb-ns-switch,.yt-studio .lb-ns-switch::after{transition:none}
+  .yt-studio .lb-ns,.yt-studio .lb-ns-options{animation:none}
+  .yt-studio .lb-ns-switch,.yt-studio .lb-ns-switch::after,.yt-studio .lb-ns-value svg{transition:none}
 }

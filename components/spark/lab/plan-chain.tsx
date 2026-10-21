@@ -25,9 +25,9 @@ import {
   type OnConnectEnd,
 } from '@xyflow/react'
 import '@xyflow/react/dist/base.css'
-import { Check, ChevronDown, Copy, Frame as FrameIcon, Hand, MousePointer2, Plus, SlidersHorizontal, Sparkles, StickyNote, Trash2, Type } from 'lucide-react'
+import { ChevronDown, Copy, Frame as FrameIcon, Hand, MousePointer2, Plus, Sparkles, StickyNote, Trash2, Type } from 'lucide-react'
 
-import { PromptBox, PromptBoxChip, PromptBoxInput, PromptBoxSpacer } from '../agent/prompt-box'
+import { PromptBox, PromptBoxChip, PromptBoxInput, PromptBoxNote, PromptBoxSend, PromptBoxSpacer } from '../agent/prompt-box'
 import {
   FRAME_HANDLE,
   FRAME_TITLE_STYLE,
@@ -41,11 +41,11 @@ import {
   type LabelNode,
   type NoteNode,
 } from './chain-annotations'
-import { ProgressRing, QueuePill, ZoomPill, type QueueItem } from './chain-chrome'
+import { QueuePill, ZoomPill, type QueueItem } from './chain-chrome'
 import { GenerationGallery, GenerationStrip, type Generation } from './chain-generations'
 import { MODEL_METERS, ModelMenu, type ModelOption } from './chain-model-menu'
 import { NODE_SETTINGS, SettingsPanel, settingKey, settingOf } from './chain-settings'
-import { CUT_FRAMES, STAGE_KIND, STAGE_KINDS, chainLanes, creditsOf, stageStatuses, voiceName, type ChainLane, type ChainStage, type StageKind, type StageStatus } from './lab-chain'
+import { CUT_FRAMES, STAGE_KIND, STAGE_KINDS, chainLanes, creditsOf, isPicture, stageStatuses, voiceName, type ChainLane, type ChainStage, type StageKind, type StageStatus } from './lab-chain'
 import { LOOK_OPTIONS, MODELS, formatClock, type LabScene, type SceneArt } from './lab-model'
 import { Icon } from './lab-parts'
 import { MediaThumb, useStorageMediaPicker } from './lab-source'
@@ -70,8 +70,8 @@ const SIZE: Record<StageKind | 'cut', { w: number; h: number }> = {
   frame: { w: 280, h: 350 },
   media: { w: 280, h: 310 },
   text: { w: 280, h: 250 },
-  voice: { w: 280, h: 230 },
-  music: { w: 280, h: 230 },
+  voice: { w: 280, h: 250 },
+  music: { w: 280, h: 250 },
   cut: { w: 380, h: 270 },
 }
 const NOTE_W = 240
@@ -1232,7 +1232,7 @@ function StepNodeView({ id, data: given, selected }: NodeProps<StepNode>) {
   const data = progress === undefined ? given : { ...given, progress }
   const { stage, status } = data
   const kind = STAGE_KIND[stage.kind]
-  // One panel beside the node at a time: its generations, or its settings.
+  // One panel open at a time: its generations beside it, or its settings under its settings chip.
   const [side, setSide] = React.useState<'gallery' | 'settings' | null>(null)
   const closeSide = React.useCallback(() => setSide(null), [setSide])
   const { rows, values } = settingsOf(state, stage)
@@ -1255,7 +1255,7 @@ function StepNodeView({ id, data: given, selected }: NodeProps<StepNode>) {
         <span>{kind.name}</span>
         {stage.title !== kind.name ? <small>{stage.title}</small> : null}
         {stage.kind === 'text' ? <TextTabs id={id} data={data} /> : null}
-        {label ? <em>{status === 'running' ? <ProgressRing value={data.progress} size={11} /> : null}{label}</em> : null}
+        {label ? <em>{label}</em> : null}
       </header>
       {ports.map((port, index) => (
         <Handle
@@ -1273,14 +1273,23 @@ function StepNodeView({ id, data: given, selected }: NodeProps<StepNode>) {
         </Handle>
       ))}
       <div className="lb-cv-box">
+        {status === 'running' ? (
+          <span className={`lb-cv-line${data.progress === undefined ? ' loose' : ''}`} style={{ '--p': data.progress ?? 0 } as React.CSSProperties} aria-hidden />
+        ) : null}
         {stage.kind === 'text' ? (
-          <PromptBuilder id={id} data={data} quick={settable ? <QuickChips id={id} stage={stage} onMore={() => setSide(side === 'settings' ? null : 'settings')} more={side === 'settings'} inline /> : null} />
+          <PromptBuilder id={id} data={data} />
         ) : (
           <>
-            <Output id={id} data={data} quick={settable ? <QuickChips id={id} stage={stage} onMore={() => setSide(side === 'settings' ? null : 'settings')} more={side === 'settings'} /> : null} />
+            <Output id={id} data={data} ratio={ratio} />
             <Composer id={id} data={data} />
           </>
         )}
+        {settable ? <SpecChip stage={stage} open={side === 'settings'} onToggle={() => setSide(side === 'settings' ? null : 'settings')} /> : null}
+        {side === 'settings' ? (
+          <div className="lb-cv-spec-pop">
+            <SettingsPanel rows={rows} values={values} onChange={(row, value) => api.run.pick(settingKey(id, row), value)} onClose={closeSide} />
+          </div>
+        ) : null}
       </div>
       {outputs.map((port, index) => (
         <Handle
@@ -1305,11 +1314,6 @@ function StepNodeView({ id, data: given, selected }: NodeProps<StepNode>) {
       {side === 'gallery' ? (
         <div className="lb-cv-side">
           <GenerationGallery kind={stage.kind} items={generations} active={data.active} ratio={ratio} onPick={pickVersion} onClose={closeSide} />
-        </div>
-      ) : null}
-      {side === 'settings' ? (
-        <div className="lb-cv-side">
-          <SettingsPanel rows={rows} values={values} onChange={(row, value) => api.run.pick(settingKey(id, row), value)} onClose={closeSide} />
         </div>
       ) : null}
       <NodeToolbar position={Position.Top} offset={34} className="lb-cv-bar">
@@ -1368,51 +1372,19 @@ function generationsOf(state: LabRunState, id: string, data: StepData): Generati
   return done
 }
 
-/** The settings at hand on what a node shows (its size, its length, how many): each opens its choices as a short list. */
-function QuickChips({ id, stage, onMore, more, inline }: { id: string; stage: ChainStage; onMore: () => void; more: boolean; inline?: boolean }) {
+/**
+ * A node's settings in one quiet chip over the top of what it shows, its quick values in a line ("9:16 · 1× · Standart");
+ * it opens all of them under it.
+ */
+function SpecChip({ stage, open, onToggle }: { stage: ChainStage; open: boolean; onToggle: () => void }) {
   const { run } = useCanvas()
   const { rows, values } = settingsOf(run.state, stage)
-  const quick = rows.filter((row) => QUICK_ROWS.includes(row.id))
-  const [open, setOpen] = React.useState<string | null>(null)
-  const box = React.useRef<HTMLSpanElement>(null)
-  const close = React.useCallback(() => setOpen(null), [])
-  useDismiss(open !== null, box, close)
-  const shown = (rowId: string, value: string) => (rowId === 'count' ? `${value}×` : value)
+  const shown = rows.filter((row) => QUICK_ROWS.includes(row.id)).map((row) => (row.id === 'count' ? `${values[row.id]}×` : values[row.id]))
   return (
-    <span className={`lb-cv-chips${inline ? ' inline' : ''}`} ref={box}>
-      {quick.map((row) => (
-        <span key={row.id} className="lb-cv-chip">
-          <button type="button" className={open === row.id ? 'on' : ''} onClick={() => setOpen(open === row.id ? null : row.id)} aria-haspopup="listbox" aria-expanded={open === row.id} title={row.label}>
-            {shown(row.id, values[row.id]!)}
-            <ChevronDown aria-hidden />
-          </button>
-          {open === row.id ? (
-            <span className="lb-cv-chipmenu nodrag nowheel" role="listbox" aria-label={row.label}>
-              <small>{row.label}</small>
-              {row.options.map((option) => (
-                <button
-                  key={option}
-                  type="button"
-                  role="option"
-                  aria-selected={option === values[row.id]}
-                  className={option === values[row.id] ? 'on' : ''}
-                  onClick={() => {
-                    run.pick(settingKey(id, row.id), option)
-                    setOpen(null)
-                  }}
-                >
-                  {shown(row.id, option)}
-                  {option === values[row.id] ? <Check aria-hidden /> : null}
-                </button>
-              ))}
-            </span>
-          ) : null}
-        </span>
-      ))}
-      <button type="button" className={`more${more ? ' on' : ''}`} onClick={onMore} aria-expanded={more} title="Tüm ayarlar" aria-label="Tüm ayarlar" data-lb-ns-toggle="">
-        <SlidersHorizontal aria-hidden />
-      </button>
-    </span>
+    <button type="button" className={`lb-cv-spec${open ? ' on' : ''}`} onClick={onToggle} aria-expanded={open} title="Ayarlar" data-lb-ns-toggle="">
+      <span>{shown.length ? shown.join(' · ') : 'Ayarlar'}</span>
+      <ChevronDown aria-hidden />
+    </button>
   )
 }
 
@@ -1420,42 +1392,32 @@ function QuickChips({ id, stage, onMore, more, inline }: { id: string; stage: Ch
  * What a node made, in place, filling the node to its edges: the picture or clip, the frame, the sound, the cut. A
  * model's node shows nothing until it is made; while it is made, its progress over what it showed before.
  */
-function Output({ id, data, quick }: { id: string; data: StepData; quick: React.ReactNode }) {
+function Output({ id, data, ratio }: { id: string; data: StepData; ratio: string }) {
   const { run } = useCanvas()
   const { stage, status } = data
   const working = status === 'running'
-  const progress = working ? (
-    <span className="lb-cv-progress">
-      <ProgressRing value={data.progress} size={30} stroke={2} />
-      <small>{data.progress === undefined ? 'Üretiliyor' : `%${Math.round(data.progress * 100)}`}</small>
-    </span>
-  ) : null
 
   if (stage.kind === 'media') return <MediaOutput data={data} />
   if (stage.id === 'all/cut') {
     return (
       <div className={`lb-cv-out cut${data.shows ? '' : ' empty'}`}>
-        {data.shows ? CUT_FRAMES.map((art, index) => <span key={index} className="lb-cv-pic"><span className="lb-thumb"><span className={`lb-art ${art}`} /></span></span>) : <Empty data={data} />}
-        {quick}
-        {progress}
+        {data.shows ? CUT_FRAMES.map((art, index) => <span key={index} className="lb-cv-pic"><span className="lb-thumb"><span className={`lb-art ${art}`} /></span></span>) : <Empty data={data} ratio={run.state.ratio} />}
       </div>
     )
   }
-  if (stage.kind === 'voice' || stage.kind === 'music') return <SoundOutput data={data} quick={quick} progress={progress} />
+  if (stage.kind === 'voice' || stage.kind === 'music') return <SoundOutput data={data} />
   const art = data.art
   return (
-    <div className={`lb-cv-out${data.shows && art ? '' : ' empty'}`}>
+    <div className={`lb-cv-out${data.shows && art ? '' : ' empty'}${working ? ' working' : ''}`}>
       {data.shows && art ? (
         <span className="lb-cv-pic">
           <span className="lb-thumb"><span className={`lb-art ${art}`} style={variantStyle(data.active)} /></span>
           {stage.kind === 'video' || stage.kind === 'avatar' ? <span className="lb-cv-play"><Icon name="play" size="sm" /></span> : null}
           {stage.kind === 'frame' ? <span className="lb-cv-tag">{(run.state.picks[`end:${id}`] ?? 'last') === 'first' ? 'ilk kare' : 'son kare'}</span> : null}
         </span>
-      ) : working ? null : (
-        <Empty data={data} />
+      ) : (
+        <Empty data={data} ratio={ratio} />
       )}
-      {quick}
-      {progress}
     </div>
   )
 }
@@ -1464,7 +1426,7 @@ function Output({ id, data, quick }: { id: string; data: StepData; quick: React.
  * A sound, as a small player: who says it (or which music), the line it says, how long it is and its wave. ▶ plays it
  * through once, the played part of the wave lighting up as it goes (demo: there is no audio yet).
  */
-function SoundOutput({ data, quick, progress }: { data: StepData; quick: React.ReactNode; progress: React.ReactNode }) {
+function SoundOutput({ data }: { data: StepData }) {
   const { run } = useCanvas()
   const { stage } = data
   const [playing, setPlaying] = React.useState(false)
@@ -1473,7 +1435,6 @@ function SoundOutput({ data, quick, progress }: { data: StepData; quick: React.R
     return (
       <div className="lb-cv-out wave empty">
         <Empty data={data} />
-        {quick}
       </div>
     )
   }
@@ -1496,14 +1457,22 @@ function SoundOutput({ data, quick, progress }: { data: StepData; quick: React.R
         {bars}
         {playing ? <span className="lb-cv-played" onAnimationEnd={() => setPlaying(false)} aria-hidden>{bars}</span> : null}
       </span>
-      {quick}
-      {progress}
     </div>
   )
 }
 
-/** A node before it is made: its kind's mark, faint, in the middle of where its output will be. */
-function Empty({ data }: { data: StepData }) {
+/**
+ * A node before it is made. A picture or clip shows the outline of what it will be, at its size (9:16, 1:1…), dashed;
+ * a sound or a text, its kind's mark, faint.
+ */
+function Empty({ data, ratio }: { data: StepData; ratio?: string }) {
+  if (ratio && isPicture(data.stage)) {
+    return (
+      <span className="lb-cv-aspect" style={{ aspectRatio: ratio.replace(':', ' / ') }}>
+        <small>{ratio}</small>
+      </span>
+    )
+  }
   return (
     <span className="lb-cv-empty">
       <Icon name={STAGE_KIND[data.stage.kind].icon} />
@@ -1538,7 +1507,7 @@ function textTab(state: LabRunState, id: string, data: StepData): 'prompt' | 're
  * it wrote (a scene's line is Senaryo's too); both are written in place. Under them, who writes and the button that has
  * Spark write it (again).
  */
-function PromptBuilder({ id, data, quick }: { id: string; data: StepData; quick: React.ReactNode }) {
+function PromptBuilder({ id, data }: { id: string; data: StepData }) {
   const { run, make } = useCanvas()
   const { state } = run
   const { stage, status } = data
@@ -1557,7 +1526,6 @@ function PromptBuilder({ id, data, quick }: { id: string; data: StepData; quick:
   return (
     <div className="lb-cv-writer">
       <div className="lb-cv-out text">
-        {quick}
         {status === 'writing' ? (
           <span className="lb-cv-lines"><i /><i /><i /></span>
         ) : (
@@ -1577,7 +1545,6 @@ function PromptBuilder({ id, data, quick }: { id: string; data: StepData; quick:
             }}
           />
         )}
-        {status === 'running' ? <span className="lb-cv-progress"><ProgressRing value={data.progress} size={30} stroke={2} /></span> : null}
       </div>
       <footer className="lb-cv-writer-bar">
         <WriterContext data={data} mode={mode} />
@@ -1591,19 +1558,17 @@ function PromptBuilder({ id, data, quick }: { id: string; data: StepData; quick:
         >
           <Copy aria-hidden />
         </button>
-        <button
+        <PromptBoxSend
           type="button"
-          className="lb-cv-go"
+          label={verb}
+          busy={status === 'running'}
           disabled={busy}
           onClick={() => {
             keep()
             run.pick(`tab:${id}`, 'result')
             make([id])
           }}
-        >
-          {status === 'running' ? <ProgressRing value={data.progress} size={12} /> : <Sparkles aria-hidden />}
-          {verb}
-        </button>
+        />
       </footer>
     </div>
   )
@@ -1664,9 +1629,9 @@ function MediaOutput({ data }: { data: StepData }) {
 }
 
 /**
- * The node's composer, the shared prompt box: what to make, the model (or voice, or music), and at its bottom right the
- * button that puts the node in the queue, with what it costs. A frame chooses its end instead; the user's media has no
- * composer.
+ * The node's composer, the shared prompt box laid straight on the node (no box of its own): what to make, the model (or
+ * voice, or music), and at its bottom right what it costs and Spark's send button, which puts the node in the queue. A
+ * frame chooses its end instead; the user's media has no composer.
  */
 function Composer({ id, data }: { id: string; data: StepData }) {
   const { run, make } = useCanvas()
@@ -1722,11 +1687,8 @@ function Composer({ id, data }: { id: string; data: StepData }) {
               <PromptBoxChip label={stage.how || 'Spark'} disabled />
             )}
             <PromptBoxSpacer />
-            <button type="button" className="lb-cv-go" onClick={go} disabled={blocked} title={blocked ? 'Üretiliyor' : `${verb}${credits ? ` · ≈ ${credits} kredi` : ''}`}>
-              {status === 'running' ? <ProgressRing value={data.progress} size={12} /> : <Sparkles aria-hidden />}
-              {verb === 'Üret' ? 'Üret' : 'Yeniden'}
-              {credits ? <small>{credits}</small> : null}
-            </button>
+            {credits ? <PromptBoxNote title={`≈ ${credits} kredi`}>{credits} kr</PromptBoxNote> : null}
+            <PromptBoxSend type="button" label={blocked ? 'Üretiliyor' : verb} busy={status === 'running'} disabled={blocked} onClick={go} />
           </>
         )}
       >

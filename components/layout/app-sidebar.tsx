@@ -1842,7 +1842,7 @@ function SidebarSection({ label, children }: { label: string; children: React.Re
         type="button"
         onClick={() => setOpen((current) => !current)}
         aria-expanded={open}
-        className="group flex w-full items-center justify-between rounded-lg px-2.5 pb-1.5 text-left text-[11px] font-medium uppercase tracking-[0.12em] text-muted-foreground/75 transition-colors hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sidebar-ring"
+        className="group flex w-full items-center justify-between rounded-md px-2.5 pb-1 text-left text-[12.5px] font-medium text-muted-foreground/70 transition-colors hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sidebar-ring"
       >
         <span className="truncate">{label}</span>
         <ChevronDown className={cn('size-3.5 shrink-0 transition-[transform,opacity]', open ? 'opacity-0 group-hover:opacity-100 group-focus-visible:opacity-100' : '-rotate-90')} />
@@ -1882,7 +1882,7 @@ function SidebarRecentChats({ channelId, currentPath }: { channelId: string | nu
               href={href}
               aria-current={active ? 'page' : undefined}
               className={cn(
-                'truncate rounded-[10px] px-2.5 py-1.5 text-[14px] transition-colors',
+                'truncate rounded-md px-2.5 py-1.5 text-[14px] transition-colors',
                 active ? 'bg-sidebar-accent font-medium text-foreground' : 'text-muted-foreground hover:bg-sidebar-accent/60 hover:text-foreground',
               )}
             >
@@ -1890,7 +1890,7 @@ function SidebarRecentChats({ channelId, currentPath }: { channelId: string | nu
             </Link>
           )
         })}
-      <Link href="/chat" className="rounded-[10px] px-2.5 py-1.5 text-[14px] text-muted-foreground/75 transition-colors hover:bg-sidebar-accent/70 hover:text-foreground">
+      <Link href="/chat" className="rounded-md px-2.5 py-1.5 text-[14px] text-muted-foreground/70 transition-colors hover:bg-sidebar-accent/70 hover:text-foreground">
         {tNav('seeAllChats')}
       </Link>
     </SidebarSection>
@@ -1920,9 +1920,9 @@ function NavItemComponent({ item, currentPath, depth = 0, collapsed = false }: N
     if (collapsed) return null
 
     return (
-      <div className={cn('flex items-center justify-between px-2.5 pb-1.5 pt-5', depth > 0 && 'ml-4')}>
-        <span className="text-[11px] font-medium uppercase tracking-[0.12em] text-muted-foreground/75">{item.label}</span>
-        <ChevronDown className="size-3.5 text-muted-foreground/75" />
+      <div className={cn('flex items-center justify-between px-2.5 pb-1 pt-5', depth > 0 && 'ml-4')}>
+        <span className="text-[12.5px] font-medium text-muted-foreground/70">{item.label}</span>
+        <ChevronDown className="size-3.5 text-muted-foreground/70" />
       </div>
     )
   }
@@ -1942,11 +1942,12 @@ function NavItemComponent({ item, currentPath, depth = 0, collapsed = false }: N
   }
 
   // Quiet rows that light up: the items rest in a muted grey and only the one on screen (or under the pointer) is
-  // bright, so the menu has depth instead of one flat white list. A size up from body text, with room between rows.
+  // bright, so the menu has depth instead of one flat white list. Regular weight, small icons and 32px rows keep it
+  // light rather than heavy.
   const content = (
     <div
       className={cn(
-        'group relative flex w-full items-center gap-3 rounded-[10px] px-2.5 py-2 text-[15px] font-medium leading-6 tracking-[-0.006em] transition-colors',
+        'group relative flex w-full items-center gap-2.5 rounded-md px-2.5 py-1.5 text-[14px] font-normal leading-5 transition-colors',
         isActive
           ? 'bg-sidebar-accent text-foreground'
           : hasActiveChild
@@ -1961,7 +1962,7 @@ function NavItemComponent({ item, currentPath, depth = 0, collapsed = false }: N
       {Icon && (
         <div
           className={cn(
-            'flex h-5 w-5 shrink-0 items-center justify-center text-current [&_svg]:h-[18px] [&_svg]:w-[18px] [&_svg]:stroke-[1.6]',
+            'flex h-5 w-5 shrink-0 items-center justify-center text-current [&_svg]:h-4 [&_svg]:w-4 [&_svg]:stroke-[1.6]',
             item.iconSurface && 'h-6 w-6 rounded-md bg-accent text-foreground [&_svg]:h-4 [&_svg]:w-4 [&_svg]:stroke-[2.3]',
             isActive && item.iconSurface && 'bg-background text-sidebar-foreground shadow-sm',
             isActive ? 'text-foreground' : 'text-sidebar-icon group-hover:text-foreground',

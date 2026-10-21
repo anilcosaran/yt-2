@@ -58,13 +58,14 @@ export function WorkspaceIconRail({
       <Link
         href="/dashboard"
         aria-label={tAuto('youtorch_overview_4e02ae39')}
-        className="mb-2 flex size-11 items-center justify-center rounded-xl bg-gradient-to-br from-orange-500 to-rose-500 text-white transition-transform hover:scale-105"
+        className="mb-3 flex size-9 items-center justify-center rounded-[10px] bg-gradient-to-br from-orange-500 to-rose-500 text-white transition-transform hover:scale-105"
       >
-        <Flame className="size-5" strokeWidth={2.2} />
+        <Flame className="size-[18px]" strokeWidth={2.2} />
       </Link>
 
-
-      <nav className="flex flex-col items-center gap-1">
+      {/* Light, like the sidebar beside it: muted marks and captions at rest, the module on screen bright on a soft
+          fill. No borders. */}
+      <nav className="flex flex-col items-center gap-0.5">
         {railItems.map((item) => {
           const active = item.match === 'tools'
             ? toolsActive
@@ -84,21 +85,21 @@ export function WorkspaceIconRail({
               onFocus={() => onModulePreview?.(item.module)}
               onClick={() => onModuleActivate?.(item.module)}
               className={cn(
-                'group flex w-16 flex-col items-center gap-1 rounded-lg px-1 py-2 text-[10.5px] leading-[13px] transition-colors',
+                'group flex w-16 flex-col items-center gap-1 rounded-md px-1 py-1.5 text-[10.5px] leading-[13px] transition-colors',
                 active
-                  ? 'font-semibold text-foreground'
-                  : 'font-medium text-foreground/80 hover:text-foreground',
+                  ? 'font-medium text-foreground'
+                  : 'font-normal text-muted-foreground hover:text-foreground',
               )}
             >
               <span
                 className={cn(
-                  'flex size-9 items-center justify-center rounded-lg border transition-colors',
+                  'flex size-8 items-center justify-center rounded-md transition-colors',
                   active
-                    ? 'border-border bg-sidebar-accent text-foreground'
-                    : 'border-transparent text-foreground/90 group-hover:bg-sidebar-accent group-hover:text-foreground',
+                    ? 'bg-sidebar-accent text-foreground'
+                    : 'text-muted-foreground group-hover:bg-sidebar-accent/60 group-hover:text-foreground',
                 )}
               >
-                <item.icon className="size-[18px]" strokeWidth={active ? 2 : 1.8} />
+                <item.icon className="size-[17px]" strokeWidth={1.6} />
               </span>
               <span className="max-w-full truncate whitespace-nowrap text-center">
                 {tNav(item.labelKey)}

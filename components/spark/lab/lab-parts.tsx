@@ -35,6 +35,7 @@ import {
   type LabScene,
 } from './lab-model'
 import { ClosingQuestion, QuestionCard } from './lab-ask'
+import { fixedOrigin } from './lab-place'
 import { usePaneOpen } from './lab-split'
 import {
   agentDriving,
@@ -204,9 +205,8 @@ export function PlanList({ run, onPick }: { run: LabRun; onPick?: (sceneId: stri
   const [peek, setPeek] = React.useState<{ scene: LabScene; left: number; top: number } | null>(null)
   const look = (scene: LabScene, picture: HTMLElement) => {
     const box = picture.getBoundingClientRect()
-    // The shell is a size container, so a fixed box is placed from its corner, not the window's.
-    const shell = picture.closest('.st-shell')?.getBoundingClientRect()
-    setPeek({ scene, left: box.right + 14 - (shell?.left ?? 0), top: box.top + box.height / 2 - (shell?.top ?? 0) })
+    const origin = fixedOrigin(picture)
+    setPeek({ scene, left: box.right + 14 - origin.left, top: box.top + box.height / 2 - origin.top })
   }
   return (
     <>
@@ -906,10 +906,9 @@ export function ToolRail({ lead }: { lead?: React.ReactNode }) {
     const button = trigger.current
     const shell = button?.closest('.st-shell')
     if (more || !button || !shell) return setMore(null)
-    // The shell is a size container, so a fixed box is placed from its corner, not the window's.
     const box = button.getBoundingClientRect()
-    const frame = shell.getBoundingClientRect()
-    setMore({ left: box.right - frame.left + 6, top: box.top - frame.top, shell })
+    const origin = fixedOrigin(shell)
+    setMore({ left: box.right - origin.left + 6, top: box.top - origin.top, shell })
   }
   const close = () => {
     setMore(null)

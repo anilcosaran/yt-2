@@ -36,14 +36,19 @@
 .yt-studio .lb-ntb{display:flex;align-items:center;gap:2px;height:34px;padding:0 3px 0 12px;border:1px solid rgba(255,255,255,.09);border-radius:999px;background:rgba(14,14,16,.96);box-shadow:inset 0 1px 0 rgba(255,255,255,.05),0 10px 28px rgba(0,0,0,.38);backdrop-filter:blur(10px);font-size:12.5px;color:#f4f4f5}
 /* in the plan it opens inside its row, under the text, and pushes the next row down (it covers nothing) */
 .yt-studio .lb-ntb.inline{grid-column:4/-1;justify-self:start;width:100%;max-width:480px;margin-top:-4px;animation:lb-ntb-in .16s cubic-bezier(.2,.8,.2,1)}
-/* on the timeline it floats on its clip, with a caret pointing at it (below the clip on the top rows) */
-.yt-studio .lb-ntb.float{position:fixed;z-index:80;transform:translate(-50%,-100%);animation:lb-ntb-up .16s cubic-bezier(.2,.8,.2,1)}
-.yt-studio .lb-ntb.float::after{content:'';position:absolute;left:calc(50% + var(--lb-caret,0px));bottom:-5px;width:9px;height:9px;margin-left:-4.5px;background:rgb(14,14,16);border:solid rgba(255,255,255,.09);border-width:0 1px 1px 0;transform:rotate(45deg)}
-.yt-studio .lb-ntb.float.below{transform:translate(-50%,0);animation:lb-ntb-down .16s cubic-bezier(.2,.8,.2,1)}
-.yt-studio .lb-ntb.float.below::after{bottom:auto;top:-5px;border-width:1px 0 0 1px}
+/* on the timeline it opens in the tool row out of "Spark’a sor", names its pick, and covers nothing */
+.yt-studio .lb-ntb.docked{flex:0 1 520px;min-width:0;height:30px;padding-left:10px;box-shadow:inset 0 1px 0 rgba(255,255,255,.05);animation:lb-ntb-open .18s cubic-bezier(.2,.8,.2,1)}
+.yt-studio .lb-ntb.docked .lb-ntb-mark{flex:0 1 auto;min-width:0;gap:6px}
+.yt-studio .lb-ntb.docked .lb-ntb-mark .i{flex:none;color:var(--lb-agent)}
+.yt-studio .lb-ntb-name{min-width:0;max-width:170px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;padding:2px 8px;border-radius:999px;background:rgba(255,255,255,.08);font-size:11.5px;font-weight:500;color:#f4f4f5}
+.yt-studio .lb-ntb.docked .lb-ntb-list,.yt-studio .lb-ntb.docked .lb-ntb-go{height:24px}
+.yt-studio .lb-ntb.docked .lb-ntb-close{width:24px;height:24px}
 @keyframes lb-ntb-in{from{opacity:0;transform:translateY(-4px)}}
-@keyframes lb-ntb-up{from{opacity:0;transform:translate(-50%,calc(-100% + 6px))}}
-@keyframes lb-ntb-down{from{opacity:0;transform:translate(-50%,-6px)}}
+@keyframes lb-ntb-open{from{opacity:0;clip-path:inset(0 100% 0 0 round 999px)}}
+/* the button it opens from: Spark's mark, and how many clips are picked once there is more than one */
+.yt-studio .lb-tl-spark{flex:none;gap:6px;padding:0 9px}
+.yt-studio .lb-tl-spark .i{width:13px;height:13px;color:var(--lb-agent)}
+.yt-studio .lb-tl-spark b{min-width:16px;height:16px;padding:0 4px;border-radius:999px;background:var(--lb-agent-soft);font-size:10.5px;font-weight:600;line-height:16px;font-variant-numeric:tabular-nums;color:var(--lb-agent-text)}
 .yt-studio .lb-ntb input{flex:1;min-width:60px;height:26px;padding:0 6px;border:0;background:none;font-size:12.5px;color:#f4f4f5;outline:0}
 .yt-studio .lb-ntb input::placeholder{color:rgba(255,255,255,.38)}
 .yt-studio .lb-ntb-mark{flex:none;display:inline-flex;align-items:center;gap:4px;color:rgba(255,255,255,.5)}

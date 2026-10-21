@@ -7,7 +7,7 @@ import { lastBatchTargets, type LabRun } from './use-lab-run'
 import './lab-notes.css'
 
 // Notes for Spark. What the user wants changed is picked first (scenes of the plan, clips of the timeline), and a
-// toolbar opens on the pick with one line for Spark and two ways on: "Düzelt" fixes this pick now, "Listeye ekle"
+// toolbar opens on the pick (on the timeline, from "Spark’a sor" in its tool row) with one line for Spark and two ways on: "Düzelt" fixes this pick now, "Listeye ekle"
 // keeps the note on the list, and the notes bar fixes the whole list at once ("Hepsini düzelt"). Every sending is one
 // edit: only the scenes and clips it names are made again, each shows as soon as it is ready, and it can be taken back.
 
@@ -18,7 +18,8 @@ export type NoteSelection = { targets: string[]; labels: string[]; noun: string 
  * The toolbar that opens on a pick: a near-black pill with the field, "Listeye ekle" (once something is written),
  * "Düzelt" and ✕. "Düzelt" (Enter) fixes this pick now and leaves the list as it is; with nothing written it reads
  * "Yeniden üret" and makes the pick again as it is. "Listeye ekle" (⌘ Enter) keeps the note for "Hepsini düzelt".
- * Escape, ✕ or a click elsewhere closes it. `keep` names what may be clicked without closing it.
+ * Escape, ✕ or a click elsewhere closes it. `keep` names what may be clicked without closing it; a `docked` toolbar
+ * stands in a tool row instead, names its pick, and stays open on clicks elsewhere.
  */
 export function NoteToolbar({
   run,
@@ -26,6 +27,7 @@ export function NoteToolbar({
   onClose,
   focusSignal = 0,
   keep,
+  docked = false,
   className = '',
   style,
 }: {
@@ -35,18 +37,21 @@ export function NoteToolbar({
   /** Moves the focus to the field each time it changes. */
   focusSignal?: number
   keep?: string
+  docked?: boolean
   className?: string
   style?: React.CSSProperties
 }) {
   const { notes, applying } = run.state
   const key = selection.targets.join('|')
+  const noteFor = (targets: string) => notes.find((note) => note.targets.join('|') === targets)
   // The note already written for exactly this pick, if any: the field opens on it and saving changes it.
-  const existing = notes.find((note) => note.targets.join('|') === key)
+  const existing = noteFor(key)
   const [text, setText] = React.useState(existing?.text ?? '')
   const [shownFor, setShownFor] = React.useState(key)
   if (shownFor !== key) {
     setShownFor(key)
-    setText(existing?.text ?? '')
+    // What is being written goes along to the new pick; a note already kept stays with its own.
+    setText(existing?.text ?? (text !== (noteFor(shownFor)?.text ?? '') ? text : ''))
   }
   const box = React.useRef<HTMLDivElement>(null)
   const field = React.useRef<HTMLInputElement>(null)
@@ -54,6 +59,7 @@ export function NoteToolbar({
     if (focusSignal) field.current?.focus()
   }, [focusSignal])
   React.useEffect(() => {
+    if (docked) return
     const away = (event: PointerEvent) => {
       const target = event.target as Element | null
       if (!target || box.current?.contains(target) || (keep && target.closest(keep))) return
@@ -61,7 +67,7 @@ export function NoteToolbar({
     }
     document.addEventListener('pointerdown', away)
     return () => document.removeEventListener('pointerdown', away)
-  }, [keep, onClose])
+  }, [docked, keep, onClose])
 
   const note = { id: existing?.id, targets: selection.targets, labels: selection.labels, text }
   const written = Boolean(text.trim())
@@ -77,10 +83,10 @@ export function NoteToolbar({
   const name = selection.labels.length === 1 ? selection.labels[0] : `${selection.labels.length} ${selection.noun}`
 
   return (
-    <div ref={box} className={`lb-ntb ${className}`} style={style} role="toolbar" aria-label={`${name}: Spark’a söyle`}>
+    <div ref={box} className={`lb-ntb${docked ? ' docked' : ''} ${className}`} style={style} role="toolbar" aria-label={`${name}: Spark’a söyle`}>
       <span className="lb-ntb-mark" title={selection.labels.join(', ')}>
         <Icon name="sparkles" size="sm" />
-        {selection.labels.length > 1 ? <b>{selection.labels.length}</b> : null}
+        {docked ? <span className="lb-ntb-name">{name}</span> : selection.labels.length > 1 ? <b>{selection.labels.length}</b> : null}
       </span>
       <input
         ref={field}

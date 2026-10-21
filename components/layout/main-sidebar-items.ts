@@ -2,7 +2,8 @@ import type { SidebarNavItem } from './app-sidebar'
 
 export function createMainSidebarItems(t: (key: string) => string): SidebarNavItem[] {
   return [
-    { id: 'new-task', label: t('newVideo'), icon: 'plus', href: '/chat?new=1' },
+    // A new video is a new project: `/new` opens one in the active channel, in the new tab, like the tab bar's "+".
+    { id: 'new-task', label: t('newVideo'), icon: 'plus', href: '/new' },
     { id: 'inbox', label: t('inbox'), icon: 'inbox', href: '/inbox', badge: 1 },
     { id: 'projects', label: t('projects'), icon: 'clapperboard', href: '/spark' },
     { id: 'calendar', label: t('calendar'), icon: 'calendar', href: '/calendar' },

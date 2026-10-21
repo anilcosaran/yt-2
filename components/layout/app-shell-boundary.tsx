@@ -42,8 +42,8 @@ export function AppShellBoundary({ children }: { children: React.ReactNode }) {
     () => createMainSidebarItems((key) => tNav(key)),
     [tNav],
   )
-  // "Yeni video" from any page lands in the chat: its menu is loaded while the browser is idle, so the switch does
-  // not show an empty menu for a moment.
+  // A past chat (from "Son çalışmalar") opens with the chat's own menu: it is loaded while the browser is idle, so the
+  // switch does not show an empty menu for a moment. ("Yeni video" opens a new project, not a chat.)
   React.useEffect(() => {
     const warm = () => void import('@/components/chat/chat-sidebar')
     if ('requestIdleCallback' in window) {

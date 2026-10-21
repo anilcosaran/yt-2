@@ -34,12 +34,6 @@ import {
   type AssistantActiveRunSummary,
   type AssistantConversation,
 } from '@/lib/assistant/api'
-import {
-  buildNewChatHref,
-  createNewChatIntentId,
-  NewChatIntentTracker,
-  NEW_CHAT_QUERY_PARAM,
-} from '@/lib/assistant/client-intents'
 import { useActiveChannel } from '@/lib/channel/active-channel'
 import { Skeleton } from '@/components/ui/skeleton'
 import { cn } from '@/lib/utils'
@@ -77,10 +71,8 @@ export function ChatSidebar({ collapsed = false, onCollapsedChange }: ChatSideba
   const [activeRunConversationIds, setActiveRunConversationIds] = React.useState<ReadonlySet<string>>(
     () => new Set(),
   )
-  const newChatIntentRef = React.useRef(new NewChatIntentTracker())
   const canUseChannel = mounted && Boolean(activeChannelId)
   const activeChatId = mounted ? searchParams.get(CHAT_QUERY_PARAM) ?? searchParams.get(LEGACY_CHAT_QUERY_PARAM) : null
-  const activeNewChatId = mounted ? searchParams.get(NEW_CHAT_QUERY_PARAM) : null
 
   const conversationsQuery = useQuery({
     queryKey: [...ASSISTANT_CONVERSATIONS_QUERY_KEY, activeChannelId],
@@ -124,10 +116,6 @@ export function ChatSidebar({ collapsed = false, onCollapsedChange }: ChatSideba
   ])
 
   React.useEffect(() => {
-    newChatIntentRef.current.sync(activeNewChatId, activeChatId)
-  }, [activeChatId, activeNewChatId])
-
-  React.useEffect(() => {
     const refresh = () => {
       void queryClient.invalidateQueries({ queryKey: ASSISTANT_CONVERSATIONS_QUERY_KEY })
       void queryClient.invalidateQueries({ queryKey: ASSISTANT_ACTIVE_RUNS_QUERY_KEY })
@@ -169,10 +157,10 @@ export function ChatSidebar({ collapsed = false, onCollapsedChange }: ChatSideba
     ))
   }, [activeRunsQuery.data])
 
+  // A new video is a new project: the new tab opens one in the active channel (`/new`).
   function handleNewChat() {
     if (!canUseChannel) return
-    const intentId = newChatIntentRef.current.next(activeNewChatId, activeChatId)
-    router.push(newChatHref(intentId))
+    router.push('/new')
   }
 
   function handleToggleCollapsed() {
@@ -241,7 +229,7 @@ export function ChatSidebar({ collapsed = false, onCollapsedChange }: ChatSideba
           </button>
         </div>
         <div className="mt-2 flex flex-col gap-0.5">
-          <SidebarTopLink primary href="/chat" label={tNav('newVideo')} icon={Plus} disabled={!canUseChannel} onClick={(event) => {
+          <SidebarTopLink primary href="/new" label={tNav('newVideo')} icon={Plus} disabled={!canUseChannel} onClick={(event) => {
             event.preventDefault()
             handleNewChat()
           }} />
@@ -324,7 +312,8 @@ function ConversationLink({
       void queryClient.invalidateQueries({ queryKey: ASSISTANT_CONVERSATIONS_QUERY_KEY })
       void queryClient.invalidateQueries({ queryKey: ASSISTANT_ACTIVE_RUNS_QUERY_KEY })
       notifyConversationListChanged()
-      if (isCurrent) router.push(newChatHref())
+      // Off to the latest chat left: a new one would be a new project.
+      if (isCurrent) router.push('/chat')
     },
   })
   const deleteMutation = useMutation({
@@ -333,7 +322,7 @@ function ConversationLink({
       void queryClient.invalidateQueries({ queryKey: ASSISTANT_CONVERSATIONS_QUERY_KEY })
       void queryClient.invalidateQueries({ queryKey: ASSISTANT_ACTIVE_RUNS_QUERY_KEY })
       notifyConversationListChanged()
-      if (isCurrent) router.push(newChatHref())
+      if (isCurrent) router.push('/chat')
     },
   })
   const busy = archiveMutation.isPending || deleteMutation.isPending
@@ -566,10 +555,6 @@ function SidebarSkeleton() {
 
 function chatHref(conversationId: string) {
   return `/chat?${CHAT_QUERY_PARAM}=${encodeURIComponent(conversationId)}`
-}
-
-function newChatHref(intentId = createNewChatIntentId()) {
-  return buildNewChatHref(intentId)
 }
 
 function getConversationTitle(

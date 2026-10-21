@@ -60,6 +60,13 @@ export async function proxy(request: NextRequest) {
     loginUrl.search = ''
     loginUrl.searchParams.set('next', `${pathname}${request.nextUrl.search}`)
     response = NextResponse.redirect(loginUrl)
+  } else if (pathname === '/chat' && request.nextUrl.searchParams.has('new')) {
+    // A new chat (`/chat?new=…`, `NEW_CHAT_QUERY_PARAM`) is a new project now: the new tab opens one (`/new`). Past
+    // chats stay where they were (`/chat?id=…`).
+    const newTab = request.nextUrl.clone()
+    newTab.pathname = '/new'
+    newTab.search = ''
+    response = NextResponse.redirect(newTab)
   } else {
     response = NextResponse.next({ request: { headers: requestHeaders } })
   }

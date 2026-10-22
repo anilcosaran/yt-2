@@ -6,7 +6,7 @@
    the app's theme. */
 
 /* The canvas has a ground of its own, a shade apart from the page around it, with a dot grid that reads at a glance;
-   in the dark theme a cool charcoal (not the page's black), nodes a step lighter with a faint top light. What a node
+   in the dark theme a deep neutral black, nodes clearly a step lighter with a faint top light. What a node
    made fills it to its edges. Ports and links keep one quiet colour: the icon on a port says what it takes. */
 .yt-studio .lb-cv{
   --cv-bg:color-mix(in srgb,var(--st-stage),#1f1e1d 4%);
@@ -29,19 +29,19 @@
   position:relative;overflow:hidden;background:radial-gradient(120% 70% at 50% 0%,var(--cv-glow),transparent 70%),var(--cv-bg)
 }
 .dark .yt-studio .lb-cv{
-  --cv-bg:#111216;
-  --cv-glow:rgba(150,160,255,.04);
-  --cv-dot:rgba(255,255,255,.15);
-  --cv-node:#1a1b1f;
-  --cv-node-top:#202126;
+  --cv-bg:#0a0a0b;
+  --cv-glow:rgba(255,255,255,.035);
+  --cv-dot:rgba(255,255,255,.2);
+  --cv-node:#18181b;
+  --cv-node-top:#1f1f23;
   --cv-lift:inset 0 1px 0 rgba(255,255,255,.045),0 10px 28px rgba(0,0,0,.38);
-  --cv-port:#26272c;
-  --cv-port-on:#33343a;
+  --cv-port:#232327;
+  --cv-port-on:#2f2f34;
   --cv-fill:rgba(255,255,255,.055);
-  --cv-line:rgba(255,255,255,.09);
-  --cv-line-strong:rgba(255,255,255,.18);
+  --cv-line:rgba(255,255,255,.1);
+  --cv-line-strong:rgba(255,255,255,.2);
   --cv-on:rgba(255,255,255,.75);
-  --cv-wire:rgba(255,255,255,.26);
+  --cv-wire:rgba(255,255,255,.3);
   --cv-wire-on:rgba(255,255,255,.75);
   --cv-chip:rgba(20,21,25,.74);
   --cv-chip-text:#f2f2f3;

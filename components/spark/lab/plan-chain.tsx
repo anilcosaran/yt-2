@@ -45,7 +45,7 @@ import { QueuePill, ZoomPill, type QueueItem } from './chain-chrome'
 import { GenerationGallery, GenerationStrip, type Generation } from './chain-generations'
 import { MODEL_METERS, ModelMenu, type ModelOption } from './chain-model-menu'
 import { PresenceFaces, PresenceLayer, pointerOf, useCanvasPresence } from './chain-presence'
-import { clockOf, mentionOf, readTask, TASK_EXAMPLES, type TaskFlow, type TaskPlan, type TaskSource } from './chain-task'
+import { mentionOf, readTask, type TaskFlow, type TaskPlan, type TaskSource } from './chain-task'
 import { MentionInput } from './chain-task-input'
 import { NODE_SETTINGS, SettingsPanel, settingKey, settingOf } from './chain-settings'
 import { CUT_FRAMES, STAGE_KIND, STAGE_KINDS, chainLanes, creditsOf, isPicture, stageStatuses, voiceName, type ChainLane, type ChainStage, type StageKind, type StageStatus } from './lab-chain'
@@ -75,7 +75,7 @@ const SIZE: Record<StageKind | 'cut', { w: number; h: number }> = {
   text: { w: 280, h: 250 },
   voice: { w: 280, h: 250 },
   music: { w: 280, h: 250 },
-  task: { w: 280, h: 250 },
+  task: { w: 280, h: 104 },
   cut: { w: 380, h: 270 },
 }
 const NOTE_W = 240
@@ -665,8 +665,6 @@ type CanvasApi = {
   linkInto: (task: string, source: string) => void
   /** Runs Görev `task`'s instruction (`text`) over `source`: a cut or a size goes in the queue, more of a node adds them. */
   apply: (task: string, text: string, source: string) => void
-  /** Brings nodes into view. */
-  focus: (ids: string[]) => void
 }
 const CanvasContext = React.createContext<CanvasApi | null>(null)
 const useCanvas = () => React.useContext(CanvasContext)!
@@ -935,17 +933,12 @@ function ChainCanvas({ run, scenes, onAsk, free = false }: { run: LabRun; scenes
             run.canvas.link(edge.source, copy, edge.targetHandle ?? undefined, edge.sourceHandle ?? undefined)
           }
         })
-        run.edit(`task-made:${task}`, copies.join(' '))
         const unmade = graph.nodes.some((entry) => entry.id === sourceId && entry.type === 'step' && entry.data.variants === 0)
         run.canvas.run([
           { id: task, ms: 400 },
           ...(unmade ? [{ id: sourceId, ms: MAKE_MS[stage.kind] }] : []),
           ...copies.map((copy) => ({ id: copy, ms: MAKE_MS[stage.kind] })),
         ])
-      },
-      focus: (ids) => {
-        const known = ids.filter((id) => flow.getNode(id))
-        if (known.length) void flow.fitView({ nodes: known.map((id) => ({ id })), duration: 500, padding: 0.4, maxZoom: Math.max(flow.getZoom(), 0.8) })
       },
     }
   }, [run, graph, flow, onAsk])
@@ -1373,9 +1366,13 @@ function AddMenu({ adding, kinds, onAdd, onClose }: { adding: Adding; kinds: rea
 
 // ---- a node ---------------------------------------------------------------------------------------------------
 
-/** The input ports, a column on the node's left edge, centred on what it shows: where each port sits from the top. */
+/**
+ * The input ports, a column on the node's left edge, centred on what it shows (a Görev, words only, on itself): where
+ * each port sits from the top.
+ */
 const PORT_GAP = 30
-const portTop = (index: number, count: number, height: number) => (height - 96) / 2 - ((count - 1) * PORT_GAP) / 2 + index * PORT_GAP
+const portTop = (index: number, count: number, height: number, kind?: StageKind) =>
+  (kind === 'task' ? height / 2 : (height - 96) / 2) - ((count - 1) * PORT_GAP) / 2 + index * PORT_GAP
 
 function StepNodeView({ id, data: given, selected }: NodeProps<StepNode>) {
   const api = useCanvas()
@@ -1402,7 +1399,7 @@ function StepNodeView({ id, data: given, selected }: NodeProps<StepNode>) {
   }
   return (
     <div className={`lb-cv-node k-${stage.kind} ${status}${selected ? ' selected' : ''}${data.agent ? ' lb-agent-on' : ''}`} {...(data.agent && { 'data-agent-target': data.agent })}>
-      <NodeResizer isVisible={selected} minWidth={240} minHeight={stage.kind === 'voice' || stage.kind === 'music' ? 180 : 220} handleClassName="lb-an-handle" lineClassName="lb-an-line" />
+      <NodeResizer isVisible={selected} minWidth={240} minHeight={stage.kind === 'task' ? 96 : stage.kind === 'voice' || stage.kind === 'music' ? 180 : 220} handleClassName="lb-an-handle" lineClassName="lb-an-line" />
       <header className="lb-cv-label">
         <Icon name={kind.icon} size="sm" />
         {/* The user's nodes go by their name on the canvas, numbered when two share it: what an @ in a Görev names. */}
@@ -1418,7 +1415,7 @@ function StepNodeView({ id, data: given, selected }: NodeProps<StepNode>) {
           type="target"
           position={Position.Left}
           className={`lb-cv-port in t-${port.type}`}
-          style={{ top: portTop(index, ports.length, height) }}
+          style={{ top: portTop(index, ports.length, height, stage.kind) }}
           data-label={port.label}
           aria-label={port.label}
           onClick={() => api.addBefore(id, port)}
@@ -1454,7 +1451,7 @@ function StepNodeView({ id, data: given, selected }: NodeProps<StepNode>) {
           type="source"
           position={Position.Right}
           className={`lb-cv-port out t-${port.type}${port.id === 'out' ? '' : ' frame-out'}`}
-          style={{ top: portTop(index, outputs.length, height) }}
+          style={{ top: portTop(index, outputs.length, height, stage.kind) }}
           data-label={port.label}
           aria-label={port.label}
           onClick={() => api.addAfter(id, port.id)}
@@ -1881,9 +1878,11 @@ function PlanGlyph({ plan }: { plan: TaskPlan | null }) {
 }
 
 /**
- * A Görev: an instruction in plain words over the node linked into it (`chain-task.ts`). Above, what it did, else what it
- * will do (or what it needs) as a sentence. Below, the instruction, where @ lists the canvas's nodes and links the one
- * picked in (a name typed out in full links it too); its bar says the plan in short ("Kes · 0:00–0:10") and runs it.
+ * A Görev: a small node of words only, an instruction over the node linked into it (`chain-task.ts`). Its field fills it
+ * and takes a press as the caret (it is grabbed by its name or its bar); in it @ lists the canvas's nodes and links the
+ * one picked in (a name typed out in full links it too). Its bar says the plan in short once the words read as one
+ * ("Kes · 0:00–0:10"), faint with what it needs on hover when it cannot run, and runs it. What it makes goes on along its
+ * output, to the next node.
  */
 function TaskBody({ id, data }: { id: string; data: StepData }) {
   const api = useCanvas()
@@ -1892,7 +1891,6 @@ function TaskBody({ id, data }: { id: string; data: StepData }) {
   const { stage, status } = data
   const saved = state.edits[stage.briefKey] ?? ''
   const [draft, setDraft] = React.useState<string | null>(null)
-  const held = useHeldField()
   const text = draft ?? saved
   const names = [...api.names.values()]
   // The node the words name, else the one linked in, is what it runs on.
@@ -1915,107 +1913,37 @@ function TaskBody({ id, data }: { id: string; data: StepData }) {
     if (ready && sourceId) api.apply(id, text.trim(), sourceId)
   }
   return (
-    <>
-      <TaskResult id={id} data={data} read={read} ran={ran} source={source} onExample={(example) => run.edit(stage.briefKey, example)} />
-      <div className="lb-cv-compose">
-        <PromptBox
-          className="lb-cv-pb"
-          bar={(
-            <>
-              {read.label ? (
-                <PromptBoxChip className={`lb-tk-plan${read.problem ? ' off' : ''}`} icon={<PlanGlyph plan={read.plan} />} label={read.label} disabled title={read.problem ?? read.sentence ?? undefined} />
-              ) : null}
-              <PromptBoxSpacer />
-              <PromptBoxSend type="button" label={busy ? 'Uygulanıyor' : ran ? 'Yeniden uygula' : 'Uygula'} busy={status === 'running'} disabled={!ready} onClick={go} />
-            </>
-          )}
-        >
-          <MentionInput
-            className={held.className}
-            value={text}
-            options={options}
-            placeholder="Ne yapılsın? @ ile düğüm seçin"
-            aria-label="Görev: ne yapılsın"
-            onChange={setDraft}
-            onMention={(target) => api.linkInto(id, target)}
-            onFocus={held.onFocus}
-            onBlur={() => {
-              held.onBlur()
-              keep()
-            }}
-            onSend={go}
-          />
-        </PromptBox>
-      </div>
-    </>
-  )
-}
-
-/**
- * Over a Görev's instruction: what it did, once it ran (the cut clip or sound with the part it kept, the picture or clip
- * at its new size, the nodes it added, each a press away); before that, what it will do as a sentence, what it needs, or,
- * while it is empty, instructions to start from.
- */
-function TaskResult({ id, data, read, ran, source, onExample }: { id: string; data: StepData; read: ReturnType<typeof readTask>; ran?: string; source: (TaskSource & { id: string }) | null; onExample: (text: string) => void }) {
-  const api = useCanvas()
-  const { stage, status } = data
-  const done = data.variants > 0 && ran !== undefined
-  const plan = done && source ? readTask(ran, source, [...api.names.values()]).plan : null
-  if (plan?.kind === 'more') {
-    const added = (api.run.state.edits[`task-made:${id}`] ?? '').split(' ').filter((node) => api.names.has(node))
-    return (
-      <div className="lb-cv-out lb-tk-out">
-        <div className="lb-tk-made">
-          <small>{added.length ? `${added.length} düğüm eklendi` : 'Eklenen düğümler silindi'}</small>
-          {added.length ? (
-            <span>
-              {added.map((node) => (
-                <button key={node} type="button" onClick={() => api.focus([node])} title="Göster">{api.names.get(node)}</button>
-              ))}
-            </span>
-          ) : null}
-        </div>
-      </div>
-    )
-  }
-  if (plan && (plan.kind === 'cut' || plan.kind === 'ratio')) {
-    const tag = plan.kind === 'cut' ? `${clockOf(plan.from)}–${clockOf(plan.to)}` : plan.ratio
-    if (stage.task?.type === 'audio') {
-      return (
-        <div className="lb-cv-out wave lb-tk-out">
-          <span className="lb-cv-bars">{waveOf(`${id}:${data.variants}`, 40).map((height, index) => <i key={index} style={{ height: `${height}%` }} />)}</span>
-          <span className="lb-cv-tag">{tag}</span>
-        </div>
-      )
-    }
-    return (
-      <div className={`lb-cv-out lb-tk-out${status === 'running' ? ' working' : ''}`}>
-        <span className="lb-tk-frame" style={{ aspectRatio: (stage.task?.ratio ?? '9:16').replace(':', ' / ') }}>
-          {data.art ? <span className="lb-thumb"><span className={`lb-art ${data.art}`} /></span> : null}
-          {stage.task?.type === 'video' ? <span className="lb-cv-play"><Icon name="play" size="sm" /></span> : null}
-          <span className="lb-cv-tag">{tag}</span>
-        </span>
-      </div>
-    )
-  }
-  return (
-    <div className={`lb-cv-out lb-tk-out${status === 'running' ? ' working' : ''}`}>
-      <div className="lb-tk-say">
-        {read.problem ? (
-          <p className="off">{read.problem}</p>
-        ) : read.sentence ? (
-          <p>{read.sentence}</p>
-        ) : (
+    <div className="lb-cv-compose">
+      <PromptBox
+        className="lb-cv-pb"
+        bar={(
           <>
-            <p>{source ? `${source.name} bağlı. Ne yapılsın?` : 'Bir düğüm bağlayın ya da @ ile anın, sonra ne yapılacağını yazın.'}</p>
-            <span className="lb-tk-examples">
-              {TASK_EXAMPLES.map((example) => (
-                <button key={example} type="button" onClick={() => onExample(example)}>{example}</button>
-              ))}
-            </span>
+            {read.label ? (
+              <PromptBoxChip
+                className={`lb-tk-plan${read.problem ? ' off' : ''}`}
+                icon={<PlanGlyph plan={read.plan} />}
+                label={read.label}
+                disabled
+                title={read.problem ?? read.sentence ?? undefined}
+              />
+            ) : null}
+            <PromptBoxSpacer />
+            <PromptBoxSend type="button" label={busy ? 'Uygulanıyor' : ran ? 'Yeniden uygula' : 'Uygula'} busy={status === 'running'} disabled={!ready} onClick={go} />
           </>
         )}
-      </div>
+      >
+        <MentionInput
+          className="nodrag nowheel"
+          value={text}
+          options={options}
+          placeholder="Ne yapılsın? @ ile düğüm seçin"
+          aria-label="Görev: ne yapılsın"
+          onChange={setDraft}
+          onMention={(target) => api.linkInto(id, target)}
+          onBlur={keep}
+          onSend={go}
+        />
+      </PromptBox>
     </div>
   )
 }

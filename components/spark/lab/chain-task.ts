@@ -26,8 +26,8 @@ export type TaskRead = { plan: TaskPlan | null; label: string | null; sentence: 
 
 /** At most this many more of a node at once. */
 export const MAX_MORE = 6
-/** Instructions to start from, as the node offers them while it is empty. */
-export const TASK_EXAMPLES = ['ilk 10 sn kes', '2 tane daha', "9:16'ya çevir"]
+/** Instructions it reads, named when it reads none of what was written. */
+const TASK_EXAMPLES = ['ilk 10 sn kes', '2 tane daha', "9:16'ya çevir"]
 
 const NUMBER_WORDS: Record<string, number> = { bir: 1, iki: 2, üç: 3, dört: 4, beş: 5, altı: 6, yedi: 7, sekiz: 8, dokuz: 9, on: 10 }
 const RATIO_WORDS: Record<string, string> = { kare: '1:1', dikey: '9:16', yatay: '16:9' }
@@ -37,7 +37,7 @@ const DROP = /(?<!\p{L})(at|atla|sil|çıkar|kaldır)(?!\p{L})/u
 const escape = (text: string) => text.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
 
 /** A length as the canvas writes it: 0:05, 1:12. */
-export function clockOf(seconds: number) {
+function clockOf(seconds: number) {
   const whole = Math.max(0, Math.round(seconds))
   return `${Math.floor(whole / 60)}:${String(whole % 60).padStart(2, '0')}`
 }
@@ -48,7 +48,7 @@ function plainOf(text: string, names: readonly string[]) {
   for (const name of [...names].sort((a, b) => b.length - a.length)) {
     plain = plain.replace(new RegExp(`@${escape(name)}(?:['’][\\p{L}]+)?`, 'giu'), ' ')
   }
-  plain = plain.replace(/@\S+/g, ' ').toLocaleLowerCase('tr')
+  plain = plain.replace(/@\S*/g, ' ').toLocaleLowerCase('tr')
   return plain.replace(/\p{L}+/gu, (word) => (word in NUMBER_WORDS ? String(NUMBER_WORDS[word]) : word))
 }
 

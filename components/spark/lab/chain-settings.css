@@ -4,7 +4,7 @@
    setting is a small switch. No boxes inside, no rules between the rows. The `--cv-*` tokens come from the canvas
    (`lab-chain.css`). */
 
-.yt-studio .lb-ns{display:grid;width:100%;padding:6px;border-radius:10px;background:var(--cv-node);box-shadow:0 0 0 1px var(--cv-line-strong),var(--cv-shadow);cursor:default;animation:lb-in .14s ease-out}
+.yt-studio .lb-ns{display:grid;width:100%;padding:6px;border-radius:10px;background:var(--cv-node);box-shadow:0 0 0 1px var(--cv-line-strong),var(--cv-shadow);cursor:var(--cv-pointer,default);animation:lb-in .14s ease-out}
 
 .yt-studio .lb-ns-row{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;column-gap:12px;min-height:38px;padding:0 4px 0 10px}
 .yt-studio .lb-ns-label{min-width:0;flex:1 1 auto;font-size:12.5px;color:var(--st-text-2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}

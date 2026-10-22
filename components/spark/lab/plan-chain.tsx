@@ -44,6 +44,7 @@ import {
 import { QueuePill, ZoomPill, type QueueItem } from './chain-chrome'
 import { GenerationGallery, GenerationStrip, type Generation } from './chain-generations'
 import { MODEL_METERS, ModelMenu, type ModelOption } from './chain-model-menu'
+import { PresenceFaces, PresenceLayer, pointerOf, useCanvasPresence } from './chain-presence'
 import { NODE_SETTINGS, SettingsPanel, settingKey, settingOf } from './chain-settings'
 import { CUT_FRAMES, STAGE_KIND, STAGE_KINDS, chainLanes, creditsOf, isPicture, stageStatuses, voiceName, type ChainLane, type ChainStage, type StageKind, type StageStatus } from './lab-chain'
 import { LOOK_OPTIONS, MODELS, formatClock, type LabScene, type SceneArt } from './lab-model'
@@ -58,7 +59,7 @@ import './lab-chain.css'
 // input it fits (a node's typed ports on its left: the prompt, a start or end frame, reference pictures, a clip, a
 // voice's text), adds nodes, notes, texts and frames, and makes any node on its own: what to make, the model and the
 // quick settings on what it shows, the rest beside it, and "Üret" at the composer's bottom right. A node shows the
-// version picked; its generations line up under it, and its gallery opens beside it. Making waits in the queue
+// version picked; its newest generations line up under it, and its history opens beside it. Making waits in the queue
 // ("Kuyruk", top right); nothing runs everything at once here. The engine is React Flow; the look is the lab's own
 // (small corners, a dark viewer for what is made), so it never reads as Flow, the automation product.
 
@@ -720,6 +721,8 @@ function ChainCanvas({ run, scenes, onAsk, free = false }: { run: LabRun; scenes
   const edges = React.useMemo(() => graph.edges.map((edge) => ({ ...edge, selected: selectedEdges.includes(edge.id) })), [graph.edges, selectedEdges])
   const picked = selected.filter((id) => graph.steps.has(id))
   const boxOf = (node: CanvasNode): Box => ({ x: node.position.x, y: node.position.y, w: node.width ?? node.measured?.width ?? 0, h: node.height ?? node.measured?.height ?? 0 })
+  // Who else works here: the people in the run's room, and this person's colour (their pointer wears it).
+  const { peers, color: ownColor } = useCanvasPresence(run.key, wrap, selected.length === 1 ? selected[0]! : null)
 
   // Spark's cursor measures again on a scroll; the canvas moves without one, so it says so (once a frame at most).
   const viewSave = React.useRef(0)
@@ -1007,7 +1010,11 @@ function ChainCanvas({ run, scenes, onAsk, free = false }: { run: LabRun; scenes
 
   return (
     <CanvasContext.Provider value={api}>
-      <div className={`lb-b-board lb-cv tool-${tool}${wiring ? ` wiring w-${wiring.dir} t-${wiring.type}` : ''}`} ref={wrap}>
+      <div
+        className={`lb-b-board lb-cv tool-${tool}${wiring ? ` wiring w-${wiring.dir} t-${wiring.type}` : ''}`}
+        ref={wrap}
+        style={ownColor ? ({ '--cv-pointer': pointerOf(ownColor) } as React.CSSProperties) : undefined}
+      >
         <ReactFlow<CanvasNode, ChainEdge>
           nodes={nodes}
           edges={edges}
@@ -1094,6 +1101,7 @@ function ChainCanvas({ run, scenes, onAsk, free = false }: { run: LabRun; scenes
               </button>
             </NodeToolbar>
           ) : null}
+          <PresenceLayer peers={peers} />
         </ReactFlow>
 
         {free ? (
@@ -1124,7 +1132,10 @@ function ChainCanvas({ run, scenes, onAsk, free = false }: { run: LabRun; scenes
           </button>
         </nav>
 
-        <CanvasQueue run={run} steps={graph.steps} />
+        <div className="lb-cv-top">
+          <PresenceFaces peers={peers} />
+          <CanvasQueue run={run} steps={graph.steps} />
+        </div>
         <CanvasZoom mapOpen={mapOpen} onToggleMap={() => setMapOpen(!mapOpen)} />
 
         {adding ? <AddMenu adding={adding} kinds={kindsFor(adding)} onAdd={add} onClose={closeAdding} /> : null}
@@ -1306,7 +1317,8 @@ function StepNodeView({ id, data: given, selected }: NodeProps<StepNode>) {
           {port.id === 'out' ? <Icon name={PORT_ICON[port.type]} size="sm" /> : <FrameEnd end={port.id} />}
         </Handle>
       ))}
-      {generations.length >= (generated(stage) ? 1 : 2) ? (
+      {/* Once the first one is made (what is already there, once there is a second): the row and its history button. */}
+      {(generated(stage) ? data.variants >= 1 : generations.length >= 2) ? (
         <div className="lb-cv-gens">
           <GenerationStrip kind={stage.kind} items={generations} active={data.active} ratio={ratio} onPick={pickVersion} onOpenGallery={() => setSide(side === 'gallery' ? null : 'gallery')} />
         </div>

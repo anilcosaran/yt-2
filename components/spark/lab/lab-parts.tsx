@@ -951,10 +951,18 @@ export function AgentCursor({ scope, run, targetOf, scrolls = true }: { scope: R
   }, [scope, target, shown, follow])
 
   if (!step || !spot || state.driver === 'user') return null
+  return <CursorMark name="Spark" className={state.paused ? 'paused' : undefined} style={{ transform: `translate(${spot.x}px, ${spot.y}px)` }} />
+}
+
+/**
+ * A named pointer, the one look every pointer on a board shares: Spark's in its violet, each person working there in
+ * their own colour (`color`) with their short name. Where it stands is the caller's (`style`).
+ */
+export function CursorMark({ name, color, className, style }: { name: string; color?: string; className?: string; style?: React.CSSProperties }) {
   return (
-    <div className={`lb-cursor${state.paused ? ' paused' : ''}`} style={{ transform: `translate(${spot.x}px, ${spot.y}px)` }} aria-hidden>
+    <div className={`lb-cursor${className ? ` ${className}` : ''}`} style={{ ...style, ...(color && { '--lb-cursor': color }) } as React.CSSProperties} aria-hidden>
       <svg viewBox="0 0 16 16"><path d="M2 1.5 13.5 7 8.4 8.6 6.6 14z" /></svg>
-      <span>Spark</span>
+      <span>{name}</span>
     </div>
   )
 }

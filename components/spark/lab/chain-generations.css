@@ -5,10 +5,10 @@
    in lab-chain.css, Spark's (`--lb-agent*`) from the lab root, a kind's tint (`--k`) from `.k-<kind>`; the canvas
    places both parts, they never do. */
 
-/* ---------- the strip under a node ---------- */
-.yt-studio .lb-gn-strip{display:flex;align-items:center;gap:6px;cursor:default}
-.yt-studio .lb-gn-row{display:flex;align-items:center;gap:6px}
-.yt-studio .lb-gn-sq{position:relative;display:grid;place-items:center;flex:none;box-sizing:border-box;width:30px;height:30px;margin:0;padding:0;border:0;border-radius:6px;overflow:hidden;
+/* ---------- the strip under a node: along its width, the history button at its right edge ---------- */
+.yt-studio .lb-gn-strip{display:flex;align-items:center;gap:6px;cursor:var(--cv-pointer,default)}
+.yt-studio .lb-gn-row{display:flex;align-items:center;gap:6px;min-width:0;overflow:hidden}
+.yt-studio .lb-gn-sq{position:relative;display:grid;place-items:center;flex:none;box-sizing:border-box;width:30px;height:30px;margin:0;padding:0;border:0;border-radius:4px;overflow:hidden;
   background:var(--cv-fill);color:var(--k,var(--st-text-2));font:inherit;transition:box-shadow .12s}
 /* a hairline over the edge, so a dark drawing and an empty square both read on the canvas */
 .yt-studio .lb-gn-sq::after{content:'';position:absolute;inset:0;border-radius:inherit;box-shadow:inset 0 0 0 1px var(--cv-line);pointer-events:none}
@@ -23,18 +23,16 @@
 .yt-studio .lb-gn-mini{display:flex;align-items:center;gap:1.5px;height:12px}
 .yt-studio .lb-gn-mini i{width:2px;border-radius:1px;background:var(--k,var(--st-text-2))}
 
-.yt-studio .lb-gn-more{font-size:11px;font-weight:600;line-height:1;color:var(--st-text-2);font-variant-numeric:tabular-nums}
-.yt-studio .lb-gn-more:hover{color:var(--st-text)}
-.yt-studio .lb-gn-all{flex:none;height:30px;margin:0 0 0 2px;padding:0 4px;border:0;border-radius:6px;background:none;font:inherit;font-size:11.5px;line-height:30px;
-  color:var(--st-text-3);white-space:nowrap;transition:color .12s}
-.yt-studio .lb-gn-all:hover{color:var(--st-text)}
+.yt-studio .lb-gn-all{display:grid;place-items:center;flex:none;width:30px;height:30px;margin:0 0 0 auto;padding:0;border:0;border-radius:4px;background:none;
+  color:var(--st-text-3);transition:background .12s,color .12s}
+.yt-studio .lb-gn-all:hover{background:var(--cv-fill);color:var(--st-text)}
 
 /* while an output is made: its ring over a dimmed face */
 .yt-studio .lb-gn-veil{position:absolute;inset:0;z-index:1;display:grid;place-items:center;pointer-events:none}
 
 /* ---------- the gallery beside a node ---------- */
 .yt-studio .lb-gn-gallery{display:flex;flex-direction:column;box-sizing:border-box;width:320px;max-width:calc(100vw - 32px);max-height:520px;padding:10px;border-radius:12px;
-  background:var(--cv-node);box-shadow:0 0 0 1px var(--cv-line-strong),var(--cv-shadow);color:var(--st-text);cursor:default;outline:none;animation:lb-gn-in .14s ease-out}
+  background:var(--cv-node);box-shadow:0 0 0 1px var(--cv-line-strong),var(--cv-shadow);color:var(--st-text);cursor:var(--cv-pointer,default);outline:none;animation:lb-gn-in .14s ease-out}
 @keyframes lb-gn-in{from{opacity:0;transform:translateX(-4px)}}
 .yt-studio .lb-gn-head{display:flex;align-items:center;gap:6px;flex:none;padding:0 0 8px 4px}
 .yt-studio .lb-gn-head b{font-size:13px;font-weight:600;line-height:24px;color:var(--st-text)}

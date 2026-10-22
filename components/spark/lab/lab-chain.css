@@ -64,9 +64,11 @@
   --xy-minimap-mask-stroke-color-default:var(--cv-line-strong);
   --xy-minimap-mask-stroke-width-default:1;
 }
-.yt-studio .lb-cv .react-flow__node{cursor:default}
-.yt-studio .lb-cv .react-flow__node.draggable{cursor:grab}
-.yt-studio .lb-cv .react-flow__node.dragging{cursor:grabbing}
+/* This person's own pointer: the arrow every pointer on the canvas wears, in their colour (`--cv-pointer`, put in by the
+   canvas once it knows them; the system arrow until then), wherever the arrow would be. A drag shows the closed hand,
+   text the I-beam, a port the crosshair, a button the hand. */
+.yt-studio .lb-cv .react-flow__pane,.yt-studio .lb-cv .react-flow__node,.yt-studio .lb-cv .react-flow__node.draggable{cursor:var(--cv-pointer,default)}
+.yt-studio .lb-cv .react-flow__pane.dragging,.yt-studio .lb-cv .react-flow__node.dragging{cursor:grabbing}
 .yt-studio .lb-cv .react-flow__node:focus-visible{outline:none}
 .yt-studio .lb-cv .react-flow__nodesselection-rect{border-radius:10px}
 
@@ -188,7 +190,7 @@
 .yt-studio .lb-cv-drop:hover,.yt-studio .lb-cv-out.media.over .lb-cv-drop{background:var(--cv-fill);color:var(--st-text-2)}
 
 /* its composer: the shared prompt box laid straight on the node, under a hairline; the cost and Spark's send at its right */
-.yt-studio .lb-cv-compose{position:relative;flex:none;padding:2px 4px 4px;border-top:1px solid var(--cv-line);cursor:default}
+.yt-studio .lb-cv-compose{position:relative;flex:none;padding:2px 4px 4px;border-top:1px solid var(--cv-line);cursor:var(--cv-pointer,default)}
 .yt-studio .lb-cv-compose .pb.lb-cv-pb{border:0;border-radius:0;background:transparent;box-shadow:none}
 .yt-studio .lb-cv-compose .pb.lb-cv-pb .pb-input{min-height:32px;max-height:66px;padding:9px 8px 0;font-size:12.5px}
 .yt-studio .lb-cv-compose .pb.lb-cv-pb .pb-bar{padding:2px 4px 4px}
@@ -208,7 +210,7 @@
 .yt-studio .lb-cv-writer-bar{display:flex;align-items:center;gap:4px;height:40px;flex:none;padding:0 7px 0 12px;border-top:1px solid var(--cv-line)}
 .yt-studio .lb-cv-writer-bar .pb-send{display:grid;place-items:center;flex:none;width:26px;height:26px;padding:0;border:0;border-radius:7px;background:var(--st-text);color:var(--cv-node);cursor:pointer;transition:opacity .12s}
 .yt-studio .lb-cv-writer-bar .pb-send:hover:not(:disabled){opacity:.88}
-.yt-studio .lb-cv-writer-bar .pb-send:disabled{background:var(--cv-fill);color:var(--st-text-3);cursor:default}
+.yt-studio .lb-cv-writer-bar .pb-send:disabled{background:var(--cv-fill);color:var(--st-text-3);cursor:var(--cv-pointer,default)}
 .yt-studio .lb-cv-writer-bar .pb-send > svg{width:14px;height:14px;stroke-width:2.2}
 .yt-studio .lb-cv-who{display:inline-flex;align-items:center;gap:5px;min-width:0;margin-right:auto;font-size:11.5px;color:var(--st-text-3);white-space:nowrap}
 .yt-studio .lb-cv-who > .i{width:12px;height:12px;color:var(--lb-agent)}
@@ -280,7 +282,6 @@
 .yt-studio .lb-cv-dock svg{width:17px;height:17px;stroke-width:1.6}
 .yt-studio .lb-cv-dock > i{width:1px;height:18px;margin:0 3px;background:var(--cv-line)}
 /* the select tool: an arrow over the canvas, not a hand */
-.yt-studio .lb-cv.tool-select .react-flow__pane{cursor:default}
 
 /* ---------- the minimap (on request, over the zoom pill), the queue (top right), the zoom (bottom left) ---------- */
 .yt-studio .lb-cv .react-flow__minimap.lb-cv-map{margin:0 0 58px 14px;border-radius:10px;overflow:hidden;box-shadow:0 0 0 1px var(--cv-line),var(--cv-shadow);animation:lb-in .16s ease-out}
@@ -288,11 +289,12 @@
 .yt-studio .lb-cv .lb-cv-map-step,.yt-studio .lb-cv .lb-cv-map-note{fill:var(--cv-line-strong)}
 .yt-studio .lb-cv .lb-cv-map-label{fill:transparent}
 .yt-studio .lb-cv .lb-cv-map-frame{fill:var(--cv-fill);stroke:var(--cv-line);stroke-width:2}
-.yt-studio .lb-cv-queue{position:absolute;top:12px;right:14px;z-index:6}
+/* Top right: the faces of who else works here, then the queue. */
+.yt-studio .lb-cv-top{position:absolute;top:12px;right:14px;z-index:6;display:flex;align-items:center;gap:10px}
 .yt-studio .lb-cv-zoom{position:absolute;left:14px;bottom:14px;z-index:6}
 
 /* ---------- menus on the canvas: one soft surface, rows with fills ---------- */
-.yt-studio .lb-cv-menu{position:absolute;z-index:40;display:grid;gap:1px;width:264px;padding:5px;border-radius:10px;background:var(--cv-node);box-shadow:0 0 0 1px var(--cv-line-strong),var(--cv-shadow);cursor:default;animation:lb-in .14s ease-out}
+.yt-studio .lb-cv-menu{position:absolute;z-index:40;display:grid;gap:1px;width:264px;padding:5px;border-radius:10px;background:var(--cv-node);box-shadow:0 0 0 1px var(--cv-line-strong),var(--cv-shadow);cursor:var(--cv-pointer,default);animation:lb-in .14s ease-out}
 .yt-studio .lb-cv-menu > small{padding:6px 10px 4px;font-size:11.5px;color:var(--st-text-3)}
 .yt-studio .lb-cv-menu button{display:flex;align-items:center;gap:10px;width:100%;padding:7px 9px;border-radius:7px;text-align:left;color:var(--st-text-2)}
 .yt-studio .lb-cv-menu button:hover{background:var(--cv-fill);color:var(--st-text)}

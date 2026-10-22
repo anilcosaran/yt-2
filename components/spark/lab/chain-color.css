@@ -24,7 +24,7 @@
 
 /* ---------- the popover: under its button, over the canvas ---------- */
 .yt-studio .lb-cc-pop{position:absolute;top:calc(100% + 7px);left:-3px;z-index:20;padding:5px;border-radius:10px;background:var(--cv-node);
-  box-shadow:0 0 0 1px var(--cv-line-strong),var(--cv-shadow);color:var(--st-text);font-size:12px;line-height:1.4;cursor:default;animation:lb-in .14s ease-out}
+  box-shadow:0 0 0 1px var(--cv-line-strong),var(--cv-shadow);color:var(--st-text);font-size:12px;line-height:1.4;cursor:var(--cv-pointer,default);animation:lb-in .14s ease-out}
 .yt-studio .lb-cc-panel{display:grid;gap:12px;width:220px;padding:12px}
 
 /* the wheel: hue around the circle (from the top, clockwise), white toward the centre, dimmed by the brightness */

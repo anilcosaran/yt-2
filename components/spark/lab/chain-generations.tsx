@@ -2,7 +2,7 @@
 
 import * as React from 'react'
 import type { CSSProperties } from 'react'
-import { Play, Type, X } from 'lucide-react'
+import { History, Play, Type, X } from 'lucide-react'
 
 import { ProgressRing } from './chain-chrome'
 import type { StageKind } from './lab-chain'
@@ -10,8 +10,8 @@ import type { SceneArt } from './lab-model'
 import './chain-generations.css'
 
 // Plan › Üretim: what a node has made so far ("üretimler"), newest first. Under the node, a quiet row of small squares
-// (the picked one ringed) with "Galeri" at its end; beside the node, on request, the gallery: every output large enough
-// to choose from. A press on one picks it, and the picked one is what the node shows and hands on. Both draw themselves
+// (the picked one ringed) with a history button at its end; beside the node, on request, the history: every output
+// large enough to choose from. A press on one picks it, and the picked one is what the node shows and hands on. Both draw themselves
 // and nothing else: the canvas places them and keeps what is picked. Every root carries `nodrag nowheel nopan`, so React
 // Flow leaves presses and scrolls on them alone. Spark's violet marks only what is being made.
 
@@ -44,8 +44,8 @@ type Shared = {
   onPick: (index: number) => void
 }
 
-/** Squares in the strip, counting the "+N" one that stands for the rest. */
-const STRIP_MAX = 6
+/** Squares in the strip, the newest; the rest are in the history. */
+const STRIP_MAX = 5
 
 type Shape = 'picture' | 'sound' | 'text'
 
@@ -109,20 +109,19 @@ function Art({ item }: { item: Generation }) {
 }
 
 /**
- * Under a node: its outputs as small rounded squares, newest first, the picked one ringed; one being made shows its ring
- * over a dimmed square, one waiting a dashed outline. Past six, the oldest wait behind a "+N" square (the picked one
- * always keeps a place). "Galeri" at the end opens them all. Nothing when the node has made nothing yet.
+ * Under a node, along its width: its outputs as one row of small squares, newest first, the picked one ringed; one
+ * being made shows its ring over a dimmed square, one waiting a dashed outline. Past five the older ones are in the
+ * history (the picked one always keeps a place in the row); the history button at the right end opens them all.
+ * Nothing when the node has made nothing yet.
  */
 export function GenerationStrip({ kind, items, active, onPick, onOpenGallery }: Shared & { onOpenGallery: () => void }): React.JSX.Element | null {
   if (!items.length) return null
   const newest = newestFirst(items)
-  let shown = newest
-  if (newest.length > STRIP_MAX) {
-    shown = newest.slice(0, STRIP_MAX - 1)
-    const picked = newest.find((item) => item.index === active)
-    if (picked && !shown.includes(picked)) shown = [...shown.slice(0, -1), picked]
-  }
+  let shown = newest.slice(0, STRIP_MAX)
+  const picked = newest.find((item) => item.index === active)
+  if (picked && !shown.includes(picked)) shown = [...shown.slice(0, -1), picked]
   const rest = newest.length - shown.length
+  const label = rest ? `Geçmiş · ${rest} üretim daha` : 'Geçmiş'
   return (
     <div className="lb-gn-strip nodrag nowheel nopan">
       <div className="lb-gn-row" role="listbox" aria-label="Üretimler" aria-orientation="horizontal">
@@ -130,13 +129,8 @@ export function GenerationStrip({ kind, items, active, onPick, onOpenGallery }: 
           <Square key={item.index} kind={kind} item={item} picked={item.index === active} onPick={onPick} />
         ))}
       </div>
-      {rest ? (
-        <button type="button" className="lb-gn-sq lb-gn-more" onClick={onOpenGallery} title="Galeride gör" aria-label={`${rest} üretim daha · Galeride gör`}>
-          +{rest}
-        </button>
-      ) : null}
-      <button type="button" className="lb-gn-all" onClick={onOpenGallery} aria-haspopup="dialog">
-        Galeri
+      <button type="button" className="lb-gn-all" onClick={onOpenGallery} title={label} aria-label={label} aria-haspopup="dialog">
+        <History size={14} strokeWidth={1.8} aria-hidden />
       </button>
     </div>
   )
@@ -181,7 +175,7 @@ function Square({ kind, item, picked, onPick }: { kind: StageKind; item: Generat
  * Beside a node: all it has made, newest first. Pictures and clips as two columns of large thumbnails at the node's
  * size, sounds as rows with their waves, texts as cards of their first lines. A press picks one and the gallery stays
  * open; Escape, the close button or a press anywhere else closes it (a press on a node's strip does not: its squares
- * and its "Galeri" go with this). It takes focus as it opens and brings the picked one into view.
+ * and its history button go with this). It takes focus as it opens and brings the picked one into view.
  */
 export function GenerationGallery({ kind, items, active, ratio, onPick, onClose }: Shared & { onClose: () => void }): React.JSX.Element {
   const box = React.useRef<HTMLDivElement>(null)
@@ -218,9 +212,9 @@ export function GenerationGallery({ kind, items, active, ratio, onPick, onClose 
   const newest = newestFirst(items)
   const aspect = aspectOf(ratio)
   return (
-    <div ref={box} className="lb-gn-gallery nodrag nowheel nopan" role="dialog" aria-label="Üretimler" tabIndex={-1}>
+    <div ref={box} className="lb-gn-gallery nodrag nowheel nopan" role="dialog" aria-label="Geçmiş" tabIndex={-1}>
       <div className="lb-gn-head">
-        <b>Üretimler</b>
+        <b>Geçmiş</b>
         <span className="lb-gn-count">{items.length}</span>
         <button type="button" className="lb-gn-close" onClick={onClose} title="Kapat" aria-label="Kapat">
           <X size={14} aria-hidden />

@@ -543,6 +543,8 @@ export type LabRun = {
   state: LabRunState
   /** The project's own name; `null` before it has one (Spark names it from the first sentence). */
   title: string | null
+  /** The key of a shared run (a project's id, `canvas:<id>`), where the people working on it meet; `null` for a run of one view. */
+  key: string | null
   submit: (prompt: string) => void
   approve: () => void
   pause: () => void
@@ -746,6 +748,7 @@ export function useLabRun(init: LabRunInit = {}, runKey?: string): LabRun {
     () => ({
       state,
       title: init.title ?? null,
+      key: runKey ?? null,
       submit: (prompt) => dispatch({ type: 'submit', prompt }),
       approve: () => dispatch({ type: 'approve' }),
       pause: () => dispatch({ type: 'pause' }),
@@ -796,7 +799,7 @@ export function useLabRun(init: LabRunInit = {}, runKey?: string): LabRun {
       select: (selection) => dispatch({ type: 'select', selection }),
       ask: () => dispatch({ type: 'ask', at: Date.now() }),
     }),
-    [state, init.title, dispatch],
+    [state, init.title, runKey, dispatch],
   )
 }
 

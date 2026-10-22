@@ -1,0 +1,23 @@
+/* Who else works on the canvas (`chain-presence.tsx`). Pointers wear the look of Spark's (`.lb-cursor`, lab.css) in each
+   person's colour (`--lb-cursor`); the layer they sit in moves with the view (`--z` is its zoom), so what is drawn in it
+   is scaled back to keep its size. The faces sit beside the queue, at the canvas's top right. */
+
+.yt-studio .lb-pr{position:absolute;left:0;top:0;z-index:5;width:0;height:0;transform-origin:0 0;pointer-events:none}
+/* the rings under React Flow's own layer (z-index 4), so the nodes and what opens from them cover them */
+.yt-studio .lb-pr.rings{z-index:3}
+.yt-studio .lb-pr-at{position:absolute;left:0;top:0;transition:transform 70ms linear}
+.yt-studio .lb-pr .lb-cursor{left:-2px;top:-2px;z-index:auto;transform:scale(calc(1 / var(--z)));transform-origin:0 0;transition:opacity .2s}
+/* The node someone works on: a hairline of their colour just outside its edge. */
+.yt-studio .lb-pr-ring{position:absolute;border-radius:10px;outline:calc(1.5px / var(--z)) solid var(--lb-cursor);outline-offset:calc(3px / var(--z));animation:lb-fade .2s ease-out}
+
+.yt-studio .lb-pr-faces{display:flex;align-items:center;padding-left:6px}
+.yt-studio .lb-pr-faces button,.yt-studio .lb-pr-faces .more{display:grid;place-items:center;flex:none;width:26px;height:26px;margin-left:-6px;border-radius:50%;
+  box-shadow:0 0 0 2px var(--cv-bg);font-size:10.5px;font-weight:600;line-height:1;font-variant-numeric:tabular-nums;animation:lb-fade .2s ease-out}
+.yt-studio .lb-pr-faces button{background:var(--lb-cursor);color:#fff;transition:transform .12s}
+.yt-studio .lb-pr-faces button:hover{transform:translateY(-1px)}
+.yt-studio .lb-pr-faces .more{background:var(--cv-node);color:var(--st-text-2);box-shadow:0 0 0 2px var(--cv-bg),inset 0 0 0 1px var(--cv-line-strong)}
+
+@media (prefers-reduced-motion:reduce){
+  .yt-studio .lb-pr-at{transition:none}
+  .yt-studio .lb-pr-ring,.yt-studio .lb-pr-faces button,.yt-studio .lb-pr-faces .more{animation:none}
+}

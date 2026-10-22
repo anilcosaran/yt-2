@@ -7,6 +7,8 @@ import { useFormatter, useTranslations } from 'next-intl'
 import { ChevronLeft, ChevronRight, Plus, Sparkles } from 'lucide-react'
 import { toast } from 'sonner'
 
+import { PageContainer } from '@/components/common/page-container'
+import { PageHeader } from '@/components/common/page-header'
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
 import { Skeleton } from '@/components/ui/skeleton'
 import {
@@ -66,26 +68,21 @@ export function CalendarPage() {
   const viewParam: View = searchParams.get('view') === 'week' ? 'week' : 'month'
 
   return (
-    <div className="hg-scrollbar relative h-full overflow-y-auto bg-background text-foreground">
-      <div className="mx-auto w-full max-w-[1440px] px-4 pb-10 pt-6 md:px-8 md:pt-8">
-        <header className="min-w-0">
-          <h1 className="font-display text-2xl font-semibold text-foreground md:text-[26px]">{t('title')}</h1>
-          <p className="mt-1 text-[14px] text-muted-foreground">{t('subtitle')}</p>
-        </header>
-        {items ? (
-          // A link into the calendar (`?date=`, `?item=`, `?view=`) starts it over at that day and that video.
-          <CalendarBoard
-            key={`${viewParam}|${dateParam ?? ''}|${itemParam ?? ''}`}
-            items={items}
-            initialView={viewParam}
-            dateParam={dateParam}
-            itemParam={itemParam}
-          />
-        ) : (
-          <CalendarSkeleton />
-        )}
-      </div>
-    </div>
+    <PageContainer>
+      <PageHeader title={t('title')} description={t('subtitle')} className="mb-0" />
+      {items ? (
+        // A link into the calendar (`?date=`, `?item=`, `?view=`) starts it over at that day and that video.
+        <CalendarBoard
+          key={`${viewParam}|${dateParam ?? ''}|${itemParam ?? ''}`}
+          items={items}
+          initialView={viewParam}
+          dateParam={dateParam}
+          itemParam={itemParam}
+        />
+      ) : (
+        <CalendarSkeleton />
+      )}
+    </PageContainer>
   )
 }
 

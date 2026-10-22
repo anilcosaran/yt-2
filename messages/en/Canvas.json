@@ -1,5 +1,6 @@
 {
   "title": "Canvas",
+  "subtitle": "Arrange images, video and sound on one canvas; each one opens in its own tab, where you left it.",
   "newCanvas": "New canvas",
   "untitled": "Untitled canvas",
   "updated": "Updated · {time}",

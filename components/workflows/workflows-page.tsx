@@ -6,10 +6,8 @@ import { useMutation, useQueries, useQuery, useQueryClient } from '@tanstack/rea
 import { toast } from 'sonner'
 import {
   CheckCircle2,
-  BarChart3,
   CalendarClock,
   CircleAlert,
-  Compass,
   Copy,
   ExternalLink,
   History,
@@ -24,6 +22,7 @@ import {
 } from 'lucide-react'
 import { useParams, useRouter, useSearchParams } from 'next/navigation'
 
+import { PageContainer } from '@/components/common/page-container'
 import { PageHeader } from '@/components/common/page-header'
 import { Button } from '@/components/ui/button'
 import { Skeleton } from '@/components/ui/skeleton'
@@ -1911,13 +1910,8 @@ function WorkflowSubpage({ view, workflows }: { view: Exclude<WorkflowView, 'wor
       : 0
 
     return (
-      <div className="theme-page-surface mx-auto w-full max-w-[1200px] px-4 py-6 md:px-8 md:py-8">
+      <PageContainer>
         <PageHeader
-          breadcrumbs={[
-            { label: tWorkflows('page.automation') },
-            { label: tWorkflows('page.usage'), icon: BarChart3 },
-          ]}
-          icon={BarChart3}
           title={tAuto('usage_0bb18642')}
           badge={tWorkflows('page.runCount', { count: runCount })}
           description={tAuto('workflow_activity_and_cost_signals_7524eaa8')}
@@ -1941,7 +1935,7 @@ function WorkflowSubpage({ view, workflows }: { view: Exclude<WorkflowView, 'wor
             </div>
           ))}
         </div>
-      </div>
+      </PageContainer>
     )
   }
 
@@ -1949,13 +1943,8 @@ function WorkflowSubpage({ view, workflows }: { view: Exclude<WorkflowView, 'wor
     const scheduledWorkflows = workflows.filter((workflow) => workflow.triggerType === 'schedule' || workflow.nextRunAt !== 'Draft')
 
     return (
-      <div className="theme-page-surface mx-auto w-full max-w-[1200px] px-4 py-6 md:px-8 md:py-8">
+      <PageContainer>
         <PageHeader
-          breadcrumbs={[
-            { label: tWorkflows('page.automation') },
-            { label: tWorkflows('page.scheduled'), icon: CalendarClock },
-          ]}
-          icon={CalendarClock}
           title={tAuto('scheduled_1cd1bdad')}
           badge={tWorkflows('page.plannedCount', { count: scheduledWorkflows.length })}
           description={tAuto('upcoming_channel_workflow_runs_9d5b7ef9')}
@@ -1972,7 +1961,7 @@ function WorkflowSubpage({ view, workflows }: { view: Exclude<WorkflowView, 'wor
             </div>
           ))}
         </div>
-      </div>
+      </PageContainer>
     )
   }
 
@@ -1983,13 +1972,8 @@ function WorkflowSubpage({ view, workflows }: { view: Exclude<WorkflowView, 'wor
   ]
 
   return (
-    <div className="theme-page-surface mx-auto w-full max-w-[1200px] px-4 py-6 md:px-8 md:py-8">
+    <PageContainer>
       <PageHeader
-        breadcrumbs={[
-          { label: tWorkflows('page.automation') },
-          { label: tWorkflows('page.explore'), icon: Compass },
-        ]}
-        icon={Compass}
         title={tAuto('explore_b965ae66')}
         badge={tWorkflows('page.templateCount', { count: templates.length })}
         description={tAuto('starter_workflows_for_channel_operations_1bff10ff')}
@@ -2004,7 +1988,7 @@ function WorkflowSubpage({ view, workflows }: { view: Exclude<WorkflowView, 'wor
           </div>
         ))}
       </div>
-    </div>
+    </PageContainer>
   )
 }
 

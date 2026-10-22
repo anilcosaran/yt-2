@@ -7,9 +7,10 @@
 
 import * as React from 'react'
 import { usePathname, useSearchParams } from 'next/navigation'
-import { Lightbulb, Plus, Settings2 } from 'lucide-react'
+import { Plus, Settings2 } from 'lucide-react'
 import { useTranslations } from 'next-intl'
 
+import { PageContainer } from '@/components/common/page-container'
 import { PageHeader } from '@/components/common/page-header'
 import { TabBar, TabBarItem } from '@/components/common/tab-bar'
 import { WorkspaceRouteLoading } from '@/components/common/workspace-route-loading'
@@ -71,67 +72,62 @@ function MemoryWorkspace() {
 
   return (
     <>
-      <div className="hg-scrollbar relative h-full overflow-y-auto bg-background">
-        <div className="hg-glow pointer-events-none absolute inset-x-0 top-0 h-64" />
-        <div className="relative mx-auto min-h-full w-full max-w-[1200px] px-4 py-6 md:px-8 md:py-8">
-          <PageHeader
-            breadcrumbs={[{ label: t('title') }, { label: activeChannel?.name ?? t('noChannel'), icon: Lightbulb }]}
-            icon={Lightbulb}
-            title={t('title')}
-            badge={(
-              <span className={cn(
-                'inline-flex h-6 items-center gap-1.5 rounded-md px-2 text-xs font-medium',
-                ingestionEnabled ? 'bg-emerald-500/12 text-emerald-600 dark:text-emerald-400' : 'bg-muted text-muted-foreground',
-              )}>
-                <span className="size-1.5 rounded-full bg-current" />
-                {ingestionEnabled ? t('statusOn') : t('statusOff')}
-              </span>
-            )}
-            description={t('description')}
-            actions={(
-              <>
-                <Button
-                  type="button"
-                  variant="outline"
-                  size="icon-sm"
-                  onClick={() => setIngestionOpen(true)}
-                  className="size-10 rounded-xl border-border bg-panel/60"
-                  aria-label={t('ingestion.title')}
-                  title={t('ingestion.title')}
-                >
-                  <Settings2 className="h-4 w-4" />
-                </Button>
-                <Button type="button" size="sm" onClick={add} className="h-10 gap-2 rounded-xl px-4">
-                  <Plus className="h-4 w-4" />
-                  {t(`add.${tab}`)}
-                </Button>
-              </>
-            )}
-            className="mb-4"
-          />
+      <PageContainer>
+        <PageHeader
+          title={t('title')}
+          badge={(
+            <span className={cn(
+              'inline-flex h-6 items-center gap-1.5 rounded-md px-2 text-xs font-medium',
+              ingestionEnabled ? 'bg-emerald-500/12 text-emerald-600 dark:text-emerald-400' : 'bg-muted text-muted-foreground',
+            )}>
+              <span className="size-1.5 rounded-full bg-current" />
+              {ingestionEnabled ? t('statusOn') : t('statusOff')}
+            </span>
+          )}
+          description={t('description')}
+          actions={(
+            <>
+              <Button
+                type="button"
+                variant="outline"
+                size="icon-sm"
+                onClick={() => setIngestionOpen(true)}
+                className="size-10 rounded-xl border-border bg-panel/60"
+                aria-label={t('ingestion.title')}
+                title={t('ingestion.title')}
+              >
+                <Settings2 className="h-4 w-4" />
+              </Button>
+              <Button type="button" size="sm" onClick={add} className="h-10 gap-2 rounded-xl px-4">
+                <Plus className="h-4 w-4" />
+                {t(`add.${tab}`)}
+              </Button>
+            </>
+          )}
+          className="mb-4"
+        />
 
-          <Tabs value={tab} onValueChange={changeTab} className="gap-0">
-            <TabBar className="mt-0 mb-5" aria-label={t('tabsLabel')}>
-              <TabBarItem value="knowledge">{t('tabs.knowledge')}</TabBarItem>
-              <TabBarItem value="rules">{t('tabs.rules')}</TabBarItem>
-              <TabBarItem value="skills">{t('tabs.skills')}</TabBarItem>
-            </TabBar>
-            <p className="-mt-2 mb-4 text-sm text-muted-foreground">{t(`intro.${tab}`)}</p>
-            <TabsContent value="knowledge" className="mt-0">
-              <MemoryKnowledgeTab
-                onAdd={(kind, text) => setDialog({ type: 'knowledge', id: null, kind, text })}
-                onEdit={(id) => setDialog({ type: 'knowledge', id })}
-              />
-            </TabsContent>
-            <TabsContent value="rules" className="mt-0">
-              <MemoryRulesTab onAdd={(text) => setDialog({ type: 'rule', id: null, text })} onEdit={(id) => setDialog({ type: 'rule', id })} />
-            </TabsContent>
-            <TabsContent value="skills" className="mt-0">
-              <MemorySkillsTab onAdd={(text) => setDialog({ type: 'skill', id: null, text })} onOpen={(id) => setDialog({ type: 'skill', id })} />
-            </TabsContent>
-          </Tabs>
-        </div>
-      </div>
+        <Tabs value={tab} onValueChange={changeTab} className="gap-0">
+          <TabBar className="mt-0 mb-5" aria-label={t('tabsLabel')}>
+            <TabBarItem value="knowledge">{t('tabs.knowledge')}</TabBarItem>
+            <TabBarItem value="rules">{t('tabs.rules')}</TabBarItem>
+            <TabBarItem value="skills">{t('tabs.skills')}</TabBarItem>
+          </TabBar>
+          <p className="-mt-2 mb-4 text-sm text-muted-foreground">{t(`intro.${tab}`)}</p>
+          <TabsContent value="knowledge" className="mt-0">
+            <MemoryKnowledgeTab
+              onAdd={(kind, text) => setDialog({ type: 'knowledge', id: null, kind, text })}
+              onEdit={(id) => setDialog({ type: 'knowledge', id })}
+            />
+          </TabsContent>
+          <TabsContent value="rules" className="mt-0">
+            <MemoryRulesTab onAdd={(text) => setDialog({ type: 'rule', id: null, text })} onEdit={(id) => setDialog({ type: 'rule', id })} />
+          </TabsContent>
+          <TabsContent value="skills" className="mt-0">
+            <MemorySkillsTab onAdd={(text) => setDialog({ type: 'skill', id: null, text })} onOpen={(id) => setDialog({ type: 'skill', id })} />
+          </TabsContent>
+        </Tabs>
+      </PageContainer>
 
       <KnowledgeDialog
         open={dialog?.type === 'knowledge'}

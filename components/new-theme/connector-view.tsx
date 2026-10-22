@@ -5,6 +5,8 @@ import { useRouter } from "next/navigation"
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import { Plus, Check, Search, Waypoints, Zap, Loader2, RefreshCw, Unplug } from "lucide-react"
 import { cn } from "@/lib/utils"
+import { PageContainer } from '@/components/common/page-container'
+import { PageHeader } from '@/components/common/page-header'
 import { UiText } from '@/components/i18n/ui-text'
 import { useTranslations } from 'next-intl'
 import { AppAlertDialog } from "@/components/ui/app-alert-dialog"
@@ -273,131 +275,118 @@ export function ConnectorView() {
     : groups
 
   return (
-    <div className="hg-scrollbar relative flex-1 overflow-y-auto">
-      <div className="hg-glow pointer-events-none absolute inset-x-0 top-0 h-64" />
-      <div className="relative mx-auto max-w-[1200px] px-4 py-6 md:px-8 md:py-8">
-        {/* Header */}
-        <nav className="flex items-center gap-2 text-sm text-muted-foreground">
-          <span><UiText id="workspace_4ca0a75c" /></span>
-          <span className="text-muted-foreground/50">/</span>
-          <span className="text-foreground"><UiText id="connectors_4b1e9501" /></span>
-        </nav>
-        <div className="mt-4 flex flex-wrap items-center gap-3">
-          <span className="flex size-11 items-center justify-center rounded-2xl border border-border bg-panel">
-            <Waypoints className="size-5 text-primary" />
-          </span>
-          <h1 className="font-display text-3xl text-foreground md:text-4xl"><UiText id="connectors_4b1e9501" /></h1>
-          <span className="hidden h-5 w-px bg-border sm:block" />
-          <p className="w-full text-sm text-muted-foreground sm:max-w-md">
-            <UiText id="a_connector_links_one_of_your_apps_to_super_comp_867631cd" /></p>
-        </div>
+    <PageContainer>
+      <PageHeader
+        title={tAuto('connectors_4b1e9501')}
+        description={tAuto('a_connector_links_one_of_your_apps_to_super_comp_867631cd')}
+        className="mb-0"
+      />
 
-        {/* YouTube primary platform */}
-        <section className="mt-7">
-          <div className="relative overflow-hidden rounded-3xl border border-border bg-gradient-to-br from-red-600/25 via-rose-600/10 to-panel p-6 md:p-8">
-            <div className="flex flex-col gap-5 md:flex-row md:items-center md:justify-between">
-              <div className="flex items-start gap-4">
-                <span className="flex size-14 items-center justify-center rounded-2xl bg-white shadow-lg">
-                  <img
-                    src="/connectors/youtube.svg"
-                    alt={tAuto('youtube_558865a1')}
-                    className="size-8"
-                  />
-                </span>
-                <div>
-                  <div className="flex items-center gap-2">
-                    <h2 className="font-display text-2xl text-foreground"><UiText id="youtube_558865a1" /></h2>
-                    <span className="rounded-md bg-primary/15 px-2 py-0.5 text-[11px] font-semibold uppercase tracking-wide text-primary">
-                      <UiText id="primary_a9a96ec0" /></span>
-                  </div>
-                  <p className="mt-1 max-w-md text-sm text-muted-foreground">
-                    <UiText id="your_main_channel_publish_long_form_videos_short_0f296959" /></p>
+      {/* YouTube primary platform */}
+      <section className="mt-6">
+        <div className="relative overflow-hidden rounded-3xl border border-border bg-gradient-to-br from-red-600/25 via-rose-600/10 to-panel p-6 md:p-8">
+          <div className="flex flex-col gap-5 md:flex-row md:items-center md:justify-between">
+            <div className="flex items-start gap-4">
+              <span className="flex size-14 items-center justify-center rounded-2xl bg-white shadow-lg">
+                <img
+                  src="/connectors/youtube.svg"
+                  alt={tAuto('youtube_558865a1')}
+                  className="size-8"
+                />
+              </span>
+              <div>
+                <div className="flex items-center gap-2">
+                  <h2 className="font-display text-2xl text-foreground"><UiText id="youtube_558865a1" /></h2>
+                  <span className="rounded-md bg-primary/15 px-2 py-0.5 text-[11px] font-semibold uppercase tracking-wide text-primary">
+                    <UiText id="primary_a9a96ec0" /></span>
                 </div>
+                <p className="mt-1 max-w-md text-sm text-muted-foreground">
+                  <UiText id="your_main_channel_publish_long_form_videos_short_0f296959" /></p>
               </div>
-              {loading ? (
-                <Skeleton className="h-11 w-44 rounded-xl" />
-              ) : (
-                <button
-                  type="button"
-                  onClick={() => router.push("/channels?view=connection")}
-                  className={cn(
-                    "flex h-11 items-center justify-center gap-2 rounded-xl px-5 text-sm font-semibold transition-colors",
-                    youtubeConnected
-                      ? "border border-primary/50 bg-primary/15 text-primary"
-                      : "bg-primary text-primary-foreground hover:bg-primary/90",
-                  )}
-                >
-                  {youtubeConnected ? <Check className="size-4" /> : <Plus className="size-4" />}
-                  {youtubeConnected ? tAuto('connected_c2f9b7b4') : tAuto('connect_youtube_eeb0d8b5')}
-                </button>
-              )}
             </div>
+            {loading ? (
+              <Skeleton className="h-11 w-44 rounded-xl" />
+            ) : (
+              <button
+                type="button"
+                onClick={() => router.push("/channels?view=connection")}
+                className={cn(
+                  "flex h-11 items-center justify-center gap-2 rounded-xl px-5 text-sm font-semibold transition-colors",
+                  youtubeConnected
+                    ? "border border-primary/50 bg-primary/15 text-primary"
+                    : "bg-primary text-primary-foreground hover:bg-primary/90",
+                )}
+              >
+                {youtubeConnected ? <Check className="size-4" /> : <Plus className="size-4" />}
+                {youtubeConnected ? tAuto('connected_c2f9b7b4') : tAuto('connect_youtube_eeb0d8b5')}
+              </button>
+            )}
           </div>
-        </section>
+        </div>
+      </section>
 
-        {/* Connected accounts (server state) */}
-        <section className="mt-7" aria-busy={loading}>
-          <div className="mb-3 flex items-center gap-2">
-            <Waypoints className="size-4 text-primary" />
-            <h3 className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">{tTheme('connectorAccounts.title')}</h3>
+      {/* Connected accounts (server state) */}
+      <section className="mt-7" aria-busy={loading}>
+        <div className="mb-3 flex items-center gap-2">
+          <Waypoints className="size-4 text-primary" />
+          <h3 className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">{tTheme('connectorAccounts.title')}</h3>
+        </div>
+        {loading ? (
+          <div className="grid grid-cols-1 gap-3 md:grid-cols-2">
+            <Skeleton className="h-[68px] rounded-2xl" />
+            <Skeleton className="h-[68px] rounded-2xl" />
           </div>
-          {loading ? (
-            <div className="grid grid-cols-1 gap-3 md:grid-cols-2">
-              <Skeleton className="h-[68px] rounded-2xl" />
-              <Skeleton className="h-[68px] rounded-2xl" />
-            </div>
-          ) : connectionsQuery.isError ? (
-            <p className="text-sm text-muted-foreground">{tTheme('connectorAccounts.loadFailed')}</p>
-          ) : connections.length === 0 ? (
-            <p className="text-sm text-muted-foreground">{tTheme('connectorAccounts.empty')}</p>
-          ) : (
-            <div className="grid grid-cols-1 gap-3 md:grid-cols-2">
-              {connections.map((connection) => (
-                <ConnectionRow key={connection.connection_id} connection={connection} entry={catalog.get(connection.connector_slug)} />
-              ))}
-            </div>
-          )}
-        </section>
+        ) : connectionsQuery.isError ? (
+          <p className="text-sm text-muted-foreground">{tTheme('connectorAccounts.loadFailed')}</p>
+        ) : connections.length === 0 ? (
+          <p className="text-sm text-muted-foreground">{tTheme('connectorAccounts.empty')}</p>
+        ) : (
+          <div className="grid grid-cols-1 gap-3 md:grid-cols-2">
+            {connections.map((connection) => (
+              <ConnectionRow key={connection.connection_id} connection={connection} entry={catalog.get(connection.connector_slug)} />
+            ))}
+          </div>
+        )}
+      </section>
 
-        {/* QA-131: custom (private remote) MCP — shown only when the server lets this user register or list any */}
-        <CustomMcpSection />
+      {/* QA-131: custom (private remote) MCP — shown only when the server lets this user register or list any */}
+      <CustomMcpSection />
 
-        {/* Search */}
-        <div className="mt-7">
-          <label className="relative flex h-11 w-full items-center sm:max-w-md">
-            <Search className="pointer-events-none absolute left-3 size-4 text-muted-foreground" />
-            <input
-              value={q}
-              onChange={(e) => setQ(e.target.value)}
-              placeholder={tAuto('search_connectors_9ffb52f1')}
-              className="h-full w-full rounded-xl border border-border bg-panel/50 pl-9 pr-3 text-sm outline-none placeholder:text-muted-foreground focus:border-primary/50 focus:ring-2 focus:ring-ring/40"
-            />
-          </label>
-        </div>
-
-        {/* Categories */}
-        <div className="mt-6 flex flex-col gap-8 pb-4">
-          {allGroups.map((g) => {
-            const apps = g.apps.filter(
-              (a) => a.name.toLowerCase().includes(q.toLowerCase()) || tTheme(a.descKey).toLowerCase().includes(q.toLowerCase()),
-            )
-            if (apps.length === 0) return null
-            return (
-              <section key={g.id}>
-                <div className="mb-3 flex items-center gap-2">
-                  <g.icon className="size-4 text-primary" />
-                  <h3 className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">{tTheme(g.titleKey)}</h3>
-                </div>
-                <div className="grid grid-cols-1 gap-3 md:grid-cols-2 lg:grid-cols-3">
-                  {apps.map((a) => (
-                    <AppCard key={a.slug} app={a} entry={catalog.get(a.slug)} />
-                  ))}
-                </div>
-              </section>
-            )
-          })}
-        </div>
+      {/* Search */}
+      <div className="mt-7">
+        <label className="relative flex h-11 w-full items-center sm:max-w-md">
+          <Search className="pointer-events-none absolute left-3 size-4 text-muted-foreground" />
+          <input
+            value={q}
+            onChange={(e) => setQ(e.target.value)}
+            placeholder={tAuto('search_connectors_9ffb52f1')}
+            className="h-full w-full rounded-xl border border-border bg-panel/50 pl-9 pr-3 text-sm outline-none placeholder:text-muted-foreground focus:border-primary/50 focus:ring-2 focus:ring-ring/40"
+          />
+        </label>
       </div>
-    </div>
+
+      {/* Categories */}
+      <div className="mt-6 flex flex-col gap-8 pb-4">
+        {allGroups.map((g) => {
+          const apps = g.apps.filter(
+            (a) => a.name.toLowerCase().includes(q.toLowerCase()) || tTheme(a.descKey).toLowerCase().includes(q.toLowerCase()),
+          )
+          if (apps.length === 0) return null
+          return (
+            <section key={g.id}>
+              <div className="mb-3 flex items-center gap-2">
+                <g.icon className="size-4 text-primary" />
+                <h3 className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">{tTheme(g.titleKey)}</h3>
+              </div>
+              <div className="grid grid-cols-1 gap-3 md:grid-cols-2 lg:grid-cols-3">
+                {apps.map((a) => (
+                  <AppCard key={a.slug} app={a} entry={catalog.get(a.slug)} />
+                ))}
+              </div>
+            </section>
+          )
+        })}
+      </div>
+    </PageContainer>
   )
 }

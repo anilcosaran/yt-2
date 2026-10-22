@@ -1,5 +1,6 @@
 {
   "title": "Canvas",
+  "subtitle": "Görsel, video ve sesi tek tuvalde kurgula; her canvas kendi sekmesinde, kaldığın yerden açılır.",
   "newCanvas": "Yeni canvas",
   "untitled": "Adsız canvas",
   "updated": "Güncellendi · {time}",

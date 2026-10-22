@@ -19,6 +19,7 @@ import {
   Youtube,
 } from 'lucide-react'
 
+import { PageContainer } from '@/components/common/page-container'
 import { PageHeader } from '@/components/common/page-header'
 import { WorkspaceRouteLoading } from '@/components/common/workspace-route-loading'
 import { Button } from '@/components/ui/button'
@@ -107,18 +108,15 @@ export function WorkflowList({
       : projectLabelById.get(projectFilter) ?? projectFilter
 
   return (
-    <div className="hg-scrollbar relative h-full overflow-y-auto bg-background">
-      <div className="hg-glow pointer-events-none absolute inset-x-0 top-0 h-64" />
-      <div className="relative mx-auto min-h-full w-full max-w-[1200px] px-4 py-6 md:px-8 md:py-8">
+    <PageContainer>
       <PageHeader
-        breadcrumbs={[{ label: tWorkflows('list.automation'), icon: WorkflowIcon }]}
-        icon={WorkflowIcon}
         title={tAuto('automation_a15fde51')}
         badge={<span className="rounded-full border border-border bg-panel px-2.5 py-1 text-xs font-medium text-muted-foreground">{tWorkflows('list.workflowCount', { count: workflows.length })}</span>}
         description={tAuto('manage_your_channel_automations_or_start_from_a__e81ef395')}
+        className="mb-0"
       />
 
-      <section className="mt-7 flex flex-wrap items-center gap-2">
+      <section className="mt-6 flex flex-wrap items-center gap-2">
         <div className="contents">
           <Button size="sm" className="h-10 rounded-xl px-4" onClick={onCreateWorkflow}>
             <Plus className="h-4 w-4" />
@@ -250,8 +248,7 @@ export function WorkflowList({
       </div>
 
       <WorkflowTemplateGallery onCreateWorkflow={onCreateWorkflow} />
-      </div>
-    </div>
+    </PageContainer>
   )
 }
 

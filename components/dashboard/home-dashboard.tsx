@@ -3,6 +3,8 @@
 import * as React from 'react'
 import { useFormatter, useNow, useTranslations } from 'next-intl'
 
+import { PageContainer } from '@/components/common/page-container'
+import { PageHeader } from '@/components/common/page-header'
 import { useOptionalActiveChannel } from '@/lib/channel/active-channel'
 import { getDashboardData, type DashboardTranslator, type RangeId } from './dashboard-model'
 import { GrowthPanel } from './growth-panel'
@@ -27,38 +29,35 @@ export function HomeDashboard() {
   const setupDone = data.setupSteps.map((_, index) => index === 0 && activeChannel?.status === 'connected')
 
   return (
-    <div className="hg-scrollbar @container relative h-full overflow-y-auto bg-background text-foreground">
-      <div className="mx-auto w-full max-w-[1440px] px-4 pb-10 pt-6 md:px-8 md:pt-8">
-        <header className="flex flex-wrap items-start justify-between gap-4">
-          <div className="min-w-0">
-            <h1 className="font-display text-2xl text-foreground md:text-[28px]">{tDashboard('title')}</h1>
-            <p className="mt-1 text-[15px] text-muted-foreground">{tDashboard('growth.description')}</p>
-          </div>
-          <SetupProgress t={tDashboard} steps={data.setupSteps} done={setupDone} />
-        </header>
+    <PageContainer className="@container">
+      <PageHeader
+        title={tDashboard('title')}
+        description={tDashboard('growth.description')}
+        actions={<SetupProgress t={tDashboard} steps={data.setupSteps} done={setupDone} />}
+        className="mb-0"
+      />
 
-        {/* Two independent columns: each stacks its own blocks, so a tall side never stretches the other. They split
-            on the page's own width, not the window's: a widened sidebar stacks them instead of squeezing the left one. */}
-        <div className="mt-6 grid items-start gap-4 @min-[55rem]:grid-cols-[minmax(0,1fr)_380px]">
-          <div className="flex min-w-0 flex-col gap-4">
-            <GrowthPanel
-              t={tDashboard}
-              format={format}
-              overview={data.overviewByRange[range]}
-              range={range}
-              rangeOptions={data.rangeOptions}
-              onRange={setRange}
-            />
-            <TopVideos t={tDashboard} format={format} videos={data.topVideos} />
-            <ShortsShelf t={tDashboard} clips={data.clips} />
-            <NicheTrends t={tDashboard} trends={data.trends} />
-          </div>
-          <aside className="flex min-w-0 flex-col gap-4">
-            <VideoIdeas t={tDashboard} format={format} ideas={data.ideas} />
-            <Signals t={tDashboard} groups={data.moveGroups} />
-          </aside>
+      {/* Two independent columns: each stacks its own blocks, so a tall side never stretches the other. They split
+          on the page's own width, not the window's: a widened sidebar stacks them instead of squeezing the left one. */}
+      <div className="mt-6 grid items-start gap-4 @min-[55rem]:grid-cols-[minmax(0,1fr)_380px]">
+        <div className="flex min-w-0 flex-col gap-4">
+          <GrowthPanel
+            t={tDashboard}
+            format={format}
+            overview={data.overviewByRange[range]}
+            range={range}
+            rangeOptions={data.rangeOptions}
+            onRange={setRange}
+          />
+          <TopVideos t={tDashboard} format={format} videos={data.topVideos} />
+          <ShortsShelf t={tDashboard} clips={data.clips} />
+          <NicheTrends t={tDashboard} trends={data.trends} />
         </div>
+        <aside className="flex min-w-0 flex-col gap-4">
+          <VideoIdeas t={tDashboard} format={format} ideas={data.ideas} />
+          <Signals t={tDashboard} groups={data.moveGroups} />
+        </aside>
       </div>
-    </div>
+    </PageContainer>
   )
 }

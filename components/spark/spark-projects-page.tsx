@@ -5,6 +5,8 @@ import { useRouter } from 'next/navigation'
 import { useFormatter, useTranslations } from 'next-intl'
 import { Clapperboard, Plus } from 'lucide-react'
 
+import { PageContainer } from '@/components/common/page-container'
+import { PageHeader } from '@/components/common/page-header'
 import { WorkspaceRouteLoading } from '@/components/common/workspace-route-loading'
 import { Button } from '@/components/ui/button'
 import { Empty, EmptyContent, EmptyDescription, EmptyHeader, EmptyMedia, EmptyTitle } from '@/components/ui/empty'
@@ -94,80 +96,73 @@ export function SparkProjectsPage() {
   if (!workspaceReady) return <WorkspaceRouteLoading />
 
   return (
-    <div className="hg-scrollbar relative h-full overflow-y-auto bg-background">
-      <div className="hg-glow pointer-events-none absolute inset-x-0 top-0 h-64" />
-      <div className="relative mx-auto min-h-full w-full max-w-[1200px] px-4 py-6 md:px-8 md:py-8">
-        <header className="flex flex-wrap items-center justify-between gap-4">
-          <div className="flex items-center gap-4">
-            <div className="flex size-11 items-center justify-center rounded-2xl border border-border bg-panel">
-              <Clapperboard className="size-5" aria-hidden />
-            </div>
-            <div>
-              <h1 className="text-2xl font-semibold tracking-tight">{t('title')}</h1>
-              <p className="text-sm text-muted-foreground">{t('subtitle')}</p>
-            </div>
-          </div>
+    <PageContainer>
+      <PageHeader
+        title={t('title')}
+        description={t('subtitle')}
+        actions={(
           <Button onClick={openCreate} disabled={!activeChannelId}>
             <Plus className="size-4" aria-hidden />
             {t('newProject')}
           </Button>
-        </header>
+        )}
+        className="mb-0"
+      />
 
-        <section className="mt-8" aria-labelledby="spark-recent-projects">
-          <h2 id="spark-recent-projects" className="text-sm font-medium text-muted-foreground">
-            {t('recentProjects')}
-          </h2>
-          <div className="mt-3">
-            {!activeChannelId ? (
-              <p className="text-sm text-muted-foreground">{t('noChannel')}</p>
-            ) : state.status === 'loading' ? (
-              <ProjectGridSkeleton />
-            ) : state.status === 'error' ? (
-              <div className="flex items-center gap-3 text-sm">
-                <span className="text-muted-foreground">{t('loadFailed')}</span>
-                <Button variant="outline" size="sm" onClick={() => setReloadKey((key) => key + 1)}>
-                  {t('retry')}
+      <section className="mt-6" aria-labelledby="spark-recent-projects">
+        <h2 id="spark-recent-projects" className="text-sm font-medium text-muted-foreground">
+          {t('recentProjects')}
+        </h2>
+        <div className="mt-3">
+          {!activeChannelId ? (
+            <p className="text-sm text-muted-foreground">{t('noChannel')}</p>
+          ) : state.status === 'loading' ? (
+            <ProjectGridSkeleton />
+          ) : state.status === 'error' ? (
+            <div className="flex items-center gap-3 text-sm">
+              <span className="text-muted-foreground">{t('loadFailed')}</span>
+              <Button variant="outline" size="sm" onClick={() => setReloadKey((key) => key + 1)}>
+                {t('retry')}
+              </Button>
+            </div>
+          ) : state.projects.length === 0 ? (
+            <Empty className="border border-dashed border-border">
+              <EmptyHeader>
+                <EmptyMedia variant="icon">
+                  <Clapperboard aria-hidden />
+                </EmptyMedia>
+                <EmptyTitle>{t('emptyTitle')}</EmptyTitle>
+                <EmptyDescription>{t('emptyDescription')}</EmptyDescription>
+              </EmptyHeader>
+              <EmptyContent>
+                <Button onClick={openCreate}>
+                  <Plus className="size-4" aria-hidden />
+                  {t('newProject')}
                 </Button>
-              </div>
-            ) : state.projects.length === 0 ? (
-              <Empty className="border border-dashed border-border">
-                <EmptyHeader>
-                  <EmptyMedia variant="icon">
-                    <Clapperboard aria-hidden />
-                  </EmptyMedia>
-                  <EmptyTitle>{t('emptyTitle')}</EmptyTitle>
-                  <EmptyDescription>{t('emptyDescription')}</EmptyDescription>
-                </EmptyHeader>
-                <EmptyContent>
-                  <Button onClick={openCreate}>
-                    <Plus className="size-4" aria-hidden />
-                    {t('newProject')}
+              </EmptyContent>
+            </Empty>
+          ) : (
+            <>
+              <ul className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+                {state.projects.map((project) => (
+                  <li key={project.id}>
+                    <ProjectCard project={project} onOpen={openProject} />
+                  </li>
+                ))}
+              </ul>
+              {state.nextCursor ? (
+                <div className="mt-6 flex justify-center">
+                  <Button variant="outline" onClick={loadMore} disabled={state.loadingMore}>
+                    {state.loadingMore ? <Spinner /> : null}
+                    {t('loadMore')}
                   </Button>
-                </EmptyContent>
-              </Empty>
-            ) : (
-              <>
-                <ul className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
-                  {state.projects.map((project) => (
-                    <li key={project.id}>
-                      <ProjectCard project={project} onOpen={openProject} />
-                    </li>
-                  ))}
-                </ul>
-                {state.nextCursor ? (
-                  <div className="mt-6 flex justify-center">
-                    <Button variant="outline" onClick={loadMore} disabled={state.loadingMore}>
-                      {state.loadingMore ? <Spinner /> : null}
-                      {t('loadMore')}
-                    </Button>
-                  </div>
-                ) : null}
-              </>
-            )}
-          </div>
-        </section>
-      </div>
-    </div>
+                </div>
+              ) : null}
+            </>
+          )}
+        </div>
+      </section>
+    </PageContainer>
   )
 }
 

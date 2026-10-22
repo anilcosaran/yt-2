@@ -2,6 +2,7 @@
 
 import { Suspense, useCallback, type ComponentType } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
+import { PageContainer } from '@/components/common/page-container'
 import { PageHeader } from '@/components/common/page-header'
 import { WorkspaceRouteLoading } from '@/components/common/workspace-route-loading'
 import { TabBar, TabBarItem } from '@/components/common/tab-bar'
@@ -16,7 +17,7 @@ import {
   EmptyTitle,
 } from '@/components/ui/empty'
 import { Tabs, TabsContent } from '@/components/ui/tabs'
-import { Building2, Package, Users } from 'lucide-react'
+import { Building2, Package } from 'lucide-react'
 import { UiText } from '@/components/i18n/ui-text'
 import { useTranslations } from 'next-intl'
 
@@ -45,13 +46,8 @@ function CustomersContent() {
   }, [router, searchParams])
 
   return (
-    <div className="px-6 py-9 md:px-12">
+    <PageContainer>
         <PageHeader
-          breadcrumbs={[
-            { label: tCustomers('spaces') },
-            { label: tAuto('musteriler_2ab9230a'), icon: Users },
-          ]}
-          icon={Users}
           title={tAuto('musteriler_2ab9230a')}
           badge={tCustomers('areaCount', { count: 3 })}
           description={tAuto('organizasyon_profil_ve_urun_iliskilerini_yonetin_d8393327')}
@@ -101,7 +97,7 @@ function CustomersContent() {
             />
           </TabsContent>
         </Tabs>
-    </div>
+    </PageContainer>
   )
 }
 

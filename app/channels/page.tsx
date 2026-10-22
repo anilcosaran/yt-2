@@ -4,6 +4,7 @@ import { Suspense, useCallback, useEffect, useState } from 'react'
 import Link from 'next/link'
 import { useMutation, useQuery } from '@tanstack/react-query'
 import { useRouter, useSearchParams } from 'next/navigation'
+import { PageContainer } from '@/components/common/page-container'
 import { PageHeader } from '@/components/common/page-header'
 import { TabBar, TabBarItem } from '@/components/common/tab-bar'
 import { ChannelPageSkeleton, ChannelsPageLoading } from './channel-page-loading'
@@ -201,17 +202,9 @@ function ChannelWorkspace({
     openSetup()
   }
 
-  const channelBreadcrumbs = activeChannel
-    ? [{ label: tChannels('channels') }, { label: activeChannel.name, icon: Youtube }]
-    : [{ label: tChannels('channels') }]
-
   return (
-    <div className="hg-scrollbar relative h-full overflow-y-auto bg-background">
-      <div className="hg-glow pointer-events-none absolute inset-x-0 top-0 h-64" />
-      <div className="relative mx-auto min-h-full w-full max-w-[1200px] px-4 py-6 md:px-8 md:py-8">
+    <PageContainer>
       <PageHeader
-        breadcrumbs={channelBreadcrumbs}
-        icon={Youtube}
         title={tAuto('channel_879f0b1b')}
         badge={activeChannel ? tChannels(channelStatusKeys[activeChannel.status]) : undefined}
         description={tAuto('manage_videos_connection_and_channel_settings_52571866')}
@@ -262,8 +255,7 @@ function ChannelWorkspace({
       ) : (
         <EmptyChannelState />
       )}
-      </div>
-    </div>
+    </PageContainer>
   )
 }
 

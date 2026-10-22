@@ -25,7 +25,7 @@ import {
   type OnConnectEnd,
 } from '@xyflow/react'
 import '@xyflow/react/dist/base.css'
-import { ChevronDown, Copy, Frame as FrameIcon, Hand, MousePointer2, Plus, Sparkles, StickyNote, Trash2, Type } from 'lucide-react'
+import { ChevronDown, Copy, CopyPlus, Frame as FrameIcon, Hand, MousePointer2, Plus, Proportions, Scissors, Sparkles, StickyNote, Trash2, Type } from 'lucide-react'
 
 import { PromptBox, PromptBoxChip, PromptBoxInput, PromptBoxNote, PromptBoxSend, PromptBoxSpacer } from '../agent/prompt-box'
 import {
@@ -45,6 +45,8 @@ import { QueuePill, ZoomPill, type QueueItem } from './chain-chrome'
 import { GenerationGallery, GenerationStrip, type Generation } from './chain-generations'
 import { MODEL_METERS, ModelMenu, type ModelOption } from './chain-model-menu'
 import { PresenceFaces, PresenceLayer, pointerOf, useCanvasPresence } from './chain-presence'
+import { clockOf, mentionOf, readTask, TASK_EXAMPLES, type TaskFlow, type TaskPlan, type TaskSource } from './chain-task'
+import { MentionInput } from './chain-task-input'
 import { NODE_SETTINGS, SettingsPanel, settingKey, settingOf } from './chain-settings'
 import { CUT_FRAMES, STAGE_KIND, STAGE_KINDS, chainLanes, creditsOf, isPicture, stageStatuses, voiceName, type ChainLane, type ChainStage, type StageKind, type StageStatus } from './lab-chain'
 import { LOOK_OPTIONS, MODELS, formatClock, type LabScene, type SceneArt } from './lab-model'
@@ -73,6 +75,7 @@ const SIZE: Record<StageKind | 'cut', { w: number; h: number }> = {
   text: { w: 280, h: 250 },
   voice: { w: 280, h: 250 },
   music: { w: 280, h: 250 },
+  task: { w: 280, h: 250 },
   cut: { w: 380, h: 270 },
 }
 const NOTE_W = 240
@@ -87,7 +90,7 @@ const FIRST_VIEW = { x: 48, y: 64, zoom: 0.85 }
 /** A canvas of its own opens at its middle, a little closer. */
 const FREE_VIEW = { x: 260, y: 140, zoom: 0.9 }
 /** How long making a node from the canvas takes (demo). */
-const MAKE_MS: Record<StageKind, number> = { text: 1100, image: 1800, frame: 700, video: 2800, avatar: 2600, voice: 1300, music: 1300, media: 500 }
+const MAKE_MS: Record<StageKind, number> = { text: 1100, image: 1800, frame: 700, video: 2800, avatar: 2600, voice: 1300, music: 1300, media: 500, task: 900 }
 /** The models a talking avatar is made with (demo), and what each costs. */
 const AVATAR_MODELS: (ModelOption & { credits: number })[] = [
   { id: 'omnihuman-1-5', label: 'OmniHuman 1.5', sub: 'Dudak senkronu · 1080p', credits: 24 },
@@ -203,6 +206,21 @@ function ownStage(state: LabRunState, node: CanvasOwnNode): ChainStage {
   }
 }
 
+/** Room kept between a node put down and the nodes around it: for its name above and its generations under it. */
+const SPOT_GAP = 90
+
+/** Where a new node of `size` goes: at `at`, or under the nodes there, so it never lands on one. */
+function freeSpot(nodes: readonly { type?: string; position: { x: number; y: number }; width?: number; height?: number }[], at: { x: number; y: number }, size: { w: number; h: number }) {
+  const boxes = nodes.filter((node) => node.type === 'step').map((node) => ({ x: node.position.x, y: node.position.y, w: node.width ?? 280, h: node.height ?? 300 }))
+  let y = at.y
+  for (let step = 0; step < 12; step += 1) {
+    const hit = boxes.find((box) => at.x < box.x + box.w && at.x + size.w > box.x && y < box.y + box.h + SPOT_GAP && y + size.h + SPOT_GAP > box.y)
+    if (!hit) break
+    y = hit.y + hit.h + SPOT_GAP
+  }
+  return { x: Math.round(at.x), y: Math.round(y) }
+}
+
 /** A scene's frame and its nodes, where Spark puts them: a frame per scene, one under the other. */
 function seedLayout(lanes: ChainLane[]) {
   const frames = new Map<string, { x: number; y: number; w: number; h: number }>()
@@ -259,8 +277,11 @@ function choiceOf(state: LabRunState, stage: ChainStage, own: boolean) {
 }
 
 /** What flows along a link: words, a picture, a clip or a sound. */
-type PortType = 'text' | 'image' | 'video' | 'audio'
-type Port = { id: string; type: PortType; label: string }
+type PortType = TaskFlow
+/** `any`: the input takes whatever flows (a Görev's); `type` is then what is linked into it, for its mark. */
+type Port = { id: string; type: PortType; label: string; any?: boolean }
+/** Whether an input takes what flows along a link. */
+const accepts = (port: Port, type: PortType) => port.any === true || port.type === type
 /** A clip's outputs past the clip itself: its first and last frames, as pictures (no node of their own). */
 const FRAME_OUTPUTS: Port[] = [
   { id: 'first', type: 'image', label: 'İlk kare' },
@@ -303,6 +324,8 @@ function inputsOf(state: LabRunState, stage: ChainStage, own: boolean): Port[] {
       return [prompt]
     case 'text':
       return [{ id: 'context', type: 'text', label: 'Bağlam' }, { id: 'picture', type: 'image', label: 'Görsel' }]
+    case 'task':
+      return [{ id: 'in', type: stage.task?.type ?? 'video', label: 'Kaynak', any: true }]
     default:
       return []
   }
@@ -311,6 +334,8 @@ function inputsOf(state: LabRunState, stage: ChainStage, own: boolean): Port[] {
 /** What a node hands on from an output (`out`, its own; a clip's `first` and `last` are pictures). */
 function outputOf(state: LabRunState, stage: ChainStage, handle?: string | null): PortType {
   if (handle === 'first' || handle === 'last') return 'image'
+  // A Görev hands on what flows into it, cut or resized.
+  if (stage.kind === 'task') return stage.task?.type ?? 'video'
   if (stage.kind === 'text') return 'text'
   if (stage.kind === 'voice' || stage.kind === 'music') return 'audio'
   if (stage.kind === 'video' || stage.kind === 'avatar') return 'video'
@@ -322,13 +347,13 @@ function outputOf(state: LabRunState, stage: ChainStage, handle?: string | null)
 function outputsOf(state: LabRunState, stage: ChainStage): Port[] {
   const type = outputOf(state, stage)
   const own: Port = { id: 'out', type, label: STAGE_KIND[stage.kind].name }
-  return type === 'video' && stage.id !== 'all/cut' ? [own, ...FRAME_OUTPUTS] : [own]
+  return type === 'video' && stage.id !== 'all/cut' && stage.kind !== 'task' ? [own, ...FRAME_OUTPUTS] : [own]
 }
 
 /** The input a link goes into when it was not drawn to one: the first that takes what the source hands on. */
 function portFor(state: LabRunState, target: ChainStage, targetOwn: boolean, source: ChainStage, from?: string) {
   const ports = inputsOf(state, target, targetOwn)
-  return (ports.find((port) => port.type === outputOf(state, source, from)) ?? ports[0])?.id
+  return (ports.find((port) => accepts(port, outputOf(state, source, from))) ?? ports[0])?.id
 }
 
 /** A node's settings as they stand, by row id. */
@@ -434,6 +459,29 @@ function graphOf(run: LabRun, lanes: ChainLane[], statuses: Map<string, StageSta
       return { ...link, handle: link.handle ?? portFor(state, target.stage, !target.lane, steps.get(link.source)!.stage, link.from) }
     })
     .filter((link) => link.handle)
+  const names = namesOf(steps)
+  // A Görev's source is the node linked into it. What flows out of it is what flows in (through the Görevs before it),
+  // at the length or size its plan gave it when it last ran.
+  const resolving = new Set<string>()
+  const resolve = (id: string): ChainStage => {
+    const entry = steps.get(id)!
+    if (entry.stage.kind !== 'task' || entry.stage.task || resolving.has(id)) return entry.stage
+    resolving.add(id)
+    const link = links.find((candidate) => candidate.target === id)
+    const source = link ? resolve(link.source) : null
+    const type = source ? outputOf(state, source, link?.from) : null
+    const ran = state.edits[`task:${id}`]
+    const read = ran && link && source && type ? readTask(ran, { name: names.get(link.source)!, type, seconds: source.seconds }, [...names.values()]) : null
+    const plan = read && !read.problem ? read.plan : null
+    const ratio = source ? (source.task?.ratio ?? settingsOf(state, source).values.aspect ?? state.ratio) : undefined
+    entry.stage = {
+      ...entry.stage,
+      seconds: plan?.kind === 'cut' ? plan.to - plan.from : source?.seconds,
+      task: { source: link?.source ?? null, type, ratio: plan?.kind === 'ratio' ? plan.ratio : ratio },
+    }
+    return entry.stage
+  }
+  for (const id of steps.keys()) resolve(id)
   const into = (id: string) => links.filter((link) => link.target === id).map((link) => steps.get(link.source)!.stage)
   // What a node shows when it has no picture of its own: the one handed to it, a step or two up; a node of the user's
   // with nothing linked in makes a demo picture of its own, the same each time.
@@ -508,7 +556,28 @@ function graphOf(run: LabRun, lanes: ChainLane[], statuses: Map<string, StageSta
   }))
   const agentNode = nodes.find((node) => node.type === 'step' && node.data.agent)?.id ?? null
   nodes.push(...annotations.filter((node) => node.type !== 'frame'))
-  return { nodes, edges, steps, agentNode }
+  return { nodes, edges, steps, agentNode, names }
+}
+
+/**
+ * Each node's name on the canvas, the one an @ in a Görev names it by: its title (the user's nodes are titled by their
+ * kind), numbered in order when two share one ("Görsel 2").
+ */
+function namesOf(steps: ReadonlyMap<string, { stage: ChainStage }>) {
+  const count = new Map<string, number>()
+  for (const { stage } of steps.values()) count.set(stage.title, (count.get(stage.title) ?? 0) + 1)
+  const seen = new Map<string, number>()
+  const names = new Map<string, string>()
+  for (const [id, { stage }] of steps) {
+    if ((count.get(stage.title) ?? 0) < 2) {
+      names.set(id, stage.title)
+      continue
+    }
+    const n = (seen.get(stage.title) ?? 0) + 1
+    seen.set(stage.title, n)
+    names.set(id, `${stage.title} ${n}`)
+  }
+  return names
 }
 
 /** How far Spark is into the step it is on (0–1), ticking while it works; it holds while paused. */
@@ -587,6 +656,17 @@ type CanvasApi = {
   addBefore: (node: string, port: Port) => void
   duplicate: (id: string) => void
   remove: (id: string) => void
+  /** Each node's name on the canvas, the one an @ names it by, and its kind. */
+  names: ReadonlyMap<string, string>
+  kindOf: (id: string) => StageKind | undefined
+  /** A node as a Görev runs on it: its name, what it hands on and how long it is. */
+  describe: (id: string) => (TaskSource & { id: string }) | null
+  /** Links `source` into Görev `task`, in place of what was linked into it. */
+  linkInto: (task: string, source: string) => void
+  /** Runs Görev `task`'s instruction (`text`) over `source`: a cut or a size goes in the queue, more of a node adds them. */
+  apply: (task: string, text: string, source: string) => void
+  /** Brings nodes into view. */
+  focus: (ids: string[]) => void
 }
 const CanvasContext = React.createContext<CanvasApi | null>(null)
 const useCanvas = () => React.useContext(CanvasContext)!
@@ -652,8 +732,11 @@ type Adding = {
   top: number
   at: { x: number; y: number }
 }
-/** A link being drawn: from which end (an output, or an input back to an output), of which node and port, carrying what. */
-type Wiring = { dir: 'out' | 'in'; node: string; port: string; type: PortType; over: string | null }
+/**
+ * A link being drawn: from which end (an output, or an input back to an output), of which node and port, carrying what
+ * (`any`: drawn back from an input that takes anything, a Görev's).
+ */
+type Wiring = { dir: 'out' | 'in'; node: string; port: string; type: PortType; any?: boolean; over: string | null }
 type Box = { x: number; y: number; w: number; h: number }
 
 function ChainCanvas({ run, scenes, onAsk, free = false }: { run: LabRun; scenes: LabScene[]; onAsk?: () => void; free?: boolean }) {
@@ -698,8 +781,8 @@ function ChainCanvas({ run, scenes, onAsk, free = false }: { run: LabRun; scenes
     const step = graph.steps.get(id)
     if (!step || id === wiring.node) return false
     return wiring.dir === 'out'
-      ? inputsOf(state, step.stage, !step.lane).some((port) => port.type === wiring.type)
-      : outputsOf(state, step.stage).some((port) => port.type === wiring.type)
+      ? inputsOf(state, step.stage, !step.lane).some((port) => accepts(port, wiring.type))
+      : wiring.any || outputsOf(state, step.stage).some((port) => port.type === wiring.type)
   }
   const wiring = ((): Wiring | null => {
     if (!wire) return null
@@ -707,9 +790,10 @@ function ChainCanvas({ run, scenes, onAsk, free = false }: { run: LabRun; scenes
     const step = graph.steps.get(node)
     if (!step) return null
     const dir = end === 'source' ? 'out' : 'in'
-    const type = dir === 'out' ? outputOf(state, step.stage, port) : inputsOf(state, step.stage, !step.lane).find((entry) => entry.id === port)?.type
+    const input = dir === 'in' ? inputsOf(state, step.stage, !step.lane).find((entry) => entry.id === port) : undefined
+    const type = dir === 'out' ? outputOf(state, step.stage, port) : input?.type
     if (!type) return null
-    const drawn: Wiring = { dir, node, port, type, over: null }
+    const drawn: Wiring = { dir, node, port, type, any: input?.any, over: null }
     return { ...drawn, over: over && fits(drawn, over) ? over : null }
   })()
   const nodes = graph.nodes.map((node) => {
@@ -757,6 +841,12 @@ function ChainCanvas({ run, scenes, onAsk, free = false }: { run: LabRun; scenes
       if (steps.length) run.select({ targets: steps, labels: steps.map((id) => graph.steps.get(id)!.stage.title), noun: 'düğüm', from: 'chain' })
       else if (state.selection?.from === 'chain') run.select(null)
     }
+    // A Görev with nothing linked into it hands on nothing yet, so nothing can run on it.
+    const describe = (id: string) => {
+      const step = graph.steps.get(id)
+      if (!step || (step.stage.kind === 'task' && !step.stage.task?.type)) return null
+      return { id, name: graph.names.get(id) ?? step.stage.title, type: outputOf(state, step.stage), seconds: step.stage.seconds }
+    }
     return {
       run,
       pick,
@@ -797,7 +887,7 @@ function ChainCanvas({ run, scenes, onAsk, free = false }: { run: LabRun; scenes
         if (!node || !box) return
         const at = { x: node.position.x - 280 - 80, y: node.position.y }
         const screen = flow.flowToScreenPosition({ x: node.position.x - 24, y: node.position.y + (node.height ?? 300) / 2 })
-        setAdding({ into: { node: target, port: port.id, label: port.label }, type: port.type, left: screen.x - box.left - ADD_MENU_W - 20, top: screen.y - box.top, at })
+        setAdding({ into: { node: target, port: port.id, label: port.label }, type: port.any ? undefined : port.type, left: screen.x - box.left - ADD_MENU_W - 20, top: screen.y - box.top, at })
       },
       duplicate: (id) => {
         const step = graph.steps.get(id)
@@ -807,6 +897,55 @@ function ChainCanvas({ run, scenes, onAsk, free = false }: { run: LabRun; scenes
       remove: (id) => {
         run.canvas.remove([id])
         setSelected((list) => list.filter((entry) => entry !== id))
+      },
+      names: graph.names,
+      kindOf: (id) => graph.steps.get(id)?.stage.kind,
+      describe,
+      linkInto: (task, source) => {
+        if (graph.steps.get(task)?.stage.task?.source === source) return
+        const old = state.canvas.links.filter((link) => link.target === task).map((link) => link.id)
+        if (old.length) run.canvas.unlink(old)
+        run.canvas.link(source, task, 'in')
+      },
+      apply: (task, text, sourceId) => {
+        const source = graph.steps.get(sourceId)
+        const described = describe(sourceId)
+        if (!source || !described) return
+        const read = readTask(text, described, [...graph.names.values()])
+        if (!read.plan || read.problem) return
+        run.edit(`task:${task}`, text)
+        if (read.plan.kind !== 'more') return run.canvas.run([{ id: task, ms: MAKE_MS.task }])
+        // More of the source: copies of it (its kind, what it is told, its model and settings, what is linked into it) in
+        // a row under it, made after it (it first, when it has not been made yet).
+        const { stage } = source
+        const node = flow.getNode(sourceId)
+        const size = { w: node?.width ?? sizeOf(stage).w, h: node?.height ?? sizeOf(stage).h }
+        const at = node?.position ?? source.position
+        const brief = state.edits[stage.briefKey] ?? stage.brief
+        const choice = choiceOf(state, stage, !source.lane)
+        const { rows, values } = settingsOf(state, stage)
+        const copies = Array.from({ length: read.plan.count }, (_, index) => `own/${state.canvas.serial + index}`)
+        copies.forEach((copy, index) => {
+          const spot = freeSpot(graph.nodes, { x: at.x + index * (size.w + 60), y: at.y + size.h + SPOT_GAP }, size)
+          run.canvas.add(stage.kind, spot.x, spot.y)
+          if (brief) run.edit(`brief:${copy}`, brief)
+          if (choice?.pick.startsWith('model:')) run.pick(`model:${copy}`, choice.value)
+          for (const row of rows) run.pick(settingKey(copy, row.id), values[row.id]!)
+          for (const edge of graph.edges.filter((entry) => entry.target === sourceId)) {
+            run.canvas.link(edge.source, copy, edge.targetHandle ?? undefined, edge.sourceHandle ?? undefined)
+          }
+        })
+        run.edit(`task-made:${task}`, copies.join(' '))
+        const unmade = graph.nodes.some((entry) => entry.id === sourceId && entry.type === 'step' && entry.data.variants === 0)
+        run.canvas.run([
+          { id: task, ms: 400 },
+          ...(unmade ? [{ id: sourceId, ms: MAKE_MS[stage.kind] }] : []),
+          ...copies.map((copy) => ({ id: copy, ms: MAKE_MS[stage.kind] })),
+        ])
+      },
+      focus: (ids) => {
+        const known = ids.filter((id) => flow.getNode(id))
+        if (known.length) void flow.fitView({ nodes: known.map((id) => ({ id })), duration: 500, padding: 0.4, maxZoom: Math.max(flow.getZoom(), 0.8) })
       },
     }
   }, [run, graph, flow, onAsk])
@@ -912,7 +1051,7 @@ function ChainCanvas({ run, scenes, onAsk, free = false }: { run: LabRun; scenes
     const from = graph.steps.get(source)
     const to = graph.steps.get(target)
     if (!from || !to || source === target) return undefined
-    const ports = inputsOf(state, to.stage, !to.lane).filter((port) => port.type === outputOf(state, from.stage, handle))
+    const ports = inputsOf(state, to.stage, !to.lane).filter((port) => accepts(port, outputOf(state, from.stage, handle)))
     const taken = new Set(graph.edges.filter((edge) => edge.target === target).map((edge) => edge.targetHandle))
     return (ports.find((port) => !taken.has(port.id)) ?? ports[0])?.id
   }
@@ -922,7 +1061,7 @@ function ChainCanvas({ run, scenes, onAsk, free = false }: { run: LabRun; scenes
     const target = graph.steps.get(connection.target)
     if (!source || !target || connection.source === connection.target) return false
     const port = inputsOf(state, target.stage, !target.lane).find((entry) => entry.id === connection.targetHandle)
-    return port?.type === outputOf(state, source.stage, connection.sourceHandle)
+    return port !== undefined && accepts(port, outputOf(state, source.stage, connection.sourceHandle))
   }
   /**
    * A link let go of away from a port. On a node, it goes into the input there that takes it (or, drawn back from an
@@ -950,10 +1089,12 @@ function ChainCanvas({ run, scenes, onAsk, free = false }: { run: LabRun; scenes
     const port = inputsOf(state, step.stage, !step.lane).find((entry) => entry.id === connection.fromHandle?.id)
     if (!port) return
     const source = over ? graph.steps.get(over.id) : undefined
-    // Into a picture input, a clip hands on its last frame; anything else its own output of that type.
-    const out = source ? outputsOf(state, source.stage).filter((entry) => entry.type === port.type).at(-1) : undefined
+    // Into a picture input, a clip hands on its last frame; anything else its own output of that type (into an input
+    // that takes anything, its own output).
+    const fitting = source ? outputsOf(state, source.stage).filter((entry) => accepts(port, entry.type)) : []
+    const out = port.any ? fitting[0] : fitting.at(-1)
     if (over && out) run.canvas.link(over.id, from, port.id, out.id)
-    else if (!over) setAdding({ into: { node: from, port: port.id, label: port.label }, type: port.type, left: left - ADD_MENU_W - 20, top, at: { x: at.x - 280, y: at.y - 160 } })
+    else if (!over) setAdding({ into: { node: from, port: port.id, label: port.label }, type: port.any ? undefined : port.type, left: left - ADD_MENU_W - 20, top, at: { x: at.x - 280, y: at.y - 160 } })
   }
   const addHere = (left: number, top: number) => {
     const box = wrap.current?.getBoundingClientRect()
@@ -965,7 +1106,8 @@ function ChainCanvas({ run, scenes, onAsk, free = false }: { run: LabRun; scenes
     if (!adding) return
     // The new node takes the next id the canvas gives (`own/<serial>`), so its link goes in with it.
     const id = `own/${state.canvas.serial}`
-    run.canvas.add(kind, Math.round(adding.at.x), Math.round(adding.at.y))
+    const spot = freeSpot(graph.nodes, adding.at, SIZE[kind])
+    run.canvas.add(kind, spot.x, spot.y)
     if (adding.into) run.canvas.link(id, adding.into.node, adding.into.port)
     else if (adding.from) run.canvas.link(adding.from, id, undefined, adding.fromHandle)
     setAdding(null)
@@ -980,7 +1122,7 @@ function ChainCanvas({ run, scenes, onAsk, free = false }: { run: LabRun; scenes
     if (!entry.type) return STAGE_KINDS
     const fit = STAGE_KINDS.filter((kind) => {
       const stage = ownStage(state, { id: `own/${state.canvas.serial}`, kind, x: 0, y: 0 })
-      return entry.into ? outputsOf(state, stage).some((port) => port.type === entry.type) : inputsOf(state, stage, true).some((port) => port.type === entry.type)
+      return entry.into ? outputsOf(state, stage).some((port) => port.type === entry.type) : inputsOf(state, stage, true).some((port) => accepts(port, entry.type!))
     })
     return fit.length ? fit : STAGE_KINDS
   }
@@ -1263,7 +1405,8 @@ function StepNodeView({ id, data: given, selected }: NodeProps<StepNode>) {
       <NodeResizer isVisible={selected} minWidth={240} minHeight={stage.kind === 'voice' || stage.kind === 'music' ? 180 : 220} handleClassName="lb-an-handle" lineClassName="lb-an-line" />
       <header className="lb-cv-label">
         <Icon name={kind.icon} size="sm" />
-        <span>{kind.name}</span>
+        {/* The user's nodes go by their name on the canvas, numbered when two share it: what an @ in a Görev names. */}
+        <span>{data.own ? (api.names.get(id) ?? kind.name) : kind.name}</span>
         {stage.title !== kind.name ? <small>{stage.title}</small> : null}
         {stage.kind === 'text' ? <TextTabs id={id} data={data} /> : null}
         {label ? <em>{label}</em> : null}
@@ -1287,7 +1430,9 @@ function StepNodeView({ id, data: given, selected }: NodeProps<StepNode>) {
         {status === 'running' ? (
           <span className={`lb-cv-line${data.progress === undefined ? ' loose' : ''}`} style={{ '--p': data.progress ?? 0 } as React.CSSProperties} aria-hidden />
         ) : null}
-        {stage.kind === 'text' ? (
+        {stage.kind === 'task' ? (
+          <TaskBody id={id} data={data} />
+        ) : stage.kind === 'text' ? (
           <PromptBuilder id={id} data={data} />
         ) : (
           <>
@@ -1317,8 +1462,9 @@ function StepNodeView({ id, data: given, selected }: NodeProps<StepNode>) {
           {port.id === 'out' ? <Icon name={PORT_ICON[port.type]} size="sm" /> : <FrameEnd end={port.id} />}
         </Handle>
       ))}
-      {/* Once the first one is made (what is already there, once there is a second): the row and its history button. */}
-      {(generated(stage) ? data.variants >= 1 : generations.length >= 2) ? (
+      {/* Once the first one is made (what is already there, once there is a second): the row and its history button. A
+          Görev shows what it did in place, never a row. */}
+      {stage.kind !== 'task' && (generated(stage) ? data.variants >= 1 : generations.length >= 2) ? (
         <div className="lb-cv-gens">
           <GenerationStrip kind={stage.kind} items={generations} active={data.active} ratio={ratio} onPick={pickVersion} onOpenGallery={() => setSide(side === 'gallery' ? null : 'gallery')} />
         </div>
@@ -1720,6 +1866,156 @@ function Composer({ id, data }: { id: string; data: StepData }) {
           />
         )}
       </PromptBox>
+    </div>
+  )
+}
+
+// ---- a Görev ----------------------------------------------------------------------------------------------------
+
+/** A plan's mark on its chip: scissors for a cut, a frame for a size, a copy for more. */
+function PlanGlyph({ plan }: { plan: TaskPlan | null }) {
+  if (plan?.kind === 'cut') return <Scissors aria-hidden />
+  if (plan?.kind === 'ratio') return <Proportions aria-hidden />
+  if (plan?.kind === 'more') return <CopyPlus aria-hidden />
+  return null
+}
+
+/**
+ * A Görev: an instruction in plain words over the node linked into it (`chain-task.ts`). Above, what it did, else what it
+ * will do (or what it needs) as a sentence. Below, the instruction, where @ lists the canvas's nodes and links the one
+ * picked in (a name typed out in full links it too); its bar says the plan in short ("Kes · 0:00–0:10") and runs it.
+ */
+function TaskBody({ id, data }: { id: string; data: StepData }) {
+  const api = useCanvas()
+  const { run } = api
+  const { state } = run
+  const { stage, status } = data
+  const saved = state.edits[stage.briefKey] ?? ''
+  const [draft, setDraft] = React.useState<string | null>(null)
+  const held = useHeldField()
+  const text = draft ?? saved
+  const names = [...api.names.values()]
+  // The node the words name, else the one linked in, is what it runs on.
+  const named = mentionOf(text, names)
+  const namedId = named ? [...api.names].find(([, name]) => name === named)?.[0] : undefined
+  const sourceId = namedId && namedId !== id ? namedId : (stage.task?.source ?? null)
+  const source = sourceId ? api.describe(sourceId) : null
+  const read = readTask(text, source, names)
+  const ran = state.edits[`task:${id}`]
+  const busy = status === 'running' || status === 'queued'
+  const ready = !busy && read.plan !== null && read.problem === null && source !== null
+  const options = [...api.names].filter(([key]) => key !== id).map(([key, name]) => ({ id: key, name, kind: api.kindOf(key) }))
+  const keep = () => {
+    if (sourceId && sourceId !== stage.task?.source) api.linkInto(id, sourceId)
+    if (text.trim() !== saved) run.edit(stage.briefKey, text.trim())
+    setDraft(null)
+  }
+  const go = () => {
+    keep()
+    if (ready && sourceId) api.apply(id, text.trim(), sourceId)
+  }
+  return (
+    <>
+      <TaskResult id={id} data={data} read={read} ran={ran} source={source} onExample={(example) => run.edit(stage.briefKey, example)} />
+      <div className="lb-cv-compose">
+        <PromptBox
+          className="lb-cv-pb"
+          bar={(
+            <>
+              {read.label ? (
+                <PromptBoxChip className={`lb-tk-plan${read.problem ? ' off' : ''}`} icon={<PlanGlyph plan={read.plan} />} label={read.label} disabled title={read.problem ?? read.sentence ?? undefined} />
+              ) : null}
+              <PromptBoxSpacer />
+              <PromptBoxSend type="button" label={busy ? 'Uygulanıyor' : ran ? 'Yeniden uygula' : 'Uygula'} busy={status === 'running'} disabled={!ready} onClick={go} />
+            </>
+          )}
+        >
+          <MentionInput
+            className={held.className}
+            value={text}
+            options={options}
+            placeholder="Ne yapılsın? @ ile düğüm seçin"
+            aria-label="Görev: ne yapılsın"
+            onChange={setDraft}
+            onMention={(target) => api.linkInto(id, target)}
+            onFocus={held.onFocus}
+            onBlur={() => {
+              held.onBlur()
+              keep()
+            }}
+            onSend={go}
+          />
+        </PromptBox>
+      </div>
+    </>
+  )
+}
+
+/**
+ * Over a Görev's instruction: what it did, once it ran (the cut clip or sound with the part it kept, the picture or clip
+ * at its new size, the nodes it added, each a press away); before that, what it will do as a sentence, what it needs, or,
+ * while it is empty, instructions to start from.
+ */
+function TaskResult({ id, data, read, ran, source, onExample }: { id: string; data: StepData; read: ReturnType<typeof readTask>; ran?: string; source: (TaskSource & { id: string }) | null; onExample: (text: string) => void }) {
+  const api = useCanvas()
+  const { stage, status } = data
+  const done = data.variants > 0 && ran !== undefined
+  const plan = done && source ? readTask(ran, source, [...api.names.values()]).plan : null
+  if (plan?.kind === 'more') {
+    const added = (api.run.state.edits[`task-made:${id}`] ?? '').split(' ').filter((node) => api.names.has(node))
+    return (
+      <div className="lb-cv-out lb-tk-out">
+        <div className="lb-tk-made">
+          <small>{added.length ? `${added.length} düğüm eklendi` : 'Eklenen düğümler silindi'}</small>
+          {added.length ? (
+            <span>
+              {added.map((node) => (
+                <button key={node} type="button" onClick={() => api.focus([node])} title="Göster">{api.names.get(node)}</button>
+              ))}
+            </span>
+          ) : null}
+        </div>
+      </div>
+    )
+  }
+  if (plan && (plan.kind === 'cut' || plan.kind === 'ratio')) {
+    const tag = plan.kind === 'cut' ? `${clockOf(plan.from)}–${clockOf(plan.to)}` : plan.ratio
+    if (stage.task?.type === 'audio') {
+      return (
+        <div className="lb-cv-out wave lb-tk-out">
+          <span className="lb-cv-bars">{waveOf(`${id}:${data.variants}`, 40).map((height, index) => <i key={index} style={{ height: `${height}%` }} />)}</span>
+          <span className="lb-cv-tag">{tag}</span>
+        </div>
+      )
+    }
+    return (
+      <div className={`lb-cv-out lb-tk-out${status === 'running' ? ' working' : ''}`}>
+        <span className="lb-tk-frame" style={{ aspectRatio: (stage.task?.ratio ?? '9:16').replace(':', ' / ') }}>
+          {data.art ? <span className="lb-thumb"><span className={`lb-art ${data.art}`} /></span> : null}
+          {stage.task?.type === 'video' ? <span className="lb-cv-play"><Icon name="play" size="sm" /></span> : null}
+          <span className="lb-cv-tag">{tag}</span>
+        </span>
+      </div>
+    )
+  }
+  return (
+    <div className={`lb-cv-out lb-tk-out${status === 'running' ? ' working' : ''}`}>
+      <div className="lb-tk-say">
+        {read.problem ? (
+          <p className="off">{read.problem}</p>
+        ) : read.sentence ? (
+          <p>{read.sentence}</p>
+        ) : (
+          <>
+            <p>{source ? `${source.name} bağlı. Ne yapılsın?` : 'Bir düğüm bağlayın ya da @ ile anın, sonra ne yapılacağını yazın.'}</p>
+            <span className="lb-tk-examples">
+              {TASK_EXAMPLES.map((example) => (
+                <button key={example} type="button" onClick={() => onExample(example)}>{example}</button>
+              ))}
+            </span>
+          </>
+        )}
+      </div>
     </div>
   )
 }

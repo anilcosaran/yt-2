@@ -20,7 +20,7 @@ import {
 } from './lab-model'
 import { pickOf, sayOf, stepStatus, type AddedScene, type LabMedia, type LabRunState } from './use-lab-run'
 
-export type StageKind = 'text' | 'image' | 'frame' | 'video' | 'avatar' | 'voice' | 'music' | 'media'
+export type StageKind = 'text' | 'image' | 'frame' | 'video' | 'avatar' | 'voice' | 'music' | 'media' | 'task'
 
 /**
  * The kinds of node, named the way the plan names things (never "node", "LLM" or "prompt"). `frame` is only kept for
@@ -35,6 +35,7 @@ export const STAGE_KIND: Record<StageKind, { name: string; icon: string; hint: s
   voice: { name: 'Ses', icon: 'mic', hint: 'Metinden seslendirme' },
   music: { name: 'Müzik', icon: 'music', hint: 'Arka plan müziği' },
   media: { name: 'Görselim', icon: 'upload', hint: 'Görsel ya da video yükle' },
+  task: { name: 'Görev', icon: 'wand', hint: 'Yazarak kes, boyutlandır, çoğalt' },
 }
 /** The kinds a node can be added as. */
 export const STAGE_KINDS = (Object.keys(STAGE_KIND) as StageKind[]).filter((kind) => kind !== 'frame')
@@ -56,6 +57,8 @@ export type ChainStage = {
   seconds?: number
   /** What a text node holds, where a rewrite of it is kept (a scene's line is shared with Senaryo), and what it started as. */
   text?: { value: string; key: string; first: string }
+  /** A Görev's source (the node linked into it) and what flows through it, once something is linked (`chain-task.ts`). */
+  task?: { source: string | null; type: 'text' | 'image' | 'video' | 'audio' | null; ratio?: string }
 }
 
 /** A planned link: from a step to the next, and which output and input it joins where that is not the obvious one. */

@@ -1,0 +1,43 @@
+/* Plan › Üretim, a Görev (`chain-task.ts`, `TaskBody` in plan-chain.tsx): what it did or will do over its instruction,
+   the plan in short on a chip of the composer's bar, and the list an "@" opens over the field. Quiet like the rest of a
+   node: a Görev's kind has no colour of its own; the list is one soft surface like the canvas's menus. */
+
+.yt-studio .k-task{--k:var(--st-text-2)}
+
+/* over the instruction: what it did, else a sentence */
+.yt-studio .lb-tk-out{padding:12px 14px}
+.yt-studio .lb-tk-say{display:grid;gap:10px;justify-items:start;width:100%;font-size:12.5px;line-height:1.5;color:var(--st-text-2)}
+.yt-studio .lb-tk-say p{margin:0}
+.yt-studio .lb-tk-say p.off{color:var(--st-text-3)}
+.yt-studio .lb-tk-examples{display:flex;flex-wrap:wrap;gap:6px}
+.yt-studio .lb-tk-examples button,.yt-studio .lb-tk-made button{height:24px;padding:0 8px;border-radius:6px;background:var(--cv-fill);font-size:12px;line-height:24px;color:var(--st-text-2);white-space:nowrap;transition:background .12s,color .12s}
+.yt-studio .lb-tk-examples button:hover,.yt-studio .lb-tk-made button:hover{background:color-mix(in srgb,var(--cv-fill),var(--st-text) 8%);color:var(--st-text)}
+
+/* a cut or resized picture or clip, at its size, the part kept or the size on its tag */
+.yt-studio .lb-tk-frame{position:relative;display:block;height:100%;max-width:100%;border-radius:6px;overflow:hidden;background:var(--cv-fill)}
+.yt-studio .lb-tk-frame .lb-thumb{position:absolute;inset:0}
+.yt-studio .lb-tk-out.wave{flex-direction:column;gap:8px}
+.yt-studio .lb-tk-out .lb-cv-bars{width:100%}
+.yt-studio .lb-tk-out.working .lb-tk-frame{opacity:.6}
+
+/* the nodes it added, each a press away */
+.yt-studio .lb-tk-made{display:grid;gap:8px;justify-items:start;width:100%;font-size:12.5px;color:var(--st-text-2)}
+.yt-studio .lb-tk-made > span{display:flex;flex-wrap:wrap;gap:6px}
+
+/* the plan in short: read, not pressed */
+.yt-studio .lb-cv-compose .pb.lb-cv-pb .pb-chip.lb-tk-plan:disabled{opacity:1;color:var(--st-text)}
+.yt-studio .lb-cv-compose .pb.lb-cv-pb .pb-chip.lb-tk-plan.off:disabled{color:var(--st-text-3)}
+.yt-studio .lb-tk-plan svg{width:13px;height:13px;flex:none}
+
+/* the field, and the list an "@" opens over it */
+.yt-studio .lb-tk-field{position:relative;width:100%}
+.yt-studio .lb-tk-at{position:absolute;left:-4px;bottom:calc(100% + 8px);z-index:40;display:grid;gap:1px;width:224px;padding:5px;border-radius:10px;
+  background:var(--cv-node);box-shadow:0 0 0 1px var(--cv-line-strong),var(--cv-shadow);cursor:var(--cv-pointer,default);animation:lb-in .12s ease-out}
+.yt-studio .lb-tk-at button{display:flex;align-items:center;gap:8px;height:30px;padding:0 6px;border-radius:6px;font-size:12.5px;color:var(--st-text-2);text-align:left;white-space:nowrap;transition:background .1s,color .1s}
+.yt-studio .lb-tk-at button.on,.yt-studio .lb-tk-at button:hover{background:var(--cv-fill);color:var(--st-text)}
+.yt-studio .lb-tk-at .lb-cv-glyph{width:22px;height:22px;border-radius:6px}
+.yt-studio .lb-tk-at button > span:last-child{min-width:0;overflow:hidden;text-overflow:ellipsis}
+
+@media (prefers-reduced-motion:reduce){
+  .yt-studio .lb-tk-at{animation:none}
+}

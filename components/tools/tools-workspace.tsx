@@ -3394,7 +3394,7 @@ function ToolsCatalog({
 
   return (
     <div className="tools-studio hg-scrollbar relative min-h-full overflow-y-auto bg-background text-foreground">
-      <div className="mx-auto flex max-w-[1200px] flex-col px-4 py-6 md:px-8 md:py-8">
+      <div className="mx-auto flex max-w-[1440px] flex-col px-4 py-6 md:px-8 md:py-8 xl:px-10">
         <section className="mb-5 flex w-fit items-center gap-1 rounded-xl border border-border bg-panel/40 p-1">
           {catalogViews.map((view) => {
             const active = view.id === activeView

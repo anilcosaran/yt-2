@@ -332,7 +332,7 @@ export function SettingsFrame({
       data-settings-section={activeSection}
     >
       <div className="hg-glow pointer-events-none absolute inset-x-0 top-0 h-64" />
-      <div className="relative mx-auto min-h-full w-full max-w-[1200px] px-4 py-6 md:px-8 md:py-8">
+      <div className="relative mx-auto min-h-full w-full max-w-[1440px] px-4 py-6 md:px-8 md:py-8 xl:px-10">
         <main className="min-w-0 w-full">{children}</main>
       </div>
     </div>

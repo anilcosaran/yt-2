@@ -171,7 +171,7 @@ export function AvatarLooksDetailView({
     <div
       data-avatar-surface="shots-looks-detail"
       data-avatar-open-target="shots_looks_detail"
-      className="relative mx-auto flex min-h-full max-w-[1200px] flex-col px-4 pb-10 pt-6 md:px-8 md:pt-8"
+      className="relative mx-auto flex min-h-full max-w-[1440px] flex-col px-4 pb-10 pt-6 md:px-8 md:pt-8 xl:px-10"
     >
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div className="flex min-w-0 items-center gap-3">
